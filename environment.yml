@@ -5,6 +5,5 @@ dependencies:
   - pip:
     - black==18.6b2
     - mypy==0.610
-    - pandas==0.23.1
     - pulp==1.6.8
     - pyinstaller==3.3.1

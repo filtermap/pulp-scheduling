@@ -1,6 +1,7 @@
+import csv
+import operator
 import os
 import pulp
-import pandas as pd
 
 data_directory = os.path.join(os.getcwd(), "data")
 
@@ -10,102 +11,102 @@ def in_data_directory(path):
 
 
 # 職員の集合。
-members_df = pd.read_csv(in_data_directory("members.csv"), dtype={"職員名": str})
-M = [r["職員名"] for _, r in members_df.iterrows()]
+with open(in_data_directory("members.csv")) as f:
+    M = [r["職員名"] for r in csv.DictReader(f)]
 # 日付の集合。
-dates_df = pd.read_csv(in_data_directory("dates.csv"), dtype={"日付": str})
-D = [r["日付"] for _, r in dates_df.iterrows()]
+with open(in_data_directory("dates.csv")) as f:
+    D = [r["日付"] for r in csv.DictReader(f)]
 # 勤務の集合。
-kinmus_df = pd.read_csv(in_data_directory("kinmus.csv"), dtype={"勤務名": str})
-K = [r["勤務名"] for _, r in kinmus_df.iterrows()]
+with open(in_data_directory("kinmus.csv")) as f:
+    K = [r["勤務名"] for r in csv.DictReader(f)]
 # グループの集合。
-groups_df = pd.read_csv(in_data_directory("groups.csv"), dtype={"グループ名": str})
-G = [r["グループ名"] for _, r in groups_df.iterrows()]
+with open(in_data_directory("groups.csv")) as f:
+    G = [r["グループ名"] for r in csv.DictReader(f)]
 # グループに所属する職員の集合。
-group_members_df = pd.read_csv(
-    in_data_directory("group_members.csv"), dtype={"グループ名": str, "職員名": str}
-)
+with open(in_data_directory("group_members.csv")) as f:
+    group_members = list(csv.DictReader(f))
 GM = {
-    g: [r["職員名"] for _, r in group_members_df.iterrows()]
-    for g, group_members_df in group_members_df.groupby("グループ名")
+    group_name: [r["職員名"] for r in group_members if r["グループ名"] == group_name]
+    for group_name in list(set(r["グループ名"] for r in group_members))
 }
 # 連続禁止勤務並びの集合。
-renzoku_kinshi_kinmus = pd.read_csv(
-    in_data_directory("renzoku_kinshi_kinmus.csv"),
-    dtype={"並びID": int, "勤務名": str, "並び順": int},
-)
+with open(in_data_directory("renzoku_kinshi_kinmus.csv")) as f:
+    renzoku_kinshi_kinmus = list(csv.DictReader(f))
 P = [
-    [r["勤務名"] for _, r in kinmus.sort_values(by="並び順").iterrows()]
-    for _, kinmus in renzoku_kinshi_kinmus.groupby("並びID")
+    [
+        r["勤務名"]
+        for r in sorted(renzoku_kinshi_kinmus, key=lambda r: int(r["並び順"]))
+        if int(r["並びID"]) == sequence_id
+    ]
+    for sequence_id in list(set(int(r["並びID"]) for r in renzoku_kinshi_kinmus))
 ]
-
 # 日付の勤務にグループから割り当てる職員数の下限。
-c1_df = pd.read_csv(
-    in_data_directory("c1.csv"),
-    dtype={"日付": str, "勤務名": str, "グループ名": str, "割り当て職員数下限": int},
-)
+with open(in_data_directory("c1.csv")) as f:
+    c1_rs = list(csv.DictReader(f))
 c1 = {
-    d: {
-        k: {r["グループ名"]: r["割り当て職員数下限"] for _, r in groups.iterrows()}
-        for k, groups in kinmus.groupby("勤務名")
+    date: {
+        kinmu_name: {
+            r["グループ名"]: int(r["割り当て職員数下限"])
+            for r in c1_rs
+            if r["日付"] == date and r["勤務名"] == kinmu_name
+        }
+        for kinmu_name in list(set(r["勤務名"] for r in c1_rs if r["日付"] == date))
     }
-    for d, kinmus in c1_df.groupby("日付")
+    for date in list(set(r["日付"] for r in c1_rs))
 }
 # 日付の勤務にグループから割り当てる職員数の上限。
-c2_df = pd.read_csv(
-    in_data_directory("c2.csv"),
-    dtype={"日付": str, "勤務名": str, "グループ名": str, "割り当て職員数上限": int},
-)
+with open(in_data_directory("c2.csv")) as f:
+    c2_rs = list(csv.DictReader(f))
 c2 = {
-    d: {
-        k: {r["グループ名"]: r["割り当て職員数上限"] for _, r in groups.iterrows()}
-        for k, groups in kinmus.groupby("勤務名")
+    date: {
+        kinmu_name: {
+            r["グループ名"]: int(r["割り当て職員数上限"])
+            for r in c2_rs
+            if r["日付"] == date and r["勤務名"] == kinmu_name
+        }
+        for kinmu_name in list(set(r["勤務名"] for r in c2_rs if r["日付"] == date))
     }
-    for d, kinmus in c2_df.groupby("日付")
+    for date in list(set(r["日付"] for r in c2_rs))
 }
 # 職員の勤務の割り当て数の下限。
-c3_df = pd.read_csv(
-    in_data_directory("c3.csv"), dtype={"職員名": str, "勤務名": str, "割り当て数下限": int}
-)
+with open(in_data_directory("c3.csv")) as f:
+    c3_rs = list(csv.DictReader(f))
 c3 = {
-    s: {r["勤務名"]: r["割り当て数下限"] for _, r in kinmus.iterrows()}
-    for s, kinmus in c3_df.groupby("職員名")
+    member_name: {r["勤務名"]: int(r["割り当て数下限"]) for r in c3_rs if r["職員名"] == member_name}
+    for member_name in list(set(r["職員名"] for r in c3_rs))
 }
 # 職員の勤務の割り当て数の上限。
-c4_df = pd.read_csv(
-    in_data_directory("c4.csv"), dtype={"職員名": str, "勤務名": str, "割り当て数上限": int}
-)
+with open(in_data_directory("c4.csv")) as f:
+    c4_rs = list(csv.DictReader(f))
 c4 = {
-    s: {r["勤務名"]: r["割り当て数上限"] for _, r in kinmus.iterrows()}
-    for s, kinmus in c4_df.groupby("職員名")
+    member_name: {r["勤務名"]: int(r["割り当て数上限"]) for r in c4_rs if r["職員名"] == member_name}
+    for member_name in list(set(r["職員名"] for r in c4_rs))
 }
 # 勤務の連続日数の下限。
-c5_df = pd.read_csv(in_data_directory("c5.csv"), dtype={"勤務名": str, "連続日数下限": int})
-c5 = {r["勤務名"]: r["連続日数下限"] for _, r in c5_df.iterrows()}
+with open(in_data_directory("c5.csv")) as f:
+    c5 = {r["勤務名"]: int(r["連続日数下限"]) for r in list(csv.DictReader(f))}
 # 勤務の連続日数の上限。
-c6_df = pd.read_csv(in_data_directory("c6.csv"), dtype={"勤務名": str, "連続日数上限": int})
-c6 = {r["勤務名"]: r["連続日数上限"] for _, r in c6_df.iterrows()}
+with open(in_data_directory("c6.csv")) as f:
+    c6 = {r["勤務名"]: int(r["連続日数上限"]) for r in list(csv.DictReader(f))}
 # 勤務の間隔日数の下限。
-c7_df = pd.read_csv(in_data_directory("c7.csv"), dtype={"勤務名": str, "間隔日数下限": int})
-c7 = {r["勤務名"]: r["間隔日数下限"] for _, r in c7_df.iterrows()}
+with open(in_data_directory("c7.csv")) as f:
+    c7 = {r["勤務名"]: int(r["間隔日数下限"]) for r in list(csv.DictReader(f))}
 # 勤務の間隔日数の上限。
-c8_df = pd.read_csv(in_data_directory("c8.csv"), dtype={"勤務名": str, "間隔日数上限": int})
-c8 = {r["勤務名"]: r["間隔日数上限"] for _, r in c8_df.iterrows()}
+with open(in_data_directory("c8.csv")) as f:
+    c8 = {r["勤務名"]: int(r["間隔日数上限"]) for r in list(csv.DictReader(f))}
 # 職員の日付に割り当てる勤務。
-c9_df = pd.read_csv(
-    in_data_directory("c9.csv"), dtype={"職員名": str, "日付": str, "割り当て勤務名": str}
-)
+with open(in_data_directory("c9.csv")) as f:
+    c9_rs = list(csv.DictReader(f))
 c9 = {
-    s: {r["日付"]: r["割り当て勤務名"] for _, r in kinmus.iterrows()}
-    for s, kinmus in c9_df.groupby("職員名")
+    member_name: {r["日付"]: r["割り当て勤務名"] for r in c9_rs if r["職員名"] == member_name}
+    for member_name in list(set(r["職員名"] for r in c9_rs))
 }
 # 職員の日付に割り当てない勤務。
-c10_df = pd.read_csv(
-    in_data_directory("c10.csv"), dtype={"職員名": str, "日付": str, "割り当てない勤務名": str}
-)
+with open(in_data_directory("c10.csv")) as f:
+    c10_rs = list(csv.DictReader(f))
 c10 = {
-    s: {r["日付"]: r["割り当てない勤務名"] for _, r in kinmus.iterrows()}
-    for s, kinmus in c10_df.groupby("職員名")
+    member_name: {r["日付"]: r["割り当てない勤務名"] for r in c10_rs if r["職員名"] == member_name}
+    for member_name in list(set(r["職員名"] for r in c10_rs))
 }
 
 # 決定変数。
