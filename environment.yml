@@ -1,0 +1,10 @@
+name: pulp-scheduling
+dependencies:
+  - pip=10.0.1=py36_0
+  - python=3.6.5=h0c2934d_0
+  - pip:
+    - black==18.6b2
+    - mypy==0.610
+    - pandas==0.23.1
+    - pulp==1.6.8
+    - pyinstaller==3.3.1

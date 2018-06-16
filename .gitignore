@@ -1,0 +1,7 @@
+__pycache__
+.mypy_cache
+.vscode
+build
+dist
+scheduling.lp
+scheduling.txt
