@@ -202,19 +202,17 @@ problem += sum(
 # 各職員の各日付に割り当てる勤務の数は1。
 for m in M:
     for d in D:
-        problem += sum([x[m][d][k] for k in K]) == 1, ""
+        problem += sum([x[m][d][k] for k in K]) == 1
 
 for c in c1:
     problem += (
         sum(x[m][c["date_index"]][c["kinmu_index"]] for m in GM[c["group_index"]])
-        >= c["min_number_of_assignments"],
-        "",
+        >= c["min_number_of_assignments"]
     )
 for c in c2:
     problem += (
         sum(x[m][c["date_index"]][c["kinmu_index"]] for m in GM[c["group_index"]])
-        <= c["max_number_of_assignments"],
-        "",
+        <= c["max_number_of_assignments"]
     )
 
 for c in c3:
