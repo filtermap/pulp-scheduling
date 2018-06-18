@@ -85,17 +85,6 @@ with open(in_data_directory("c1.csv")) as f:
         }
         for index, r in enumerate(csv.DictReader(f))
     ]
-C1 = {
-    d: {
-        k: {
-            c["group_index"]: c["min_number_of_assignments"]
-            for c in c1
-            if c["date_index"] == d and c["kinmu_index"] == k
-        }
-        for k in list(set(c["kinmu_index"] for c in c1 if c["date_index"] == d))
-    }
-    for d in list(set(c["date_index"] for c in c1))
-}
 # 日付の勤務にグループから割り当てる職員数の上限。
 with open(in_data_directory("c2.csv")) as f:
     c2 = [
@@ -108,17 +97,6 @@ with open(in_data_directory("c2.csv")) as f:
         }
         for index, r in enumerate(csv.DictReader(f))
     ]
-C2 = {
-    d: {
-        k: {
-            c["group_index"]: c["max_number_of_assignments"]
-            for c in c2
-            if c["date_index"] == d and c["kinmu_index"] == k
-        }
-        for k in list(set(c["kinmu_index"] for c in c2 if c["date_index"] == d))
-    }
-    for d in list(set(c["date_index"] for c in c2))
-}
 # 職員の勤務の割り当て数の下限。
 with open(in_data_directory("c3.csv")) as f:
     c3 = [
@@ -130,14 +108,6 @@ with open(in_data_directory("c3.csv")) as f:
         }
         for index, r in enumerate(csv.DictReader(f))
     ]
-C3 = {
-    m: {
-        c["kinmu_index"]: c["min_number_of_assignments"]
-        for c in c3
-        if c["member_index"] == m
-    }
-    for m in list(set(c["member_index"] for c in c3))
-}
 # 職員の勤務の割り当て数の上限。
 with open(in_data_directory("c4.csv")) as f:
     c4 = [
@@ -149,14 +119,6 @@ with open(in_data_directory("c4.csv")) as f:
         }
         for index, r in enumerate(csv.DictReader(f))
     ]
-C4 = {
-    m: {
-        c["kinmu_index"]: c["max_number_of_assignments"]
-        for c in c4
-        if c["member_index"] == m
-    }
-    for m in list(set(c["member_index"] for c in c4))
-}
 # 勤務の連続日数の下限。
 with open(in_data_directory("c5.csv")) as f:
     c5 = [
@@ -167,7 +129,6 @@ with open(in_data_directory("c5.csv")) as f:
         }
         for index, r in enumerate(csv.DictReader(f))
     ]
-C5 = {c["kinmu_index"]: c["min_number_of_days"] for c in c5}
 # 勤務の連続日数の上限。
 with open(in_data_directory("c6.csv")) as f:
     c6 = [
@@ -178,7 +139,6 @@ with open(in_data_directory("c6.csv")) as f:
         }
         for index, r in enumerate(csv.DictReader(f))
     ]
-C6 = {c["kinmu_index"]: c["max_number_of_days"] for c in c6}
 # 勤務の間隔日数の下限。
 with open(in_data_directory("c7.csv")) as f:
     c7 = [
@@ -189,7 +149,6 @@ with open(in_data_directory("c7.csv")) as f:
         }
         for index, r in enumerate(csv.DictReader(f))
     ]
-C7 = {c["kinmu_index"]: c["min_number_of_days"] for c in c7}
 # 勤務の間隔日数の上限。
 with open(in_data_directory("c8.csv")) as f:
     c8 = [
@@ -200,7 +159,6 @@ with open(in_data_directory("c8.csv")) as f:
         }
         for index, r in enumerate(csv.DictReader(f))
     ]
-C8 = {c["kinmu_index"]: c["max_number_of_days"] for c in c8}
 # 職員の日付に割り当てる勤務。
 with open(in_data_directory("c9.csv")) as f:
     c9 = [
@@ -212,10 +170,6 @@ with open(in_data_directory("c9.csv")) as f:
         }
         for index, r in enumerate(csv.DictReader(f))
     ]
-C9 = {
-    m: {c["date_index"]: c["kinmu_index"] for c in c9 if c["member_index"] == m}
-    for m in list(set(c["member_index"] for c in c9))
-}
 # 職員の日付に割り当てない勤務。
 with open(in_data_directory("c10.csv")) as f:
     c10 = [
@@ -227,10 +181,6 @@ with open(in_data_directory("c10.csv")) as f:
         }
         for index, r in enumerate(csv.DictReader(f))
     ]
-C10 = {
-    m: {c["date_index"]: c["kinmu_index"] for c in c10 if c["member_index"] == m}
-    for m in list(set(c["member_index"] for c in c10))
-}
 
 # 決定変数。
 # 職員の日付に勤務が割り当てられているとき1。
@@ -240,21 +190,13 @@ problem = pulp.LpProblem("Scheduling", pulp.LpMinimize)
 
 # 目的関数。
 problem += sum(
-    C1[d][k][g] - sum(x[m][d][k] for m in GM[g])
-    for d in D
-    if d in C1
-    for k in K
-    if k in C1[d]
-    for g in G
-    if g in C1[d][k]
+    c["min_number_of_assignments"]
+    - sum(x[m][c["date_index"]][c["kinmu_index"]] for m in GM[c["group_index"]])
+    for c in c1
 ) + sum(
-    sum(x[m][d][k] for m in GM[g]) - C2[d][k][g]
-    for d in D
-    if d in C2
-    for k in K
-    if k in C2[d]
-    for g in G
-    if g in C2[d][k]
+    sum(x[m][c["date_index"]][c["kinmu_index"]] for m in GM[c["group_index"]])
+    - c["max_number_of_assignments"]
+    for c in c2
 )
 
 # 各職員の各日付に割り当てる勤務の数は1。
@@ -262,102 +204,84 @@ for m in M:
     for d in D:
         problem += sum([x[m][d][k] for k in K]) == 1, ""
 
-for d in D:
-    if d not in C1:
-        continue
-    for k in K:
-        if k not in C1[d]:
-            continue
-        for g in G:
-            if g not in C1[d][k]:
-                continue
-            problem += sum(x[m][d][k] for m in GM[g]) >= C1[d][k][g], ""
-for d in D:
-    if d not in C2:
-        continue
-    for k in K:
-        if k not in C2[d]:
-            continue
-        for g in G:
-            if g not in C2[d][k]:
-                continue
-            problem += sum(x[m][d][k] for m in GM[g]) <= C2[d][k][g], ""
+for c in c1:
+    problem += (
+        sum(x[m][c["date_index"]][c["kinmu_index"]] for m in GM[c["group_index"]])
+        >= c["min_number_of_assignments"],
+        "",
+    )
+for c in c2:
+    problem += (
+        sum(x[m][c["date_index"]][c["kinmu_index"]] for m in GM[c["group_index"]])
+        <= c["max_number_of_assignments"],
+        "",
+    )
 
-for m in M:
-    if m not in C3:
-        continue
-    for k in K:
-        if k not in C3[m]:
-            continue
-        problem += sum(x[m][d][k] for d in D) >= C3[m][k]
-for m in M:
-    if m not in C4:
-        continue
-    for k in K:
-        if k not in C4[m]:
-            continue
-        problem += sum(x[m][d][k] for d in D) <= C4[m][k]
+for c in c3:
+    problem += (
+        sum(x[c["member_index"]][d][c["kinmu_index"]] for d in D)
+        >= c["min_number_of_assignments"]
+    )
+for c in c4:
+    problem += (
+        sum(x[c["member_index"]][d][c["kinmu_index"]] for d in D)
+        <= c["max_number_of_assignments"]
+    )
 
-for m in M:
-    for k in K:
-        if k not in C5:
-            continue
+for c in c5:
+    for m in M:
         for d in D:
-            if d - C5[k] not in D:
+            if d - c["min_number_of_days"] not in D:
                 continue
-            problem += sum(x[m][d - i][k] for i in range(0, C5[k] + 1)) >= C5[k]
-for m in M:
-    for k in K:
-        if k not in C6:
-            continue
+            problem += (
+                sum(
+                    x[m][d - i][c["kinmu_index"]]
+                    for i in range(0, c["min_number_of_days"] + 1)
+                )
+                >= c["min_number_of_days"]
+            )
+for c in c6:
+    for m in M:
         for d in D:
-            if d - C6[k] not in D:
+            if d - c["max_number_of_days"] not in D:
                 continue
-            problem += sum(x[m][d - i][k] for i in range(0, C6[k] + 1)) <= C6[k]
+            problem += (
+                sum(
+                    x[m][d - i][c["kinmu_index"]]
+                    for i in range(0, c["max_number_of_days"] + 1)
+                )
+                <= c["max_number_of_days"]
+            )
 
-for m in M:
-    for k in K:
-        if k not in C7:
-            continue
+for c in c7:
+    for m in M:
         for d in D:
-            for i in range(2, C7[k] + 1):
+            for i in range(2, c["min_number_of_days"] + 1):
                 if d - i not in D:
                     continue
                 problem += (
-                    x[m][d - i][k]
-                    - sum(x[m][d - j][k] for j in range(1, i))
-                    + x[m][d][k]
+                    x[m][d - i][c["kinmu_index"]]
+                    - sum(x[m][d - j][c["kinmu_index"]] for j in range(1, i))
+                    + x[m][d][c["kinmu_index"]]
                     <= 1
                 )
-for m in M:
-    for k in K:
-        if k not in C8:
-            continue
+for c in c8:
+    for m in M:
         for d in D:
-            if d - C8[k] not in D:
+            if d - c["max_number_of_days"] not in D:
                 continue
-            problem += sum(x[m][d - i][k] for i in range(0, C8[k] + 1)) >= 1
+            problem += (
+                sum(
+                    x[m][d - i][c["kinmu_index"]]
+                    for i in range(0, c["max_number_of_days"] + 1)
+                )
+                >= 1
+            )
 
-for m in M:
-    if m not in C9:
-        continue
-    for d in D:
-        if d not in C9[m]:
-            continue
-        for k in K:
-            if k not in C9[m][d]:
-                continue
-            problem += x[m][d][k] == 1
-for m in M:
-    if m not in C10:
-        continue
-    for d in D:
-        if d not in C10[m]:
-            continue
-        for k in K:
-            if k not in C10[m][d]:
-                continue
-            problem += x[m][d][k] == 0
+for c in c9:
+    problem += x[c["member_index"]][c["date_index"]][c["kinmu_index"]] == 1
+for c in c10:
+    problem += x[c["member_index"]][c["date_index"]][c["kinmu_index"]] == 0
 
 for m in M:
     for p in P:
