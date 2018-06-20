@@ -262,9 +262,11 @@ for c in c5:
             problem += (
                 sum(
                     x[m][d - i][c["kinmu_index"]]
-                    for i in range(0, c["min_number_of_days"] + 1)
+                    for i in range(2, c["min_number_of_days"] + 1)
                 )
-                >= c["min_number_of_days"]
+                - (c["min_number_of_days"] - 1) * x[m][d - 1][c["kinmu_index"]]
+                + (c["min_number_of_days"] - 1) * x[m][d][c["kinmu_index"]]
+                >= 0
             )
 for c in c6:
     for m in M:
