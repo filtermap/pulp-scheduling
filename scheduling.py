@@ -1,4 +1,5 @@
 import csv
+import datetime
 import operator
 import os
 import pulp
@@ -14,6 +15,10 @@ def find(iterable, function):
     return next(filter(function, iterable))
 
 
+def str_to_date(string, format="%Y/%m/%d"):
+    return datetime.datetime.strptime(string, format).date()
+
+
 # 職員の集合。
 with open(in_data_directory("members.csv")) as f:
     members = [
@@ -23,7 +28,8 @@ M = [m["index"] for m in members]
 # 日付の集合。
 with open(in_data_directory("dates.csv")) as f:
     dates = [
-        {"index": index, "name": r["日付"]} for index, r in enumerate(csv.DictReader(f))
+        {"index": index, "name": str(str_to_date(r["日付"]))}
+        for index, r in enumerate(csv.DictReader(f))
     ]
 D = [d["index"] for d in dates]
 # 勤務の集合。
@@ -78,7 +84,9 @@ with open(in_data_directory("c1.csv")) as f:
     c1 = [
         {
             "index": index,
-            "date_index": find(dates, lambda d: d["name"] == r["日付"])["index"],
+            "date_index": find(dates, lambda d: d["name"] == str(str_to_date(r["日付"])))[
+                "index"
+            ],
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["勤務名"])["index"],
             "group_index": find(groups, lambda g: g["name"] == r["グループ名"])["index"],
             "min_number_of_assignments": int(r["割り当て職員数下限"]),
@@ -90,7 +98,9 @@ with open(in_data_directory("c2.csv")) as f:
     c2 = [
         {
             "index": index,
-            "date_index": find(dates, lambda d: d["name"] == r["日付"])["index"],
+            "date_index": find(dates, lambda d: d["name"] == str(str_to_date(r["日付"])))[
+                "index"
+            ],
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["勤務名"])["index"],
             "group_index": find(groups, lambda g: g["name"] == r["グループ名"])["index"],
             "max_number_of_assignments": int(r["割り当て職員数上限"]),
@@ -165,7 +175,9 @@ with open(in_data_directory("c9.csv")) as f:
         {
             "index": index,
             "member_index": find(members, lambda m: m["name"] == r["職員名"])["index"],
-            "date_index": find(dates, lambda d: d["name"] == r["日付"])["index"],
+            "date_index": find(dates, lambda d: d["name"] == str(str_to_date(r["日付"])))[
+                "index"
+            ],
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["割り当て勤務名"])["index"],
         }
         for index, r in enumerate(csv.DictReader(f))
@@ -176,7 +188,9 @@ with open(in_data_directory("c10.csv")) as f:
         {
             "index": index,
             "member_index": find(members, lambda m: m["name"] == r["職員名"])["index"],
-            "date_index": find(dates, lambda d: d["name"] == r["日付"])["index"],
+            "date_index": find(dates, lambda d: d["name"] == str(str_to_date(r["日付"])))[
+                "index"
+            ],
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["割り当てない勤務名"])["index"],
         }
         for index, r in enumerate(csv.DictReader(f))
