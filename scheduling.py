@@ -257,15 +257,18 @@ for c in c4:
 for c in c5:
     for m in M:
         for d in D:
-            if d - c["min_number_of_days"] not in D:
+            if d - 1 not in D:
                 continue
+            min_number_of_days = (
+                c["min_number_of_days"] if d - c["min_number_of_days"] >= 0 else d
+            )
             problem += (
                 sum(
                     x[m][d - i][c["kinmu_index"]]
-                    for i in range(2, c["min_number_of_days"] + 1)
+                    for i in range(2, min_number_of_days + 1)
                 )
-                - (c["min_number_of_days"] - 1) * x[m][d - 1][c["kinmu_index"]]
-                + (c["min_number_of_days"] - 1) * x[m][d][c["kinmu_index"]]
+                - (min_number_of_days - 1) * x[m][d - 1][c["kinmu_index"]]
+                + (min_number_of_days - 1) * x[m][d][c["kinmu_index"]]
                 >= 0
             )
 for c in c6:
