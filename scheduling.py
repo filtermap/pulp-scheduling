@@ -28,15 +28,18 @@ one_day = datetime.timedelta(days=1)
 
 # 職員の集合。
 with open(in_data_directory("members.csv")) as f:
+    next(f)
     members = [
-        {"index": index, "name": r["職員名"]} for index, r in enumerate(csv.DictReader(f))
+        {"index": index, "name": r["職員名"]}
+        for index, r in enumerate(csv.DictReader(f, ["職員名"]))
     ]
 M = [m["index"] for m in members]
 # 日付の集合。
 with open(in_data_directory("dates.csv")) as f:
+    next(f)
     dates = [
         {"index": index, "name": str(date)}
-        for r in csv.DictReader(f)
+        for r in csv.DictReader(f, ["開始日", "終了日"])
         for index, date in enumerate(
             date_range(str_to_date(r["開始日"]), str_to_date(r["終了日"]) + one_day)
         )
@@ -44,32 +47,37 @@ with open(in_data_directory("dates.csv")) as f:
 D = [d["index"] for d in dates]
 # 勤務の集合。
 with open(in_data_directory("kinmus.csv")) as f:
+    next(f)
     kinmus = [
-        {"index": index, "name": r["勤務名"]} for index, r in enumerate(csv.DictReader(f))
+        {"index": index, "name": r["勤務名"]}
+        for index, r in enumerate(csv.DictReader(f, ["勤務名"]))
     ]
 K = [k["index"] for k in kinmus]
 # グループの集合。
 with open(in_data_directory("groups.csv")) as f:
+    next(f)
     groups = [
         {"index": index, "name": r["グループ名"]}
-        for index, r in enumerate(csv.DictReader(f))
+        for index, r in enumerate(csv.DictReader(f, ["グループ名"]))
     ]
 G = [g["index"] for g in groups]
 # グループに所属する職員の集合。
 with open(in_data_directory("group_members.csv")) as f:
+    next(f)
     group_members = [
         {
             "index": index,
             "group_index": find(groups, lambda g: g["name"] == r["グループ名"])["index"],
             "member_index": find(members, lambda m: m["name"] == r["職員名"])["index"],
         }
-        for index, r in enumerate(csv.DictReader(f))
+        for index, r in enumerate(csv.DictReader(f, ["グループ名", "職員名"]))
     ]
 GM = {
     g: [gm["member_index"] for gm in group_members if gm["group_index"] == g] for g in G
 }
 # 連続禁止勤務並びの集合。
 with open(in_data_directory("renzoku_kinshi_kinmus.csv")) as f:
+    next(f)
     renzoku_kinshi_kinmus = [
         {
             "index": index,
@@ -77,7 +85,7 @@ with open(in_data_directory("renzoku_kinshi_kinmus.csv")) as f:
             "sequence_number": int(r["並び順"]),
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["勤務名"])["index"],
         }
-        for index, r in enumerate(csv.DictReader(f))
+        for index, r in enumerate(csv.DictReader(f, ["並びID", "勤務名", "並び順"]))
     ]
 P = [
     [
@@ -91,6 +99,7 @@ P = [
 ]
 # 日付の勤務にグループから割り当てる職員数の下限。
 with open(in_data_directory("c1.csv")) as f:
+    next(f)
     c1 = [
         {
             "index": index,
@@ -99,13 +108,14 @@ with open(in_data_directory("c1.csv")) as f:
             "group_index": find(groups, lambda g: g["name"] == r["グループ名"])["index"],
             "min_number_of_assignments": int(r["割り当て職員数下限"]),
         }
-        for r in csv.DictReader(f)
+        for r in csv.DictReader(f, ["開始日", "終了日", "勤務名", "グループ名", "割り当て職員数下限"])
         for index, date in enumerate(
             date_range(str_to_date(r["開始日"]), str_to_date(r["終了日"]) + one_day)
         )
     ]
 # 日付の勤務にグループから割り当てる職員数の上限。
 with open(in_data_directory("c2.csv")) as f:
+    next(f)
     c2 = [
         {
             "index": index,
@@ -114,13 +124,14 @@ with open(in_data_directory("c2.csv")) as f:
             "group_index": find(groups, lambda g: g["name"] == r["グループ名"])["index"],
             "max_number_of_assignments": int(r["割り当て職員数上限"]),
         }
-        for r in csv.DictReader(f)
+        for r in csv.DictReader(f, ["開始日", "終了日", "勤務名", "グループ名", "割り当て職員数上限"])
         for index, date in enumerate(
             date_range(str_to_date(r["開始日"]), str_to_date(r["終了日"]) + one_day)
         )
     ]
 # 職員の勤務の割り当て数の下限。
 with open(in_data_directory("c3.csv")) as f:
+    next(f)
     c3 = [
         {
             "index": index,
@@ -128,10 +139,11 @@ with open(in_data_directory("c3.csv")) as f:
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["勤務名"])["index"],
             "min_number_of_assignments": int(r["割り当て数下限"]),
         }
-        for index, r in enumerate(csv.DictReader(f))
+        for index, r in enumerate(csv.DictReader(f, ["職員名", "勤務名", "割り当て数下限"]))
     ]
 # 職員の勤務の割り当て数の上限。
 with open(in_data_directory("c4.csv")) as f:
+    next(f)
     c4 = [
         {
             "index": index,
@@ -139,50 +151,55 @@ with open(in_data_directory("c4.csv")) as f:
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["勤務名"])["index"],
             "max_number_of_assignments": int(r["割り当て数上限"]),
         }
-        for index, r in enumerate(csv.DictReader(f))
+        for index, r in enumerate(csv.DictReader(f, ["職員名", "勤務名", "割り当て数上限"]))
     ]
 # 勤務の連続日数の下限。
 with open(in_data_directory("c5.csv")) as f:
+    next(f)
     c5 = [
         {
             "index": index,
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["勤務名"])["index"],
             "min_number_of_days": int(r["連続日数下限"]),
         }
-        for index, r in enumerate(csv.DictReader(f))
+        for index, r in enumerate(csv.DictReader(f, ["勤務名", "連続日数下限"]))
     ]
 # 勤務の連続日数の上限。
 with open(in_data_directory("c6.csv")) as f:
+    next(f)
     c6 = [
         {
             "index": index,
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["勤務名"])["index"],
             "max_number_of_days": int(r["連続日数上限"]),
         }
-        for index, r in enumerate(csv.DictReader(f))
+        for index, r in enumerate(csv.DictReader(f, ["勤務名", "連続日数上限"]))
     ]
 # 勤務の間隔日数の下限。
 with open(in_data_directory("c7.csv")) as f:
+    next(f)
     c7 = [
         {
             "index": index,
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["勤務名"])["index"],
             "min_number_of_days": int(r["間隔日数下限"]),
         }
-        for index, r in enumerate(csv.DictReader(f))
+        for index, r in enumerate(csv.DictReader(f, ["勤務名", "間隔日数下限"]))
     ]
 # 勤務の間隔日数の上限。
 with open(in_data_directory("c8.csv")) as f:
+    next(f)
     c8 = [
         {
             "index": index,
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["勤務名"])["index"],
             "max_number_of_days": int(r["間隔日数上限"]),
         }
-        for index, r in enumerate(csv.DictReader(f))
+        for index, r in enumerate(csv.DictReader(f, ["勤務名", "間隔日数上限"]))
     ]
 # 職員の日付に割り当てる勤務。
 with open(in_data_directory("c9.csv")) as f:
+    next(f)
     c9 = [
         {
             "index": index,
@@ -190,13 +207,14 @@ with open(in_data_directory("c9.csv")) as f:
             "date_index": find(dates, lambda d: d["name"] == str(date))["index"],
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["割り当て勤務名"])["index"],
         }
-        for r in csv.DictReader(f)
+        for r in csv.DictReader(f, ["職員名", "開始日", "終了日", "割り当て勤務名"])
         for index, date in enumerate(
             date_range(str_to_date(r["開始日"]), str_to_date(r["終了日"]) + one_day)
         )
     ]
 # 職員の日付に割り当てない勤務。
 with open(in_data_directory("c10.csv")) as f:
+    next(f)
     c10 = [
         {
             "index": index,
@@ -204,7 +222,7 @@ with open(in_data_directory("c10.csv")) as f:
             "date_index": find(dates, lambda d: d["name"] == str(date))["index"],
             "kinmu_index": find(kinmus, lambda k: k["name"] == r["割り当てない勤務名"])["index"],
         }
-        for r in csv.DictReader(f)
+        for r in csv.DictReader(f, ["職員名", "開始日", "終了日", "割り当てない勤務名"])
         for index, date in enumerate(
             date_range(str_to_date(r["開始日"]), str_to_date(r["終了日"]) + one_day)
         )
