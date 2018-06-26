@@ -4,7 +4,7 @@ import os
 block_cipher = None
 
 a = Analysis(
-    ["scheduling.py"],
+    ["main.py"],
     pathex=[os.getcwd()],
     binaries=[],
     datas=[],
@@ -28,5 +28,5 @@ exe = EXE(
     strip=False,
     upx=True,
     runtime_tmpdir=None,
-    console=True,
+    console=False,
 )

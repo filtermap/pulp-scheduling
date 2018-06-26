@@ -5,12 +5,15 @@
 ```sh
 conda env create
 conda activate pulp-scheduling
+cd static
+yarn
+cd ..
 ```
 
 ## run
 
 ```sh
-python scheduling.py
+python main.py
 ```
 
 ## build

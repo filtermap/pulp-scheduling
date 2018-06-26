@@ -4,6 +4,10 @@ dependencies:
   - python=3.6.5=h0c2934d_0
   - pip:
     - black==18.6b2
+    - flask==1.0.2
+    - json-rpc==1.11.0
     - mypy==0.610
+    - psutil==5.4.6
     - pulp==1.6.8
     - pyinstaller==3.3.1
+    - tornado==5.0.2
