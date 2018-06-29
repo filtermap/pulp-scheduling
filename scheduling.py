@@ -4,6 +4,7 @@ import operator
 import os
 import pulp
 
+one_day = datetime.timedelta(days=1)
 data_directory = os.path.join(os.getcwd(), "data")
 
 
@@ -24,19 +25,19 @@ def date_range(start_date, stop_date):
         yield start_date + datetime.timedelta(days)
 
 
-one_day = datetime.timedelta(days=1)
-
-
-def solve():
-    # 職員の集合。
+def read_members():
+    """職員の集合。"""
     with open(in_data_directory("members.csv")) as f:
         next(f)
         members = [
             {"index": index, "name": r["職員名"]}
             for index, r in enumerate(csv.DictReader(f, ["職員名"]))
         ]
-    M = [m["index"] for m in members]
-    # 日付の集合。
+    return members
+
+
+def read_dates():
+    """日付の集合。"""
     with open(in_data_directory("dates.csv")) as f:
         next(f)
         dates = [
@@ -46,24 +47,37 @@ def solve():
                 date_range(str_to_date(r["開始日"]), str_to_date(r["終了日"]) + one_day)
             )
         ]
-    D = [d["index"] for d in dates]
-    # 勤務の集合。
+    return dates
+
+
+def read_kinmus():
+    """勤務の集合。"""
     with open(in_data_directory("kinmus.csv")) as f:
         next(f)
         kinmus = [
             {"index": index, "name": r["勤務名"]}
             for index, r in enumerate(csv.DictReader(f, ["勤務名"]))
         ]
-    K = [k["index"] for k in kinmus]
-    # グループの集合。
+    return kinmus
+
+
+def read_groups():
+    """グループの集合。"""
     with open(in_data_directory("groups.csv")) as f:
         next(f)
         groups = [
             {"index": index, "name": r["グループ名"]}
             for index, r in enumerate(csv.DictReader(f, ["グループ名"]))
         ]
-    G = [g["index"] for g in groups]
-    # グループに所属する職員の集合。
+    return groups
+
+
+def read_group_members(groups=None, members=None):
+    """グループに所属する職員の集合。"""
+    if groups is None:
+        groups = read_groups()
+    if members is None:
+        members = read_members()
     with open(in_data_directory("group_members.csv")) as f:
         next(f)
         group_members = [
@@ -74,11 +88,13 @@ def solve():
             }
             for index, r in enumerate(csv.DictReader(f, ["グループ名", "職員名"]))
         ]
-    GM = {
-        g: [gm["member_index"] for gm in group_members if gm["group_index"] == g]
-        for g in G
-    }
-    # 連続禁止勤務並びの集合。
+    return group_members
+
+
+def read_renzoku_kinshi_kinmus(kinmus=None):
+    """連続禁止勤務並びの集合。"""
+    if kinmus is None:
+        kinmus = read_kinmus()
     with open(in_data_directory("renzoku_kinshi_kinmus.csv")) as f:
         next(f)
         renzoku_kinshi_kinmus = [
@@ -90,17 +106,17 @@ def solve():
             }
             for index, r in enumerate(csv.DictReader(f, ["並びID", "勤務名", "並び順"]))
         ]
-    P = [
-        [
-            r["kinmu_index"]
-            for r in sorted(
-                renzoku_kinshi_kinmus, key=operator.itemgetter("sequence_number")
-            )
-            if r["sequence_id"] == sequence_id
-        ]
-        for sequence_id in list(set(r["sequence_id"] for r in renzoku_kinshi_kinmus))
-    ]
-    # 日付の勤務にグループから割り当てる職員数の下限。
+    return renzoku_kinshi_kinmus
+
+
+def read_c1(dates=None, kinmus=None, groups=None):
+    """日付の勤務にグループから割り当てる職員数の下限。"""
+    if dates is None:
+        dates = read_dates()
+    if kinmus is None:
+        kinmus = read_kinmus()
+    if groups is None:
+        groups = read_groups()
     with open(in_data_directory("c1.csv")) as f:
         next(f)
         c1 = [
@@ -116,7 +132,17 @@ def solve():
                 date_range(str_to_date(r["開始日"]), str_to_date(r["終了日"]) + one_day)
             )
         ]
-    # 日付の勤務にグループから割り当てる職員数の上限。
+    return c1
+
+
+def read_c2(dates=None, kinmus=None, groups=None):
+    """日付の勤務にグループから割り当てる職員数の上限。"""
+    if dates is None:
+        dates = read_dates()
+    if kinmus is None:
+        kinmus = read_kinmus()
+    if groups is None:
+        groups = read_groups()
     with open(in_data_directory("c2.csv")) as f:
         next(f)
         c2 = [
@@ -132,7 +158,15 @@ def solve():
                 date_range(str_to_date(r["開始日"]), str_to_date(r["終了日"]) + one_day)
             )
         ]
-    # 職員の勤務の割り当て数の下限。
+    return c2
+
+
+def read_c3(members=None, kinmus=None):
+    """職員の勤務の割り当て数の下限。"""
+    if members is None:
+        members = read_members()
+    if kinmus is None:
+        kinmus = read_kinmus()
     with open(in_data_directory("c3.csv")) as f:
         next(f)
         c3 = [
@@ -144,7 +178,15 @@ def solve():
             }
             for index, r in enumerate(csv.DictReader(f, ["職員名", "勤務名", "割り当て数下限"]))
         ]
-    # 職員の勤務の割り当て数の上限。
+    return c3
+
+
+def read_c4(members=None, kinmus=None):
+    """職員の勤務の割り当て数の上限。"""
+    if members is None:
+        members = read_members()
+    if kinmus is None:
+        kinmus = read_kinmus()
     with open(in_data_directory("c4.csv")) as f:
         next(f)
         c4 = [
@@ -156,7 +198,13 @@ def solve():
             }
             for index, r in enumerate(csv.DictReader(f, ["職員名", "勤務名", "割り当て数上限"]))
         ]
-    # 勤務の連続日数の下限。
+    return c4
+
+
+def read_c5(kinmus=None):
+    """勤務の連続日数の下限。"""
+    if kinmus is None:
+        kinmus = read_kinmus()
     with open(in_data_directory("c5.csv")) as f:
         next(f)
         c5 = [
@@ -167,7 +215,13 @@ def solve():
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "連続日数下限"]))
         ]
-    # 勤務の連続日数の上限。
+    return c5
+
+
+def read_c6(kinmus=None):
+    """勤務の連続日数の上限。"""
+    if kinmus is None:
+        kinmus = read_kinmus()
     with open(in_data_directory("c6.csv")) as f:
         next(f)
         c6 = [
@@ -178,7 +232,13 @@ def solve():
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "連続日数上限"]))
         ]
-    # 勤務の間隔日数の下限。
+    return c6
+
+
+def read_c7(kinmus=None):
+    """勤務の間隔日数の下限。"""
+    if kinmus is None:
+        kinmus = read_kinmus()
     with open(in_data_directory("c7.csv")) as f:
         next(f)
         c7 = [
@@ -189,7 +249,13 @@ def solve():
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "間隔日数下限"]))
         ]
-    # 勤務の間隔日数の上限。
+    return c7
+
+
+def read_c8(kinmus=None):
+    """勤務の間隔日数の上限。"""
+    if kinmus is None:
+        kinmus = read_kinmus()
     with open(in_data_directory("c8.csv")) as f:
         next(f)
         c8 = [
@@ -200,7 +266,17 @@ def solve():
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "間隔日数上限"]))
         ]
-    # 職員の日付に割り当てる勤務。
+    return c8
+
+
+def read_c9(members=None, dates=None, kinmus=None):
+    """職員の日付に割り当てる勤務。"""
+    if members is None:
+        members = read_members()
+    if dates is None:
+        dates = read_dates()
+    if kinmus is None:
+        kinmus = read_kinmus()
     with open(in_data_directory("c9.csv")) as f:
         next(f)
         c9 = [
@@ -217,7 +293,17 @@ def solve():
                 date_range(str_to_date(r["開始日"]), str_to_date(r["終了日"]) + one_day)
             )
         ]
-    # 職員の日付に割り当てない勤務。
+    return c9
+
+
+def read_c10(members=None, dates=None, kinmus=None):
+    """職員の日付に割り当てない勤務。"""
+    if members is None:
+        members = read_members()
+    if dates is None:
+        dates = read_dates()
+    if kinmus is None:
+        kinmus = read_kinmus()
     with open(in_data_directory("c10.csv")) as f:
         next(f)
         c10 = [
@@ -234,6 +320,44 @@ def solve():
                 date_range(str_to_date(r["開始日"]), str_to_date(r["終了日"]) + one_day)
             )
         ]
+    return c10
+
+
+def solve():
+    members = read_members()
+    M = [m["index"] for m in members]
+    dates = read_dates()
+    D = [d["index"] for d in dates]
+    kinmus = read_kinmus()
+    K = [k["index"] for k in kinmus]
+    groups = read_groups()
+    G = [g["index"] for g in groups]
+    group_members = read_group_members(groups=groups, members=members)
+    GM = {
+        g: [gm["member_index"] for gm in group_members if gm["group_index"] == g]
+        for g in G
+    }
+    renzoku_kinshi_kinmus = read_renzoku_kinshi_kinmus()
+    P = [
+        [
+            r["kinmu_index"]
+            for r in sorted(
+                renzoku_kinshi_kinmus, key=operator.itemgetter("sequence_number")
+            )
+            if r["sequence_id"] == sequence_id
+        ]
+        for sequence_id in list(set(r["sequence_id"] for r in renzoku_kinshi_kinmus))
+    ]
+    c1 = read_c1(dates=dates, kinmus=kinmus, groups=groups)
+    c2 = read_c2(dates=dates, kinmus=kinmus, groups=groups)
+    c3 = read_c3(members=members, kinmus=kinmus)
+    c4 = read_c4(members=members, kinmus=kinmus)
+    c5 = read_c5(kinmus=kinmus)
+    c6 = read_c6(kinmus=kinmus)
+    c7 = read_c7(kinmus=kinmus)
+    c8 = read_c8(kinmus=kinmus)
+    c9 = read_c9(members=members, dates=dates, kinmus=kinmus)
+    c10 = read_c10(members=members, dates=dates, kinmus=kinmus)
 
     # 決定変数。
     # 職員の日付に勤務が割り当てられているとき1。
