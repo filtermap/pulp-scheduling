@@ -1,16 +1,16 @@
-import * as React from 'react';
-import './Hello.css';
+import * as React from 'react'
+import './Hello.css'
 
 export interface IProps {
-  name: string;
-  enthusiasmLevel?: number;
-  onIncrement?: () => void;
-  onDecrement?: () => void;
+  name: string
+  enthusiasmLevel?: number
+  onIncrement?: () => void
+  onDecrement?: () => void
 }
 
 function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement }: IProps) {
   if (enthusiasmLevel <= 0) {
-    throw new Error('You could be a little more enthusiastic. :D');
+    throw new Error('You could be a little more enthusiastic. :D')
   }
 
   return (
@@ -23,11 +23,11 @@ function Hello({ name, enthusiasmLevel = 1, onIncrement, onDecrement }: IProps) 
         <button onClick={onIncrement}>+</button>
       </div>
     </div>
-  );
+  )
 }
 
-export default Hello;
+export default Hello
 
 function getExclamationMarks(numChars: number) {
-  return Array(numChars + 1).join('!');
+  return Array(numChars + 1).join('!')
 }

@@ -1,7 +1,7 @@
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import Hello from '../components/Hello';
-import * as enthusiasm from '../modules/enthusiasm';
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
+import Hello from '../components/Hello'
+import * as enthusiasm from '../modules/enthusiasm'
 
 export function mapStateToProps({ enthusiasmLevel, languageName }: enthusiasm.IState) {
   return {
@@ -17,4 +17,4 @@ export function mapDispatchToProps(dispatch: Dispatch<enthusiasm.Action>) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Hello);
+export default connect(mapStateToProps, mapDispatchToProps)(Hello)
