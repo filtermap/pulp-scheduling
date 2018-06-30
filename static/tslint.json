@@ -1,10 +1,26 @@
 {
-  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "extends": [
+    "tslint:recommended",
+    "tslint-react",
+    "tslint-config-prettier"
+  ],
   "linterOptions": {
-    "exclude": ["config/**/*.js", "node_modules/**/*.ts"]
+    "exclude": [
+      "config/**/*.js",
+      "node_modules/**/*.ts"
+    ]
   },
   "rules": {
     "interface-over-type-literal": false,
-    "semicolon": [true, "never"]
+    "semicolon": [
+      true,
+      "never"
+    ],
+    "variable-name": [
+      true,
+      "check-format",
+      "allow-snake-case",
+      "ban-keywords"
+    ]
   }
 }

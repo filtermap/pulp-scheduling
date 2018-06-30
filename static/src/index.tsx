@@ -2,17 +2,19 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import Hello from './containers/Hello'
+import All from './containers/All'
 import './index.css'
-import * as enthusiasm from './modules/enthusiasm'
+import * as allModule from './modules/all'
 import registerServiceWorker from './registerServiceWorker'
 
-const store = createStore(enthusiasm.reducer)
+const store = createStore(allModule.reducer)
 
 ReactDOM.render(
   <Provider store={store}>
-    <Hello />
+    <All />
   </Provider>,
   document.getElementById('root') as HTMLElement
 )
 registerServiceWorker()
+
+fetch('/api', { method: 'post', body: JSON.stringify({ method: 'read_all', jsonrpc: '2.0', id: 1 }) }).then(response => response.json()).then(json => store.dispatch(allModule.replace(json.result)))
