@@ -337,7 +337,7 @@ def solve():
         g: [gm["member_index"] for gm in group_members if gm["group_index"] == g]
         for g in G
     }
-    renzoku_kinshi_kinmus = read_renzoku_kinshi_kinmus()
+    renzoku_kinshi_kinmus = read_renzoku_kinshi_kinmus(kinmus=kinmus)
     P = [
         [
             r["kinmu_index"]
