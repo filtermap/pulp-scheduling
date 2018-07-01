@@ -27,24 +27,24 @@ def index(path):
 @api.dispatcher.add_method
 def read_all():
     members = scheduling.read_members()
-    dates = scheduling.read_dates()
+    terms = scheduling.read_terms()
     kinmus = scheduling.read_kinmus()
     groups = scheduling.read_groups()
-    group_members = scheduling.read_group_members(groups=groups, members=members)
-    renzoku_kinshi_kinmus = scheduling.read_renzoku_kinshi_kinmus(kinmus=kinmus)
-    c1 = scheduling.read_c1(dates=dates, kinmus=kinmus, groups=groups)
-    c2 = scheduling.read_c2(dates=dates, kinmus=kinmus, groups=groups)
-    c3 = scheduling.read_c3(members=members, kinmus=kinmus)
-    c4 = scheduling.read_c4(members=members, kinmus=kinmus)
-    c5 = scheduling.read_c5(kinmus=kinmus)
-    c6 = scheduling.read_c6(kinmus=kinmus)
-    c7 = scheduling.read_c7(kinmus=kinmus)
-    c8 = scheduling.read_c8(kinmus=kinmus)
-    c9 = scheduling.read_c9(members=members, dates=dates, kinmus=kinmus)
-    c10 = scheduling.read_c10(members=members, dates=dates, kinmus=kinmus)
+    group_members = scheduling.read_group_members()
+    renzoku_kinshi_kinmus = scheduling.read_renzoku_kinshi_kinmus()
+    c1 = scheduling.read_c1()
+    c2 = scheduling.read_c2()
+    c3 = scheduling.read_c3()
+    c4 = scheduling.read_c4()
+    c5 = scheduling.read_c5()
+    c6 = scheduling.read_c6()
+    c7 = scheduling.read_c7()
+    c8 = scheduling.read_c8()
+    c9 = scheduling.read_c9()
+    c10 = scheduling.read_c10()
     return {
         "members": members,
-        "dates": dates,
+        "terms": terms,
         "kinmus": kinmus,
         "groups": groups,
         "group_members": group_members,

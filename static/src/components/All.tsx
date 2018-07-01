@@ -26,18 +26,20 @@ export default function All(props: Props) {
           }
         </tbody>
       </table>
-      <h2>日付</h2>
+      <h2>期間</h2>
       <table>
         <thead>
           <tr>
-            <th>日付</th>
+            <th>開始日</th>
+            <th>終了日</th>
           </tr>
         </thead>
         <tbody>
           {
-            props.dates.map(date => (
-              <tr key={date.index}>
-                <td>{date.name}</td>
+            props.terms.map(term => (
+              <tr key={term.index}>
+                <td>{term.start_date_name}</td>
+                <td>{term.stop_date_name}</td>
               </tr>
             ))
           }
@@ -89,8 +91,8 @@ export default function All(props: Props) {
           {
             props.group_members.map(group_member => (
               <tr key={group_member.index}>
-                <td>{props.groups.find(group => group.index === group_member.group_index)!.name}</td>
-                <td>{props.members.find(member => member.index === group_member.member_index)!.name}</td>
+                <td>{group_member.group_name}</td>
+                <td>{group_member.member_name}</td>
               </tr>
             ))
           }
@@ -111,7 +113,7 @@ export default function All(props: Props) {
               <tr key={renzoku_kinshi_kinmu.index}>
                 <td>{renzoku_kinshi_kinmu.sequence_id}</td>
                 <td>{renzoku_kinshi_kinmu.sequence_number}</td>
-                <td>{props.kinmus.find(kinmu => kinmu.index === renzoku_kinshi_kinmu.kinmu_index)!.name}</td>
+                <td>{renzoku_kinshi_kinmu.kinmu_name}</td>
               </tr>
             ))
           }

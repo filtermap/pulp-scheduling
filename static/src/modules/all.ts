@@ -5,9 +5,10 @@ type Member = {
   name: string
 }
 
-type Date = {
+type Term = {
   index: number
-  name: string
+  start_date_name: string
+  stop_date_name: string
 }
 
 type Kinmu = {
@@ -22,88 +23,90 @@ type Group = {
 
 type GroupMember = {
   index: number
-  group_index: number
-  member_index: number
+  group_name: string
+  member_name: string
 }
 
 type RenzokuKinshiKinmu = {
   index: number
   sequence_id: number
   sequence_number: number
-  kinmu_index: number
+  kinmu_name: string
 }
 
 type C1 = {
   index: number
-  date_index: number
-  kinmu_index: number
-  group_index: number
+  start_date_name: string
+  stop_date_name: string
+  kinmu_name: string
+  group_name: string
   min_number_of_assignments: number
 }
 
 type C2 = {
   index: number
-  date_index: number
-  kinmu_index: number
-  group_index: number
+  start_date_name: string
+  stop_date_name: string
+  kinmu_name: string
+  group_name: string
   max_number_of_assignments: number
 }
 
 type C3 = {
   index: number
-  member_index: number
-  kinmu_index: number
+  member_name: string
+  kinmu_name: string
   min_number_of_assignments: number
 }
 
 type C4 = {
   index: number
-  member_index: number
-  kinmu_index: number
+  member_name: string
+  kinmu_name: string
   max_number_of_assignments: number
 }
 
 type C5 = {
   index: number
-  kinmu_index: number
+  kinmu_name: string
   min_number_of_days: number
 }
 
 type C6 = {
   index: number
-  kinmu_index: number
+  kinmu_name: string
   max_number_of_days: number
 }
 
 type C7 = {
   index: number
-  kinmu_index: number
+  kinmu_name: string
   min_number_of_days: number
 }
 
 type C8 = {
   index: number
-  kinmu_index: number
+  kinmu_name: string
   max_number_of_days: number
 }
 
 type C9 = {
   index: number
-  member_index: number
-  date_index: number
-  kinmu_index: number
+  member_name: string
+  date_name: string
+  kinmu_name: string
 }
 
 type C10 = {
   index: number
-  member_index: number
-  date_index: number
-  kinmu_index: number
+  member_name: string
+  date_name: string
+  kinmu_name: string
 }
 
 type All = {
   members: Member[]
-  dates: Date[]
+  terms: Term[]
   kinmus: Kinmu[]
   groups: Group[]
   group_members: GroupMember[]
@@ -147,12 +150,12 @@ const initialState: State = {
   c7: [],
   c8: [],
   c9: [],
-  dates: [],
   group_members: [],
   groups: [],
   kinmus: [],
   members: [],
   renzoku_kinshi_kinmus: [],
+  terms: []
 }
 
 export function reducer(state: State = initialState, action: Action): State {
