@@ -1,18 +1,33 @@
+import blue from '@material-ui/core/colors/blue'
+import teal from '@material-ui/core/colors/teal'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
+import 'typeface-roboto'
 import All from './containers/All'
-import './index.css'
 import * as allModule from './modules/all'
 import registerServiceWorker from './registerServiceWorker'
 
 const store = createStore(allModule.reducer)
 
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+    secondary: teal
+  }
+})
+
 ReactDOM.render(
-  <Provider store={store}>
-    <All />
-  </Provider>,
+  <MuiThemeProvider theme={theme}>
+    <CssBaseline />
+    <Provider store={store}>
+      <All />
+    </Provider>
+  </MuiThemeProvider>,
   document.getElementById('root') as HTMLElement
 )
 registerServiceWorker()
