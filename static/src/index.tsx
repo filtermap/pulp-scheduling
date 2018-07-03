@@ -6,9 +6,10 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
+import { BrowserRouter as Router } from 'react-router-dom'
 import { createStore } from 'redux'
 import 'typeface-roboto'
-import All from './containers/All'
+import Layout from './components/Layout'
 import * as allModule from './modules/all'
 import registerServiceWorker from './registerServiceWorker'
 
@@ -25,7 +26,9 @@ ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
     <Provider store={store}>
-      <All />
+      <Router>
+        <Layout />
+      </Router>
     </Provider>
   </MuiThemeProvider>,
   document.getElementById('root') as HTMLElement

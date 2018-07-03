@@ -1,40 +1,40 @@
 const REPLACE_ALL = "REPLACE_ALL"
 
-type Member = {
+export type Member = {
   index: number
   name: string
 }
 
-type Term = {
+export type Term = {
   index: number
   start_date_name: string
   stop_date_name: string
 }
 
-type Kinmu = {
+export type Kinmu = {
   index: number
   name: string
 }
 
-type Group = {
+export type Group = {
   index: number
   name: string
 }
 
-type GroupMember = {
+export type GroupMember = {
   index: number
   group_name: string
   member_name: string
 }
 
-type RenzokuKinshiKinmu = {
+export type RenzokuKinshiKinmu = {
   index: number
   sequence_id: number
   sequence_number: number
   kinmu_name: string
 }
 
-type C1 = {
+export type C1 = {
   index: number
   start_date_name: string
   stop_date_name: string
@@ -43,7 +43,7 @@ type C1 = {
   min_number_of_assignments: number
 }
 
-type C2 = {
+export type C2 = {
   index: number
   start_date_name: string
   stop_date_name: string
@@ -52,59 +52,59 @@ type C2 = {
   max_number_of_assignments: number
 }
 
-type C3 = {
+export type C3 = {
   index: number
   member_name: string
   kinmu_name: string
   min_number_of_assignments: number
 }
 
-type C4 = {
+export type C4 = {
   index: number
   member_name: string
   kinmu_name: string
   max_number_of_assignments: number
 }
 
-type C5 = {
+export type C5 = {
   index: number
   kinmu_name: string
   min_number_of_days: number
 }
 
-type C6 = {
+export type C6 = {
   index: number
   kinmu_name: string
   max_number_of_days: number
 }
 
-type C7 = {
+export type C7 = {
   index: number
   kinmu_name: string
   min_number_of_days: number
 }
 
-type C8 = {
+export type C8 = {
   index: number
   kinmu_name: string
   max_number_of_days: number
 }
 
-type C9 = {
+export type C9 = {
   index: number
   member_name: string
   date_name: string
   kinmu_name: string
 }
 
-type C10 = {
+export type C10 = {
   index: number
   member_name: string
   date_name: string
   kinmu_name: string
 }
 
-type All = {
+export type All = {
   members: Member[]
   terms: Term[]
   kinmus: Kinmu[]
