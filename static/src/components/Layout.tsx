@@ -14,12 +14,12 @@ import Typography from '@material-ui/core/Typography'
 import MenuIcon from '@material-ui/icons/Menu'
 import * as React from 'react'
 import { Link, Route } from 'react-router-dom'
-import GroupMembers from '../containers/GroupMembers'
-import Groups from '../containers/Groups'
-import Kinmus from '../containers/Kinmus'
-import Members from '../containers/Members'
-import RenzokuKinshiKinmus from '../containers/RenzokuKinshiKinmus'
-import Terms from '../containers/Terms'
+import GroupMembers from './GroupMembers'
+import Groups from './Groups'
+import Kinmus from './Kinmus'
+import Members from './Members'
+import RenzokuKinshiKinmus from './RenzokuKinshiKinmus'
+import Terms from './Terms'
 
 const drawerWidth = 240
 

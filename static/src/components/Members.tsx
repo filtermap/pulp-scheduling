@@ -7,13 +7,14 @@ import TableRow from '@material-ui/core/TableRow'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import * as React from 'react'
+import { connect } from 'react-redux'
 import * as allModule from '../modules/all'
 
 type Props = {
   members: allModule.Member[]
 }
 
-export default function Members(props: Props) {
+function Members(props: Props) {
   return (
     <Paper>
       <Toolbar>
@@ -36,3 +37,11 @@ export default function Members(props: Props) {
     </Paper>
   )
 }
+
+function mapStateToProps(state: allModule.State) {
+  return {
+    members: state.members
+  }
+}
+
+export default connect(mapStateToProps)(Members)

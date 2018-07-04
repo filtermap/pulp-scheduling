@@ -7,13 +7,14 @@ import TableRow from '@material-ui/core/TableRow'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import * as React from 'react'
+import { connect } from 'react-redux'
 import * as allModule from '../modules/all'
 
 type Props = {
   terms: allModule.Term[]
 }
 
-export default function Terms(props: Props) {
+function Terms(props: Props) {
   return (
     <Paper>
       <Toolbar>
@@ -38,3 +39,11 @@ export default function Terms(props: Props) {
     </Paper>
   )
 }
+
+function mapStateToProps(state: allModule.State) {
+  return {
+    terms: state.terms
+  }
+}
+
+export default connect(mapStateToProps)(Terms)

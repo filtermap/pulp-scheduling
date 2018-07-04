@@ -7,13 +7,14 @@ import TableRow from '@material-ui/core/TableRow'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import * as React from 'react'
+import { connect } from 'react-redux'
 import * as allModule from '../modules/all'
 
 type Props = {
   renzoku_kinshi_kinmus: allModule.RenzokuKinshiKinmu[]
 }
 
-export default function RenzokuKinshiKinmus(props: Props) {
+function RenzokuKinshiKinmus(props: Props) {
   return (
     <Paper>
       <Toolbar>
@@ -40,3 +41,11 @@ export default function RenzokuKinshiKinmus(props: Props) {
     </Paper>
   )
 }
+
+function mapStateToProps(state: allModule.State) {
+  return {
+    renzoku_kinshi_kinmus: state.renzoku_kinshi_kinmus
+  }
+}
+
+export default connect(mapStateToProps)(RenzokuKinshiKinmus)
