@@ -25,22 +25,19 @@ const drawerWidth = 240
 
 const styles = (theme: Theme) => createStyles({
   appBar: {
-    marginLeft: drawerWidth,
     [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
     },
-    position: 'absolute',
+    position: 'fixed'
   },
   content: {
-    backgroundColor: theme.palette.background.default,
-    flexGrow: 1,
-    padding: theme.spacing.unit * 3,
+    flex: 1,
+  },
+  drawerDocked: {
+    width: drawerWidth
   },
   drawerPaper: {
     width: drawerWidth,
-    [theme.breakpoints.up('md')]: {
-      position: 'relative',
-    },
   },
   navIconHide: {
     [theme.breakpoints.up('md')]: {
@@ -49,12 +46,6 @@ const styles = (theme: Theme) => createStyles({
   },
   root: {
     display: 'flex',
-    flexGrow: 1,
-    height: 430,
-    overflow: 'hidden',
-    position: 'relative',
-    width: '100%',
-    zIndex: 1,
   },
   toolbar: theme.mixins.toolbar,
 })
@@ -101,7 +92,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
   public render() {
     const { classes, theme } = this.props
     const drawer = (
-      <div>
+      <>
         <div className={classes.toolbar} />
         <Divider />
         <List>
@@ -125,7 +116,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
             <ListItemText primary="連続禁止勤務並び" />
           </ListItem>
         </List>
-      </div>
+      </>
     )
     return (
       <div className={classes.root}>
@@ -163,6 +154,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
             variant="permanent"
             open={true}
             classes={{
+              docked: classes.drawerDocked,
               paper: classes.drawerPaper,
             }}
           >
