@@ -25,6 +25,14 @@ def date_range(start_date, stop_date):
         yield start_date + datetime.timedelta(days)
 
 
+def write_records(records, filename, fieldnames):
+    with open(in_data_directory(filename), newline="") as f:
+        header = next(f)
+    with open(in_data_directory(filename), "w", newline="") as f:
+        f.write(header)
+        csv.DictWriter(f, fieldnames, extrasaction="ignore").writerows(records)
+
+
 def read_members():
     """職員の集合。"""
     with open(in_data_directory("members.csv")) as f:
@@ -34,6 +42,10 @@ def read_members():
             for index, r in enumerate(csv.DictReader(f, ["職員名"]))
         ]
     return members
+
+
+def write_members(members):
+    write_records(members, "members.csv", ["name"])
 
 
 def read_terms():
@@ -47,6 +59,10 @@ def read_terms():
     return terms
 
 
+def write_terms(terms):
+    write_records(terms, "terms.csv", ["start_date_name", "stop_date_name"])
+
+
 def read_kinmus():
     """勤務の集合。"""
     with open(in_data_directory("kinmus.csv")) as f:
@@ -56,6 +72,10 @@ def read_kinmus():
             for index, r in enumerate(csv.DictReader(f, ["勤務名"]))
         ]
     return kinmus
+
+
+def write_kinmus(kinmus):
+    write_records(kinmus, "kinmus.csv", ["name"])
 
 
 def read_groups():
@@ -69,6 +89,10 @@ def read_groups():
     return groups
 
 
+def write_groups(groups):
+    write_records(groups, "groups.csv", ["name"])
+
+
 def read_group_members():
     """グループに所属する職員の集合。"""
     with open(in_data_directory("group_members.csv")) as f:
@@ -78,6 +102,10 @@ def read_group_members():
             for index, r in enumerate(csv.DictReader(f, ["グループ名", "職員名"]))
         ]
     return group_members
+
+
+def write_group_members(group_members):
+    write_records(group_members, "group_members.csv", ["group_name", "member_name"])
 
 
 def read_renzoku_kinshi_kinmus():
@@ -94,6 +122,14 @@ def read_renzoku_kinshi_kinmus():
             for index, r in enumerate(csv.DictReader(f, ["並びID", "勤務名", "並び順"]))
         ]
     return renzoku_kinshi_kinmus
+
+
+def write_renzoku_kinshi_kinmus(renzoku_kinshi_kinmus):
+    write_records(
+        renzoku_kinshi_kinmus,
+        "renzoku_kinshi_kinmus.csv",
+        ["sequence_id", "kinmu_name", "sequence_number"],
+    )
 
 
 def read_c1():
@@ -116,6 +152,20 @@ def read_c1():
     return c1
 
 
+def write_c1(c1):
+    write_records(
+        c1,
+        "c1.csv",
+        [
+            "start_date_name",
+            "stop_date_name",
+            "kinmu_name",
+            "group_name",
+            "min_number_of_assignments",
+        ],
+    )
+
+
 def read_c2():
     """日付の勤務にグループから割り当てる職員数の上限。"""
     with open(in_data_directory("c2.csv")) as f:
@@ -136,6 +186,20 @@ def read_c2():
     return c2
 
 
+def write_c2(c2):
+    write_records(
+        c2,
+        "c2.csv",
+        [
+            "start_date_name",
+            "stop_date_name",
+            "kinmu_name",
+            "group_name",
+            "max_number_of_assignments",
+        ],
+    )
+
+
 def read_c3():
     """職員の勤務の割り当て数の下限。"""
     with open(in_data_directory("c3.csv")) as f:
@@ -150,6 +214,12 @@ def read_c3():
             for index, r in enumerate(csv.DictReader(f, ["職員名", "勤務名", "割り当て数下限"]))
         ]
     return c3
+
+
+def write_c3(c3):
+    write_records(
+        c3, "c3.csv", ["member_name", "kinmu_name", "min_number_of_assignments"]
+    )
 
 
 def read_c4():
@@ -168,6 +238,12 @@ def read_c4():
     return c4
 
 
+def write_c4(c4):
+    write_records(
+        c4, "c4.csv", ["member_name", "kinmu_name", "max_number_of_assignments"]
+    )
+
+
 def read_c5():
     """勤務の連続日数の下限。"""
     with open(in_data_directory("c5.csv")) as f:
@@ -181,6 +257,10 @@ def read_c5():
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "連続日数下限"]))
         ]
     return c5
+
+
+def write_c5(c5):
+    write_records(c5, "c5.csv", ["kinmu_name", "min_number_of_days"])
 
 
 def read_c6():
@@ -198,6 +278,10 @@ def read_c6():
     return c6
 
 
+def write_c6(c6):
+    write_records(c6, "c6.csv", ["kinmu_name", "max_number_of_days"])
+
+
 def read_c7():
     """勤務の間隔日数の下限。"""
     with open(in_data_directory("c7.csv")) as f:
@@ -213,6 +297,10 @@ def read_c7():
     return c7
 
 
+def write_c7(c7):
+    write_records(c7, "c7.csv", ["kinmu_name", "min_number_of_days"])
+
+
 def read_c8():
     """勤務の間隔日数の上限。"""
     with open(in_data_directory("c8.csv")) as f:
@@ -226,6 +314,10 @@ def read_c8():
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "間隔日数上限"]))
         ]
     return c8
+
+
+def write_c8(c8):
+    write_records(c8, "c8.csv", ["kinmu_name", "max_number_of_days"])
 
 
 def read_c9():
@@ -247,6 +339,12 @@ def read_c9():
     return c9
 
 
+def write_c9(c9):
+    write_records(
+        c9, "c9.csv", ["member_name", "start_date_name", "stop_date_name", "kinmu_name"]
+    )
+
+
 def read_c10():
     """職員の日付に割り当てない勤務。"""
     with open(in_data_directory("c10.csv")) as f:
@@ -264,6 +362,14 @@ def read_c10():
             )
         ]
     return c10
+
+
+def write_c10(c10):
+    write_records(
+        c10,
+        "c10.csv",
+        ["member_name", "start_date_name", "stop_date_name", "kinmu_name"],
+    )
 
 
 def solve():

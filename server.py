@@ -63,6 +63,27 @@ def read_all():
 
 
 @api.dispatcher.add_method
+def write_all(all):
+    scheduling.write_members(all["members"])
+    scheduling.write_terms(all["terms"])
+    scheduling.write_kinmus(all["kinmus"])
+    scheduling.write_groups(all["groups"])
+    scheduling.write_group_members(all["group_members"])
+    scheduling.write_renzoku_kinshi_kinmus(all["renzoku_kinshi_kinmus"])
+    scheduling.write_c1(all["c1"])
+    scheduling.write_c2(all["c2"])
+    scheduling.write_c3(all["c3"])
+    scheduling.write_c4(all["c4"])
+    scheduling.write_c5(all["c5"])
+    scheduling.write_c6(all["c6"])
+    scheduling.write_c7(all["c7"])
+    scheduling.write_c8(all["c8"])
+    scheduling.write_c9(all["c9"])
+    scheduling.write_c10(all["c10"])
+    return True
+
+
+@api.dispatcher.add_method
 def solve():
     return scheduling.solve()
 

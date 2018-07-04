@@ -12,6 +12,7 @@ import 'typeface-roboto'
 import Layout from './components/Layout'
 import * as allModule from './modules/all'
 import registerServiceWorker from './registerServiceWorker'
+import * as utils from './utils'
 
 const store = createStore(allModule.reducer)
 
@@ -35,4 +36,8 @@ ReactDOM.render(
 )
 registerServiceWorker()
 
-fetch('/api', { method: 'post', body: JSON.stringify({ method: 'read_all', jsonrpc: '2.0', id: 1 }) }).then(response => response.json()).then(json => store.dispatch(allModule.replace(json.result)))
+async function readAll() {
+  store.dispatch(allModule.replace((await utils.sendJSONRPCRequest('read_all')).result))
+}
+
+readAll()

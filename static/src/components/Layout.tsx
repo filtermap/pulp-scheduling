@@ -1,4 +1,5 @@
 import AppBar from '@material-ui/core/AppBar'
+import Button from '@material-ui/core/Button'
 import Divider from '@material-ui/core/Divider'
 import Drawer from '@material-ui/core/Drawer'
 import Grid from '@material-ui/core/Grid'
@@ -13,7 +14,10 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import MenuIcon from '@material-ui/icons/Menu'
 import * as React from 'react'
-import { Link, Route } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Link, Route, RouteComponentProps, withRouter } from 'react-router-dom'
+import * as allModule from '../modules/all'
+import * as utils from '../utils'
 import GroupMembers from './GroupMembers'
 import Groups from './Groups'
 import Kinmus from './Kinmus'
@@ -28,13 +32,13 @@ const styles = (theme: Theme) => createStyles({
     [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
     },
-    position: 'fixed'
+    position: 'fixed',
   },
   content: {
     flex: 1,
   },
   drawerDocked: {
-    width: drawerWidth
+    width: drawerWidth,
   },
   drawerPaper: {
     width: drawerWidth,
@@ -47,10 +51,13 @@ const styles = (theme: Theme) => createStyles({
   root: {
     display: 'flex',
   },
+  title: {
+    flex: 1,
+  },
   toolbar: theme.mixins.toolbar,
 })
 
-type Props = { theme: Theme } & WithStyles<typeof styles>
+type Props = { all: allModule.All, theme: Theme } & WithStyles<typeof styles> & RouteComponentProps<{}>
 
 type State = {
   mobileOpen: boolean,
@@ -87,6 +94,10 @@ class ResponsiveDrawer extends React.Component<Props, State> {
 
   public handleDrawerToggle = () => {
     this.setState(state => ({ mobileOpen: !state.mobileOpen }))
+  }
+
+  public writeAll = () => {
+    utils.sendJSONRPCRequest('write_all', [this.props.all])
   }
 
   public render() {
@@ -130,7 +141,8 @@ class ResponsiveDrawer extends React.Component<Props, State> {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="title" color="inherit" noWrap={true}>データ</Typography>
+            <Typography variant="title" color="inherit" noWrap={true} className={classes.title}>データ</Typography>
+            <Button color="inherit" onClick={this.writeAll}>保存</Button>
           </Toolbar>
         </AppBar>
         <Hidden mdUp={true}>
@@ -181,4 +193,10 @@ class ResponsiveDrawer extends React.Component<Props, State> {
   }
 }
 
-export default withTheme()(withStyles(styles)(ResponsiveDrawer))
+function mapStateToProps(state: allModule.State) {
+  return {
+    all: state
+  }
+}
+
+export default withTheme()(withStyles(styles)(withRouter(connect(mapStateToProps)(ResponsiveDrawer))))
