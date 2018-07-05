@@ -8,10 +8,11 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import * as allModule from '../modules/all'
+import * as all from '../modules/all'
+import * as terms from '../modules/terms'
 
 type Props = {
-  terms: allModule.Term[]
+  terms: terms.Term[]
 }
 
 function Terms(props: Props) {
@@ -40,7 +41,7 @@ function Terms(props: Props) {
   )
 }
 
-function mapStateToProps(state: allModule.State) {
+function mapStateToProps(state: all.State) {
   return {
     terms: state.terms
   }

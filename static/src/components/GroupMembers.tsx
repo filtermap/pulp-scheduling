@@ -8,10 +8,11 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import * as allModule from '../modules/all'
+import * as all from '../modules/all'
+import * as group_members from '../modules/group_members'
 
 type Props = {
-  group_members: allModule.GroupMember[]
+  group_members: group_members.GroupMember[]
 }
 
 function GroupMembers(props: Props) {
@@ -40,7 +41,7 @@ function GroupMembers(props: Props) {
   )
 }
 
-function mapStateToProps(state: allModule.State) {
+function mapStateToProps(state: all.State) {
   return {
     group_members: state.group_members
   }

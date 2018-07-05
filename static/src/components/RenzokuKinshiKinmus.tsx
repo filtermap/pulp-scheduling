@@ -8,10 +8,11 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import * as allModule from '../modules/all'
+import * as all from '../modules/all'
+import * as renzoku_kinshi_kinmus from '../modules/renzoku_kinshi_kinmus'
 
 type Props = {
-  renzoku_kinshi_kinmus: allModule.RenzokuKinshiKinmu[]
+  renzoku_kinshi_kinmus: renzoku_kinshi_kinmus.RenzokuKinshiKinmu[]
 }
 
 function RenzokuKinshiKinmus(props: Props) {
@@ -42,7 +43,7 @@ function RenzokuKinshiKinmus(props: Props) {
   )
 }
 
-function mapStateToProps(state: allModule.State) {
+function mapStateToProps(state: all.State) {
   return {
     renzoku_kinshi_kinmus: state.renzoku_kinshi_kinmus
   }
