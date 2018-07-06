@@ -37,7 +37,7 @@ ReactDOM.render(
 registerServiceWorker()
 
 async function readAll() {
-  store.dispatch(allModule.replace((await utils.sendJSONRPCRequest('read_all')).result))
+  store.dispatch(allModule.replaceAll((await utils.sendJSONRPCRequest('read_all')).result))
 }
 
 readAll()

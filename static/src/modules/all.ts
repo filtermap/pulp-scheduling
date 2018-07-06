@@ -38,14 +38,14 @@ export type All = {
   c10: c10.C10[]
 }
 
-type Replace = {
+type ReplaceAll = {
   type: typeof REPLACE_ALL
   all: All
 }
 
-export type Action = Replace
+export type Action = ReplaceAll
 
-export function replace(all: All): Replace {
+export function replaceAll(all: All): ReplaceAll {
   return {
     all,
     type: REPLACE_ALL
