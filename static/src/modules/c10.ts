@@ -1,7 +1,8 @@
 export type C10 = {
   index: number
   member_name: string
-  date_name: string
+  start_date_name: string
+  stop_date_name: string
   kinmu_name: string
 }
 
