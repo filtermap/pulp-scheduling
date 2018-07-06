@@ -10,11 +10,11 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { createStore } from 'redux'
 import 'typeface-roboto'
 import Layout from './components/Layout'
-import * as allModule from './modules/all'
+import * as all from './modules/all'
 import registerServiceWorker from './registerServiceWorker'
 import * as utils from './utils'
 
-const store = createStore(allModule.reducer)
+const store = createStore(all.reducer)
 
 const theme = createMuiTheme({
   palette: {
@@ -37,7 +37,7 @@ ReactDOM.render(
 registerServiceWorker()
 
 async function readAll() {
-  store.dispatch(allModule.replaceAll((await utils.sendJSONRPCRequest('read_all')).result))
+  store.dispatch(all.replaceAll((await utils.sendJSONRPCRequest('read_all')).result))
 }
 
 readAll()

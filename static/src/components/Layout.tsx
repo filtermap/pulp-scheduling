@@ -16,7 +16,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link, Route, RouteComponentProps, withRouter } from 'react-router-dom'
-import * as allModule from '../modules/all'
+import * as all from '../modules/all'
 import * as utils from '../utils'
 import GroupMembers from './GroupMembers'
 import Groups from './Groups'
@@ -57,7 +57,7 @@ const styles = (theme: Theme) => createStyles({
   toolbar: theme.mixins.toolbar,
 })
 
-type Props = { all: allModule.All, theme: Theme } & WithStyles<typeof styles> & RouteComponentProps<{}>
+type Props = { all: all.All, theme: Theme } & WithStyles<typeof styles> & RouteComponentProps<{}>
 
 type State = {
   mobileOpen: boolean,
@@ -193,7 +193,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: allModule.State) {
+function mapStateToProps(state: all.State) {
   return {
     all: state
   }
