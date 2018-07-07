@@ -1,6 +1,6 @@
 export type C8 = {
   index: number
-  kinmu_name: string
+  kinmu_index: number
   max_number_of_days: number
 }
 

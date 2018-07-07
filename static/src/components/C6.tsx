@@ -10,9 +10,11 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import * as all from '../modules/all'
 import * as c6 from '../modules/c6'
+import * as kinmus from '../modules/kinmus'
 
 type Props = {
   c6: c6.C6[]
+  kinmus: kinmus.Kinmu[]
 }
 
 function C6(props: Props) {
@@ -31,7 +33,7 @@ function C6(props: Props) {
         <TableBody>
           {props.c6.map(c => (
             <TableRow key={c.index}>
-              <TableCell>{c.kinmu_name}</TableCell>
+              <TableCell>{props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}</TableCell>
               <TableCell>{c.max_number_of_days}</TableCell>
             </TableRow>
           ))}
@@ -43,7 +45,8 @@ function C6(props: Props) {
 
 function mapStateToProps(state: all.State) {
   return {
-    c6: state.c6
+    c6: state.c6,
+    kinmus: state.kinmus
   }
 }
 

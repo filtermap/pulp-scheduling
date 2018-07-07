@@ -10,9 +10,13 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import * as all from '../modules/all'
 import * as group_members from '../modules/group_members'
+import * as groups from '../modules/groups'
+import * as members from '../modules/members'
 
 type Props = {
   group_members: group_members.GroupMember[]
+  groups: groups.Group[]
+  members: members.Member[]
 }
 
 function GroupMembers(props: Props) {
@@ -31,8 +35,8 @@ function GroupMembers(props: Props) {
         <TableBody>
           {props.group_members.map(group_member => (
             <TableRow key={group_member.index}>
-              <TableCell>{group_member.group_name}</TableCell>
-              <TableCell>{group_member.member_name}</TableCell>
+              <TableCell>{props.groups.find(group => group.index === group_member.group_index)!.name}</TableCell>
+              <TableCell>{props.members.find(member => member.index === group_member.member_index)!.name}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -43,7 +47,9 @@ function GroupMembers(props: Props) {
 
 function mapStateToProps(state: all.State) {
   return {
-    group_members: state.group_members
+    group_members: state.group_members,
+    groups: state.groups,
+    members: state.members,
   }
 }
 

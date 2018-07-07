@@ -10,9 +10,13 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import * as all from '../modules/all'
 import * as c2 from '../modules/c2'
+import * as groups from '../modules/groups'
+import * as kinmus from '../modules/kinmus'
 
 type Props = {
   c2: c2.C2[]
+  kinmus: kinmus.Kinmu[]
+  groups: groups.Group[]
 }
 
 function C2(props: Props) {
@@ -36,8 +40,8 @@ function C2(props: Props) {
             <TableRow key={c.index}>
               <TableCell>{c.start_date_name}</TableCell>
               <TableCell>{c.stop_date_name}</TableCell>
-              <TableCell>{c.kinmu_name}</TableCell>
-              <TableCell>{c.group_name}</TableCell>
+              <TableCell>{props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}</TableCell>
+              <TableCell>{props.groups.find(group => group.index === c.group_index)!.name}</TableCell>
               <TableCell>{c.max_number_of_assignments}</TableCell>
             </TableRow>
           ))}
@@ -49,7 +53,9 @@ function C2(props: Props) {
 
 function mapStateToProps(state: all.State) {
   return {
-    c2: state.c2
+    c2: state.c2,
+    groups: state.groups,
+    kinmus: state.kinmus,
   }
 }
 

@@ -1,7 +1,7 @@
 export type C3 = {
   index: number
-  member_name: string
-  kinmu_name: string
+  member_index: number
+  kinmu_index: number
   min_number_of_assignments: number
 }
 

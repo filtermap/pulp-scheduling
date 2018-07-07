@@ -2,8 +2,8 @@ export type C2 = {
   index: number
   start_date_name: string
   stop_date_name: string
-  kinmu_name: string
-  group_name: string
+  kinmu_index: number
+  group_index: number
   max_number_of_assignments: number
 }
 

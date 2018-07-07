@@ -1,6 +1,6 @@
 export type C5 = {
   index: number
-  kinmu_name: string
+  kinmu_index: number
   min_number_of_days: number
 }
 

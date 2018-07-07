@@ -25,12 +25,12 @@ def date_range(start_date, stop_date):
         yield start_date + datetime.timedelta(days)
 
 
-def write_records(records, filename, fieldnames):
+def write_rows(rows, filename, fieldnames):
     with open(in_data_directory(filename), newline="") as f:
         header = next(f)
     with open(in_data_directory(filename), "w", newline="") as f:
         f.write(header)
-        csv.DictWriter(f, fieldnames, extrasaction="ignore").writerows(records)
+        csv.DictWriter(f, fieldnames, extrasaction="ignore").writerows(rows)
 
 
 def read_members():
@@ -45,7 +45,7 @@ def read_members():
 
 
 def write_members(members):
-    write_records(members, "members.csv", ["name"])
+    write_rows(members, "members.csv", ["name"])
 
 
 def read_terms():
@@ -60,7 +60,7 @@ def read_terms():
 
 
 def write_terms(terms):
-    write_records(terms, "terms.csv", ["start_date_name", "stop_date_name"])
+    write_rows(terms, "terms.csv", ["start_date_name", "stop_date_name"])
 
 
 def read_kinmus():
@@ -75,7 +75,7 @@ def read_kinmus():
 
 
 def write_kinmus(kinmus):
-    write_records(kinmus, "kinmus.csv", ["name"])
+    write_rows(kinmus, "kinmus.csv", ["name"])
 
 
 def read_groups():
@@ -90,25 +90,44 @@ def read_groups():
 
 
 def write_groups(groups):
-    write_records(groups, "groups.csv", ["name"])
+    write_rows(groups, "groups.csv", ["name"])
 
 
-def read_group_members():
+def read_group_members(groups, members):
     """グループに所属する職員の集合。"""
     with open(in_data_directory("group_members.csv")) as f:
         next(f)
         group_members = [
-            {"index": index, "group_name": r["グループ名"], "member_name": r["職員名"]}
+            {
+                "index": index,
+                "group_index": find(groups, lambda group: group["name"] == r["グループ名"])[
+                    "index"
+                ],
+                "member_index": find(
+                    members, lambda member: member["name"] == r["職員名"]
+                )["index"],
+            }
             for index, r in enumerate(csv.DictReader(f, ["グループ名", "職員名"]))
         ]
     return group_members
 
 
-def write_group_members(group_members):
-    write_records(group_members, "group_members.csv", ["group_name", "member_name"])
+def write_group_members(group_members, groups, members):
+    rows = [
+        {
+            "group_name": find(
+                groups, lambda group: group["index"] == group_member["group_index"]
+            )["name"],
+            "member_name": find(
+                members, lambda member: member["index"] == group_member["member_index"]
+            )["name"],
+        }
+        for group_member in group_members
+    ]
+    write_rows(rows, "group_members.csv", ["group_name", "member_name"])
 
 
-def read_renzoku_kinshi_kinmus():
+def read_renzoku_kinshi_kinmus(kinmus):
     """連続禁止勤務並びの集合。"""
     with open(in_data_directory("renzoku_kinshi_kinmus.csv")) as f:
         next(f)
@@ -117,22 +136,35 @@ def read_renzoku_kinshi_kinmus():
                 "index": index,
                 "sequence_id": r["並びID"],
                 "sequence_number": int(r["並び順"]),
-                "kinmu_name": r["勤務名"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
             }
             for index, r in enumerate(csv.DictReader(f, ["並びID", "勤務名", "並び順"]))
         ]
     return renzoku_kinshi_kinmus
 
 
-def write_renzoku_kinshi_kinmus(renzoku_kinshi_kinmus):
-    write_records(
-        renzoku_kinshi_kinmus,
+def write_renzoku_kinshi_kinmus(renzoku_kinshi_kinmus, kinmus):
+    rows = [
+        {
+            "sequence_id": renzoku_kinshi_kinmu["sequence_id"],
+            "kinmu_name": find(
+                kinmus,
+                lambda kinmu: kinmu["index"] == renzoku_kinshi_kinmu["kinmu_index"],
+            )["name"],
+            "sequence_number": renzoku_kinshi_kinmu["sequence_number"],
+        }
+        for renzoku_kinshi_kinmu in renzoku_kinshi_kinmus
+    ]
+    write_rows(
+        rows,
         "renzoku_kinshi_kinmus.csv",
         ["sequence_id", "kinmu_name", "sequence_number"],
     )
 
 
-def read_c1():
+def read_c1(kinmus, groups):
     """期間の勤務にグループから割り当てる職員数の下限。"""
     with open(in_data_directory("c1.csv")) as f:
         next(f)
@@ -141,8 +173,12 @@ def read_c1():
                 "index": index,
                 "start_date_name": r["開始日"],
                 "stop_date_name": r["終了日"],
-                "kinmu_name": r["勤務名"],
-                "group_name": r["グループ名"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
+                "group_index": find(groups, lambda group: group["name"] == r["グループ名"])[
+                    "index"
+                ],
                 "min_number_of_assignments": int(r["割り当て職員数下限"]),
             }
             for index, r in enumerate(
@@ -152,9 +188,23 @@ def read_c1():
     return c1
 
 
-def write_c1(c1):
-    write_records(
-        c1,
+def write_c1(c1, kinmus, groups):
+    rows = [
+        {
+            "start_date_name": c["start_date_name"],
+            "stop_date_name": c["stop_date_name"],
+            "kinmu_name": find(
+                kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
+            )["name"],
+            "group_name": find(
+                groups, lambda group: group["index"] == c["group_index"]
+            )["name"],
+            "min_number_of_assignments": c["min_number_of_assignments"],
+        }
+        for c in c1
+    ]
+    write_rows(
+        rows,
         "c1.csv",
         [
             "start_date_name",
@@ -166,7 +216,7 @@ def write_c1(c1):
     )
 
 
-def read_c2():
+def read_c2(kinmus, groups):
     """日付の勤務にグループから割り当てる職員数の上限。"""
     with open(in_data_directory("c2.csv")) as f:
         next(f)
@@ -175,8 +225,12 @@ def read_c2():
                 "index": index,
                 "start_date_name": r["開始日"],
                 "stop_date_name": r["終了日"],
-                "kinmu_name": r["勤務名"],
-                "group_name": r["グループ名"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
+                "group_index": find(groups, lambda group: group["name"] == r["グループ名"])[
+                    "index"
+                ],
                 "max_number_of_assignments": int(r["割り当て職員数上限"]),
             }
             for index, r in enumerate(
@@ -186,9 +240,23 @@ def read_c2():
     return c2
 
 
-def write_c2(c2):
-    write_records(
-        c2,
+def write_c2(c2, kinmus, groups):
+    rows = [
+        {
+            "start_date_name": c["start_date_name"],
+            "stop_date_name": c["stop_date_name"],
+            "kinmu_name": find(
+                kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
+            )["name"],
+            "group_name": find(
+                groups, lambda group: group["index"] == c["group_index"]
+            )["name"],
+            "max_number_of_assignments": c["max_number_of_assignments"],
+        }
+        for c in c2
+    ]
+    write_rows(
+        rows,
         "c2.csv",
         [
             "start_date_name",
@@ -200,15 +268,19 @@ def write_c2(c2):
     )
 
 
-def read_c3():
+def read_c3(members, kinmus):
     """職員の勤務の割り当て数の下限。"""
     with open(in_data_directory("c3.csv")) as f:
         next(f)
         c3 = [
             {
                 "index": index,
-                "member_name": r["職員名"],
-                "kinmu_name": r["勤務名"],
+                "member_index": find(
+                    members, lambda member: member["name"] == r["職員名"]
+                )["index"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
                 "min_number_of_assignments": int(r["割り当て数下限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["職員名", "勤務名", "割り当て数下限"]))
@@ -216,21 +288,37 @@ def read_c3():
     return c3
 
 
-def write_c3(c3):
-    write_records(
-        c3, "c3.csv", ["member_name", "kinmu_name", "min_number_of_assignments"]
+def write_c3(c3, members, kinmus):
+    rows = [
+        {
+            "member_name": find(
+                members, lambda member: member["index"] == c["member_index"]
+            )["name"],
+            "kinmu_name": find(
+                kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
+            )["name"],
+            "min_number_of_assignments": c["min_number_of_assignments"],
+        }
+        for c in c3
+    ]
+    write_rows(
+        rows, "c3.csv", ["member_name", "kinmu_name", "min_number_of_assignments"]
     )
 
 
-def read_c4():
+def read_c4(members, kinmus):
     """職員の勤務の割り当て数の上限。"""
     with open(in_data_directory("c4.csv")) as f:
         next(f)
         c4 = [
             {
                 "index": index,
-                "member_name": r["職員名"],
-                "kinmu_name": r["勤務名"],
+                "member_index": find(
+                    members, lambda member: member["name"] == r["職員名"]
+                )["index"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
                 "max_number_of_assignments": int(r["割り当て数上限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["職員名", "勤務名", "割り当て数上限"]))
@@ -238,20 +326,34 @@ def read_c4():
     return c4
 
 
-def write_c4(c4):
-    write_records(
-        c4, "c4.csv", ["member_name", "kinmu_name", "max_number_of_assignments"]
+def write_c4(c4, members, kinmus):
+    rows = [
+        {
+            "member_name": find(
+                members, lambda member: member["index"] == c["member_index"]
+            )["name"],
+            "kinmu_name": find(
+                kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
+            )["name"],
+            "max_number_of_assignments": c["max_number_of_assignments"],
+        }
+        for c in c4
+    ]
+    write_rows(
+        rows, "c4.csv", ["member_name", "kinmu_name", "max_number_of_assignments"]
     )
 
 
-def read_c5():
+def read_c5(kinmus):
     """勤務の連続日数の下限。"""
     with open(in_data_directory("c5.csv")) as f:
         next(f)
         c5 = [
             {
                 "index": index,
-                "kinmu_name": r["勤務名"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
                 "min_number_of_days": int(r["連続日数下限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "連続日数下限"]))
@@ -259,18 +361,29 @@ def read_c5():
     return c5
 
 
-def write_c5(c5):
-    write_records(c5, "c5.csv", ["kinmu_name", "min_number_of_days"])
+def write_c5(c5, kinmus):
+    rows = [
+        {
+            "kinmu_name": find(
+                kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
+            )["name"],
+            "min_number_of_days": c["min_number_of_days"],
+        }
+        for c in c5
+    ]
+    write_rows(rows, "c5.csv", ["kinmu_name", "min_number_of_days"])
 
 
-def read_c6():
+def read_c6(kinmus):
     """勤務の連続日数の上限。"""
     with open(in_data_directory("c6.csv")) as f:
         next(f)
         c6 = [
             {
                 "index": index,
-                "kinmu_name": r["勤務名"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
                 "max_number_of_days": int(r["連続日数上限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "連続日数上限"]))
@@ -278,18 +391,29 @@ def read_c6():
     return c6
 
 
-def write_c6(c6):
-    write_records(c6, "c6.csv", ["kinmu_name", "max_number_of_days"])
+def write_c6(c6, kinmus):
+    rows = [
+        {
+            "kinmu_name": find(
+                kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
+            )["name"],
+            "max_number_of_days": c["max_number_of_days"],
+        }
+        for c in c6
+    ]
+    write_rows(rows, "c6.csv", ["kinmu_name", "max_number_of_days"])
 
 
-def read_c7():
+def read_c7(kinmus):
     """勤務の間隔日数の下限。"""
     with open(in_data_directory("c7.csv")) as f:
         next(f)
         c7 = [
             {
                 "index": index,
-                "kinmu_name": r["勤務名"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
                 "min_number_of_days": int(r["間隔日数下限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "間隔日数下限"]))
@@ -297,18 +421,29 @@ def read_c7():
     return c7
 
 
-def write_c7(c7):
-    write_records(c7, "c7.csv", ["kinmu_name", "min_number_of_days"])
+def write_c7(c7, kinmus):
+    rows = [
+        {
+            "kinmu_name": find(
+                kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
+            )["name"],
+            "min_number_of_days": c["min_number_of_days"],
+        }
+        for c in c7
+    ]
+    write_rows(rows, "c7.csv", ["kinmu_name", "min_number_of_days"])
 
 
-def read_c8():
+def read_c8(kinmus):
     """勤務の間隔日数の上限。"""
     with open(in_data_directory("c8.csv")) as f:
         next(f)
         c8 = [
             {
                 "index": index,
-                "kinmu_name": r["勤務名"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
                 "max_number_of_days": int(r["間隔日数上限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "間隔日数上限"]))
@@ -316,57 +451,98 @@ def read_c8():
     return c8
 
 
-def write_c8(c8):
-    write_records(c8, "c8.csv", ["kinmu_name", "max_number_of_days"])
+def write_c8(c8, kinmus):
+    rows = [
+        {
+            "kinmu_name": find(
+                kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
+            )["name"],
+            "max_number_of_days": c["max_number_of_days"],
+        }
+        for c in c8
+    ]
+    write_rows(rows, "c8.csv", ["kinmu_name", "max_number_of_days"])
 
 
-def read_c9():
+def read_c9(members, kinmus):
     """職員の日付に割り当てる勤務。"""
     with open(in_data_directory("c9.csv")) as f:
         next(f)
         c9 = [
             {
                 "index": index,
-                "member_name": r["職員名"],
+                "member_index": find(
+                    members, lambda member: member["name"] == r["職員名"]
+                )["index"],
                 "start_date_name": r["開始日"],
                 "stop_date_name": r["終了日"],
-                "kinmu_name": r["割り当て勤務名"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
             }
-            for index, r in enumerate(
-                csv.DictReader(f, ["職員名", "開始日", "終了日", "割り当て勤務名"])
-            )
+            for index, r in enumerate(csv.DictReader(f, ["職員名", "開始日", "終了日", "勤務名"]))
         ]
     return c9
 
 
-def write_c9(c9):
-    write_records(
-        c9, "c9.csv", ["member_name", "start_date_name", "stop_date_name", "kinmu_name"]
+def write_c9(c9, members, kinmus):
+    rows = [
+        {
+            "member_name": find(
+                members, lambda member: member["index"] == c["member_index"]
+            )["name"],
+            "start_date_name": c["start_date_name"],
+            "stop_date_name": c["stop_date_name"],
+            "kinmu_name": find(
+                kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
+            )["name"],
+        }
+        for c in c9
+    ]
+    write_rows(
+        rows,
+        "c9.csv",
+        ["member_name", "start_date_name", "stop_date_name", "kinmu_name"],
     )
 
 
-def read_c10():
+def read_c10(members, kinmus):
     """職員の日付に割り当てない勤務。"""
     with open(in_data_directory("c10.csv")) as f:
         next(f)
         c10 = [
             {
                 "index": index,
-                "member_name": r["職員名"],
+                "member_index": find(
+                    members, lambda member: member["name"] == r["職員名"]
+                )["index"],
                 "start_date_name": r["開始日"],
                 "stop_date_name": r["終了日"],
-                "kinmu_name": r["割り当て勤務名"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
             }
-            for index, r in enumerate(
-                csv.DictReader(f, ["職員名", "開始日", "終了日", "割り当てない勤務名"])
-            )
+            for index, r in enumerate(csv.DictReader(f, ["職員名", "開始日", "終了日", "勤務名"]))
         ]
     return c10
 
 
-def write_c10(c10):
-    write_records(
-        c10,
+def write_c10(c10, members, kinmus):
+    rows = [
+        {
+            "member_name": find(
+                members, lambda member: member["index"] == c["member_index"]
+            )["name"],
+            "start_date_name": c["start_date_name"],
+            "stop_date_name": c["stop_date_name"],
+            "kinmu_name": find(
+                kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
+            )["name"],
+        }
+        for c in c10
+    ]
+    write_rows(
+        rows,
         "c10.csv",
         ["member_name", "start_date_name", "stop_date_name", "kinmu_name"],
     )

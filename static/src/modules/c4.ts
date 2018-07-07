@@ -1,7 +1,7 @@
 export type C4 = {
   index: number
-  member_name: string
-  kinmu_name: string
+  member_index: number
+  kinmu_index: number
   max_number_of_assignments: number
 }
 

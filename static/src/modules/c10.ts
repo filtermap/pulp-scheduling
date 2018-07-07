@@ -1,9 +1,9 @@
 export type C10 = {
   index: number
-  member_name: string
+  member_index: number
   start_date_name: string
   stop_date_name: string
-  kinmu_name: string
+  kinmu_index: number
 }
 
 export type State = C10[]

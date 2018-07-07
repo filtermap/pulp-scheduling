@@ -2,7 +2,7 @@ export type RenzokuKinshiKinmu = {
   index: number
   sequence_id: number
   sequence_number: number
-  kinmu_name: string
+  kinmu_index: number
 }
 
 export type State = RenzokuKinshiKinmu[]

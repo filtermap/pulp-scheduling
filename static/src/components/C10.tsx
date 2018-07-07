@@ -10,9 +10,13 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import * as all from '../modules/all'
 import * as c10 from '../modules/c10'
+import * as kinmus from '../modules/kinmus'
+import * as members from '../modules/members'
 
 type Props = {
   c10: c10.C10[]
+  members: members.Member[]
+  kinmus: kinmus.Kinmu[]
 }
 
 function C10(props: Props) {
@@ -33,10 +37,10 @@ function C10(props: Props) {
         <TableBody>
           {props.c10.map(c => (
             <TableRow key={c.index}>
-              <TableCell>{c.member_name}</TableCell>
+              <TableCell>{props.members.find(member => member.index === c.member_index)!.name}</TableCell>
               <TableCell>{c.start_date_name}</TableCell>
               <TableCell>{c.stop_date_name}</TableCell>
-              <TableCell>{c.kinmu_name}</TableCell>
+              <TableCell>{props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -47,7 +51,9 @@ function C10(props: Props) {
 
 function mapStateToProps(state: all.State) {
   return {
-    c10: state.c10
+    c10: state.c10,
+    kinmus: state.kinmus,
+    members: state.members,
   }
 }
 

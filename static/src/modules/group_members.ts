@@ -1,7 +1,7 @@
 export type GroupMember = {
   index: number
-  group_name: string
-  member_name: string
+  group_index: number
+  member_index: number
 }
 
 export type State = GroupMember[]
