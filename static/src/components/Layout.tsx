@@ -255,8 +255,8 @@ class ResponsiveDrawer extends React.Component<Props, State> {
         </Hidden>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <div style={{ padding: 4 }}>
-            <Grid container={true} spacing={8}>
+          <div style={{ padding: 16 }}>
+            <Grid container={true} spacing={32}>
               <Grid item={true} xs={12}>
                 <Route path="/terms" component={Terms} />
                 <Route path="/members" component={Members} />
