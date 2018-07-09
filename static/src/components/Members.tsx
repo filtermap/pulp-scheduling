@@ -25,7 +25,7 @@ function Members(props: Props) {
   return (
     <>
       <Toolbar>
-        <Typography variant="display1">職員</Typography>
+        <Typography variant="subheading">職員</Typography>
       </Toolbar>
       {props.members.map(member => (
         <ExpansionPanel key={member.index}>
