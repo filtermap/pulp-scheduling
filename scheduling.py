@@ -553,18 +553,18 @@ def solve():
     terms = read_terms()
     kinmus = read_kinmus()
     groups = read_groups()
-    group_members = read_group_members()
-    renzoku_kinshi_kinmus = read_renzoku_kinshi_kinmus()
-    c1 = read_c1()
-    c2 = read_c2()
-    c3 = read_c3()
-    c4 = read_c4()
-    c5 = read_c5()
-    c6 = read_c6()
-    c7 = read_c7()
-    c8 = read_c8()
-    c9 = read_c9()
-    c10 = read_c10()
+    group_members = read_group_members(groups, members)
+    renzoku_kinshi_kinmus = read_renzoku_kinshi_kinmus(kinmus)
+    c1 = read_c1(kinmus, groups)
+    c2 = read_c2(kinmus, groups)
+    c3 = read_c3(members, kinmus)
+    c4 = read_c4(members, kinmus)
+    c5 = read_c5(kinmus)
+    c6 = read_c6(kinmus)
+    c7 = read_c7(kinmus)
+    c8 = read_c8(kinmus)
+    c9 = read_c9(members, kinmus)
+    c10 = read_c10(members, kinmus)
 
     dates = [
         {"index": index, "name": str(date)}
@@ -582,21 +582,16 @@ def solve():
     K = [k["index"] for k in kinmus]
     G = [g["index"] for g in groups]
     GM = {
-        group["index"]: [
-            find(members, lambda member: member["name"] == group_member["member_name"])[
-                "index"
-            ]
+        g: [
+            group_member["member_index"]
             for group_member in group_members
-            if group_member["group_name"] == group["name"]
+            if group_member["group_index"] == g
         ]
-        for group in groups
+        for g in G
     }
     P = [
         [
-            find(
-                kinmus,
-                lambda kinmu: kinmu["name"] == renzoku_kinshi_kinmu["kinmu_name"],
-            )["index"]
+            renzoku_kinshi_kinmu["kinmu_index"]
             for renzoku_kinshi_kinmu in sorted(
                 renzoku_kinshi_kinmus, key=operator.itemgetter("sequence_number")
             )
@@ -613,12 +608,8 @@ def solve():
         {
             "index": index,
             "date_index": find(dates, lambda date: date["name"] == date_name)["index"],
-            "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == c["kinmu_name"])[
-                "index"
-            ],
-            "group_index": find(groups, lambda group: group["name"] == c["group_name"])[
-                "index"
-            ],
+            "kinmu_index": c["kinmu_index"],
+            "group_index": c["group_index"],
             "min_number_of_assignments": c["min_number_of_assignments"],
         }
         for index, (c, date_name) in enumerate(
@@ -634,12 +625,8 @@ def solve():
         {
             "index": index,
             "date_index": find(dates, lambda date: date["name"] == date_name)["index"],
-            "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == c["kinmu_name"])[
-                "index"
-            ],
-            "group_index": find(groups, lambda group: group["name"] == c["group_name"])[
-                "index"
-            ],
+            "kinmu_index": c["kinmu_index"],
+            "group_index": c["group_index"],
             "max_number_of_assignments": c["max_number_of_assignments"],
         }
         for index, (c, date_name) in enumerate(
@@ -654,12 +641,8 @@ def solve():
     C3 = [
         {
             "index": index,
-            "member_index": find(
-                members, lambda member: member["name"] == c["member_name"]
-            )["index"],
-            "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == c["kinmu_name"])[
-                "index"
-            ],
+            "member_index": c["member_index"],
+            "kinmu_index": c["kinmu_index"],
             "min_number_of_assignments": c["min_number_of_assignments"],
         }
         for index, c in enumerate(c3)
@@ -667,12 +650,8 @@ def solve():
     C4 = [
         {
             "index": index,
-            "member_index": find(
-                members, lambda member: member["name"] == c["member_name"]
-            )["index"],
-            "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == c["kinmu_name"])[
-                "index"
-            ],
+            "member_index": c["member_index"],
+            "kinmu_index": c["kinmu_index"],
             "max_number_of_assignments": c["max_number_of_assignments"],
         }
         for index, c in enumerate(c4)
@@ -680,9 +659,7 @@ def solve():
     C5 = [
         {
             "index": index,
-            "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == c["kinmu_name"])[
-                "index"
-            ],
+            "kinmu_index": c["kinmu_index"],
             "min_number_of_days": c["min_number_of_days"],
         }
         for index, c in enumerate(c5)
@@ -690,9 +667,7 @@ def solve():
     C6 = [
         {
             "index": index,
-            "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == c["kinmu_name"])[
-                "index"
-            ],
+            "kinmu_index": c["kinmu_index"],
             "max_number_of_days": c["max_number_of_days"],
         }
         for index, c in enumerate(c6)
@@ -700,9 +675,7 @@ def solve():
     C7 = [
         {
             "index": index,
-            "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == c["kinmu_name"])[
-                "index"
-            ],
+            "kinmu_index": c["kinmu_index"],
             "min_number_of_days": c["min_number_of_days"],
         }
         for index, c in enumerate(c7)
@@ -710,9 +683,7 @@ def solve():
     C8 = [
         {
             "index": index,
-            "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == c["kinmu_name"])[
-                "index"
-            ],
+            "kinmu_index": c["kinmu_index"],
             "max_number_of_days": c["max_number_of_days"],
         }
         for index, c in enumerate(c8)
@@ -720,38 +691,32 @@ def solve():
     C9 = [
         {
             "index": index,
-            "member_index": find(
-                members, lambda member: member["name"] == c["member_name"]
-            )["index"],
+            "member_index": c["member_index"],
             "date_index": find(dates, lambda date: date["name"] == date_name)["index"],
-            "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == c["kinmu_name"])[
-                "index"
-            ],
+            "kinmu_index": c["kinmu_index"],
         }
         for index, (c, date_name) in enumerate(
             (c, str(date))
             for c in c9
             for date in date_range(
-                str_to_date(c["start_date"]), str_to_date(c["stop_date"]) + one_day
+                str_to_date(c["start_date_name"]),
+                str_to_date(c["stop_date_name"]) + one_day,
             )
         )
     ]
     C10 = [
         {
             "index": index,
-            "member_index": find(
-                members, lambda member: member["name"] == c["member_name"]
-            )["index"],
+            "member_index": c["member_index"],
             "date_index": find(dates, lambda date: date["name"] == date_name)["index"],
-            "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == c["kinmu_name"])[
-                "index"
-            ],
+            "kinmu_index": c["kinmu_index"],
         }
         for index, (c, date_name) in enumerate(
             (c, str(date))
             for c in c10
             for date in date_range(
-                str_to_date(c["start_date"]), str_to_date(c["stop_date"]) + one_day
+                str_to_date(c["start_date_name"]),
+                str_to_date(c["stop_date_name"]) + one_day,
             )
         )
     ]
