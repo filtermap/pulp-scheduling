@@ -1,3 +1,8 @@
+const UPDATE_C9_MEMBER_INDEX = 'UPDATE_C9_MEMBER_INDEX'
+const UPDATE_C9_START_DATE_NAME = 'UPDATE_C9_START_DATE_NAME'
+const UPDATE_C9_STOP_DATE_NAME = 'UPDATE_C9_STOP_DATE_NAME'
+const UPDATE_C9_KINMU_INDEX = 'UPDATE_C9_KINMU_INDEX'
+
 export type C9 = {
   index: number
   member_index: number
@@ -6,10 +11,98 @@ export type C9 = {
   kinmu_index: number
 }
 
+type UpdateC9MemberIndex = {
+  type: typeof UPDATE_C9_MEMBER_INDEX
+  index: number
+  member_index: number
+}
+
+type UpdateC9StartDateName = {
+  type: typeof UPDATE_C9_START_DATE_NAME
+  index: number
+  start_date_name: string
+}
+
+type UpdateC9StopDateName = {
+  type: typeof UPDATE_C9_STOP_DATE_NAME
+  index: number
+  stop_date_name: string
+}
+
+type UpdateC9KinmuIndex = {
+  type: typeof UPDATE_C9_KINMU_INDEX
+  index: number
+  kinmu_index: number
+}
+
+type Action = UpdateC9MemberIndex | UpdateC9StartDateName | UpdateC9StopDateName | UpdateC9KinmuIndex
+
+export function updateC9MemberIndex(index: number, member_index: number): UpdateC9MemberIndex {
+  return {
+    index,
+    member_index,
+    type: UPDATE_C9_MEMBER_INDEX,
+  }
+}
+
+export function updateC9StartDateName(index: number, start_date_name: string): UpdateC9StartDateName {
+  return {
+    index,
+    start_date_name,
+    type: UPDATE_C9_START_DATE_NAME,
+  }
+}
+
+export function updateC9StopDateName(index: number, stop_date_name: string): UpdateC9StopDateName {
+  return {
+    index,
+    stop_date_name,
+    type: UPDATE_C9_STOP_DATE_NAME,
+  }
+}
+
+export function updateC9KinmuIndex(index: number, kinmu_index: number): UpdateC9KinmuIndex {
+  return {
+    index,
+    kinmu_index,
+    type: UPDATE_C9_KINMU_INDEX,
+  }
+}
+
 export type State = C9[]
 
 const initialState: State = []
 
-export function reducer(state: State = initialState): State {
+export function reducer(state: State = initialState, action: Action): State {
+  switch (action.type) {
+    case UPDATE_C9_MEMBER_INDEX:
+      return state.map(c => {
+        if (c.index !== action.index) {
+          return c
+        }
+        return { ...c, member_index: action.member_index }
+      })
+    case UPDATE_C9_START_DATE_NAME:
+      return state.map(c => {
+        if (c.index !== action.index) {
+          return c
+        }
+        return { ...c, start_date_name: action.start_date_name }
+      })
+    case UPDATE_C9_STOP_DATE_NAME:
+      return state.map(c => {
+        if (c.index !== action.index) {
+          return c
+        }
+        return { ...c, stop_date_name: action.stop_date_name }
+      })
+    case UPDATE_C9_KINMU_INDEX:
+      return state.map(c => {
+        if (c.index !== action.index) {
+          return c
+        }
+        return { ...c, kinmu_index: action.kinmu_index }
+      })
+  }
   return state
 }
