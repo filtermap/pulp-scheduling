@@ -28,7 +28,6 @@ import C6 from './C6'
 import C7 from './C7'
 import C8 from './C8'
 import C9 from './C9'
-import GroupMembers from './GroupMembers'
 import Groups from './Groups'
 import Kinmus from './Kinmus'
 import Members from './Members'
@@ -87,10 +86,6 @@ function KinmusLink(props: any) {
 
 function GroupsLink(props: any) {
   return <Link to="/groups" {...props} />
-}
-
-function GroupMembersLink(props: any) {
-  return <Link to="/group-members" {...props} />
 }
 
 function RenzokuKinshiKinmusLink(props: any) {
@@ -168,9 +163,6 @@ class ResponsiveDrawer extends React.Component<Props, State> {
           </ListItem>
           <ListItem button={true} component={GroupsLink}>
             <ListItemText primary="グループ" />
-          </ListItem>
-          <ListItem button={true} component={GroupMembersLink}>
-            <ListItemText primary="グループに所属する職員" />
           </ListItem>
           <Divider />
           <ListItem button={true} component={RenzokuKinshiKinmusLink}>
@@ -262,7 +254,6 @@ class ResponsiveDrawer extends React.Component<Props, State> {
                 <Route path="/members" component={Members} />
                 <Route path="/kinmus" component={Kinmus} />
                 <Route path="/groups" component={Groups} />
-                <Route path="/group-members" component={GroupMembers} />
                 <Route path="/renzoku-kinshi-kinmus" component={RenzokuKinshiKinmus} />
                 <Route path="/c1" component={C1} />
                 <Route path="/c2" component={C2} />
