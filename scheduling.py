@@ -217,7 +217,7 @@ def write_c1(c1, kinmus, groups):
 
 
 def read_c2(kinmus, groups):
-    """日付の勤務にグループから割り当てる職員数の上限。"""
+    """期間の勤務にグループから割り当てる職員数の上限。"""
     with open(in_data_directory("c2.csv")) as f:
         next(f)
         c2 = [
@@ -465,7 +465,7 @@ def write_c8(c8, kinmus):
 
 
 def read_c9(members, kinmus):
-    """職員の日付に割り当てる勤務。"""
+    """職員の期間に割り当てる勤務。"""
     with open(in_data_directory("c9.csv")) as f:
         next(f)
         c9 = [
@@ -507,7 +507,7 @@ def write_c9(c9, members, kinmus):
 
 
 def read_c10(members, kinmus):
-    """職員の日付に割り当てない勤務。"""
+    """職員の期間に割り当てない勤務。"""
     with open(in_data_directory("c10.csv")) as f:
         next(f)
         c10 = [

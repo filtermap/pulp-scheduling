@@ -193,10 +193,10 @@ class ResponsiveDrawer extends React.Component<Props, State> {
             <ListItemText primary="勤務の間隔日数の上限" />
           </ListItem>
           <ListItem button={true} component={C9Link}>
-            <ListItemText primary="職員の日付に割り当てる勤務" />
+            <ListItemText primary="職員の期間に割り当てる勤務" />
           </ListItem>
           <ListItem button={true} component={C10Link}>
-            <ListItemText primary="職員の日付に割り当てない勤務" />
+            <ListItemText primary="職員の期間に割り当てない勤務" />
           </ListItem>
         </List>
       </>

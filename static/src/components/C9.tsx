@@ -45,7 +45,7 @@ function C9(props: Props) {
   return (
     <>
       <Toolbar>
-        <Typography variant="subheading">職員の日付に割り当てる勤務</Typography>
+        <Typography variant="subheading">職員の期間に割り当てる勤務</Typography>
       </Toolbar>
       {props.c9.map(c => (
         <ExpansionPanel key={c.index}>
