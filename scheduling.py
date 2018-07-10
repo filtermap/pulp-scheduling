@@ -140,7 +140,7 @@ def read_renzoku_kinshi_kinmus(kinmus):
                     "index"
                 ],
             }
-            for index, r in enumerate(csv.DictReader(f, ["並びID", "勤務名", "並び順"]))
+            for index, r in enumerate(csv.DictReader(f, ["並びID", "並び順", "勤務名"]))
         ]
     return renzoku_kinshi_kinmus
 
@@ -149,18 +149,18 @@ def write_renzoku_kinshi_kinmus(renzoku_kinshi_kinmus, kinmus):
     rows = [
         {
             "sequence_id": renzoku_kinshi_kinmu["sequence_id"],
+            "sequence_number": renzoku_kinshi_kinmu["sequence_number"],
             "kinmu_name": find(
                 kinmus,
                 lambda kinmu: kinmu["index"] == renzoku_kinshi_kinmu["kinmu_index"],
             )["name"],
-            "sequence_number": renzoku_kinshi_kinmu["sequence_number"],
         }
         for renzoku_kinshi_kinmu in renzoku_kinshi_kinmus
     ]
     write_rows(
         rows,
         "renzoku_kinshi_kinmus.csv",
-        ["sequence_id", "kinmu_name", "sequence_number"],
+        ["sequence_id", "sequence_number", "kinmu_name"],
     )
 
 
