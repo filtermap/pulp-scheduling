@@ -20,6 +20,7 @@ import * as terms from './terms'
 const REPLACE_ALL = "REPLACE_ALL"
 const DELETE_MEMBER = 'DELETE_MEMBER'
 const DELETE_GROUP = 'DELETE_GROUP'
+const DELETE_KINMU = 'DELETE_KINMU'
 
 export type All = {
   members: members.Member[]
@@ -55,10 +56,16 @@ type DeleteGroup = {
   index: number
 }
 
+type DeleteKinmu = {
+  type: typeof DELETE_KINMU
+  index: number
+}
+
 type Action =
   | ReplaceAll
   | DeleteMember
   | DeleteGroup
+  | DeleteKinmu
 
 export function replaceAll(all: All): ReplaceAll {
   return {
@@ -78,6 +85,13 @@ export function deleteGroup(index: number): DeleteGroup {
   return {
     index,
     type: DELETE_GROUP,
+  }
+}
+
+export function deleteKinmu(index: number): DeleteKinmu {
+  return {
+    index,
+    type: DELETE_KINMU,
   }
 }
 
@@ -123,6 +137,22 @@ function crossSliceReducer(state: State, action: Action): State {
         c2: state.c2.filter(c => c.group_index !== action.index),
         group_members: state.group_members.filter(group_member => group_member.group_index !== action.index),
         groups: state.groups.filter(group => group.index !== action.index),
+      }
+    case DELETE_KINMU:
+      return {
+        ...state,
+        c1: state.c1.filter(c => c.kinmu_index !== action.index),
+        c10: state.c10.filter(c => c.kinmu_index !== action.index),
+        c2: state.c2.filter(c => c.kinmu_index !== action.index),
+        c3: state.c3.filter(c => c.kinmu_index !== action.index),
+        c4: state.c4.filter(c => c.kinmu_index !== action.index),
+        c5: state.c5.filter(c => c.kinmu_index !== action.index),
+        c6: state.c6.filter(c => c.kinmu_index !== action.index),
+        c7: state.c7.filter(c => c.kinmu_index !== action.index),
+        c8: state.c8.filter(c => c.kinmu_index !== action.index),
+        c9: state.c9.filter(c => c.kinmu_index !== action.index),
+        kinmus: state.kinmus.filter(kinmu => kinmu.index !== action.index),
+        renzoku_kinshi_kinmus: state.renzoku_kinshi_kinmus.filter(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.kinmu_index !== action.index),
       }
   }
   return state
