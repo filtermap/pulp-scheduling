@@ -18,6 +18,7 @@ import * as renzoku_kinshi_kinmus from './renzoku_kinshi_kinmus'
 import * as terms from './terms'
 
 const REPLACE_ALL = "REPLACE_ALL"
+const CREATE_MEMBER = 'CREATE_MEMBER'
 const DELETE_MEMBER = 'DELETE_MEMBER'
 const DELETE_GROUP = 'DELETE_GROUP'
 const DELETE_KINMU = 'DELETE_KINMU'
@@ -46,6 +47,12 @@ type ReplaceAll = {
   all: All
 }
 
+type CreateMember = {
+  type: typeof CREATE_MEMBER
+  name: string
+  group_indices: number[]
+}
+
 type DeleteMember = {
   type: typeof DELETE_MEMBER
   index: number
@@ -63,6 +70,7 @@ type DeleteKinmu = {
 
 type Action =
   | ReplaceAll
+  | CreateMember
   | DeleteMember
   | DeleteGroup
   | DeleteKinmu
@@ -71,6 +79,14 @@ export function replaceAll(all: All): ReplaceAll {
   return {
     all,
     type: REPLACE_ALL
+  }
+}
+
+export function createMember(name: string, group_indices: number[]): CreateMember {
+  return {
+    group_indices,
+    name,
+    type: CREATE_MEMBER,
   }
 }
 
@@ -120,6 +136,16 @@ function crossSliceReducer(state: State, action: Action): State {
   switch (action.type) {
     case REPLACE_ALL:
       return action.all
+    case CREATE_MEMBER:
+      const member_index = Math.max(...state.members.map(member => member.index)) + 1
+      const group_member_index = Math.max(...state.group_members.map(group_member => group_member.index)) + 1
+      return {
+        ...state,
+        group_members: state.group_members.concat(
+          action.group_indices.map((group_index, index) => ({ index: group_member_index + index, group_index, member_index }))
+        ),
+        members: state.members.concat({ index: member_index, name: action.name }),
+      }
     case DELETE_MEMBER:
       return {
         ...state,
