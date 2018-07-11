@@ -133,7 +133,7 @@ function C10Link(props: any) {
 }
 
 class ResponsiveDrawer extends React.Component<Props, State> {
-  public state = {
+  public state: State = {
     mobileOpen: false,
   }
 
