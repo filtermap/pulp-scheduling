@@ -18,6 +18,7 @@ import * as renzoku_kinshi_kinmus from './renzoku_kinshi_kinmus'
 import * as terms from './terms'
 
 const REPLACE_ALL = "REPLACE_ALL"
+const DELETE_MEMBER = 'DELETE_MEMBER'
 
 export type All = {
   members: members.Member[]
@@ -43,12 +44,26 @@ type ReplaceAll = {
   all: All
 }
 
-type Action = ReplaceAll
+type DeleteMember = {
+  type: typeof DELETE_MEMBER
+  index: number
+}
+
+type Action =
+  | ReplaceAll
+  | DeleteMember
 
 export function replaceAll(all: All): ReplaceAll {
   return {
     all,
     type: REPLACE_ALL
+  }
+}
+
+export function deleteMember(index: number): DeleteMember {
+  return {
+    index,
+    type: DELETE_MEMBER,
   }
 }
 
@@ -77,6 +92,16 @@ function crossSliceReducer(state: State, action: Action): State {
   switch (action.type) {
     case REPLACE_ALL:
       return action.all
+    case DELETE_MEMBER:
+      return {
+        ...state,
+        c10: state.c10.filter(c => c.member_index !== action.index),
+        c3: state.c3.filter(c => c.member_index !== action.index),
+        c4: state.c4.filter(c => c.member_index !== action.index),
+        c9: state.c9.filter(c => c.member_index !== action.index),
+        group_members: state.group_members.filter(group_member => group_member.member_index !== action.index),
+        members: state.members.filter(member => member.index !== action.index),
+      }
   }
   return state
 }
