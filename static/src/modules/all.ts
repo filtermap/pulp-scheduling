@@ -19,6 +19,7 @@ import * as terms from './terms'
 
 const REPLACE_ALL = "REPLACE_ALL"
 const DELETE_MEMBER = 'DELETE_MEMBER'
+const DELETE_GROUP = 'DELETE_GROUP'
 
 export type All = {
   members: members.Member[]
@@ -49,9 +50,15 @@ type DeleteMember = {
   index: number
 }
 
+type DeleteGroup = {
+  type: typeof DELETE_GROUP
+  index: number
+}
+
 type Action =
   | ReplaceAll
   | DeleteMember
+  | DeleteGroup
 
 export function replaceAll(all: All): ReplaceAll {
   return {
@@ -64,6 +71,13 @@ export function deleteMember(index: number): DeleteMember {
   return {
     index,
     type: DELETE_MEMBER,
+  }
+}
+
+export function deleteGroup(index: number): DeleteGroup {
+  return {
+    index,
+    type: DELETE_GROUP,
   }
 }
 
@@ -101,6 +115,14 @@ function crossSliceReducer(state: State, action: Action): State {
         c9: state.c9.filter(c => c.member_index !== action.index),
         group_members: state.group_members.filter(group_member => group_member.member_index !== action.index),
         members: state.members.filter(member => member.index !== action.index),
+      }
+    case DELETE_GROUP:
+      return {
+        ...state,
+        c1: state.c1.filter(c => c.group_index !== action.index),
+        c2: state.c2.filter(c => c.group_index !== action.index),
+        group_members: state.group_members.filter(group_member => group_member.group_index !== action.index),
+        groups: state.groups.filter(group => group.index !== action.index),
       }
   }
   return state
