@@ -17,7 +17,7 @@ import * as members from './members'
 import * as renzoku_kinshi_kinmus from './renzoku_kinshi_kinmus'
 import * as terms from './terms'
 
-export const REPLACE_ALL = "REPLACE_ALL"
+const REPLACE_ALL = "REPLACE_ALL"
 
 export type All = {
   members: members.Member[]
@@ -43,7 +43,7 @@ type ReplaceAll = {
   all: All
 }
 
-export type Action = ReplaceAll
+type Action = ReplaceAll
 
 export function replaceAll(all: All): ReplaceAll {
   return {
