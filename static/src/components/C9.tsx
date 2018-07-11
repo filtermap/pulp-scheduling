@@ -1,4 +1,6 @@
+import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -40,6 +42,11 @@ function C9(props: Props) {
   function handleChangeC9KinmuIndex(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       props.dispatch(c9.updateC9KinmuIndex(index, parseInt(event.target.value, 10)))
+    }
+  }
+  function handleClickDeleteC9(index: number) {
+    return (_: React.MouseEvent<HTMLButtonElement>) => {
+      props.dispatch(c9.deleteC9(index))
     }
   }
   return (
@@ -88,6 +95,9 @@ function C9(props: Props) {
               ))}
             </TextField>
           </ExpansionPanelDetails>
+          <ExpansionPanelActions>
+            <Button size="small" onClick={handleClickDeleteC9(c.index)}>削除</Button>
+          </ExpansionPanelActions>
         </ExpansionPanel>
       ))}
     </>

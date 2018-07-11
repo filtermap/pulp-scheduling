@@ -1,5 +1,6 @@
 const UPDATE_C5_KINMU_INDEX = 'UPDATE_C5_KINMU_INDEX'
 const UPDATE_C5_MIN_NUMBER_OF_DAYS = 'UPDATE_C5_MIN_NUMBER_OF_DAYS'
+const DELETE_C5 = 'DELETE_C5'
 
 export type C5 = {
   index: number
@@ -19,7 +20,15 @@ type UpdateC5MinNumberOfDays = {
   min_number_of_days: number
 }
 
-type Action = UpdateC5KinmuIndex | UpdateC5MinNumberOfDays
+type DeleteC5 = {
+  type: typeof DELETE_C5
+  index: number
+}
+
+type Action =
+  | UpdateC5KinmuIndex
+  | UpdateC5MinNumberOfDays
+  | DeleteC5
 
 export function updateC5KinmuIndex(index: number, kinmu_index: number): UpdateC5KinmuIndex {
   return {
@@ -34,6 +43,13 @@ export function updateC5MinNumberOfDays(index: number, min_number_of_days: numbe
     index,
     min_number_of_days,
     type: UPDATE_C5_MIN_NUMBER_OF_DAYS,
+  }
+}
+
+export function deleteC5(index: number): DeleteC5 {
+  return {
+    index,
+    type: DELETE_C5,
   }
 }
 
@@ -57,6 +73,8 @@ export function reducer(state: State = initialState, action: Action): State {
         }
         return { ...c, min_number_of_days: action.min_number_of_days }
       })
+    case DELETE_C5:
+      return state.filter(c => c.index !== action.index)
   }
   return state
 }

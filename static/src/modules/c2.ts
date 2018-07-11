@@ -3,6 +3,7 @@ const UPDATE_C2_STOP_DATE_NAME = 'UPDATE_C2_STOP_DATE_NAME'
 const UPDATE_C2_KINMU_INDEX = 'UPDATE_C2_KINMU_INDEX'
 const UPDATE_C2_GROUP_INDEX = 'UPDATE_C2_GROUP_INDEX'
 const UPDATE_C2_MAX_NUMBER_OF_ASSIGNMENTS = 'UPDATE_C2_MAX_NUMBER_OF_ASSIGNMENTS'
+const DELETE_C2 = 'DELETE_C2'
 
 export type C2 = {
   index: number
@@ -43,7 +44,18 @@ type UpdateC2MaxNumberOfAssignments = {
   max_number_of_assignments: number
 }
 
-type Action = UpdateC2StartDateName | UpdateC2StopDateName | UpdateC2KinmuIndex | UpdateC2GroupIndex | UpdateC2MaxNumberOfAssignments
+type DeleteC2 = {
+  type: typeof DELETE_C2
+  index: number
+}
+
+type Action =
+  | UpdateC2StartDateName
+  | UpdateC2StopDateName
+  | UpdateC2KinmuIndex
+  | UpdateC2GroupIndex
+  | UpdateC2MaxNumberOfAssignments
+  | DeleteC2
 
 export function updateC2StartDateName(index: number, start_date_name: string): UpdateC2StartDateName {
   return {
@@ -82,6 +94,13 @@ export function updateC2MaxNumberOfAssignments(index: number, max_number_of_assi
     index,
     max_number_of_assignments,
     type: UPDATE_C2_MAX_NUMBER_OF_ASSIGNMENTS,
+  }
+}
+
+export function deleteC2(index: number): DeleteC2 {
+  return {
+    index,
+    type: DELETE_C2,
   }
 }
 
@@ -126,6 +145,8 @@ export function reducer(state: State = initialState, action: Action): State {
         }
         return { ...c, max_number_of_assignments: action.max_number_of_assignments }
       })
+    case DELETE_C2:
+      return state.filter(c => c.index !== action.index)
   }
   return state
 }

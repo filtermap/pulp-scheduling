@@ -1,4 +1,6 @@
+import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -35,6 +37,11 @@ function C3(props: Props) {
   function handleChangeC3MinNumberOfAssignments(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       props.dispatch(c3.updateC3MinNumberOfAssignments(index, parseInt(event.target.value, 10)))
+    }
+  }
+  function handleClickDeleteC3(index: number) {
+    return (_: React.MouseEvent<HTMLButtonElement>) => {
+      props.dispatch(c3.deleteC3(index))
     }
   }
   return (
@@ -78,6 +85,9 @@ function C3(props: Props) {
               fullWidth={true}
             />
           </ExpansionPanelDetails>
+          <ExpansionPanelActions>
+            <Button size="small" onClick={handleClickDeleteC3(c.index)}>削除</Button>
+          </ExpansionPanelActions>
         </ExpansionPanel>
       ))}
     </>

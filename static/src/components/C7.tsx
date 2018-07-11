@@ -1,4 +1,6 @@
+import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -28,6 +30,11 @@ function C7(props: Props) {
   function handleChangeC7MinNumberOfDays(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       props.dispatch(c7.updateC7MinNumberOfDays(index, parseInt(event.target.value, 10)))
+    }
+  }
+  function handleClickDeleteC7(index: number) {
+    return (_: React.MouseEvent<HTMLButtonElement>) => {
+      props.dispatch(c7.deleteC7(index))
     }
   }
   return (
@@ -60,6 +67,9 @@ function C7(props: Props) {
               fullWidth={true}
             />
           </ExpansionPanelDetails>
+          <ExpansionPanelActions>
+            <Button size="small" onClick={handleClickDeleteC7(c.index)}>削除</Button>
+          </ExpansionPanelActions>
         </ExpansionPanel>
       ))}
     </>

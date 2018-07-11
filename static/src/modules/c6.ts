@@ -1,5 +1,6 @@
 const UPDATE_C6_KINMU_INDEX = 'UPDATE_C6_KINMU_INDEX'
 const UPDATE_C6_MAX_NUMBER_OF_DAYS = 'UPDATE_C6_MAX_NUMBER_OF_DAYS'
+const DELETE_C6 = 'DELETE_C6'
 
 export type C6 = {
   index: number
@@ -19,7 +20,15 @@ type UpdateC6MaxNumberOfDays = {
   max_number_of_days: number
 }
 
-type Action = UpdateC6KinmuIndex | UpdateC6MaxNumberOfDays
+type DeleteC6 = {
+  type: typeof DELETE_C6
+  index: number
+}
+
+type Action =
+  |UpdateC6KinmuIndex
+  | UpdateC6MaxNumberOfDays
+  | DeleteC6
 
 export function updateC6KinmuIndex(index: number, kinmu_index: number): UpdateC6KinmuIndex {
   return {
@@ -34,6 +43,13 @@ export function updateC6MaxNumberOfDays(index: number, max_number_of_days: numbe
     index,
     max_number_of_days,
     type: UPDATE_C6_MAX_NUMBER_OF_DAYS,
+  }
+}
+
+export function deleteC6(index: number): DeleteC6 {
+  return {
+    index,
+    type: DELETE_C6,
   }
 }
 
@@ -57,6 +73,8 @@ export function reducer(state: State = initialState, action: Action): State {
         }
         return { ...c, max_number_of_days: action.max_number_of_days }
       })
+    case DELETE_C6:
+      return state.filter(c => c.index !== action.index)
   }
   return state
 }

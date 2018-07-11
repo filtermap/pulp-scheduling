@@ -2,6 +2,7 @@ const UPDATE_C10_MEMBER_INDEX = 'UPDATE_C10_MEMBER_INDEX'
 const UPDATE_C10_START_DATE_NAME = 'UPDATE_C10_START_DATE_NAME'
 const UPDATE_C10_STOP_DATE_NAME = 'UPDATE_C10_STOP_DATE_NAME'
 const UPDATE_C10_KINMU_INDEX = 'UPDATE_C10_KINMU_INDEX'
+const DELETE_C10 = 'DELETE_C10'
 
 export type C10 = {
   index: number
@@ -35,7 +36,17 @@ type UpdateC10KinmuIndex = {
   kinmu_index: number
 }
 
-type Action = UpdateC10MemberIndex | UpdateC10StartDateName | UpdateC10StopDateName | UpdateC10KinmuIndex
+type DeleteC10 = {
+  type: typeof DELETE_C10
+  index: number
+}
+
+type Action =
+  |UpdateC10MemberIndex
+  | UpdateC10StartDateName
+  | UpdateC10StopDateName
+  | UpdateC10KinmuIndex
+  | DeleteC10
 
 export function updateC10MemberIndex(index: number, member_index: number): UpdateC10MemberIndex {
   return {
@@ -66,6 +77,13 @@ export function updateC10KinmuIndex(index: number, kinmu_index: number): UpdateC
     index,
     kinmu_index,
     type: UPDATE_C10_KINMU_INDEX,
+  }
+}
+
+export function deleteC10(index: number): DeleteC10 {
+  return {
+    index,
+    type: DELETE_C10,
   }
 }
 
@@ -103,6 +121,8 @@ export function reducer(state: State = initialState, action: Action): State {
         }
         return { ...c, kinmu_index: action.kinmu_index }
       })
+    case DELETE_C10:
+      return state.filter(c => c.index !== action.index)
   }
   return state
 }

@@ -3,6 +3,7 @@ const UPDATE_C1_STOP_DATE_NAME = 'UPDATE_C1_STOP_DATE_NAME'
 const UPDATE_C1_KINMU_INDEX = 'UPDATE_C1_KINMU_INDEX'
 const UPDATE_C1_GROUP_INDEX = 'UPDATE_C1_GROUP_INDEX'
 const UPDATE_C1_MIN_NUMBER_OF_ASSIGNMENTS = 'UPDATE_C1_MIN_NUMBER_OF_ASSIGNMENTS'
+const DELETE_C1 = 'DELETE_C1'
 
 export type C1 = {
   index: number
@@ -43,7 +44,18 @@ type UpdateC1MinNumberOfAssignments = {
   min_number_of_assignments: number
 }
 
-type Action = UpdateC1StartDateName | UpdateC1StopDateName | UpdateC1KinmuIndex | UpdateC1GroupIndex | UpdateC1MinNumberOfAssignments
+type DeleteC1 = {
+  type: typeof DELETE_C1
+  index: number
+}
+
+type Action =
+  | UpdateC1StartDateName
+  | UpdateC1StopDateName
+  | UpdateC1KinmuIndex
+  | UpdateC1GroupIndex
+  | UpdateC1MinNumberOfAssignments
+  | DeleteC1
 
 export function updateC1StartDateName(index: number, start_date_name: string): UpdateC1StartDateName {
   return {
@@ -82,6 +94,13 @@ export function updateC1MinNumberOfAssignments(index: number, min_number_of_assi
     index,
     min_number_of_assignments,
     type: UPDATE_C1_MIN_NUMBER_OF_ASSIGNMENTS,
+  }
+}
+
+export function deleteC1(index: number): DeleteC1 {
+  return {
+    index,
+    type: DELETE_C1,
   }
 }
 
@@ -126,6 +145,8 @@ export function reducer(state: State = initialState, action: Action): State {
         }
         return { ...c, min_number_of_assignments: action.min_number_of_assignments }
       })
+    case DELETE_C1:
+      return state.filter(c => c.index !== action.index)
   }
   return state
 }

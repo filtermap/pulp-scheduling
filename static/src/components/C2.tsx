@@ -1,4 +1,6 @@
+import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import TextField from '@material-ui/core/TextField'
@@ -45,6 +47,11 @@ function C2(props: Props) {
   function handleChangeC2MaxNumberOfAssignments(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       props.dispatch(c2.updateC2MaxNumberOfAssignments(index, parseInt(event.target.value, 10)))
+    }
+  }
+  function handleClickDeleteC2(index: number) {
+    return (_: React.MouseEvent<HTMLButtonElement>) => {
+      props.dispatch(c2.deleteC2(index))
     }
   }
   return (
@@ -100,6 +107,9 @@ function C2(props: Props) {
               fullWidth={true}
             />
           </ExpansionPanelDetails>
+          <ExpansionPanelActions>
+            <Button size="small" onClick={handleClickDeleteC2(c.index)}>削除</Button>
+          </ExpansionPanelActions>
         </ExpansionPanel>
       ))}
     </>
