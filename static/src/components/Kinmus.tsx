@@ -1,4 +1,8 @@
 import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -18,42 +22,81 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 }
 
-function Kinmus(props: Props) {
-  function handleChange(index: number) {
+type State = {
+  open: boolean
+  name: string
+}
+
+class Kinmus extends React.Component<Props, State> {
+  public state: State = {
+    name: '',
+    open: false,
+  }
+  public handleChange(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      props.dispatch(kinmus.updateKinmuName(index, event.target.value))
+      this.props.dispatch(kinmus.updateKinmuName(index, event.target.value))
     }
   }
-  function handleClickDeleteKinmu(index: number) {
+  public handleClickDeleteKinmu(index: number) {
     return (_: React.MouseEvent<HTMLButtonElement>) => {
-      props.dispatch(all.deleteKinmu(index))
+      this.props.dispatch(all.deleteKinmu(index))
     }
   }
-  return (
-    <>
-      <Toolbar>
-        <Typography variant="subheading">勤務</Typography>
-      </Toolbar>
-      {props.kinmus.map(kinmu => (
-        <ExpansionPanel key={kinmu.index}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>{kinmu.name}</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+  public handleClickOpenDialog = () => {
+    this.setState({ open: true })
+  }
+  public handleCloseDialog = () => {
+    this.setState({ open: false })
+  }
+  public handleChangeNewKinmuName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ name: event.target.value })
+  }
+  public handleClickCreateKinmu = () => {
+    this.setState({ open: false, name: '' })
+    this.props.dispatch(kinmus.createKinmu(this.state.name))
+  }
+  public render() {
+    return (
+      <>
+        <Toolbar>
+          <Typography variant="subheading" style={{ flex: 1 }}>勤務</Typography>
+          <Button size="small" onClick={this.handleClickOpenDialog}>追加</Button>
+        </Toolbar>
+        {this.props.kinmus.map(kinmu => (
+          <ExpansionPanel key={kinmu.index}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>{kinmu.name}</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <TextField
+                label="勤務名"
+                defaultValue={kinmu.name}
+                onChange={this.handleChange(kinmu.index)}
+                margin="normal"
+              />
+            </ExpansionPanelDetails>
+            <ExpansionPanelActions>
+              <Button size="small" onClick={this.handleClickDeleteKinmu(kinmu.index)}>削除</Button>
+            </ExpansionPanelActions>
+          </ExpansionPanel>
+        ))}
+        <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <DialogTitle>勤務の追加</DialogTitle>
+          <DialogContent style={{ display: 'flex' }}>
             <TextField
               label="勤務名"
-              defaultValue={kinmu.name}
-              onChange={handleChange(kinmu.index)}
-              margin="normal"
+              defaultValue={this.state.name}
+              onChange={this.handleChangeNewKinmuName}
+              fullWidth={true}
             />
-          </ExpansionPanelDetails>
-          <ExpansionPanelActions>
-            <Button size="small" onClick={handleClickDeleteKinmu(kinmu.index)}>削除</Button>
-          </ExpansionPanelActions>
-        </ExpansionPanel>
-      ))}
-    </>
-  )
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" onClick={this.handleClickCreateKinmu}>追加</Button>
+          </DialogActions>
+        </Dialog>
+      </>
+    )
+  }
 }
 
 function mapStateToProps(state: all.State) {
