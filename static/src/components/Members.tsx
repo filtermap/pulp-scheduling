@@ -65,7 +65,7 @@ class Members extends React.Component<Props, State> {
   public handleClickOpenDialog = () => {
     this.setState({ open: true })
   }
-  public handleClickCloseDialog = () => {
+  public handleCloseDialog = () => {
     this.setState({ open: false })
   }
   public handleChangeNewMemberName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,7 +130,7 @@ class Members extends React.Component<Props, State> {
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
-        <Dialog onClose={this.handleClickCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+        <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
           <DialogTitle>職員の追加</DialogTitle>
           <DialogContent style={{ display: 'flex' }}>
             <TextField
