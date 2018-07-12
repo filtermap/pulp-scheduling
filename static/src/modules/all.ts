@@ -19,6 +19,7 @@ import * as terms from './terms'
 
 const REPLACE_ALL = "REPLACE_ALL"
 const CREATE_MEMBER = 'CREATE_MEMBER'
+const CREATE_GROUP = 'CREATE_GROUP'
 const DELETE_MEMBER = 'DELETE_MEMBER'
 const DELETE_GROUP = 'DELETE_GROUP'
 const DELETE_KINMU = 'DELETE_KINMU'
@@ -53,6 +54,12 @@ type CreateMember = {
   group_indices: number[]
 }
 
+type CreateGroup = {
+  type: typeof CREATE_GROUP
+  name: string
+  member_indices: number[]
+}
+
 type DeleteMember = {
   type: typeof DELETE_MEMBER
   index: number
@@ -71,6 +78,7 @@ type DeleteKinmu = {
 type Action =
   | ReplaceAll
   | CreateMember
+  | CreateGroup
   | DeleteMember
   | DeleteGroup
   | DeleteKinmu
@@ -87,6 +95,14 @@ export function createMember(name: string, group_indices: number[]): CreateMembe
     group_indices,
     name,
     type: CREATE_MEMBER,
+  }
+}
+
+export function createGroup(name: string, member_indices: number[]): CreateGroup {
+  return {
+    member_indices,
+    name,
+    type: CREATE_GROUP,
   }
 }
 
@@ -136,7 +152,7 @@ function crossSliceReducer(state: State, action: Action): State {
   switch (action.type) {
     case REPLACE_ALL:
       return action.all
-    case CREATE_MEMBER:
+    case CREATE_MEMBER: {
       const member_index = Math.max(...state.members.map(member => member.index)) + 1
       const group_member_index = Math.max(...state.group_members.map(group_member => group_member.index)) + 1
       return {
@@ -146,6 +162,18 @@ function crossSliceReducer(state: State, action: Action): State {
         ),
         members: state.members.concat({ index: member_index, name: action.name }),
       }
+    }
+    case CREATE_GROUP: {
+      const group_index = Math.max(...state.groups.map(group => group.index)) + 1
+      const group_member_index = Math.max(...state.group_members.map(group_member => group_member.index)) + 1
+      return {
+        ...state,
+        group_members: state.group_members.concat(
+          action.member_indices.map((member_index, index) => ({ index: group_member_index + index, group_index, member_index }))
+        ),
+        groups: state.groups.concat({ index: group_index, name: action.name }),
+      }
+    }
     case DELETE_MEMBER:
       return {
         ...state,

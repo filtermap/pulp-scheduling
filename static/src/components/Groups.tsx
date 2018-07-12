@@ -1,5 +1,9 @@
 import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
@@ -27,57 +31,125 @@ type Props = {
   group_members: group_members.GroupMember[]
 }
 
-function Groups(props: Props) {
-  function handleGroupNameChange(index: number) {
+type State = {
+  open: boolean
+  name: string
+  member_indices: number[]
+}
+
+class Groups extends React.Component<Props, State> {
+  public state: State = {
+    member_indices: [],
+    name: '',
+    open: false,
+  }
+  public handleGroupNameChange(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      props.dispatch(groups.updateGroupName(index, event.target.value))
+      this.props.dispatch(groups.updateGroupName(index, event.target.value))
     }
   }
-  function handleGroupMemberChange(groupIndex: number, memberIndex: number) {
+  public handleGroupMemberChange(groupIndex: number, memberIndex: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
       if (checked) {
-        props.dispatch(group_members.createGroupMember(groupIndex, memberIndex))
+        this.props.dispatch(group_members.createGroupMember(groupIndex, memberIndex))
         return
       }
-      props.dispatch(group_members.deleteGroupMember(groupIndex, memberIndex))
+      this.props.dispatch(group_members.deleteGroupMember(groupIndex, memberIndex))
     }
   }
-  function handleClickDeleteGroup(index: number) {
+  public handleClickDeleteGroup(index: number) {
     return (_: React.MouseEvent<HTMLButtonElement>) => {
-      props.dispatch(all.deleteGroup(index))
+      this.props.dispatch(all.deleteGroup(index))
     }
   }
-  return (
-    <>
-      <Toolbar>
-        <Typography variant="subheading">グループ</Typography>
-      </Toolbar>
-      {props.groups.map(group => (
-        <ExpansionPanel key={group.index}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <div style={{ flexDirection: 'column' }}>
-              <Typography>{group.name}</Typography>
-              <Typography variant="caption">{props.group_members.filter(group_member => group_member.group_index === group.index).map(group_member => props.members.find(member => member.index === group_member.member_index)!.name).join(', ')}</Typography>
-            </div>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+  public handleClickOpenDialog = () => {
+    this.setState({ open: true })
+  }
+  public handleCloseDialog = () => {
+    this.setState({ open: false })
+  }
+  public handleChangeNewGroupName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ name: event.target.value })
+  }
+  public handleNewGroupMemberChange(memberIndex: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      if (checked) {
+        this.setState({ member_indices: this.state.member_indices.concat(memberIndex) })
+        return
+      }
+      this.setState({ member_indices: this.state.member_indices.filter(member_index => member_index !== memberIndex) })
+    }
+  }
+  public handleClickCreateGroup = () => {
+    this.setState({ open: false, name: '' })
+    this.props.dispatch(all.createGroup(this.state.name, this.state.member_indices))
+  }
+  public render() {
+    return (
+      <>
+        <Toolbar>
+          <Typography variant="subheading" style={{ flex: 1 }}>グループ</Typography>
+          <Button size="small" onClick={this.handleClickOpenDialog}>追加</Button>
+        </Toolbar>
+        {this.props.groups.map(group => (
+          <ExpansionPanel key={group.index}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <div style={{ flexDirection: 'column' }}>
+                <Typography>{group.name}</Typography>
+                <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.group_index === group.index).map(group_member => this.props.members.find(member => member.index === group_member.member_index)!.name).join(', ')}</Typography>
+              </div>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <TextField
+                label="グループ名"
+                defaultValue={group.name}
+                onChange={this.handleGroupNameChange(group.index)}
+                fullWidth={true}
+              />
+              <FormControl fullWidth={true}>
+                <FormLabel>グループに所属する職員</FormLabel>
+                <FormGroup>
+                  {this.props.members.map(member => (
+                    <FormControlLabel
+                      key={member.index}
+                      label={member.name}
+                      control={
+                        <Checkbox
+                          checked={this.props.group_members.some(group_member => group_member.group_index === group.index && group_member.member_index === member.index)}
+                          onChange={this.handleGroupMemberChange(group.index, member.index)}
+                          color="primary"
+                        />
+                      }
+                    />
+                  ))}
+                </FormGroup>
+              </FormControl>
+            </ExpansionPanelDetails>
+            <ExpansionPanelActions>
+              <Button size="small" onClick={this.handleClickDeleteGroup(group.index)}>削除</Button>
+            </ExpansionPanelActions>
+          </ExpansionPanel>
+        ))}
+        <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <DialogTitle>グループの追加</DialogTitle>
+          <DialogContent style={{ display: 'flex' }}>
             <TextField
               label="グループ名"
-              defaultValue={group.name}
-              onChange={handleGroupNameChange(group.index)}
+              defaultValue={this.state.name}
+              onChange={this.handleChangeNewGroupName}
               fullWidth={true}
             />
             <FormControl fullWidth={true}>
               <FormLabel>グループに所属する職員</FormLabel>
               <FormGroup>
-                {props.members.map(member => (
+                {this.props.members.map(member => (
                   <FormControlLabel
                     key={member.index}
                     label={member.name}
                     control={
                       <Checkbox
-                        checked={props.group_members.some(group_member => group_member.group_index === group.index && group_member.member_index === member.index)}
-                        onChange={handleGroupMemberChange(group.index, member.index)}
+                        checked={this.state.member_indices.some(member_index => member_index === member.index)}
+                        onChange={this.handleNewGroupMemberChange(member.index)}
                         color="primary"
                       />
                     }
@@ -85,14 +157,14 @@ function Groups(props: Props) {
                 ))}
               </FormGroup>
             </FormControl>
-          </ExpansionPanelDetails>
-          <ExpansionPanelActions>
-            <Button size="small" onClick={handleClickDeleteGroup(group.index)}>削除</Button>
-          </ExpansionPanelActions>
-        </ExpansionPanel>
-      ))}
-    </>
-  )
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" onClick={this.handleClickCreateGroup}>追加</Button>
+          </DialogActions>
+        </Dialog>
+      </>
+    )
+  }
 }
 
 function mapStateToProps(state: all.State) {
