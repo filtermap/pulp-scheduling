@@ -1,3 +1,4 @@
+const CREATE_C1 = 'CREATE_C1'
 const UPDATE_C1_START_DATE_NAME = 'UPDATE_C1_START_DATE_NAME'
 const UPDATE_C1_STOP_DATE_NAME = 'UPDATE_C1_STOP_DATE_NAME'
 const UPDATE_C1_KINMU_INDEX = 'UPDATE_C1_KINMU_INDEX'
@@ -7,6 +8,15 @@ const DELETE_C1 = 'DELETE_C1'
 
 export type C1 = {
   index: number
+  start_date_name: string
+  stop_date_name: string
+  kinmu_index: number
+  group_index: number
+  min_number_of_assignments: number
+}
+
+type CreateC1 = {
+  type: typeof CREATE_C1
   start_date_name: string
   stop_date_name: string
   kinmu_index: number
@@ -50,12 +60,24 @@ type DeleteC1 = {
 }
 
 type Action =
+  | CreateC1
   | UpdateC1StartDateName
   | UpdateC1StopDateName
   | UpdateC1KinmuIndex
   | UpdateC1GroupIndex
   | UpdateC1MinNumberOfAssignments
   | DeleteC1
+
+export function createC1(start_date_name: string, stop_date_name: string, kinmu_index: number, group_index: number, min_number_of_assignments: number) {
+  return {
+    group_index,
+    kinmu_index,
+    min_number_of_assignments,
+    start_date_name,
+    stop_date_name,
+    type: CREATE_C1,
+  }
+}
 
 export function updateC1StartDateName(index: number, start_date_name: string): UpdateC1StartDateName {
   return {
@@ -110,6 +132,15 @@ const initialState: State = []
 
 export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
+    case CREATE_C1:
+      return state.concat({
+        group_index: action.group_index,
+        index: Math.max(...state.map(c => c.index)) + 1,
+        kinmu_index: action.kinmu_index,
+        min_number_of_assignments: action.min_number_of_assignments,
+        start_date_name: action.start_date_name,
+        stop_date_name: action.stop_date_name,
+      })
     case UPDATE_C1_START_DATE_NAME:
       return state.map(c => {
         if (c.index !== action.index) {
