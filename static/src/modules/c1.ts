@@ -68,7 +68,7 @@ type Action =
   | UpdateC1MinNumberOfAssignments
   | DeleteC1
 
-export function createC1(start_date_name: string, stop_date_name: string, kinmu_index: number, group_index: number, min_number_of_assignments: number) {
+export function createC1(start_date_name: string, stop_date_name: string, kinmu_index: number, group_index: number, min_number_of_assignments: number): CreateC1 {
   return {
     group_index,
     kinmu_index,

@@ -48,7 +48,7 @@ type Action =
   | UpdateC3MinNumberOfAssignments
   | DeleteC3
 
-export function createC3(member_index: number, kinmu_index: number, min_number_of_assignments: number) {
+export function createC3(member_index: number, kinmu_index: number, min_number_of_assignments: number): CreateC3 {
   return {
     kinmu_index,
     member_index,

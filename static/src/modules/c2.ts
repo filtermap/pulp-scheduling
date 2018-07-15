@@ -68,7 +68,7 @@ type Action =
   | UpdateC2MaxNumberOfAssignments
   | DeleteC2
 
-export function createC2(start_date_name: string, stop_date_name: string, kinmu_index: number, group_index: number, max_number_of_assignments: number) {
+export function createC2(start_date_name: string, stop_date_name: string, kinmu_index: number, group_index: number, max_number_of_assignments: number): CreateC2 {
   return {
     group_index,
     kinmu_index,
