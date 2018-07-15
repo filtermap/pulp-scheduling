@@ -1,3 +1,4 @@
+const CREATE_C10 = 'CREATE_C10'
 const UPDATE_C10_MEMBER_INDEX = 'UPDATE_C10_MEMBER_INDEX'
 const UPDATE_C10_START_DATE_NAME = 'UPDATE_C10_START_DATE_NAME'
 const UPDATE_C10_STOP_DATE_NAME = 'UPDATE_C10_STOP_DATE_NAME'
@@ -6,6 +7,14 @@ const DELETE_C10 = 'DELETE_C10'
 
 export type C10 = {
   index: number
+  member_index: number
+  start_date_name: string
+  stop_date_name: string
+  kinmu_index: number
+}
+
+type CreateC10 = {
+  type: typeof CREATE_C10
   member_index: number
   start_date_name: string
   stop_date_name: string
@@ -42,11 +51,22 @@ type DeleteC10 = {
 }
 
 type Action =
-  |UpdateC10MemberIndex
+  | CreateC10
+  | UpdateC10MemberIndex
   | UpdateC10StartDateName
   | UpdateC10StopDateName
   | UpdateC10KinmuIndex
   | DeleteC10
+
+export function createC10(member_index: number, start_date_name: string, stop_date_name: string, kinmu_index: number): CreateC10 {
+  return {
+    kinmu_index,
+    member_index,
+    start_date_name,
+    stop_date_name,
+    type: CREATE_C10,
+  }
+}
 
 export function updateC10MemberIndex(index: number, member_index: number): UpdateC10MemberIndex {
   return {
@@ -93,6 +113,14 @@ const initialState: State = []
 
 export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
+    case CREATE_C10:
+      return state.concat({
+        index: Math.max(...state.map(c => c.index)) + 1,
+        kinmu_index: action.kinmu_index,
+        member_index: action.member_index,
+        start_date_name: action.start_date_name,
+        stop_date_name: action.stop_date_name,
+      })
     case UPDATE_C10_MEMBER_INDEX:
       return state.map(c => {
         if (c.index !== action.index) {
