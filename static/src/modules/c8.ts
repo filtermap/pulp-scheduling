@@ -1,9 +1,16 @@
+const CREATE_C8 = "CREATE_C8"
 const UPDATE_C8_KINMU_INDEX = 'UPDATE_C8_KINMU_INDEX'
 const UPDATE_C8_MAX_NUMBER_OF_DAYS = 'UPDATE_C8_MAX_NUMBER_OF_DAYS'
 const DELETE_C8 = 'DELETE_C8'
 
 export type C8 = {
   index: number
+  kinmu_index: number
+  max_number_of_days: number
+}
+
+type CreateC8 = {
+  type: typeof CREATE_C8
   kinmu_index: number
   max_number_of_days: number
 }
@@ -26,9 +33,18 @@ type DeleteC8 = {
 }
 
 type Action =
+  | CreateC8
   | UpdateC8KinmuIndex
   | UpdateC8MaxNumberOfDays
   | DeleteC8
+
+export function createC8(kinmu_index: number, max_number_of_days: number): CreateC8 {
+  return {
+    kinmu_index,
+    max_number_of_days,
+    type: CREATE_C8,
+  }
+}
 
 export function updateC8KinmuIndex(index: number, kinmu_index: number): UpdateC8KinmuIndex {
   return {
@@ -59,6 +75,12 @@ const initialState: State = []
 
 export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
+    case CREATE_C8:
+      return state.concat({
+        index: Math.max(...state.map(c => c.index)) + 1,
+        kinmu_index: action.kinmu_index,
+        max_number_of_days: action.max_number_of_days,
+      })
     case UPDATE_C8_KINMU_INDEX:
       return state.map(c => {
         if (c.index !== action.index) {
