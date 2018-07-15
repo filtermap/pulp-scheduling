@@ -1,3 +1,4 @@
+const CREATE_C4 = 'CREATE_C4'
 const UPDATE_C4_MEMBER_INDEX = 'UPDATE_C4_MEMBER_INDEX'
 const UPDATE_C4_KINMU_INDEX = 'UPDATE_C4_KINMU_INDEX'
 const UPDATE_C4_MAX_NUMBER_OF_ASSIGNMENTS = 'UPDATE_C4_MAX_NUMBER_OF_ASSIGNMENTS'
@@ -5,6 +6,13 @@ const DELETE_C4 = 'DELETE_C4'
 
 export type C4 = {
   index: number
+  member_index: number
+  kinmu_index: number
+  max_number_of_assignments: number
+}
+
+type CreateC4 = {
+  type: typeof CREATE_C4
   member_index: number
   kinmu_index: number
   max_number_of_assignments: number
@@ -34,10 +42,20 @@ type DeleteC4 = {
 }
 
 type Action =
+  |CreateC4
   | UpdateC4MemberIndex
   | UpdateC4KinmuIndex
   | UpdateC4MaxNumberOfAssignments
   | DeleteC4
+
+export function createC4(member_index: number, kinmu_index: number, max_number_of_assignments: number): CreateC4 {
+  return {
+    kinmu_index,
+    max_number_of_assignments,
+    member_index,
+    type: CREATE_C4,
+  }
+}
 
 export function updateC4MemberIndex(index: number, member_index: number): UpdateC4MemberIndex {
   return {
@@ -76,6 +94,13 @@ const initialState: State = []
 
 export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
+    case CREATE_C4:
+      return state.concat({
+        index: Math.max(...state.map(c => c.index)) + 1,
+        kinmu_index: action.kinmu_index,
+        max_number_of_assignments: action.max_number_of_assignments,
+        member_index: action.member_index,
+      })
     case UPDATE_C4_MEMBER_INDEX:
       return state.map(c => {
         if (c.index !== action.index) {
