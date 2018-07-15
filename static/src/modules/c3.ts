@@ -1,3 +1,4 @@
+const CREATE_C3 = 'CREATE_C3'
 const UPDATE_C3_MEMBER_INDEX = 'UPDATE_C3_MEMBER_INDEX'
 const UPDATE_C3_KINMU_INDEX = 'UPDATE_C3_KINMU_INDEX'
 const UPDATE_C3_MIN_NUMBER_OF_ASSIGNMENTS = 'UPDATE_C3_MIN_NUMBER_OF_ASSIGNMENTS'
@@ -5,6 +6,13 @@ const DELETE_C3 = 'DELETE_C3'
 
 export type C3 = {
   index: number
+  member_index: number
+  kinmu_index: number
+  min_number_of_assignments: number
+}
+
+type CreateC3 = {
+  type: typeof CREATE_C3
   member_index: number
   kinmu_index: number
   min_number_of_assignments: number
@@ -34,10 +42,20 @@ type DeleteC3 = {
 }
 
 type Action =
+  | CreateC3
   | UpdateC3MemberIndex
   | UpdateC3KinmuIndex
   | UpdateC3MinNumberOfAssignments
   | DeleteC3
+
+export function createC3(member_index: number, kinmu_index: number, min_number_of_assignments: number) {
+  return {
+    kinmu_index,
+    member_index,
+    min_number_of_assignments,
+    type: CREATE_C3,
+  }
+}
 
 export function updateC3MemberIndex(index: number, member_index: number): UpdateC3MemberIndex {
   return {
@@ -76,6 +94,13 @@ const initialState: State = []
 
 export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
+    case CREATE_C3:
+      return state.concat({
+        index: Math.max(...state.map(c => c.index)) + 1,
+        kinmu_index: action.kinmu_index,
+        member_index: action.member_index,
+        min_number_of_assignments: action.min_number_of_assignments,
+      })
     case UPDATE_C3_MEMBER_INDEX:
       return state.map(c => {
         if (c.index !== action.index) {
