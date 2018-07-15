@@ -156,7 +156,7 @@ class C9 extends React.Component<Props, State> {
             </DialogActions>
           </Dialog> :
           <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
-            <DialogTitle>勤務の間隔日数の下限の追加</DialogTitle>
+            <DialogTitle>職員の機関に割り当てる勤務の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <TextField
                 select={true}
