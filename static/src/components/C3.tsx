@@ -35,7 +35,7 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 }
 
-class C3 extends React.Component<Props, State>{
+class C3 extends React.Component<Props, State> {
   public state: State = {
     kinmu_index: 0,
     member_index: 0,
