@@ -231,6 +231,7 @@ class C1 extends React.Component<Props, State> {
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickCreateC1}>追加</Button>
+              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
       </>

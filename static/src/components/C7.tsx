@@ -147,6 +147,7 @@ class C7 extends React.Component<Props, State> {
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickCreateC7}>追加</Button>
+              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
       </>
