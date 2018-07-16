@@ -77,7 +77,19 @@ class C1 extends React.Component<Props, State> {
     }
   }
   public handleClickOpenDialog = () => {
-    this.setState({ open: true })
+    const kinmu_index = this.props.kinmus.length > 0 &&
+      this.props.kinmus.every(kinmu => kinmu.index !== this.state.kinmu_index) ?
+      this.props.kinmus[0].index :
+      this.state.kinmu_index
+    const group_index = this.props.groups.length > 0 &&
+      this.props.groups.every(group => group.index !== this.state.group_index) ?
+      this.props.groups[0].index :
+      this.state.group_index
+    this.setState({
+      group_index,
+      kinmu_index,
+      open: true,
+    })
   }
   public handleCloseDialog = () => {
     this.setState({ open: false })
