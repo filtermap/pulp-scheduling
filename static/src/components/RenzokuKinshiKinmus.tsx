@@ -33,6 +33,11 @@ function RenzokuKinshiKinmus(props: Props) {
       props.dispatch(renzoku_kinshi_kinmus.updateRenzokuKinshiKinmuKinmuIndex(index, parseInt(event.target.value, 10)))
     }
   }
+  function handleClickDeleteRenzokuKinshiKinmu(index: number) {
+    return (_: React.MouseEvent<HTMLButtonElement>) => {
+      props.dispatch(renzoku_kinshi_kinmus.deleteRenzokuKinshiKinmu(index))
+    }
+  }
   return (
     <>
       <Toolbar>
@@ -47,17 +52,20 @@ function RenzokuKinshiKinmus(props: Props) {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               {renzoku_kinshi_kinmus_by_sequence_id.map((renzoku_kinshi_kinmu, index) => (
-                <TextField
-                  select={true}
-                  label={`勤務${index + 1}`}
-                  value={renzoku_kinshi_kinmu.kinmu_index}
-                  onChange={handleChangeRenzokuKinshiKinmuKinmuIndex(renzoku_kinshi_kinmu.index)}
-                  fullWidth={true}
-                >
-                  {props.kinmus.map(kinmu => (
-                    <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
-                  ))}
-                </TextField>
+                <React.Fragment key={renzoku_kinshi_kinmu.index}>
+                  <TextField
+                    select={true}
+                    label={`勤務${index + 1}`}
+                    value={renzoku_kinshi_kinmu.kinmu_index}
+                    onChange={handleChangeRenzokuKinshiKinmuKinmuIndex(renzoku_kinshi_kinmu.index)}
+                    fullWidth={true}
+                  >
+                    {props.kinmus.map(kinmu => (
+                      <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                    ))}
+                  </TextField>
+                  <Button size="small" onClick={handleClickDeleteRenzokuKinshiKinmu(renzoku_kinshi_kinmu.index)}>削除</Button>
+                </React.Fragment>
               ))}
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
