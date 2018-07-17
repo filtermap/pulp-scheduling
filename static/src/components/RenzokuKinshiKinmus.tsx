@@ -28,6 +28,12 @@ function RenzokuKinshiKinmus(props: Props) {
       props.dispatch(renzoku_kinshi_kinmus.deleteSequence(sequence_id))
     }
   }
+  function handleClickCreateRenzokuKinshiKinmu(sequence_id: number, sequence_number: number) {
+    return (_: React.MouseEvent<HTMLButtonElement>) => {
+      const kinmu_index = props.kinmus[0].index
+      props.dispatch(renzoku_kinshi_kinmus.createRenzokuKinshiKinmu(sequence_id, sequence_number, kinmu_index))
+    }
+  }
   function handleChangeRenzokuKinshiKinmuKinmuIndex(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       props.dispatch(renzoku_kinshi_kinmus.updateRenzokuKinshiKinmuKinmuIndex(index, parseInt(event.target.value, 10)))
@@ -51,6 +57,7 @@ function RenzokuKinshiKinmus(props: Props) {
               <Typography>{renzoku_kinshi_kinmus_by_sequence_id.map(renzoku_kinshi_kinmu => props.kinmus.find(kinmu => kinmu.index === renzoku_kinshi_kinmu.kinmu_index)!.name).join(', ')}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <Button size="small" onClick={handleClickCreateRenzokuKinshiKinmu(sequence_id, 0)}>追加</Button>
               {renzoku_kinshi_kinmus_by_sequence_id.map((renzoku_kinshi_kinmu, index) => (
                 <React.Fragment key={renzoku_kinshi_kinmu.index}>
                   <TextField
@@ -65,6 +72,7 @@ function RenzokuKinshiKinmus(props: Props) {
                     ))}
                   </TextField>
                   <Button size="small" onClick={handleClickDeleteRenzokuKinshiKinmu(renzoku_kinshi_kinmu.index)}>削除</Button>
+                  <Button size="small" onClick={handleClickCreateRenzokuKinshiKinmu(sequence_id, renzoku_kinshi_kinmu.sequence_number + 1)}>追加</Button>
                 </React.Fragment>
               ))}
             </ExpansionPanelDetails>
