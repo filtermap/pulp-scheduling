@@ -1,7 +1,10 @@
 import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import MenuItem from '@material-ui/core/MenuItem'
+import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -25,21 +28,44 @@ function RenzokuKinshiKinmus(props: Props) {
       props.dispatch(renzoku_kinshi_kinmus.deleteSequence(sequence_id))
     }
   }
+  function handleChangeRenzokuKinshiKinmuKinmuIndex(index: number) {
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      props.dispatch(renzoku_kinshi_kinmus.updateRenzokuKinshiKinmuKinmuIndex(index, parseInt(event.target.value, 10)))
+    }
+  }
   return (
     <>
       <Toolbar>
         <Typography variant="subheading">連続禁止勤務並び</Typography>
       </Toolbar>
-      {sequence_ids.map(sequence_id => (
-        <ExpansionPanel key={sequence_id}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>{props.renzoku_kinshi_kinmus.filter(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.sequence_id === sequence_id).sort((a, b) => a.sequence_number - b.sequence_number).map(renzoku_kinshi_kinmu => props.kinmus.find(kinmu => kinmu.index === renzoku_kinshi_kinmu.kinmu_index)!.name).join(', ')}</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelActions>
-            <Button size="small" onClick={handleClickDeleteSequence(sequence_id)}>削除</Button>
-          </ExpansionPanelActions>
-        </ExpansionPanel>
-      ))}
+      {sequence_ids.map(sequence_id => {
+        const renzoku_kinshi_kinmus_by_sequence_id = props.renzoku_kinshi_kinmus.filter(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.sequence_id === sequence_id).sort((a, b) => a.sequence_number - b.sequence_number)
+        return (
+          <ExpansionPanel key={sequence_id}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>{renzoku_kinshi_kinmus_by_sequence_id.map(renzoku_kinshi_kinmu => props.kinmus.find(kinmu => kinmu.index === renzoku_kinshi_kinmu.kinmu_index)!.name).join(', ')}</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              {renzoku_kinshi_kinmus_by_sequence_id.map((renzoku_kinshi_kinmu, index) => (
+                <TextField
+                  select={true}
+                  label={`勤務${index + 1}`}
+                  value={renzoku_kinshi_kinmu.kinmu_index}
+                  onChange={handleChangeRenzokuKinshiKinmuKinmuIndex(renzoku_kinshi_kinmu.index)}
+                  fullWidth={true}
+                >
+                  {props.kinmus.map(kinmu => (
+                    <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                  ))}
+                </TextField>
+              ))}
+            </ExpansionPanelDetails>
+            <ExpansionPanelActions>
+              <Button size="small" onClick={handleClickDeleteSequence(sequence_id)}>削除</Button>
+            </ExpansionPanelActions>
+          </ExpansionPanel>
+        )
+      })}
     </>
   )
 }
