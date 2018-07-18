@@ -91,8 +91,8 @@ const initialState: State = []
 export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case CREATE_SEQUENCE: {
-      const renzoku_kinshi_kinmu_index = Math.max(...state.map(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.index)) + 1
-      const sequence_id = Math.max(...state.map(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.sequence_id)) + 1
+      const renzoku_kinshi_kinmu_index = Math.max(0, ...state.map(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.index)) + 1
+      const sequence_id = Math.max(0, ...state.map(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.sequence_id)) + 1
       return state.concat(action.kinmu_indices.map((kinmu_index, index) => ({
         index: renzoku_kinshi_kinmu_index + index,
         kinmu_index,
@@ -110,7 +110,7 @@ export function reducer(state: State = initialState, action: Action): State {
           renzoku_kinshi_kinmu.sequence_number + 1
         return ({ ...renzoku_kinshi_kinmu, sequence_number, })
       }).concat({
-        index: Math.max(...state.map(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.index)) + 1,
+        index: Math.max(0, ...state.map(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.index)) + 1,
         kinmu_index: action.kinmu_index,
         sequence_id: action.sequence_id,
         sequence_number: action.sequence_number,

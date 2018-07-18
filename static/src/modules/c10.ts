@@ -115,7 +115,7 @@ export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case CREATE_C10:
       return state.concat({
-        index: Math.max(...state.map(c => c.index)) + 1,
+        index: Math.max(0, ...state.map(c => c.index)) + 1,
         kinmu_index: action.kinmu_index,
         member_index: action.member_index,
         start_date_name: action.start_date_name,

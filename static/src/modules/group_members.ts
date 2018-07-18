@@ -44,7 +44,7 @@ const initialState: State = []
 export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case CREATE_GROUP_MEMBER:
-      return state.concat({ index: Math.max(...state.map(group_member => group_member.index)) + 1, group_index: action.group_index, member_index: action.member_index })
+      return state.concat({ index: Math.max(0, ...state.map(group_member => group_member.index)) + 1, group_index: action.group_index, member_index: action.member_index })
     case DELETE_GROUP_MEMBER:
       return state.filter(group_member => !(group_member.group_index === action.group_index && group_member.member_index === action.member_index))
   }

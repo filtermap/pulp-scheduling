@@ -43,7 +43,7 @@ const initialState: State = []
 export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case CREATE_KINMU:
-      return state.concat({ index: Math.max(...state.map(kinmu => kinmu.index)) + 1, name: action.name })
+      return state.concat({ index: Math.max(0, ...state.map(kinmu => kinmu.index)) + 1, name: action.name })
     case UPDATE_KINMU_NAME:
       return state.map(kinmu => {
         if (kinmu.index !== action.index) {

@@ -153,8 +153,8 @@ function crossSliceReducer(state: State, action: Action): State {
     case REPLACE_ALL:
       return action.all
     case CREATE_MEMBER: {
-      const member_index = Math.max(...state.members.map(member => member.index)) + 1
-      const group_member_index = Math.max(...state.group_members.map(group_member => group_member.index)) + 1
+      const member_index = Math.max(0, ...state.members.map(member => member.index)) + 1
+      const group_member_index = Math.max(0, ...state.group_members.map(group_member => group_member.index)) + 1
       return {
         ...state,
         group_members: state.group_members.concat(
@@ -164,8 +164,8 @@ function crossSliceReducer(state: State, action: Action): State {
       }
     }
     case CREATE_GROUP: {
-      const group_index = Math.max(...state.groups.map(group => group.index)) + 1
-      const group_member_index = Math.max(...state.group_members.map(group_member => group_member.index)) + 1
+      const group_index = Math.max(0, ...state.groups.map(group => group.index)) + 1
+      const group_member_index = Math.max(0, ...state.group_members.map(group_member => group_member.index)) + 1
       return {
         ...state,
         group_members: state.group_members.concat(
