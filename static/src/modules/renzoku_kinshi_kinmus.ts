@@ -1,3 +1,4 @@
+const CREATE_SEQUENCE = 'CREATE_SEQUENCE'
 const CREATE_RENZOKU_KINSHI_KINMU = 'CREATE_RENZOKU_KINSHI_KINMU'
 const UPDATE_RENZOKU_KINSHI_KINMU_KINMU_INDEX = 'UPDATE_RENZOKU_KINSHI_KINMU_KINMU_INDEX'
 const DELETE_RENZOKU_KINSHI_KINMU = 'DELETE_RENZOKU_KINSHI_KINMU'
@@ -8,6 +9,11 @@ export type RenzokuKinshiKinmu = {
   sequence_id: number
   sequence_number: number
   kinmu_index: number
+}
+
+type CreateSequence = {
+  type: typeof CREATE_SEQUENCE
+  kinmu_indices: number[]
 }
 
 type CreateRenzokuKinshiKinmu = {
@@ -34,10 +40,18 @@ type DeleteSequence = {
 }
 
 type Action =
+  | CreateSequence
   | CreateRenzokuKinshiKinmu
   | UpdateRenzokuKinshiKinmuKinmuIndex
   | DeleteRenzokuKinshiKinmu
   | DeleteSequence
+
+export function createSequence(kinmu_indices: number[]): CreateSequence {
+  return {
+    kinmu_indices,
+    type: CREATE_SEQUENCE,
+  }
+}
 
 export function createRenzokuKinshiKinmu(sequence_id: number, sequence_number: number, kinmu_index: number): CreateRenzokuKinshiKinmu {
   return {
@@ -76,6 +90,16 @@ const initialState: State = []
 
 export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
+    case CREATE_SEQUENCE: {
+      const renzoku_kinshi_kinmu_index = Math.max(...state.map(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.index)) + 1
+      const sequence_id = Math.max(...state.map(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.sequence_id)) + 1
+      return state.concat(action.kinmu_indices.map((kinmu_index, index) => ({
+        index: renzoku_kinshi_kinmu_index + index,
+        kinmu_index,
+        sequence_id,
+        sequence_number: index,
+      })))
+    }
     case CREATE_RENZOKU_KINSHI_KINMU:
       return state.map(renzoku_kinshi_kinmu => {
         if (renzoku_kinshi_kinmu.sequence_id !== action.sequence_id) {
@@ -98,7 +122,7 @@ export function reducer(state: State = initialState, action: Action): State {
         }
         return { ...renzoku_kinshi_kinmu, kinmu_index: action.kinmu_index }
       })
-    case DELETE_RENZOKU_KINSHI_KINMU:
+    case DELETE_RENZOKU_KINSHI_KINMU: {
       const deleted_renzoku_kinshi_kinmu = state.find(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.index === action.index)!
       return state
         .filter(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.index !== action.index)
@@ -111,6 +135,7 @@ export function reducer(state: State = initialState, action: Action): State {
             renzoku_kinshi_kinmu.sequence_number - 1
           return { ...renzoku_kinshi_kinmu, sequence_number }
         })
+    }
     case DELETE_SEQUENCE:
       return state.filter(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.sequence_id !== action.sequence_id)
   }
