@@ -196,9 +196,11 @@ function crossSliceReducer(state: State, action: Action): State {
         group_members: state.group_members.filter(group_member => group_member.group_index !== action.index),
         groups: state.groups.filter(group => group.index !== action.index),
       }
-    case DELETE_KINMU:
+    case DELETE_KINMU: {
+      const deleted_roster_ids = Array.from(new Set(state.assignments.filter(assignment => assignment.kinmu_index === action.index).map(assignment => assignment.roster_id)))
       return {
         ...state,
+        assignments: state.assignments.filter(assignment => !deleted_roster_ids.includes(assignment.roster_id)),
         c1: state.c1.filter(c => c.kinmu_index !== action.index),
         c10: state.c10.filter(c => c.kinmu_index !== action.index),
         c2: state.c2.filter(c => c.kinmu_index !== action.index),
@@ -212,6 +214,7 @@ function crossSliceReducer(state: State, action: Action): State {
         kinmus: state.kinmus.filter(kinmu => kinmu.index !== action.index),
         renzoku_kinshi_kinmus: state.renzoku_kinshi_kinmus.filter(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.kinmu_index !== action.index),
       }
+    }
   }
   return state
 }
