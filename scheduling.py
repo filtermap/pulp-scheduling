@@ -20,6 +20,10 @@ def str_to_date(string, format="%Y/%m/%d"):
     return datetime.datetime.strptime(string, format).date()
 
 
+def date_to_str(date, format="%Y/%m/%d"):
+    return date.strftime(format)
+
+
 def date_range(start_date, stop_date):
     for days in range((stop_date - start_date).days):
         yield start_date + datetime.timedelta(days)
@@ -548,6 +552,76 @@ def write_c10(c10, members, kinmus):
     )
 
 
+def read_assignments(members, kinmus):
+    """勤務表。"""
+    with open(in_data_directory("assignments.csv")) as f:
+        next(f)
+        assignments = [
+            {
+                "index": index,
+                "roster_id": int(r["勤務表ID"]),
+                "date_name": r["日付"],
+                "member_index": find(
+                    members, lambda member: member["name"] == r["職員名"]
+                )["index"],
+                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
+                    "index"
+                ],
+            }
+            for index, r in enumerate(csv.DictReader(f, ["勤務表ID", "日付", "職員名", "勤務名"]))
+        ]
+    return assignments
+
+
+def write_assignments(assignments, members, kinmus):
+    rows = [
+        {
+            "roster_id": assignment["roster_id"],
+            "date_name": assignment["date_name"],
+            "member_name": find(
+                members, lambda member: member["index"] == assignment["member_index"]
+            )["name"],
+            "kinmu_name": find(
+                kinmus, lambda kinmu: kinmu["index"] == assignment["kinmu_index"]
+            )["name"],
+        }
+        for assignment in assignments
+    ]
+    write_rows(
+        rows, "assignments.csv", ["roster_id", "date_name", "member_name", "kinmu_name"]
+    )
+
+
+def x_to_assignments(x, assignments, dates, members, kinmus):
+    index = (
+        max([0] + list(map(lambda assignment: assignment["index"], assignments))) + 1
+    )
+    roster_id = (
+        max([0] + list(map(lambda assignment: assignment["roster_id"], assignments)))
+        + 1
+    )
+    new_assignments = [
+        {
+            "index": index,
+            "roster_id": roster_id,
+            "date_name": date["name"],
+            "member_index": member["index"],
+            "kinmu_index": kinmu["index"],
+        }
+        for index, (date, member, kinmu) in enumerate(
+            (
+                (date, member, kinmu)
+                for date in dates
+                for member in members
+                for kinmu in kinmus
+                if x[member["index"]][date["index"]][kinmu["index"]].value() == 1
+            ),
+            start=index,
+        )
+    ]
+    return new_assignments
+
+
 def solve():
     members = read_members()
     terms = read_terms()
@@ -565,9 +639,10 @@ def solve():
     c8 = read_c8(kinmus)
     c9 = read_c9(members, kinmus)
     c10 = read_c10(members, kinmus)
+    assignments = read_assignments(members, kinmus)
 
     dates = [
-        {"index": index, "name": str(date)}
+        {"index": index, "name": date_to_str(date)}
         for term in terms
         for index, date in enumerate(
             date_range(
@@ -613,7 +688,7 @@ def solve():
             "min_number_of_assignments": c["min_number_of_assignments"],
         }
         for index, (c, date_name) in enumerate(
-            (c, str(date))
+            (c, date_to_str(date))
             for c in c1
             for date in date_range(
                 str_to_date(c["start_date_name"]),
@@ -630,7 +705,7 @@ def solve():
             "max_number_of_assignments": c["max_number_of_assignments"],
         }
         for index, (c, date_name) in enumerate(
-            (c, str(date))
+            (c, date_to_str(date))
             for c in c2
             for date in date_range(
                 str_to_date(c["start_date_name"]),
@@ -696,7 +771,7 @@ def solve():
             "kinmu_index": c["kinmu_index"],
         }
         for index, (c, date_name) in enumerate(
-            (c, str(date))
+            (c, date_to_str(date))
             for c in c9
             for date in date_range(
                 str_to_date(c["start_date_name"]),
@@ -712,7 +787,7 @@ def solve():
             "kinmu_index": c["kinmu_index"],
         }
         for index, (c, date_name) in enumerate(
-            (c, str(date))
+            (c, date_to_str(date))
             for c in c10
             for date in date_range(
                 str_to_date(c["start_date_name"]),
@@ -850,6 +925,9 @@ def solve():
                             break
                 f.write("|\n")
             f.write("-" * lm + "+" + ("-" * len(D)) + "+\n")
+            new_assignments = x_to_assignments(x, assignments, dates, members, kinmus)
+            assignments = assignments + new_assignments
+            write_assignments(assignments, members, kinmus)
             problem += (
                 sum(
                     x[m][d][k]
