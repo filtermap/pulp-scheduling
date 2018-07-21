@@ -42,6 +42,7 @@ def read_all():
     c8 = scheduling.read_c8(kinmus)
     c9 = scheduling.read_c9(members, kinmus)
     c10 = scheduling.read_c10(members, kinmus)
+    assignments = scheduling.read_assignments(members, kinmus)
     return {
         "members": members,
         "terms": terms,
@@ -59,6 +60,7 @@ def read_all():
         "c8": c8,
         "c9": c9,
         "c10": c10,
+        "assignments": assignments,
     }
 
 
@@ -80,6 +82,7 @@ def write_all(all):
     scheduling.write_c8(all["c8"], all["kinmus"])
     scheduling.write_c9(all["c9"], all["members"], all["kinmus"])
     scheduling.write_c10(all["c10"], all["members"], all["kinmus"])
+    scheduling.write_assignments(all["assignments"], all["members"], all["kinmus"])
     return True
 
 

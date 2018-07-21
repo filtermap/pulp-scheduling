@@ -1,5 +1,6 @@
 import reduceReducer from 'reduce-reducers'
 import { combineReducers } from 'redux'
+import * as assignments from './assignments'
 import * as c1 from './c1'
 import * as c10 from './c10'
 import * as c2 from './c2'
@@ -41,6 +42,7 @@ export type All = {
   c8: c8.C8[]
   c9: c9.C9[]
   c10: c10.C10[]
+  assignments: assignments.Assignment[]
 }
 
 type ReplaceAll = {
@@ -130,6 +132,7 @@ export function deleteKinmu(index: number): DeleteKinmu {
 export type State = All
 
 const combinedReducer: (state: State, action: Action) => State = combineReducers({
+  assignments: assignments.reducer,
   c1: c1.reducer,
   c10: c10.reducer,
   c2: c2.reducer,

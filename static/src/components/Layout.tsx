@@ -18,6 +18,7 @@ import { connect } from 'react-redux'
 import { Link, Route, RouteComponentProps, withRouter } from 'react-router-dom'
 import * as all from '../modules/all'
 import * as utils from '../utils'
+import Assignments from './Assignments'
 import C1 from './C1'
 import C10 from './C10'
 import C2 from './C2'
@@ -70,6 +71,10 @@ type Props = { all: all.All, theme: Theme } & WithStyles<typeof styles> & RouteC
 
 type State = {
   mobileOpen: boolean,
+}
+
+function AssignmentsLink(props: any) {
+  return <Link to="/assignments" {...props} />
 }
 
 function TermsLink(props: any) {
@@ -152,6 +157,12 @@ class ResponsiveDrawer extends React.Component<Props, State> {
         <div className={classes.toolbar} />
         <Divider />
         <List>
+          <ListItem button={true} component={AssignmentsLink}>
+            <ListItemText primary="勤務表" />
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
           <ListItem button={true} component={TermsLink}>
             <ListItemText primary="期間" />
           </ListItem>
@@ -164,7 +175,9 @@ class ResponsiveDrawer extends React.Component<Props, State> {
           <ListItem button={true} component={GroupsLink}>
             <ListItemText primary="グループ" />
           </ListItem>
-          <Divider />
+        </List>
+        <Divider />
+        <List>
           <ListItem button={true} component={RenzokuKinshiKinmusLink}>
             <ListItemText primary="連続禁止勤務並び" />
           </ListItem>
@@ -250,6 +263,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
           <div style={{ padding: 16 }}>
             <Grid container={true} spacing={32}>
               <Grid item={true} xs={12}>
+                <Route path="/assignments" component={Assignments} />
                 <Route path="/terms" component={Terms} />
                 <Route path="/members" component={Members} />
                 <Route path="/kinmus" component={Kinmus} />
