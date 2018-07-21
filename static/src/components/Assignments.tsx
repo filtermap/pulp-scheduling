@@ -1,5 +1,6 @@
 import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
@@ -61,6 +62,11 @@ function Assignment(props: Props) {
     await utils.sendJSONRPCRequest('solve')
     props.dispatch(all.replaceAll((await utils.sendJSONRPCRequest('read_all')).result))
   }
+  function handleClickDeleteRoster(roster_id: number) {
+    return (_: React.MouseEvent<HTMLButtonElement>) => {
+      props.dispatch(assignments.deleteRoster(roster_id))
+    }
+  }
   return (
     <>
       <Toolbar>
@@ -101,6 +107,9 @@ function Assignment(props: Props) {
                 </Table>
               </div>
             </ExpansionPanelDetails>
+            <ExpansionPanelActions>
+              <Button size="small" onClick={handleClickDeleteRoster(roster_id)}>削除</Button>
+            </ExpansionPanelActions>
           </ExpansionPanel>
         )
       })}
