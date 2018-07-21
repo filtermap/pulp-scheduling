@@ -45,7 +45,11 @@ const styles = (theme: Theme) => createStyles({
     position: 'fixed',
   },
   content: {
+    [theme.breakpoints.up('md')]: {
+      maxWidth: `calc(100% - ${drawerWidth}px)`,
+    },
     flex: 1,
+    maxWidth: '100%',
   },
   drawerDocked: {
     width: drawerWidth,

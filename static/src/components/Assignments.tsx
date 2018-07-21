@@ -2,6 +2,7 @@ import Button from '@material-ui/core/Button'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -19,12 +20,30 @@ import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
 import * as utils from '../utils'
 
+const styles = createStyles({
+  leftHeaderCell: {
+    background: 'white',
+    left: 0,
+    position: 'sticky',
+  },
+  tableWrapper: {
+    maxHeight: 'calc(100vh - 200px)',
+    overflow: 'auto',
+  },
+  topHeaderCell: {
+    background: 'white',
+    position: 'sticky',
+    top: 0,
+    zIndex: 1,
+  },
+})
+
 type Props = {
   dispatch: Dispatch
   assignments: assignments.Assignment[]
   members: members.Member[]
   kinmus: kinmus.Kinmu[]
-}
+} & WithStyles<typeof styles>
 
 const dateNamePattern = /^(\d{4})\/(\d{1,2})\/(\d{1,2})$/
 
@@ -56,29 +75,31 @@ function Assignment(props: Props) {
               <Typography>{`勤務表${roster_id}`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>\</TableCell>
-                    {date_names.map(date_name => (
-                      <TableCell key={date_name}>{date_name}</TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {props.members.map(member => {
-                    const assignments_by_roster_id_and_member_index = assignments_by_roster_id.filter(assignment => assignment.member_index === member.index)
-                    return (
-                      <TableRow key={member.index}>
-                        <TableCell>{member.name}</TableCell>
-                        {date_names.map(date_name => (
-                          <TableCell key={date_name}>{props.kinmus.find(kinmu => kinmu.index === assignments_by_roster_id_and_member_index.find(assignment => assignment.date_name === date_name)!.kinmu_index)!.name}</TableCell>
-                        ))}
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
+              <div className={props.classes.tableWrapper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell padding="dense" className={props.classes.topHeaderCell}>\</TableCell>
+                      {date_names.map(date_name => (
+                        <TableCell key={date_name} padding="dense" className={props.classes.topHeaderCell}>{date_name}</TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {props.members.map(member => {
+                      const assignments_by_roster_id_and_member_index = assignments_by_roster_id.filter(assignment => assignment.member_index === member.index)
+                      return (
+                        <TableRow key={member.index}>
+                          <TableCell padding="dense" className={props.classes.leftHeaderCell}>{member.name}</TableCell>
+                          {date_names.map(date_name => (
+                            <TableCell padding="dense" key={date_name}>{props.kinmus.find(kinmu => kinmu.index === assignments_by_roster_id_and_member_index.find(assignment => assignment.date_name === date_name)!.kinmu_index)!.name}</TableCell>
+                          ))}
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
             </ExpansionPanelDetails>
           </ExpansionPanel>
         )
@@ -95,4 +116,4 @@ function mapStateToProps(state: all.State) {
   }
 }
 
-export default connect(mapStateToProps)(Assignment)
+export default connect(mapStateToProps)(withStyles(styles)(Assignment))
