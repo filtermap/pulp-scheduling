@@ -12,6 +12,7 @@ import TableRow from '@material-ui/core/TableRow'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import * as iconv from 'iconv-lite'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -69,7 +70,7 @@ function Assignment(props: Props) {
   }
   function handleClickExportToCSV(roster_id: number) {
     return async (_: React.MouseEvent<HTMLButtonElement>) => {
-      const csv = (await utils.sendJSONRPCRequest('download_csv', [roster_id])).result
+      const csv = iconv.encode((await utils.sendJSONRPCRequest('download_csv', [roster_id])).result, 'Shift_JIS')
       const a = document.createElement('a')
       a.download = `勤務表${roster_id}.csv`
       a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
