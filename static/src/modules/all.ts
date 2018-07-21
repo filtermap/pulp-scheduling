@@ -180,6 +180,7 @@ function crossSliceReducer(state: State, action: Action): State {
     case DELETE_MEMBER:
       return {
         ...state,
+        assignments: state.assignments.filter(assignment => assignment.member_index !== action.index),
         c10: state.c10.filter(c => c.member_index !== action.index),
         c3: state.c3.filter(c => c.member_index !== action.index),
         c4: state.c4.filter(c => c.member_index !== action.index),
