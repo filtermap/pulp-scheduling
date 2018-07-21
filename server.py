@@ -1,3 +1,5 @@
+import csv
+import io
 import os
 import sys
 import flask
@@ -89,6 +91,41 @@ def write_all(all):
 @api.dispatcher.add_method
 def solve():
     return scheduling.solve()
+
+
+@api.dispatcher.add_method
+def download_csv(roster_id):
+    members = scheduling.read_members()
+    kinmus = scheduling.read_kinmus()
+    assignments = [
+        assignment
+        for assignment in scheduling.read_assignments(members, kinmus)
+        if assignment["roster_id"] == roster_id
+    ]
+    date_names = sorted(
+        list(set([assignment["date_name"] for assignment in assignments])),
+        key=lambda date_name: utils.str_to_date(date_name),
+    )
+    rows = [[""] + date_names] + [
+        [member["name"]]
+        + [
+            utils.find(
+                kinmus,
+                lambda kinmu: kinmu["index"]
+                == utils.find(
+                    assignments,
+                    lambda assignment: assignment["member_index"] == member["index"]
+                    and assignment["date_name"] == date_name,
+                )["kinmu_index"],
+            )["name"]
+            for date_name in date_names
+        ]
+        for member in members
+    ]
+    stringIO = io.StringIO()
+    writer = csv.writer(stringIO)
+    writer.writerows(rows)
+    return stringIO.getvalue()
 
 
 if __name__ == "__main__":

@@ -67,6 +67,15 @@ function Assignment(props: Props) {
       props.dispatch(assignments.deleteRoster(roster_id))
     }
   }
+  function handleClickExportToCSV(roster_id: number) {
+    return async (_: React.MouseEvent<HTMLButtonElement>) => {
+      const csv = (await utils.sendJSONRPCRequest('download_csv', [roster_id])).result
+      const a = document.createElement('a')
+      a.download = `勤務表${roster_id}.csv`
+      a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
+      a.click()
+    }
+  }
   return (
     <>
       <Toolbar>
@@ -109,6 +118,7 @@ function Assignment(props: Props) {
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
               <Button size="small" onClick={handleClickDeleteRoster(roster_id)}>削除</Button>
+              <Button size="small" onClick={handleClickExportToCSV(roster_id)}>CSV出力</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         )

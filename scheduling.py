@@ -3,6 +3,7 @@ import datetime
 import operator
 import os
 import pulp
+import utils
 
 one_day = datetime.timedelta(days=1)
 data_directory = os.path.join(os.getcwd(), "data")
@@ -10,14 +11,6 @@ data_directory = os.path.join(os.getcwd(), "data")
 
 def in_data_directory(path):
     return os.path.join(data_directory, path)
-
-
-def find(iterable, function):
-    return next(filter(function, iterable))
-
-
-def str_to_date(string, format="%Y/%m/%d"):
-    return datetime.datetime.strptime(string, format).date()
 
 
 def date_to_str(date, format="%Y/%m/%d"):
@@ -104,10 +97,10 @@ def read_group_members(groups, members):
         group_members = [
             {
                 "index": index,
-                "group_index": find(groups, lambda group: group["name"] == r["グループ名"])[
-                    "index"
-                ],
-                "member_index": find(
+                "group_index": utils.find(
+                    groups, lambda group: group["name"] == r["グループ名"]
+                )["index"],
+                "member_index": utils.find(
                     members, lambda member: member["name"] == r["職員名"]
                 )["index"],
             }
@@ -119,10 +112,10 @@ def read_group_members(groups, members):
 def write_group_members(group_members, groups, members):
     rows = [
         {
-            "group_name": find(
+            "group_name": utils.find(
                 groups, lambda group: group["index"] == group_member["group_index"]
             )["name"],
-            "member_name": find(
+            "member_name": utils.find(
                 members, lambda member: member["index"] == group_member["member_index"]
             )["name"],
         }
@@ -140,9 +133,9 @@ def read_renzoku_kinshi_kinmus(kinmus):
                 "index": index,
                 "sequence_id": r["並びID"],
                 "sequence_number": int(r["並び順"]),
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
             }
             for index, r in enumerate(csv.DictReader(f, ["並びID", "並び順", "勤務名"]))
         ]
@@ -154,7 +147,7 @@ def write_renzoku_kinshi_kinmus(renzoku_kinshi_kinmus, kinmus):
         {
             "sequence_id": renzoku_kinshi_kinmu["sequence_id"],
             "sequence_number": renzoku_kinshi_kinmu["sequence_number"],
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus,
                 lambda kinmu: kinmu["index"] == renzoku_kinshi_kinmu["kinmu_index"],
             )["name"],
@@ -177,12 +170,12 @@ def read_c1(kinmus, groups):
                 "index": index,
                 "start_date_name": r["開始日"],
                 "stop_date_name": r["終了日"],
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
-                "group_index": find(groups, lambda group: group["name"] == r["グループ名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
+                "group_index": utils.find(
+                    groups, lambda group: group["name"] == r["グループ名"]
+                )["index"],
                 "min_number_of_assignments": int(r["割り当て職員数下限"]),
             }
             for index, r in enumerate(
@@ -197,10 +190,10 @@ def write_c1(c1, kinmus, groups):
         {
             "start_date_name": c["start_date_name"],
             "stop_date_name": c["stop_date_name"],
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
             )["name"],
-            "group_name": find(
+            "group_name": utils.find(
                 groups, lambda group: group["index"] == c["group_index"]
             )["name"],
             "min_number_of_assignments": c["min_number_of_assignments"],
@@ -229,12 +222,12 @@ def read_c2(kinmus, groups):
                 "index": index,
                 "start_date_name": r["開始日"],
                 "stop_date_name": r["終了日"],
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
-                "group_index": find(groups, lambda group: group["name"] == r["グループ名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
+                "group_index": utils.find(
+                    groups, lambda group: group["name"] == r["グループ名"]
+                )["index"],
                 "max_number_of_assignments": int(r["割り当て職員数上限"]),
             }
             for index, r in enumerate(
@@ -249,10 +242,10 @@ def write_c2(c2, kinmus, groups):
         {
             "start_date_name": c["start_date_name"],
             "stop_date_name": c["stop_date_name"],
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
             )["name"],
-            "group_name": find(
+            "group_name": utils.find(
                 groups, lambda group: group["index"] == c["group_index"]
             )["name"],
             "max_number_of_assignments": c["max_number_of_assignments"],
@@ -279,12 +272,12 @@ def read_c3(members, kinmus):
         c3 = [
             {
                 "index": index,
-                "member_index": find(
+                "member_index": utils.find(
                     members, lambda member: member["name"] == r["職員名"]
                 )["index"],
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
                 "min_number_of_assignments": int(r["割り当て数下限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["職員名", "勤務名", "割り当て数下限"]))
@@ -295,10 +288,10 @@ def read_c3(members, kinmus):
 def write_c3(c3, members, kinmus):
     rows = [
         {
-            "member_name": find(
+            "member_name": utils.find(
                 members, lambda member: member["index"] == c["member_index"]
             )["name"],
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
             )["name"],
             "min_number_of_assignments": c["min_number_of_assignments"],
@@ -317,12 +310,12 @@ def read_c4(members, kinmus):
         c4 = [
             {
                 "index": index,
-                "member_index": find(
+                "member_index": utils.find(
                     members, lambda member: member["name"] == r["職員名"]
                 )["index"],
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
                 "max_number_of_assignments": int(r["割り当て数上限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["職員名", "勤務名", "割り当て数上限"]))
@@ -333,10 +326,10 @@ def read_c4(members, kinmus):
 def write_c4(c4, members, kinmus):
     rows = [
         {
-            "member_name": find(
+            "member_name": utils.find(
                 members, lambda member: member["index"] == c["member_index"]
             )["name"],
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
             )["name"],
             "max_number_of_assignments": c["max_number_of_assignments"],
@@ -355,9 +348,9 @@ def read_c5(kinmus):
         c5 = [
             {
                 "index": index,
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
                 "min_number_of_days": int(r["連続日数下限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "連続日数下限"]))
@@ -368,7 +361,7 @@ def read_c5(kinmus):
 def write_c5(c5, kinmus):
     rows = [
         {
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
             )["name"],
             "min_number_of_days": c["min_number_of_days"],
@@ -385,9 +378,9 @@ def read_c6(kinmus):
         c6 = [
             {
                 "index": index,
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
                 "max_number_of_days": int(r["連続日数上限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "連続日数上限"]))
@@ -398,7 +391,7 @@ def read_c6(kinmus):
 def write_c6(c6, kinmus):
     rows = [
         {
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
             )["name"],
             "max_number_of_days": c["max_number_of_days"],
@@ -415,9 +408,9 @@ def read_c7(kinmus):
         c7 = [
             {
                 "index": index,
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
                 "min_number_of_days": int(r["間隔日数下限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "間隔日数下限"]))
@@ -428,7 +421,7 @@ def read_c7(kinmus):
 def write_c7(c7, kinmus):
     rows = [
         {
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
             )["name"],
             "min_number_of_days": c["min_number_of_days"],
@@ -445,9 +438,9 @@ def read_c8(kinmus):
         c8 = [
             {
                 "index": index,
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
                 "max_number_of_days": int(r["間隔日数上限"]),
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務名", "間隔日数上限"]))
@@ -458,7 +451,7 @@ def read_c8(kinmus):
 def write_c8(c8, kinmus):
     rows = [
         {
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
             )["name"],
             "max_number_of_days": c["max_number_of_days"],
@@ -475,14 +468,14 @@ def read_c9(members, kinmus):
         c9 = [
             {
                 "index": index,
-                "member_index": find(
+                "member_index": utils.find(
                     members, lambda member: member["name"] == r["職員名"]
                 )["index"],
                 "start_date_name": r["開始日"],
                 "stop_date_name": r["終了日"],
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
             }
             for index, r in enumerate(csv.DictReader(f, ["職員名", "開始日", "終了日", "勤務名"]))
         ]
@@ -492,12 +485,12 @@ def read_c9(members, kinmus):
 def write_c9(c9, members, kinmus):
     rows = [
         {
-            "member_name": find(
+            "member_name": utils.find(
                 members, lambda member: member["index"] == c["member_index"]
             )["name"],
             "start_date_name": c["start_date_name"],
             "stop_date_name": c["stop_date_name"],
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
             )["name"],
         }
@@ -517,14 +510,14 @@ def read_c10(members, kinmus):
         c10 = [
             {
                 "index": index,
-                "member_index": find(
+                "member_index": utils.find(
                     members, lambda member: member["name"] == r["職員名"]
                 )["index"],
                 "start_date_name": r["開始日"],
                 "stop_date_name": r["終了日"],
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
             }
             for index, r in enumerate(csv.DictReader(f, ["職員名", "開始日", "終了日", "勤務名"]))
         ]
@@ -534,12 +527,12 @@ def read_c10(members, kinmus):
 def write_c10(c10, members, kinmus):
     rows = [
         {
-            "member_name": find(
+            "member_name": utils.find(
                 members, lambda member: member["index"] == c["member_index"]
             )["name"],
             "start_date_name": c["start_date_name"],
             "stop_date_name": c["stop_date_name"],
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus, lambda kinmu: kinmu["index"] == c["kinmu_index"]
             )["name"],
         }
@@ -561,12 +554,12 @@ def read_assignments(members, kinmus):
                 "index": index,
                 "roster_id": int(r["勤務表ID"]),
                 "date_name": r["日付"],
-                "member_index": find(
+                "member_index": utils.find(
                     members, lambda member: member["name"] == r["職員名"]
                 )["index"],
-                "kinmu_index": find(kinmus, lambda kinmu: kinmu["name"] == r["勤務名"])[
-                    "index"
-                ],
+                "kinmu_index": utils.find(
+                    kinmus, lambda kinmu: kinmu["name"] == r["勤務名"]
+                )["index"],
             }
             for index, r in enumerate(csv.DictReader(f, ["勤務表ID", "日付", "職員名", "勤務名"]))
         ]
@@ -578,10 +571,10 @@ def write_assignments(assignments, members, kinmus):
         {
             "roster_id": assignment["roster_id"],
             "date_name": assignment["date_name"],
-            "member_name": find(
+            "member_name": utils.find(
                 members, lambda member: member["index"] == assignment["member_index"]
             )["name"],
-            "kinmu_name": find(
+            "kinmu_name": utils.find(
                 kinmus, lambda kinmu: kinmu["index"] == assignment["kinmu_index"]
             )["name"],
         }
@@ -646,8 +639,8 @@ def solve():
         for term in terms
         for index, date in enumerate(
             date_range(
-                str_to_date(term["start_date_name"]),
-                str_to_date(term["stop_date_name"]) + one_day,
+                utils.str_to_date(term["start_date_name"]),
+                utils.str_to_date(term["stop_date_name"]) + one_day,
             )
         )
     ]
@@ -682,7 +675,9 @@ def solve():
     C1 = [
         {
             "index": index,
-            "date_index": find(dates, lambda date: date["name"] == date_name)["index"],
+            "date_index": utils.find(dates, lambda date: date["name"] == date_name)[
+                "index"
+            ],
             "kinmu_index": c["kinmu_index"],
             "group_index": c["group_index"],
             "min_number_of_assignments": c["min_number_of_assignments"],
@@ -691,15 +686,17 @@ def solve():
             (c, date_to_str(date))
             for c in c1
             for date in date_range(
-                str_to_date(c["start_date_name"]),
-                str_to_date(c["stop_date_name"]) + one_day,
+                utils.str_to_date(c["start_date_name"]),
+                utils.str_to_date(c["stop_date_name"]) + one_day,
             )
         )
     ]
     C2 = [
         {
             "index": index,
-            "date_index": find(dates, lambda date: date["name"] == date_name)["index"],
+            "date_index": utils.find(dates, lambda date: date["name"] == date_name)[
+                "index"
+            ],
             "kinmu_index": c["kinmu_index"],
             "group_index": c["group_index"],
             "max_number_of_assignments": c["max_number_of_assignments"],
@@ -708,8 +705,8 @@ def solve():
             (c, date_to_str(date))
             for c in c2
             for date in date_range(
-                str_to_date(c["start_date_name"]),
-                str_to_date(c["stop_date_name"]) + one_day,
+                utils.str_to_date(c["start_date_name"]),
+                utils.str_to_date(c["stop_date_name"]) + one_day,
             )
         )
     ]
@@ -767,15 +764,17 @@ def solve():
         {
             "index": index,
             "member_index": c["member_index"],
-            "date_index": find(dates, lambda date: date["name"] == date_name)["index"],
+            "date_index": utils.find(dates, lambda date: date["name"] == date_name)[
+                "index"
+            ],
             "kinmu_index": c["kinmu_index"],
         }
         for index, (c, date_name) in enumerate(
             (c, date_to_str(date))
             for c in c9
             for date in date_range(
-                str_to_date(c["start_date_name"]),
-                str_to_date(c["stop_date_name"]) + one_day,
+                utils.str_to_date(c["start_date_name"]),
+                utils.str_to_date(c["stop_date_name"]) + one_day,
             )
         )
     ]
@@ -783,15 +782,17 @@ def solve():
         {
             "index": index,
             "member_index": c["member_index"],
-            "date_index": find(dates, lambda date: date["name"] == date_name)["index"],
+            "date_index": utils.find(dates, lambda date: date["name"] == date_name)[
+                "index"
+            ],
             "kinmu_index": c["kinmu_index"],
         }
         for index, (c, date_name) in enumerate(
             (c, date_to_str(date))
             for c in c10
             for date in date_range(
-                str_to_date(c["start_date_name"]),
-                str_to_date(c["stop_date_name"]) + one_day,
+                utils.str_to_date(c["start_date_name"]),
+                utils.str_to_date(c["stop_date_name"]) + one_day,
             )
         )
     ]
