@@ -85,6 +85,7 @@ function Assignment(props: Props) {
       </Toolbar>
       {roster_ids.map(roster_id => {
         const assignments_by_roster_id = props.assignments.filter(assignment => assignment.roster_id === roster_id)
+        const members_by_roster_id = props.members.filter(member => assignments_by_roster_id.some(assignment => assignment.member_index === member.index))
         return (
           <ExpansionPanel key={roster_id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -102,7 +103,7 @@ function Assignment(props: Props) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {props.members.map(member => {
+                    {members_by_roster_id.map(member => {
                       const assignments_by_roster_id_and_member_index = assignments_by_roster_id.filter(assignment => assignment.member_index === member.index)
                       return (
                         <TableRow key={member.index}>
