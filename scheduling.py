@@ -917,7 +917,7 @@ def solve(all):
     for c in C10:
         problem += x[c["member_index"]][c["date_index"]][c["kinmu_index"]] == 0
 
-    problem.solve()
+    problem.solve(pulp.solvers.PULP_CBC_CMD(msg=True))
     print("Status:", pulp.LpStatus[problem.status])
     if pulp.LpStatus[problem.status] != "Optimal":
         return []
