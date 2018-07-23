@@ -81,7 +81,7 @@ class Groups extends React.Component<Props, State> {
     }
   }
   public handleClickCreateGroup = () => {
-    this.setState({ open: false, name: '' })
+    this.setState({ open: false })
     this.props.dispatch(all.createGroup(this.state.name, this.state.member_indices))
   }
   public render() {

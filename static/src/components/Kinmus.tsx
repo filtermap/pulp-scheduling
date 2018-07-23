@@ -52,7 +52,7 @@ class Kinmus extends React.Component<Props, State> {
     this.setState({ name: event.target.value })
   }
   public handleClickCreateKinmu = () => {
-    this.setState({ open: false, name: '' })
+    this.setState({ open: false })
     this.props.dispatch(kinmus.createKinmu(this.state.name))
   }
   public render() {

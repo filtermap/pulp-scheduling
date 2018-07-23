@@ -81,7 +81,7 @@ class Members extends React.Component<Props, State> {
     }
   }
   public handleClickCreateMember = () => {
-    this.setState({ open: false, name: '' })
+    this.setState({ open: false })
     this.props.dispatch(all.createMember(this.state.name, this.state.group_indices))
   }
   public render() {

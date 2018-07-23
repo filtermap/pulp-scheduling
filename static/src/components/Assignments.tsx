@@ -96,10 +96,7 @@ class Assignments extends React.Component<Props, State> {
     this.setState({ assignments: newAssignments })
   }
   public handleClickCreateRoster = () => {
-    this.setState({
-      assignments: [],
-      open: false,
-    })
+    this.setState({ open: false })
     this.props.dispatch(assignments.createRoster(this.state.assignments))
   }
   public render() {
