@@ -28,42 +28,7 @@ def index(path):
 
 @api.dispatcher.add_method
 def read_all():
-    members = scheduling.read_members()
-    terms = scheduling.read_terms()
-    kinmus = scheduling.read_kinmus()
-    groups = scheduling.read_groups()
-    group_members = scheduling.read_group_members(groups, members)
-    renzoku_kinshi_kinmus = scheduling.read_renzoku_kinshi_kinmus(kinmus)
-    c1 = scheduling.read_c1(kinmus, groups)
-    c2 = scheduling.read_c2(kinmus, groups)
-    c3 = scheduling.read_c3(members, kinmus)
-    c4 = scheduling.read_c4(members, kinmus)
-    c5 = scheduling.read_c5(kinmus)
-    c6 = scheduling.read_c6(kinmus)
-    c7 = scheduling.read_c7(kinmus)
-    c8 = scheduling.read_c8(kinmus)
-    c9 = scheduling.read_c9(members, kinmus)
-    c10 = scheduling.read_c10(members, kinmus)
-    assignments = scheduling.read_assignments(members, kinmus)
-    return {
-        "members": members,
-        "terms": terms,
-        "kinmus": kinmus,
-        "groups": groups,
-        "group_members": group_members,
-        "renzoku_kinshi_kinmus": renzoku_kinshi_kinmus,
-        "c1": c1,
-        "c2": c2,
-        "c3": c3,
-        "c4": c4,
-        "c5": c5,
-        "c6": c6,
-        "c7": c7,
-        "c8": c8,
-        "c9": c9,
-        "c10": c10,
-        "assignments": assignments,
-    }
+    return scheduling.read_all()
 
 
 @api.dispatcher.add_method
@@ -89,8 +54,8 @@ def write_all(all):
 
 
 @api.dispatcher.add_method
-def solve():
-    return scheduling.solve()
+def solve(all):
+    return scheduling.solve(all)
 
 
 @api.dispatcher.add_method

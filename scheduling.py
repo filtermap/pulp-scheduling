@@ -585,37 +585,7 @@ def write_assignments(assignments, members, kinmus):
     )
 
 
-def x_to_assignments(x, assignments, dates, members, kinmus):
-    index = (
-        max([0] + list(map(lambda assignment: assignment["index"], assignments))) + 1
-    )
-    roster_id = (
-        max([0] + list(map(lambda assignment: assignment["roster_id"], assignments)))
-        + 1
-    )
-    new_assignments = [
-        {
-            "index": index,
-            "roster_id": roster_id,
-            "date_name": date["name"],
-            "member_index": member["index"],
-            "kinmu_index": kinmu["index"],
-        }
-        for index, (date, member, kinmu) in enumerate(
-            (
-                (date, member, kinmu)
-                for date in dates
-                for member in members
-                for kinmu in kinmus
-                if x[member["index"]][date["index"]][kinmu["index"]].value() == 1
-            ),
-            start=index,
-        )
-    ]
-    return new_assignments
-
-
-def solve():
+def read_all():
     members = read_members()
     terms = read_terms()
     kinmus = read_kinmus()
@@ -633,7 +603,59 @@ def solve():
     c9 = read_c9(members, kinmus)
     c10 = read_c10(members, kinmus)
     assignments = read_assignments(members, kinmus)
+    return {
+        "members": members,
+        "terms": terms,
+        "kinmus": kinmus,
+        "groups": groups,
+        "group_members": group_members,
+        "renzoku_kinshi_kinmus": renzoku_kinshi_kinmus,
+        "c1": c1,
+        "c2": c2,
+        "c3": c3,
+        "c4": c4,
+        "c5": c5,
+        "c6": c6,
+        "c7": c7,
+        "c8": c8,
+        "c9": c9,
+        "c10": c10,
+        "assignments": assignments,
+    }
 
+
+def x_to_new_assignments(x, dates, members, kinmus):
+    return [
+        {
+            "date_name": date["name"],
+            "member_index": member["index"],
+            "kinmu_index": kinmu["index"],
+        }
+        for date in dates
+        for member in members
+        for kinmu in kinmus
+        if x[member["index"]][date["index"]][kinmu["index"]].value() == 1
+    ]
+
+
+def solve(all):
+    members = all["members"]
+    terms = all["terms"]
+    kinmus = all["kinmus"]
+    groups = all["groups"]
+    group_members = all["group_members"]
+    renzoku_kinshi_kinmus = all["renzoku_kinshi_kinmus"]
+    c1 = all["c1"]
+    c2 = all["c2"]
+    c3 = all["c3"]
+    c4 = all["c4"]
+    c5 = all["c5"]
+    c6 = all["c6"]
+    c7 = all["c7"]
+    c8 = all["c8"]
+    c9 = all["c9"]
+    c10 = all["c10"]
+    assignments = all["assignments"]
     dates = [
         {"index": index, "name": date_to_str(date)}
         for term in terms
@@ -904,43 +926,12 @@ def solve():
     for c in C10:
         problem += x[c["member_index"]][c["date_index"]][c["kinmu_index"]] == 0
 
-    problem.writeLP("scheduling.lp")
-
-    solved = False
-    with open("scheduling.txt", "w") as f:
-        while True:
-            problem.solve()
-            print("Status:", pulp.LpStatus[problem.status])
-            if pulp.LpStatus[problem.status] != "Optimal":
-                return solved
-            solved = True
-            lm = max(len(m["name"]) for m in members)
-            f.write(" " * lm + "|" + "".join([d["name"][-1:] for d in dates]) + "|\n")
-            f.write("-" * lm + "+" + ("-" * len(D)) + "+\n")
-            for m in members:
-                f.write(m["name"].rjust(lm) + "|")
-                for d in D:
-                    for k in kinmus:
-                        if x[m["index"]][d][k["index"]].value() == 1:
-                            f.write(k["name"])
-                            break
-                f.write("|\n")
-            f.write("-" * lm + "+" + ("-" * len(D)) + "+\n")
-            new_assignments = x_to_assignments(x, assignments, dates, members, kinmus)
-            assignments = assignments + new_assignments
-            write_assignments(assignments, members, kinmus)
-            problem += (
-                sum(
-                    x[m][d][k]
-                    for m in M
-                    for d in D
-                    for k in K
-                    if x[m][d][k].value() == 1
-                )
-                <= len(M) * len(D) - 1
-            )
-            return solved
+    problem.solve()
+    print("Status:", pulp.LpStatus[problem.status])
+    if pulp.LpStatus[problem.status] != "Optimal":
+        return []
+    return x_to_new_assignments(x, dates, members, kinmus)
 
 
 if __name__ == "__main__":
-    solve()
+    print(solve(read_all()))
