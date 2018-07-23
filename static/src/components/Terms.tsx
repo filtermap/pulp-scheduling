@@ -40,15 +40,23 @@ function Terms(props: Props) {
           <ExpansionPanelDetails>
             <TextField
               label="開始日"
+              type="date"
               defaultValue={term.start_date_name}
               onChange={handleChangeTermStartDateName(term.index)}
               margin="normal"
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
             <TextField
               label="終了日"
+              type="date"
               defaultValue={term.stop_date_name}
               onChange={handleChangeTermStopDateName(term.index)}
               margin="normal"
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
           </ExpansionPanelDetails>
         </ExpansionPanel>

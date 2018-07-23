@@ -128,15 +128,23 @@ class C2 extends React.Component<Props, State> {
             <ExpansionPanelDetails>
               <TextField
                 label="開始日"
+                type="date"
                 defaultValue={c.start_date_name}
                 onChange={this.handleChangeC2StartDateName(c.index)}
                 fullWidth={true}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
                 label="終了日"
+                type="date"
                 defaultValue={c.stop_date_name}
                 onChange={this.handleChangeC2StopDateName(c.index)}
                 fullWidth={true}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
                 select={true}
@@ -189,15 +197,23 @@ class C2 extends React.Component<Props, State> {
             <DialogContent style={{ display: 'flex' }}>
               <TextField
                 label="開始日"
+                type="date"
                 defaultValue={this.state.start_date_name}
                 onChange={this.handleChangeNewC2StartDateName}
                 fullWidth={true}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
                 label="終了日"
+                type="date"
                 defaultValue={this.state.stop_date_name}
                 onChange={this.handleChangeNewC2StopDateName}
                 fullWidth={true}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
                 select={true}

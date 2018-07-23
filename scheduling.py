@@ -13,15 +13,6 @@ def in_data_directory(path):
     return os.path.join(data_directory, path)
 
 
-def date_to_str(date, format="%Y/%m/%d"):
-    return date.strftime(format)
-
-
-def date_range(start_date, stop_date):
-    for days in range((stop_date - start_date).days):
-        yield start_date + datetime.timedelta(days)
-
-
 def write_rows(rows, filename, fieldnames):
     with open(in_data_directory(filename), newline="") as f:
         header = next(f)
@@ -657,10 +648,10 @@ def solve(all):
     c10 = all["c10"]
     assignments = all["assignments"]
     dates = [
-        {"index": index, "name": date_to_str(date)}
+        {"index": index, "name": utils.date_to_str(date)}
         for term in terms
         for index, date in enumerate(
-            date_range(
+            utils.date_range(
                 utils.str_to_date(term["start_date_name"]),
                 utils.str_to_date(term["stop_date_name"]) + one_day,
             )
@@ -705,9 +696,9 @@ def solve(all):
             "min_number_of_assignments": c["min_number_of_assignments"],
         }
         for index, (c, date_name) in enumerate(
-            (c, date_to_str(date))
+            (c, utils.date_to_str(date))
             for c in c1
-            for date in date_range(
+            for date in utils.date_range(
                 utils.str_to_date(c["start_date_name"]),
                 utils.str_to_date(c["stop_date_name"]) + one_day,
             )
@@ -724,9 +715,9 @@ def solve(all):
             "max_number_of_assignments": c["max_number_of_assignments"],
         }
         for index, (c, date_name) in enumerate(
-            (c, date_to_str(date))
+            (c, utils.date_to_str(date))
             for c in c2
-            for date in date_range(
+            for date in utils.date_range(
                 utils.str_to_date(c["start_date_name"]),
                 utils.str_to_date(c["stop_date_name"]) + one_day,
             )
@@ -792,9 +783,9 @@ def solve(all):
             "kinmu_index": c["kinmu_index"],
         }
         for index, (c, date_name) in enumerate(
-            (c, date_to_str(date))
+            (c, utils.date_to_str(date))
             for c in c9
-            for date in date_range(
+            for date in utils.date_range(
                 utils.str_to_date(c["start_date_name"]),
                 utils.str_to_date(c["stop_date_name"]) + one_day,
             )
@@ -810,9 +801,9 @@ def solve(all):
             "kinmu_index": c["kinmu_index"],
         }
         for index, (c, date_name) in enumerate(
-            (c, date_to_str(date))
+            (c, utils.date_to_str(date))
             for c in c10
-            for date in date_range(
+            for date in utils.date_range(
                 utils.str_to_date(c["start_date_name"]),
                 utils.str_to_date(c["stop_date_name"]) + one_day,
             )

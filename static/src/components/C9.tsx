@@ -129,15 +129,23 @@ class C9 extends React.Component<Props, State> {
               </TextField>
               <TextField
                 label="開始日"
+                type="date"
                 defaultValue={c.start_date_name}
                 onChange={this.handleChangeC9StartDateName(c.index)}
                 fullWidth={true}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
                 label="終了日"
+                type="date"
                 defaultValue={c.stop_date_name}
                 onChange={this.handleChangeC9StopDateName(c.index)}
                 fullWidth={true}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
                 select={true}
@@ -183,15 +191,23 @@ class C9 extends React.Component<Props, State> {
               </TextField>
               <TextField
                 label="開始日"
+                type="date"
                 defaultValue={this.state.start_date_name}
                 onChange={this.handleChangeNewC9StartDateName}
                 fullWidth={true}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
                 label="終了日"
+                type="date"
                 defaultValue={this.state.stop_date_name}
                 onChange={this.handleChangeNewC9StopDateName}
                 fullWidth={true}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
                 select={true}

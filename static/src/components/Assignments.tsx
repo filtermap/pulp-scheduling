@@ -58,7 +58,7 @@ type State = {
   assignments: assignments.Assignment[]
 }
 
-const dateNamePattern = /^(\d{4})\/(\d{1,2})\/(\d{1,2})$/
+const dateNamePattern = /^(\d{4})-(\d{1,2})-(\d{1,2})$/
 
 function dateNameToDate(dateName: string): Date {
   const [, year, month, day] = dateName.match(dateNamePattern)!
