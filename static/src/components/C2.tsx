@@ -15,6 +15,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+import { StateWithHistory } from 'redux-undo'
 import MenuItem from '../../node_modules/@material-ui/core/MenuItem'
 import * as all from '../modules/all'
 import * as c2 from '../modules/c2'
@@ -255,11 +256,11 @@ class C2 extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: all.State) {
+function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    c2: state.c2,
-    groups: state.groups,
-    kinmus: state.kinmus,
+    c2: state.present.c2,
+    groups: state.present.groups,
+    kinmus: state.present.kinmus,
   }
 }
 

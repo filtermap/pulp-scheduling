@@ -16,6 +16,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
 import * as kinmus from '../modules/kinmus'
 import * as renzoku_kinshi_kinmus from '../modules/renzoku_kinshi_kinmus'
@@ -180,10 +181,10 @@ class RenzokuKinshiKinmus extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: all.State) {
+function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    kinmus: state.kinmus,
-    renzoku_kinshi_kinmus: state.renzoku_kinshi_kinmus,
+    kinmus: state.present.kinmus,
+    renzoku_kinshi_kinmus: state.present.renzoku_kinshi_kinmus,
   }
 }
 

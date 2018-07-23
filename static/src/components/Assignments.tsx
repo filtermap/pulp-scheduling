@@ -22,6 +22,7 @@ import * as iconv from 'iconv-lite'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
 import * as assignments from '../modules/assignments'
 import * as utils from '../utils'
@@ -220,9 +221,9 @@ class Assignments extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: all.State) {
+function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    all: state
+    all: state.present
   }
 }
 

@@ -16,6 +16,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
+import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
 import * as c3 from '../modules/c3'
 import * as kinmus from '../modules/kinmus'
@@ -195,11 +196,11 @@ class C3 extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: all.State) {
+function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    c3: state.c3,
-    kinmus: state.kinmus,
-    members: state.members,
+    c3: state.present.c3,
+    kinmus: state.present.kinmus,
+    members: state.present.members,
   }
 }
 

@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import { createStyles, withStyles, WithStyles, withTheme } from '@material-ui/core/styles'
+import { createStyles, withStyles, WithStyles, withTheme, WithTheme } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core/styles/createMuiTheme'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -16,6 +16,8 @@ import MenuIcon from '@material-ui/icons/Menu'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link, Route, RouteComponentProps, withRouter } from 'react-router-dom'
+import { Dispatch } from 'redux'
+import { ActionCreators, StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
 import * as utils from '../utils'
 import Assignments from './Assignments'
@@ -71,7 +73,12 @@ const styles = (theme: Theme) => createStyles({
   toolbar: theme.mixins.toolbar,
 })
 
-type Props = { all: all.All, theme: Theme } & WithStyles<typeof styles> & RouteComponentProps<{}>
+type Props = {
+  dispatch: Dispatch
+  pastExists: boolean
+  all: all.All
+  futureExists: boolean
+} & WithTheme & WithStyles<typeof styles> & RouteComponentProps<{}>
 
 type State = {
   mobileOpen: boolean,
@@ -145,15 +152,18 @@ class ResponsiveDrawer extends React.Component<Props, State> {
   public state: State = {
     mobileOpen: false,
   }
-
   public handleDrawerToggle = () => {
     this.setState(state => ({ mobileOpen: !state.mobileOpen }))
   }
-
+  public handleClickUndo = () => {
+    this.props.dispatch(ActionCreators.undo())
+  }
+  public handleClickRedo = () => {
+    this.props.dispatch(ActionCreators.redo())
+  }
   public writeAll = () => {
     utils.sendJSONRPCRequest('write_all', [this.props.all])
   }
-
   public render() {
     const { classes, theme } = this.props
     const drawer = (
@@ -231,6 +241,8 @@ class ResponsiveDrawer extends React.Component<Props, State> {
               <MenuIcon />
             </IconButton>
             <Typography variant="title" color="inherit" noWrap={true} className={classes.title}>データ</Typography>
+            <Button color="inherit" onClick={this.handleClickUndo} disabled={!this.props.pastExists}>元に戻す</Button>
+            <Button color="inherit" onClick={this.handleClickRedo} disabled={!this.props.futureExists}>やり直す</Button>
             <Button color="inherit" onClick={this.writeAll}>保存</Button>
           </Toolbar>
         </AppBar>
@@ -292,9 +304,11 @@ class ResponsiveDrawer extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: all.State) {
+function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    all: state
+    all: state.present,
+    futureExists: state.future.length > 0,
+    pastExists: state.past.length > 0,
   }
 }
 

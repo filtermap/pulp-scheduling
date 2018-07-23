@@ -8,13 +8,14 @@ import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { createStore } from 'redux'
+import undoable from 'redux-undo'
 import 'typeface-roboto'
 import Layout from './components/Layout'
 import * as all from './modules/all'
 import registerServiceWorker from './registerServiceWorker'
 import * as utils from './utils'
 
-const store = createStore(all.reducer)
+const store = createStore(undoable(all.reducer))
 
 const theme = createMuiTheme({
   palette: {
