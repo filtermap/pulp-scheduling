@@ -21,6 +21,7 @@ import * as all from '../modules/all'
 import * as c2 from '../modules/c2'
 import * as groups from '../modules/groups'
 import * as kinmus from '../modules/kinmus'
+import * as utils from '../utils'
 
 type State = {
   open: boolean
@@ -39,13 +40,17 @@ type Props = {
 }
 
 class C2 extends React.Component<Props, State> {
-  public state: State = {
-    group_index: 0,
-    kinmu_index: 0,
-    max_number_of_assignments: 0,
-    open: false,
-    start_date_name: '',
-    stop_date_name: '',
+  constructor(props: Props) {
+    super(props)
+    const todayString = utils.dateToString(new Date())
+    this.state = {
+      group_index: this.props.groups.length > 0 ? this.props.groups[0].index : 0,
+      kinmu_index: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
+      max_number_of_assignments: 0,
+      open: false,
+      start_date_name: todayString,
+      stop_date_name: todayString,
+    }
   }
   public handleChangeC2StartDateName(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,19 +83,7 @@ class C2 extends React.Component<Props, State> {
     }
   }
   public handleClickOpenDialog = () => {
-    const kinmu_index = this.props.kinmus.length > 0 &&
-      this.props.kinmus.every(kinmu => kinmu.index !== this.state.kinmu_index) ?
-      this.props.kinmus[0].index :
-      this.state.kinmu_index
-    const group_index = this.props.groups.length > 0 &&
-      this.props.groups.every(group => group.index !== this.state.group_index) ?
-      this.props.groups[0].index :
-      this.state.group_index
-    this.setState({
-      group_index,
-      kinmu_index,
-      open: true,
-    })
+    this.setState({ open: true })
   }
   public handleCloseDialog = () => {
     this.setState({ open: false })

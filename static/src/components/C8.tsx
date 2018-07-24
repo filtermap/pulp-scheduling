@@ -35,7 +35,7 @@ type Props = {
 
 class C8 extends React.Component<Props, State> {
   public state: State = {
-    kinmu_index: 0,
+    kinmu_index: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
     max_number_of_days: 0,
     open: false,
   }
@@ -45,14 +45,7 @@ class C8 extends React.Component<Props, State> {
     }
   }
   public handleClickOpenDialog = () => {
-    const kinmu_index = this.props.kinmus.length > 0 &&
-      this.props.kinmus.every(kinmu => kinmu.index !== this.state.kinmu_index) ?
-      this.props.kinmus[0].index :
-      this.state.kinmu_index
-    this.setState({
-      kinmu_index,
-      open: true,
-    })
+    this.setState({ open: true })
   }
   public handleCloseDialog = () => {
     this.setState({ open: false })

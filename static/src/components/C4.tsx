@@ -38,9 +38,9 @@ type Props = {
 
 class C4 extends React.Component<Props, State> {
   public state: State = {
-    kinmu_index: 0,
+    kinmu_index: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
     max_number_of_assignments: 0,
-    member_index: 0,
+    member_index: this.props.members.length > 0 ? this.props.members[0].index : 0,
     open: false,
   }
   public handleChangeC4MemberIndex(index: number) {
@@ -64,19 +64,7 @@ class C4 extends React.Component<Props, State> {
     }
   }
   public handleClickOpenDialog = () => {
-    const kinmu_index = this.props.kinmus.length > 0 &&
-      this.props.kinmus.every(kinmu => kinmu.index !== this.state.kinmu_index) ?
-      this.props.kinmus[0].index :
-      this.state.kinmu_index
-    const member_index = this.props.members.length > 0 &&
-      this.props.members.every(member => member.index !== this.state.member_index) ?
-      this.props.members[0].index :
-      this.state.member_index
-    this.setState({
-      kinmu_index,
-      member_index,
-      open: true,
-    })
+    this.setState({ open: true })
   }
   public handleCloseDialog = () => {
     this.setState({ open: false })

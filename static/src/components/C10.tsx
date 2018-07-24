@@ -21,6 +21,7 @@ import * as all from '../modules/all'
 import * as c10 from '../modules/c10'
 import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
+import * as utils from '../utils'
 
 type State = {
   open: boolean
@@ -38,12 +39,16 @@ type Props = {
 }
 
 class C10 extends React.Component<Props, State> {
-  public state: State = {
-    kinmu_index: 0,
-    member_index: 0,
-    open: false,
-    start_date_name: '',
-    stop_date_name: '',
+  constructor(props: Props) {
+    super(props)
+    const todayString = utils.dateToString(new Date())
+    this.state = {
+      kinmu_index: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
+      member_index: this.props.members.length > 0 ? this.props.members[0].index : 0,
+      open: false,
+      start_date_name: todayString,
+      stop_date_name: todayString,
+    }
   }
   public handleChangeC10MemberIndex(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,19 +76,7 @@ class C10 extends React.Component<Props, State> {
     }
   }
   public handleClickOpenDialog = () => {
-    const member_index = this.props.members.length > 0 &&
-      this.props.members.every(member => member.index !== this.state.member_index) ?
-      this.props.members[0].index :
-      this.state.member_index
-    const kinmu_index = this.props.kinmus.length > 0 &&
-      this.props.kinmus.every(kinmu => kinmu.index !== this.state.kinmu_index) ?
-      this.props.kinmus[0].index :
-      this.state.kinmu_index
-    this.setState({
-      kinmu_index,
-      member_index,
-      open: true,
-    })
+    this.setState({ open: true })
   }
   public handleCloseDialog = () => {
     this.setState({ open: false })

@@ -34,7 +34,7 @@ type Props = {
 
 class RenzokuKinshiKinmus extends React.Component<Props, State> {
   public state: State = {
-    kinmu_indices: [],
+    kinmu_indices: this.props.kinmus.length > 0 ? [this.props.kinmus[0].index, this.props.kinmus[0].index] : [],
     open: false,
   }
   public handleClickCreateRenzokuKinshiKinmu(sequence_id: number, sequence_number: number) {
@@ -59,13 +59,7 @@ class RenzokuKinshiKinmus extends React.Component<Props, State> {
     }
   }
   public handleClickOpenDialog = () => {
-    const kinmu_indices = this.props.kinmus.length > 0 ?
-      [this.props.kinmus[0].index, this.props.kinmus[0].index] :
-      this.state.kinmu_indices
-    this.setState({
-      kinmu_indices,
-      open: true,
-    })
+    this.setState({ open: true })
   }
   public handleCloseDialog = () => {
     this.setState({ open: false })
