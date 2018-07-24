@@ -3,6 +3,7 @@ import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
@@ -33,23 +34,27 @@ type Props = {
 }
 
 type State = {
-  open: boolean
-  name: string
-  group_indices: number[]
+  creationDialogIsOpen: boolean
+  newMemberName: string
+  newMemberGroupIndices: number[]
+  deletionDialogIsOpen: boolean
+  selectedMemberIndex: number
 }
 
 class Members extends React.Component<Props, State> {
   public state: State = {
-    group_indices: [],
-    name: '',
-    open: false,
+    creationDialogIsOpen: false,
+    deletionDialogIsOpen: false,
+    newMemberGroupIndices: [],
+    newMemberName: '',
+    selectedMemberIndex: this.props.members.length > 0 ? this.props.members[0].index : 0,
   }
-  public handleMemberNameChange(index: number) {
+  public handleChangeMemberName(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       this.props.dispatch(members.updateMemberName(index, event.target.value))
     }
   }
-  public handleGroupMemberChange(groupIndex: number, memberIndex: number) {
+  public handleChangeGroupMember(groupIndex: number, memberIndex: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
       if (checked) {
         this.props.dispatch(group_members.createGroupMember(groupIndex, memberIndex))
@@ -58,39 +63,50 @@ class Members extends React.Component<Props, State> {
       this.props.dispatch(group_members.deleteGroupMember(groupIndex, memberIndex))
     }
   }
-  public handleClickDeleteMember(index: number) {
-    return (_: React.MouseEvent<HTMLButtonElement>) => {
-      this.props.dispatch(all.deleteMember(index))
-    }
+  public handleClickOpenCreationDialog = () => {
+    this.setState({ creationDialogIsOpen: true })
   }
-  public handleClickOpenDialog = () => {
-    this.setState({ open: true })
-  }
-  public handleCloseDialog = () => {
-    this.setState({ open: false })
+  public handleCloseCreationDialog = () => {
+    this.setState({ creationDialogIsOpen: false })
   }
   public handleChangeNewMemberName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ name: event.target.value })
+    this.setState({ newMemberName: event.target.value })
   }
-  public handleNewGroupMemberChange(groupIndex: number) {
+  public handleChangeNewGroupMember(groupIndex: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
       if (checked) {
-        this.setState({ group_indices: this.state.group_indices.concat(groupIndex) })
+        this.setState({ newMemberGroupIndices: this.state.newMemberGroupIndices.concat(groupIndex) })
         return
       }
-      this.setState({ group_indices: this.state.group_indices.filter(group_index => group_index !== groupIndex) })
+      this.setState({ newMemberGroupIndices: this.state.newMemberGroupIndices.filter(group_index => group_index !== groupIndex) })
     }
   }
   public handleClickCreateMember = () => {
-    this.setState({ open: false })
-    this.props.dispatch(all.createMember(this.state.name, this.state.group_indices))
+    this.setState({ creationDialogIsOpen: false })
+    this.props.dispatch(all.createMember(this.state.newMemberName, this.state.newMemberGroupIndices))
+  }
+  public handleClickOpenDeletionDialog(selectedMemberIndex: number) {
+    return () => {
+      this.setState({
+        deletionDialogIsOpen: true,
+        selectedMemberIndex,
+      })
+    }
+  }
+  public handleCloseDeletionDialog = () => {
+    this.setState({ deletionDialogIsOpen: false })
+  }
+  public handleClickDeleteMember = () => {
+    this.setState({ deletionDialogIsOpen: false })
+    this.props.dispatch(all.deleteMember(this.state.selectedMemberIndex))
   }
   public render() {
+    const selectedMember = this.props.members.find(member => member.index === this.state.selectedMemberIndex)
     return (
       <>
         <Toolbar>
           <Typography variant="subheading" style={{ flex: 1 }}>職員</Typography>
-          <Button size="small" onClick={this.handleClickOpenDialog}>追加</Button>
+          <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.members.map(member => (
           <ExpansionPanel key={member.index}>
@@ -104,7 +120,7 @@ class Members extends React.Component<Props, State> {
               <TextField
                 label="職員名"
                 defaultValue={member.name}
-                onChange={this.handleMemberNameChange(member.index)}
+                onChange={this.handleChangeMemberName(member.index)}
                 fullWidth={true}
               />
               <FormControl fullWidth={true}>
@@ -117,7 +133,7 @@ class Members extends React.Component<Props, State> {
                       control={
                         <Checkbox
                           checked={this.props.group_members.some(group_member => group_member.group_index === group.index && group_member.member_index === member.index)}
-                          onChange={this.handleGroupMemberChange(group.index, member.index)}
+                          onChange={this.handleChangeGroupMember(group.index, member.index)}
                           color="primary"
                         />
                       }
@@ -127,16 +143,16 @@ class Members extends React.Component<Props, State> {
               </FormControl>
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickDeleteMember(member.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(member.index)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
-        <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+        <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
           <DialogTitle>職員の追加</DialogTitle>
           <DialogContent style={{ display: 'flex' }}>
             <TextField
               label="職員名"
-              defaultValue={this.state.name}
+              defaultValue={this.state.newMemberName}
               onChange={this.handleChangeNewMemberName}
               fullWidth={true}
             />
@@ -149,8 +165,8 @@ class Members extends React.Component<Props, State> {
                     label={group.name}
                     control={
                       <Checkbox
-                        checked={this.state.group_indices.some(group_index => group_index === group.index)}
-                        onChange={this.handleNewGroupMemberChange(group.index)}
+                        checked={this.state.newMemberGroupIndices.some(group_index => group_index === group.index)}
+                        onChange={this.handleChangeNewGroupMember(group.index)}
                         color="primary"
                       />
                     }
@@ -161,9 +177,22 @@ class Members extends React.Component<Props, State> {
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={this.handleClickCreateMember}>追加</Button>
-            <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+            <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
           </DialogActions>
         </Dialog>
+        {selectedMember &&
+          <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
+            <DialogTitle>職員の削除</DialogTitle>
+            <DialogContent>
+              <DialogContentText>この職員を削除します</DialogContentText>
+              <Typography>{selectedMember.name}</Typography>
+              <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.member_index === selectedMember.index).map(group_member => this.props.groups.find(group => group.index === group_member.group_index)!.name).join(', ')}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={this.handleClickDeleteMember}>削除</Button>
+              <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
+            </DialogActions>
+          </Dialog>}
       </>
     )
   }
