@@ -15,30 +15,27 @@ import * as all from './modules/all'
 import registerServiceWorker from './registerServiceWorker'
 import * as utils from './utils'
 
-const store = createStore(undoable(all.reducer))
-
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-    secondary: teal
-  }
-})
-
-ReactDOM.render(
-  <MuiThemeProvider theme={theme}>
-    <CssBaseline />
-    <Provider store={store}>
-      <Router>
-        <Layout />
-      </Router>
-    </Provider>
-  </MuiThemeProvider>,
-  document.getElementById('root') as HTMLElement
-)
-registerServiceWorker()
-
-async function readAll() {
-  store.dispatch(all.replaceAll((await utils.sendJSONRPCRequest('read_all')).result))
+async function main() {
+  const initialState = (await utils.sendJSONRPCRequest('read_all')).result
+  const store = createStore(undoable(all.reducer), initialState)
+  const theme = createMuiTheme({
+    palette: {
+      primary: blue,
+      secondary: teal
+    }
+  })
+  ReactDOM.render(
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
+      <Provider store={store}>
+        <Router>
+          <Layout />
+        </Router>
+      </Provider>
+    </MuiThemeProvider>,
+    document.getElementById('root') as HTMLElement
+  )
+  registerServiceWorker()
 }
 
-readAll()
+main()
