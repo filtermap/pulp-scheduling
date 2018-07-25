@@ -90,10 +90,10 @@ class Assignments extends React.Component<Props, State> {
       a.click()
     }
   }
-  public handleClickOpenDialog = async () => {
+  public handleClickOpenCreationDialog = async () => {
     this.setState({ open: true })
   }
-  public handleCloseDialog = () => {
+  public handleCloseCreationDialog = () => {
     this.setState({ open: false })
   }
   public handleClickSolve = async () => {
@@ -120,7 +120,7 @@ class Assignments extends React.Component<Props, State> {
       <>
         <Toolbar>
           <Typography variant="subheading" style={{ flex: 1 }}>勤務表</Typography>
-          <Button size="small" onClick={this.handleClickOpenDialog}>追加</Button>
+          <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {roster_ids.map(roster_id => {
           const assignments_by_roster_id = this.props.all.assignments.filter(assignment => assignment.roster_id === roster_id)
@@ -173,16 +173,16 @@ class Assignments extends React.Component<Props, State> {
             </DialogContent>
           </Dialog> :
           this.state.assignments.length === 0 ?
-            <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+            <Dialog onClose={this.handleCloseCreationDialog} open={this.state.open} fullWidth={true} maxWidth="md">
               <DialogTitle>勤務表の追加</DialogTitle>
               <DialogContent>
                 <Button size="small" onClick={this.handleClickSolve}>自動作成</Button>
               </DialogContent>
               <DialogActions>
-                <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+                <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
               </DialogActions>
             </Dialog> :
-            <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+            <Dialog onClose={this.handleCloseCreationDialog} open={this.state.open} fullWidth={true} maxWidth="md">
               <DialogTitle>勤務表の追加</DialogTitle>
               <DialogContent style={{ display: 'flex' }}>
                 <div className={this.props.classes.dialogTableWrapper}>
@@ -213,7 +213,7 @@ class Assignments extends React.Component<Props, State> {
               </DialogContent>
               <DialogActions>
                 <Button color="primary" onClick={this.handleClickCreateRoster}>追加</Button>
-                <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+                <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
               </DialogActions>
             </Dialog>}
       </>

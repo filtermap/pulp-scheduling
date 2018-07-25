@@ -82,10 +82,10 @@ class C1 extends React.Component<Props, State> {
     }
   }
 
-  public handleClickOpenDialog = () => {
+  public handleClickOpenCreationDialog = () => {
     this.setState({ creationDialogIsOpen: true })
   }
-  public handleCloseDialog = () => {
+  public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
   public handleChangeNewC1StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,7 +128,7 @@ class C1 extends React.Component<Props, State> {
       <>
         <Toolbar>
           <Typography variant="subheading" style={{ flex: 1 }}> 期間の勤務にグループから割り当てる職員数の下限</Typography>
-          <Button size="small" onClick={this.handleClickOpenDialog}>追加</Button>
+          <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.c1.map(c => (
           <ExpansionPanel key={c.index}>
@@ -192,17 +192,17 @@ class C1 extends React.Component<Props, State> {
           </ExpansionPanel>
         ))}
         {this.props.kinmus.length === 0 || this.props.groups.length === 0 ?
-          <Dialog onClose={this.handleCloseDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>期間の勤務にグループから割り当てる職員数の下限を追加できません</DialogTitle>
             <DialogContent>
               {this.props.kinmus.length === 0 ? <DialogContentText>勤務がありません</DialogContentText> : null}
               {this.props.groups.length === 0 ? <DialogContentText>グループがありません</DialogContentText> : null}
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <TextField
@@ -257,7 +257,7 @@ class C1 extends React.Component<Props, State> {
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickCreateC1}>追加</Button>
-              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
         {selectedC1 &&

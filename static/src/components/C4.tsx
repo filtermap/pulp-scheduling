@@ -62,10 +62,10 @@ class C4 extends React.Component<Props, State> {
       this.props.dispatch(c4.updateC4MaxNumberOfAssignments(index, parseInt(event.target.value, 10)))
     }
   }
-  public handleClickOpenDialog = () => {
+  public handleClickOpenCreationDialog = () => {
     this.setState({ creationDialogIsOpen: true })
   }
-  public handleCloseDialog = () => {
+  public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
   public handleChangeNewC4MemberIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +102,7 @@ class C4 extends React.Component<Props, State> {
       <>
         <Toolbar>
           <Typography variant="subheading" style={{ flex: 1 }}>職員の勤務の割り当て数の上限</Typography>
-          <Button size="small" onClick={this.handleClickOpenDialog}>追加</Button>
+          <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.c4.map(c => (
           <ExpansionPanel key={c.index}>
@@ -146,17 +146,17 @@ class C4 extends React.Component<Props, State> {
           </ExpansionPanel>
         ))}
         {this.props.members.length === 0 || this.props.kinmus.length === 0 ?
-          <Dialog onClose={this.handleCloseDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>職員の勤務の割り当て数の上限を追加できません</DialogTitle>
             <DialogContent>
               {this.props.members.length === 0 ? <DialogContentText>職員がいません</DialogContentText> : null}
               {this.props.kinmus.length === 0 ? <DialogContentText>勤務がありません</DialogContentText> : null}
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>職員の勤務の割り当て数の上限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <TextField
@@ -191,7 +191,7 @@ class C4 extends React.Component<Props, State> {
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickCreateC4}>追加</Button>
-              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
         {selectedC4 &&
