@@ -22,13 +22,6 @@ import * as c4 from '../modules/c4'
 import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
 
-type State = {
-  open: boolean
-  member_index: number
-  kinmu_index: number
-  max_number_of_assignments: number
-}
-
 type Props = {
   dispatch: Dispatch
   c4: c4.C4[]
@@ -36,12 +29,23 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 }
 
+type State = {
+  creationDialogIsOpen: boolean
+  newC4MemberIndex: number
+  newC4KinmuIndex: number
+  newC4MaxNumberOfAssignments: number
+  deletionDialogIsOpen: boolean
+  selectedC4Index: number
+}
+
 class C4 extends React.Component<Props, State> {
   public state: State = {
-    kinmu_index: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
-    max_number_of_assignments: 0,
-    member_index: this.props.members.length > 0 ? this.props.members[0].index : 0,
-    open: false,
+    creationDialogIsOpen: false,
+    deletionDialogIsOpen: false,
+    newC4KinmuIndex: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
+    newC4MaxNumberOfAssignments: 0,
+    newC4MemberIndex: this.props.members.length > 0 ? this.props.members[0].index : 0,
+    selectedC4Index: this.props.c4.length > 0 ? this.props.c4[0].index : 0,
   }
   public handleChangeC4MemberIndex(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,31 +62,42 @@ class C4 extends React.Component<Props, State> {
       this.props.dispatch(c4.updateC4MaxNumberOfAssignments(index, parseInt(event.target.value, 10)))
     }
   }
-  public handleClickDeleteC4(index: number) {
-    return (_: React.MouseEvent<HTMLButtonElement>) => {
-      this.props.dispatch(c4.deleteC4(index))
-    }
-  }
   public handleClickOpenDialog = () => {
-    this.setState({ open: true })
+    this.setState({ creationDialogIsOpen: true })
   }
   public handleCloseDialog = () => {
-    this.setState({ open: false })
+    this.setState({ creationDialogIsOpen: false })
   }
   public handleChangeNewC4MemberIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ member_index: parseInt(event.target.value, 10) })
+    this.setState({ newC4MemberIndex: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC4KinmuIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ kinmu_index: parseInt(event.target.value, 10) })
+    this.setState({ newC4KinmuIndex: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC4MaxNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ max_number_of_assignments: parseInt(event.target.value, 10) })
+    this.setState({ newC4MaxNumberOfAssignments: parseInt(event.target.value, 10) })
   }
   public handleClickCreateC4 = () => {
-    this.setState({ open: false })
-    this.props.dispatch(c4.createC4(this.state.member_index, this.state.kinmu_index, this.state.max_number_of_assignments))
+    this.setState({ creationDialogIsOpen: false })
+    this.props.dispatch(c4.createC4(this.state.newC4MemberIndex, this.state.newC4KinmuIndex, this.state.newC4MaxNumberOfAssignments))
+  }
+  public handleClickOpenDeletionDialog(selectedC4Index: number) {
+    return () => {
+      this.setState({
+        deletionDialogIsOpen: true,
+        selectedC4Index,
+      })
+    }
+  }
+  public handleCloseDeletionDialog = () => {
+    this.setState({ deletionDialogIsOpen: false })
+  }
+  public handleClickDeleteC4 = () => {
+    this.setState({ deletionDialogIsOpen: false })
+    this.props.dispatch(c4.deleteC4(this.state.selectedC4Index))
   }
   public render() {
+    const selectedC4 = this.props.c4.find(c => c.index === this.state.selectedC4Index)
     return (
       <>
         <Toolbar>
@@ -126,12 +141,12 @@ class C4 extends React.Component<Props, State> {
               />
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickDeleteC4(c.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.index)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
         {this.props.members.length === 0 || this.props.kinmus.length === 0 ?
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>職員の勤務の割り当て数の上限を追加できません</DialogTitle>
             <DialogContent>
               {this.props.members.length === 0 ? <DialogContentText>職員がいません</DialogContentText> : null}
@@ -141,13 +156,13 @@ class C4 extends React.Component<Props, State> {
               <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>職員の勤務の割り当て数の上限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <TextField
                 select={true}
                 label="職員"
-                value={this.state.member_index}
+                value={this.state.newC4MemberIndex}
                 onChange={this.handleChangeNewC4MemberIndex}
                 fullWidth={true}
               >
@@ -158,7 +173,7 @@ class C4 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.kinmu_index}
+                value={this.state.newC4KinmuIndex}
                 onChange={this.handleChangeNewC4KinmuIndex}
                 fullWidth={true}
               >
@@ -169,7 +184,7 @@ class C4 extends React.Component<Props, State> {
               <TextField
                 label="割り当て数上限"
                 type="number"
-                defaultValue={this.state.max_number_of_assignments}
+                defaultValue={this.state.newC4MaxNumberOfAssignments}
                 onChange={this.handleChangeNewC4MaxNumberOfAssignments}
                 fullWidth={true}
               />
@@ -177,6 +192,18 @@ class C4 extends React.Component<Props, State> {
             <DialogActions>
               <Button color="primary" onClick={this.handleClickCreateC4}>追加</Button>
               <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+            </DialogActions>
+          </Dialog>}
+        {selectedC4 &&
+          <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
+            <DialogTitle>職員の勤務の割り当て数の上限の削除</DialogTitle>
+            <DialogContent>
+              <DialogContentText>この職員の勤務の割り当て数の上限を削除します</DialogContentText>
+              <Typography>{`${this.props.members.find(member => member.index === selectedC4.member_index)!.name}に${this.props.kinmus.find(kinmu => kinmu.index === selectedC4.kinmu_index)!.name}を${selectedC4.max_number_of_assignments}回以下割り当てる`}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={this.handleClickDeleteC4}>削除</Button>
+              <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
       </>
