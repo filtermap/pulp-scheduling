@@ -31,12 +31,14 @@ type Props = {
 }
 
 type State = {
-  open: boolean
-  start_date_name: string
-  stop_date_name: string
-  kinmu_index: number
-  group_index: number
-  min_number_of_assignments: number
+  creationDialogIsOpen: boolean
+  newC1StartDateName: string
+  newC1StopDateName: string
+  newC1KinmuIndex: number
+  newC1GroupIndex: number
+  newC1MinNumberOfAssignments: number
+  deletionDialogIsOpen: boolean
+  selectedC1Index: number
 }
 
 class C1 extends React.Component<Props, State> {
@@ -44,12 +46,14 @@ class C1 extends React.Component<Props, State> {
     super(props)
     const todayString = utils.dateToString(new Date())
     this.state = {
-      group_index: this.props.groups.length > 0 ? this.props.groups[0].index : 0,
-      kinmu_index: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
-      min_number_of_assignments: 0,
-      open: false,
-      start_date_name: todayString,
-      stop_date_name: todayString,
+      creationDialogIsOpen: false,
+      deletionDialogIsOpen: false,
+      newC1GroupIndex: this.props.groups.length > 0 ? this.props.groups[0].index : 0,
+      newC1KinmuIndex: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
+      newC1MinNumberOfAssignments: 0,
+      newC1StartDateName: todayString,
+      newC1StopDateName: todayString,
+      selectedC1Index: this.props.c1.length > 0 ? this.props.c1[0].index : 0
     }
   }
   public handleChangeC1StartDateName(index: number) {
@@ -77,37 +81,49 @@ class C1 extends React.Component<Props, State> {
       this.props.dispatch(c1.updateC1MinNumberOfAssignments(index, parseInt(event.target.value, 10)))
     }
   }
-  public handleClickDeleteC1(index: number) {
-    return (_: React.MouseEvent<HTMLButtonElement>) => {
-      this.props.dispatch(c1.deleteC1(index))
-    }
-  }
+
   public handleClickOpenDialog = () => {
-    this.setState({ open: true })
+    this.setState({ creationDialogIsOpen: true })
   }
   public handleCloseDialog = () => {
-    this.setState({ open: false })
+    this.setState({ creationDialogIsOpen: false })
   }
   public handleChangeNewC1StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ start_date_name: event.target.value })
+    this.setState({ newC1StartDateName: event.target.value })
   }
   public handleChangeNewC1StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ stop_date_name: event.target.value })
+    this.setState({ newC1StopDateName: event.target.value })
   }
   public handleChangeNewC1KinmuIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ kinmu_index: parseInt(event.target.value, 10) })
+    this.setState({ newC1KinmuIndex: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC1GroupIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ group_index: parseInt(event.target.value, 10) })
+    this.setState({ newC1GroupIndex: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC1MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ min_number_of_assignments: parseInt(event.target.value, 10) })
+    this.setState({ newC1MinNumberOfAssignments: parseInt(event.target.value, 10) })
   }
   public handleClickCreateC1 = () => {
-    this.setState({ open: false })
-    this.props.dispatch(c1.createC1(this.state.start_date_name, this.state.stop_date_name, this.state.kinmu_index, this.state.group_index, this.state.min_number_of_assignments))
+    this.setState({ creationDialogIsOpen: false })
+    this.props.dispatch(c1.createC1(this.state.newC1StartDateName, this.state.newC1StopDateName, this.state.newC1KinmuIndex, this.state.newC1GroupIndex, this.state.newC1MinNumberOfAssignments))
+  }
+  public handleClickOpenDeletionDialog(selectedC1Index: number) {
+    return () => {
+      this.setState({
+        deletionDialogIsOpen: true,
+        selectedC1Index,
+      })
+    }
+  }
+  public handleCloseDeletionDialog = () => {
+    this.setState({ deletionDialogIsOpen: false })
+  }
+  public handleClickDeleteC1 = () => {
+    this.setState({ deletionDialogIsOpen: false })
+    this.props.dispatch(c1.deleteC1(this.state.selectedC1Index))
   }
   public render() {
+    const selectedC1 = this.props.c1.find(c => c.index === this.state.selectedC1Index)
     return (
       <>
         <Toolbar>
@@ -171,12 +187,12 @@ class C1 extends React.Component<Props, State> {
               />
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickDeleteC1(c.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.index)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
         {this.props.kinmus.length === 0 || this.props.groups.length === 0 ?
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>期間の勤務にグループから割り当てる職員数の下限を追加できません</DialogTitle>
             <DialogContent>
               {this.props.kinmus.length === 0 ? <DialogContentText>勤務がありません</DialogContentText> : null}
@@ -186,13 +202,13 @@ class C1 extends React.Component<Props, State> {
               <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <TextField
                 label="開始日"
                 type="date"
-                defaultValue={this.state.start_date_name}
+                defaultValue={this.state.newC1StartDateName}
                 onChange={this.handleChangeNewC1StartDateName}
                 fullWidth={true}
                 InputLabelProps={{
@@ -202,7 +218,7 @@ class C1 extends React.Component<Props, State> {
               <TextField
                 label="終了日"
                 type="date"
-                defaultValue={this.state.stop_date_name}
+                defaultValue={this.state.newC1StopDateName}
                 onChange={this.handleChangeNewC1StopDateName}
                 fullWidth={true}
                 InputLabelProps={{
@@ -212,7 +228,7 @@ class C1 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.kinmu_index}
+                value={this.state.newC1KinmuIndex}
                 onChange={this.handleChangeNewC1KinmuIndex}
                 fullWidth={true}
               >
@@ -223,7 +239,7 @@ class C1 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="グループ"
-                value={this.state.group_index}
+                value={this.state.newC1GroupIndex}
                 onChange={this.handleChangeNewC1GroupIndex}
                 fullWidth={true}
               >
@@ -234,7 +250,7 @@ class C1 extends React.Component<Props, State> {
               <TextField
                 label="割り当て職員数下限"
                 type="number"
-                defaultValue={this.state.min_number_of_assignments}
+                defaultValue={this.state.newC1MinNumberOfAssignments}
                 onChange={this.handleChangeNewC1MinNumberOfAssignments}
                 fullWidth={true}
               />
@@ -242,6 +258,18 @@ class C1 extends React.Component<Props, State> {
             <DialogActions>
               <Button color="primary" onClick={this.handleClickCreateC1}>追加</Button>
               <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+            </DialogActions>
+          </Dialog>}
+        {selectedC1 &&
+          <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
+            <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の削除</DialogTitle>
+            <DialogContent>
+              <DialogContentText>この期間の勤務にグループから割り当てる職員数の下限を削除します</DialogContentText>
+              <Typography>{`${selectedC1.start_date_name}から${selectedC1.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.index === selectedC1.kinmu_index)!.name}に${this.props.groups.find(group => group.index === selectedC1.group_index)!.name}から${selectedC1.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={this.handleClickDeleteC1}>削除</Button>
+              <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
       </>
