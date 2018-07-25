@@ -21,23 +21,27 @@ import * as all from '../modules/all'
 import * as c6 from '../modules/c6'
 import * as kinmus from '../modules/kinmus'
 
-type State = {
-  open: boolean
-  kinmu_index: number
-  max_number_of_days: number
-}
-
 type Props = {
   dispatch: Dispatch
   c6: c6.C6[]
   kinmus: kinmus.Kinmu[]
 }
 
+type State = {
+  creationDialogIsOpen: boolean
+  newC6KinmuIndex: number
+  newC6MaxNumberOfDays: number
+  deletionDialogIsOpen: boolean
+  selectedC6Index: number
+}
+
 class C6 extends React.Component<Props, State> {
   public state: State = {
-    kinmu_index: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
-    max_number_of_days: 0,
-    open: false,
+    creationDialogIsOpen: false,
+    deletionDialogIsOpen: false,
+    newC6KinmuIndex: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
+    newC6MaxNumberOfDays: 0,
+    selectedC6Index: this.props.c6.length > 0 ? this.props.c6[0].index : 0,
   }
   public handleChangeC6KinmuIndex(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,33 +53,44 @@ class C6 extends React.Component<Props, State> {
       this.props.dispatch(c6.updateC6MaxNumberOfDays(index, parseInt(event.target.value, 10)))
     }
   }
-  public handleClickDeleteC6(index: number) {
-    return (_: React.MouseEvent<HTMLButtonElement>) => {
-      this.props.dispatch(c6.deleteC6(index))
-    }
+  public handleClickOpenCreationDialog = () => {
+    this.setState({ creationDialogIsOpen: true })
   }
-  public handleClickOpenDialog = () => {
-    this.setState({ open: true })
-  }
-  public handleCloseDialog = () => {
-    this.setState({ open: false })
+  public handleCloseCreationDialog = () => {
+    this.setState({ creationDialogIsOpen: false })
   }
   public handleChangeNewC6KinmuIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ kinmu_index: parseInt(event.target.value, 10) })
+    this.setState({ newC6KinmuIndex: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC6MaxNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ max_number_of_days: parseInt(event.target.value, 10) })
+    this.setState({ newC6MaxNumberOfDays: parseInt(event.target.value, 10) })
   }
   public handleClickCreateC6 = () => {
-    this.setState({ open: false })
-    this.props.dispatch(c6.createC6(this.state.kinmu_index, this.state.max_number_of_days))
+    this.setState({ creationDialogIsOpen: false })
+    this.props.dispatch(c6.createC6(this.state.newC6KinmuIndex, this.state.newC6MaxNumberOfDays))
+  }
+  public handleClickOpenDeletionDialog(selectedC6Index: number) {
+    return () => {
+      this.setState({
+        deletionDialogIsOpen: true,
+        selectedC6Index,
+      })
+    }
+  }
+  public handleCloseDeletionDialog = () => {
+    this.setState({ deletionDialogIsOpen: false })
+  }
+  public handleClickDeleteC6 = () => {
+    this.setState({ deletionDialogIsOpen: false })
+    this.props.dispatch(c6.deleteC6(this.state.selectedC6Index))
   }
   public render() {
+    const selectedC6 = this.props.c6.find(c => c.index === this.state.selectedC6Index)
     return (
       <>
         <Toolbar>
           <Typography variant="subheading" style={{ flex: 1 }}>勤務の連続日数の上限</Typography>
-          <Button size="small" onClick={this.handleClickOpenDialog}>追加</Button>
+          <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.c6.map(c => (
           <ExpansionPanel key={c.index}>
@@ -103,27 +118,27 @@ class C6 extends React.Component<Props, State> {
               />
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickDeleteC6(c.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.index)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
         {this.props.kinmus.length === 0 ?
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>勤務の連続日数の上限を追加できません</DialogTitle>
             <DialogContent>
               {this.props.kinmus.length === 0 ? <DialogContentText>勤務がありません</DialogContentText> : null}
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>勤務の連続日数の上限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.kinmu_index}
+                value={this.state.newC6KinmuIndex}
                 onChange={this.handleChangeNewC6KinmuIndex}
                 fullWidth={true}
               >
@@ -134,14 +149,26 @@ class C6 extends React.Component<Props, State> {
               <TextField
                 label="連続日数上限"
                 type="number"
-                defaultValue={this.state.max_number_of_days}
+                defaultValue={this.state.newC6MaxNumberOfDays}
                 onChange={this.handleChangeNewC6MaxNumberOfDays}
                 fullWidth={true}
               />
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickCreateC6}>追加</Button>
-              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
+            </DialogActions>
+          </Dialog>}
+        {selectedC6 &&
+          <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
+            <DialogTitle>勤務の連続日数の上限の削除</DialogTitle>
+            <DialogContent>
+              <DialogContentText>この勤務の連続日数の上限を削除します</DialogContentText>
+              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.index === selectedC6.kinmu_index)!.name}の連続日数を${selectedC6.max_number_of_days}日以下にする`}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={this.handleClickDeleteC6}>削除</Button>
+              <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
       </>
