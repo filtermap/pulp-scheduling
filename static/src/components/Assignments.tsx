@@ -90,7 +90,7 @@ class Assignments extends React.Component<Props, State> {
       a.click()
     }
   }
-  public handleClickOpenCreationDialog = async () => {
+  public handleClickOpenCreationDialog = () => {
     this.setState({ open: true })
   }
   public handleCloseCreationDialog = () => {
