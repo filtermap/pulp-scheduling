@@ -23,14 +23,6 @@ import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
 import * as utils from '../utils'
 
-type State = {
-  open: boolean
-  member_index: number
-  start_date_name: string
-  stop_date_name: string
-  kinmu_index: number
-}
-
 type Props = {
   dispatch: Dispatch
   c10: c10.C10[]
@@ -38,16 +30,28 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 }
 
+type State = {
+  creationDialogIsOpen: boolean
+  newC10MemberIndex: number
+  newC10StartDateName: string
+  newC10StopDateName: string
+  newC10KinmuIndex: number
+  deletionDialogIsOpen: boolean
+  selectedC10Index: number
+}
+
 class C10 extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     const todayString = utils.dateToString(new Date())
     this.state = {
-      kinmu_index: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
-      member_index: this.props.members.length > 0 ? this.props.members[0].index : 0,
-      open: false,
-      start_date_name: todayString,
-      stop_date_name: todayString,
+      creationDialogIsOpen: false,
+      deletionDialogIsOpen: false,
+      newC10KinmuIndex: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
+      newC10MemberIndex: this.props.members.length > 0 ? this.props.members[0].index : 0,
+      newC10StartDateName: todayString,
+      newC10StopDateName: todayString,
+      selectedC10Index: this.props.c10.length > 0 ? this.props.c10[0].index : 0,
     }
   }
   public handleChangeC10MemberIndex(index: number) {
@@ -70,39 +74,50 @@ class C10 extends React.Component<Props, State> {
       this.props.dispatch(c10.updateC10KinmuIndex(index, parseInt(event.target.value, 10)))
     }
   }
-  public handleClickDeleteC10(index: number) {
-    return (_: React.MouseEvent<HTMLButtonElement>) => {
-      this.props.dispatch(c10.deleteC10(index))
-    }
+  public handleClickOpenCreationDialog = () => {
+    this.setState({ creationDialogIsOpen: true })
   }
-  public handleClickOpenDialog = () => {
-    this.setState({ open: true })
-  }
-  public handleCloseDialog = () => {
-    this.setState({ open: false })
+  public handleCloseCreationDialog = () => {
+    this.setState({ creationDialogIsOpen: false })
   }
   public handleChangeNewC10MemberIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ member_index: parseInt(event.target.value, 10) })
+    this.setState({ newC10MemberIndex: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC10StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ start_date_name: event.target.value })
+    this.setState({ newC10StartDateName: event.target.value })
   }
   public handleChangeNewC10StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ stop_date_name: event.target.value })
+    this.setState({ newC10StopDateName: event.target.value })
   }
   public handleChangeNewC10KinmuIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ kinmu_index: parseInt(event.target.value, 10) })
+    this.setState({ newC10KinmuIndex: parseInt(event.target.value, 10) })
   }
   public handleClickCreateC10 = () => {
-    this.setState({ open: false })
-    this.props.dispatch(c10.createC10(this.state.member_index, this.state.start_date_name, this.state.stop_date_name, this.state.kinmu_index))
+    this.setState({ creationDialogIsOpen: false })
+    this.props.dispatch(c10.createC10(this.state.newC10MemberIndex, this.state.newC10StartDateName, this.state.newC10StopDateName, this.state.newC10KinmuIndex))
+  }
+  public handleClickOpenDeletionDialog(selectedC10Index: number) {
+    return () => {
+      this.setState({
+        deletionDialogIsOpen: true,
+        selectedC10Index,
+      })
+    }
+  }
+  public handleCloseDeletionDialog = () => {
+    this.setState({ deletionDialogIsOpen: false })
+  }
+  public handleClickDeleteC10 = () => {
+    this.setState({ deletionDialogIsOpen: false })
+    this.props.dispatch(c10.deleteC10(this.state.selectedC10Index))
   }
   public render() {
+    const selectedC10 = this.props.c10.find(c => c.index === this.state.selectedC10Index)
     return (
       <>
         <Toolbar>
           <Typography variant="subheading" style={{ flex: 1 }}>職員の期間に割り当てない勤務</Typography>
-          <Button size="small" onClick={this.handleClickOpenDialog}>追加</Button>
+          <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.c10.map(c => (
           <ExpansionPanel key={c.index}>
@@ -154,28 +169,28 @@ class C10 extends React.Component<Props, State> {
               </TextField>
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickDeleteC10(c.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.index)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
         {this.props.members.length === 0 && this.props.kinmus.length === 0 ?
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>職員の期間に割り当てない勤務を追加できません</DialogTitle>
             <DialogContent>
               {this.props.members.length === 0 ? <DialogContentText>職員がいません</DialogContentText> : null}
               {this.props.kinmus.length === 0 ? <DialogContentText>勤務がありません</DialogContentText> : null}
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>職員の期間に割り当てない勤務の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <TextField
                 select={true}
                 label="職員"
-                value={this.state.member_index}
+                value={this.state.newC10MemberIndex}
                 onChange={this.handleChangeNewC10MemberIndex}
                 fullWidth={true}
               >
@@ -186,7 +201,7 @@ class C10 extends React.Component<Props, State> {
               <TextField
                 label="開始日"
                 type="date"
-                defaultValue={this.state.start_date_name}
+                defaultValue={this.state.newC10StartDateName}
                 onChange={this.handleChangeNewC10StartDateName}
                 fullWidth={true}
                 InputLabelProps={{
@@ -196,7 +211,7 @@ class C10 extends React.Component<Props, State> {
               <TextField
                 label="終了日"
                 type="date"
-                defaultValue={this.state.stop_date_name}
+                defaultValue={this.state.newC10StopDateName}
                 onChange={this.handleChangeNewC10StopDateName}
                 fullWidth={true}
                 InputLabelProps={{
@@ -206,7 +221,7 @@ class C10 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.kinmu_index}
+                value={this.state.newC10KinmuIndex}
                 onChange={this.handleChangeNewC10KinmuIndex}
                 fullWidth={true}
               >
@@ -217,7 +232,19 @@ class C10 extends React.Component<Props, State> {
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickCreateC10}>追加</Button>
-              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
+            </DialogActions>
+          </Dialog>}
+        {selectedC10 &&
+          <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
+            <DialogTitle>職員の期間に割り当てない勤務の削除</DialogTitle>
+            <DialogContent>
+              <DialogContentText>この職員の期間に割り当てない勤務を削除します</DialogContentText>
+              <Typography>{`${this.props.members.find(member => member.index === selectedC10.member_index)!.name}の${selectedC10.start_date_name}から${selectedC10.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.index === selectedC10.kinmu_index)!.name}を割り当てない`}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={this.handleClickDeleteC10}>削除</Button>
+              <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
       </>
