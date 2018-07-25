@@ -22,13 +22,6 @@ import * as c3 from '../modules/c3'
 import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
 
-type State = {
-  open: boolean
-  member_index: number
-  kinmu_index: number
-  min_number_of_assignments: number
-}
-
 type Props = {
   dispatch: Dispatch
   c3: c3.C3[]
@@ -36,12 +29,23 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 }
 
+type State = {
+  creationDialogIsOpen: boolean
+  newC3MemberIndex: number
+  newC3KinmuIndex: number
+  newC3MinNumberOfAssignments: number
+  deletionDialogIsOpen: boolean
+  selectedC3Index: number
+}
+
 class C3 extends React.Component<Props, State> {
   public state: State = {
-    kinmu_index: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
-    member_index: this.props.members.length > 0 ? this.props.members[0].index : 0,
-    min_number_of_assignments: 0,
-    open: false,
+    creationDialogIsOpen: false,
+    deletionDialogIsOpen: false,
+    newC3KinmuIndex: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
+    newC3MemberIndex: this.props.members.length > 0 ? this.props.members[0].index : 0,
+    newC3MinNumberOfAssignments: 0,
+    selectedC3Index: this.props.c3.length > 0 ? this.props.c3[0].index : 0,
   }
   public handleChangeC3MemberIndex(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,36 +62,47 @@ class C3 extends React.Component<Props, State> {
       this.props.dispatch(c3.updateC3MinNumberOfAssignments(index, parseInt(event.target.value, 10)))
     }
   }
-  public handleClickDeleteC3(index: number) {
-    return (_: React.MouseEvent<HTMLButtonElement>) => {
-      this.props.dispatch(c3.deleteC3(index))
-    }
+  public handleClickOpenCreationDialog = () => {
+    this.setState({ creationDialogIsOpen: true })
   }
-  public handleClickOpenDialog = () => {
-    this.setState({ open: true })
-  }
-  public handleCloseDialog = () => {
-    this.setState({ open: false })
+  public handleCloseCreationDialog = () => {
+    this.setState({ creationDialogIsOpen: false })
   }
   public handleChangeNewC3MemberIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ member_index: parseInt(event.target.value, 10) })
+    this.setState({ newC3MemberIndex: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC3KinmuIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ kinmu_index: parseInt(event.target.value, 10) })
+    this.setState({ newC3KinmuIndex: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC3MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ min_number_of_assignments: parseInt(event.target.value, 10) })
+    this.setState({ newC3MinNumberOfAssignments: parseInt(event.target.value, 10) })
   }
   public handleClickCreateC3 = () => {
-    this.setState({ open: false })
-    this.props.dispatch(c3.createC3(this.state.member_index, this.state.kinmu_index, this.state.min_number_of_assignments))
+    this.setState({ creationDialogIsOpen: false })
+    this.props.dispatch(c3.createC3(this.state.newC3MemberIndex, this.state.newC3KinmuIndex, this.state.newC3MinNumberOfAssignments))
+  }
+  public handleClickOpenDeletionDialog(selectedC3Index: number) {
+    return () => {
+      this.setState({
+        deletionDialogIsOpen: true,
+        selectedC3Index,
+      })
+    }
+  }
+  public handleCloseDeletionDialog = () => {
+    this.setState({ deletionDialogIsOpen: false })
+  }
+  public handleClickDeleteC3 = () => {
+    this.setState({ deletionDialogIsOpen: false })
+    this.props.dispatch(c3.deleteC3(this.state.selectedC3Index))
   }
   public render() {
+    const selectedC3 = this.props.c3.find(c => c.index === this.state.selectedC3Index)
     return (
       <>
         <Toolbar>
           <Typography variant="subheading" style={{ flex: 1 }}>職員の勤務の割り当て数の下限</Typography>
-          <Button size="small" onClick={this.handleClickOpenDialog}>追加</Button>
+          <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.c3.map(c => (
           <ExpansionPanel key={c.index}>
@@ -126,28 +141,28 @@ class C3 extends React.Component<Props, State> {
               />
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickDeleteC3(c.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.index)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
         {this.props.members.length === 0 || this.props.kinmus.length === 0 ?
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>職員の勤務の割り当て数の下限を追加できません</DialogTitle>
             <DialogContent>
               {this.props.members.length === 0 ? <DialogContentText>職員がいません</DialogContentText> : null}
               {this.props.kinmus.length === 0 ? <DialogContentText>勤務がありません</DialogContentText> : null}
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>職員の勤務の割り当て数の下限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <TextField
                 select={true}
                 label="職員"
-                value={this.state.member_index}
+                value={this.state.newC3MemberIndex}
                 onChange={this.handleChangeNewC3MemberIndex}
                 fullWidth={true}
               >
@@ -158,7 +173,7 @@ class C3 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.kinmu_index}
+                value={this.state.newC3KinmuIndex}
                 onChange={this.handleChangeNewC3KinmuIndex}
                 fullWidth={true}
               >
@@ -169,14 +184,26 @@ class C3 extends React.Component<Props, State> {
               <TextField
                 label="割り当て数下限"
                 type="number"
-                defaultValue={this.state.min_number_of_assignments}
+                defaultValue={this.state.newC3MinNumberOfAssignments}
                 onChange={this.handleChangeNewC3MinNumberOfAssignments}
                 fullWidth={true}
               />
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickCreateC3}>追加</Button>
-              <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
+            </DialogActions>
+          </Dialog>}
+        {selectedC3 &&
+          <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
+            <DialogTitle>職員の勤務の割り当て数の下限の削除</DialogTitle>
+            <DialogContent>
+              <DialogContentText>この職員の勤務の割り当て数の下限を削除します</DialogContentText>
+              <Typography>{`${this.props.members.find(member => member.index === selectedC3.member_index)!.name}に${this.props.kinmus.find(kinmu => kinmu.index === selectedC3.kinmu_index)!.name}を${selectedC3.min_number_of_assignments}回以上割り当てる`}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={this.handleClickDeleteC3}>削除</Button>
+              <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
       </>
