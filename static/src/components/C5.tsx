@@ -21,23 +21,27 @@ import * as all from '../modules/all'
 import * as c5 from '../modules/c5'
 import * as kinmus from '../modules/kinmus'
 
-type State = {
-  open: boolean
-  kinmu_index: number
-  min_number_of_days: number
-}
-
 type Props = {
   dispatch: Dispatch
   c5: c5.C5[]
   kinmus: kinmus.Kinmu[]
 }
 
+type State = {
+  creationDialogIsOpen: boolean
+  newC5KinmuIndex: number
+  newC5MinNumberOfDays: number
+  deletionDialogIsOpen: boolean
+  selectedC5Index: number
+}
+
 class C5 extends React.Component<Props, State> {
   public state: State = {
-    kinmu_index: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
-    min_number_of_days: 0,
-    open: false,
+    creationDialogIsOpen: false,
+    deletionDialogIsOpen: false,
+    newC5KinmuIndex: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
+    newC5MinNumberOfDays: 0,
+    selectedC5Index: this.props.c5.length > 0 ? this.props.c5[0].index : 0,
   }
   public handleChangeC5KinmuIndex(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,28 +53,39 @@ class C5 extends React.Component<Props, State> {
       this.props.dispatch(c5.updateC5MinNumberOfDays(index, parseInt(event.target.value, 10)))
     }
   }
-  public handleClickDeleteC5(index: number) {
-    return (_: React.MouseEvent<HTMLButtonElement>) => {
-      this.props.dispatch(c5.deleteC5(index))
-    }
-  }
   public handleClickOpenDialog = () => {
-    this.setState({ open: true })
+    this.setState({ creationDialogIsOpen: true })
   }
   public handleCloseDialog = () => {
-    this.setState({ open: false })
+    this.setState({ creationDialogIsOpen: false })
   }
   public handleChangeNewC5KinmuIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ kinmu_index: parseInt(event.target.value, 10) })
+    this.setState({ newC5KinmuIndex: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC5MinNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ min_number_of_days: parseInt(event.target.value, 10) })
+    this.setState({ newC5MinNumberOfDays: parseInt(event.target.value, 10) })
   }
   public handleClickCreateC5 = () => {
-    this.setState({ open: false })
-    this.props.dispatch(c5.createC5(this.state.kinmu_index, this.state.min_number_of_days))
+    this.setState({ creationDialogIsOpen: false })
+    this.props.dispatch(c5.createC5(this.state.newC5KinmuIndex, this.state.newC5MinNumberOfDays))
+  }
+  public handleClickOpenDeletionDialog(selectedC5Index: number) {
+    return () => {
+      this.setState({
+        deletionDialogIsOpen: true,
+        selectedC5Index,
+      })
+    }
+  }
+  public handleCloseDeletionDialog = () => {
+    this.setState({ deletionDialogIsOpen: false })
+  }
+  public handleClickDeleteC5 = () => {
+    this.setState({ deletionDialogIsOpen: false })
+    this.props.dispatch(c5.deleteC5(this.state.selectedC5Index))
   }
   public render() {
+    const selectedC5 = this.props.c5.find(c => c.index === this.state.selectedC5Index)
     return (
       <>
         <Toolbar>
@@ -103,12 +118,12 @@ class C5 extends React.Component<Props, State> {
               />
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickDeleteC5(c.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.index)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
         {this.props.kinmus.length === 0 ?
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>勤務の連続日数の下限を追加できません</DialogTitle>
             <DialogContent>
               {this.props.kinmus.length === 0 ? <DialogContentText>勤務がありません</DialogContentText> : null}
@@ -117,13 +132,13 @@ class C5 extends React.Component<Props, State> {
               <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseDialog} open={this.state.open} fullWidth={true} maxWidth="md">
+          <Dialog onClose={this.handleCloseDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>勤務の連続日数の下限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.kinmu_index}
+                value={this.state.newC5KinmuIndex}
                 onChange={this.handleChangeNewC5KinmuIndex}
                 fullWidth={true}
               >
@@ -134,7 +149,7 @@ class C5 extends React.Component<Props, State> {
               <TextField
                 label="連続日数下限"
                 type="number"
-                defaultValue={this.state.min_number_of_days}
+                defaultValue={this.state.newC5MinNumberOfDays}
                 onChange={this.handleChangeNewC5MinNumberOfDays}
                 fullWidth={true}
               />
@@ -142,6 +157,18 @@ class C5 extends React.Component<Props, State> {
             <DialogActions>
               <Button color="primary" onClick={this.handleClickCreateC5}>追加</Button>
               <Button color="primary" onClick={this.handleCloseDialog}>閉じる</Button>
+            </DialogActions>
+          </Dialog>}
+        {selectedC5 &&
+          <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
+            <DialogTitle>勤務の連続日数の下限の削除</DialogTitle>
+            <DialogContent>
+              <DialogContentText>この勤務の連続日数の下限を削除します</DialogContentText>
+              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.index === selectedC5.kinmu_index)!.name}の連続日数を${selectedC5.min_number_of_days}日以上にする`}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={this.handleClickDeleteC5}>削除</Button>
+              <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
       </>
