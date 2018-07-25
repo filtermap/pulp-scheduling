@@ -22,8 +22,14 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
+import * as assignments from '../modules/assignments'
+import * as c10 from '../modules/c10'
+import * as c3 from '../modules/c3'
+import * as c4 from '../modules/c4'
+import * as c9 from '../modules/c9'
 import * as group_members from '../modules/group_members'
 import * as groups from '../modules/groups'
+import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
 
 type Props = {
@@ -31,6 +37,12 @@ type Props = {
   members: members.Member[]
   groups: groups.Group[]
   group_members: group_members.GroupMember[]
+  assignments: assignments.Assignment[]
+  c3: c3.C3[]
+  c4: c4.C4[]
+  c9: c9.C9[]
+  c10: c10.C10[]
+  kinmus: kinmus.Kinmu[]
 }
 
 type State = {
@@ -102,6 +114,11 @@ class Members extends React.Component<Props, State> {
   }
   public render() {
     const selectedMember = this.props.members.find(member => member.index === this.state.selectedMemberIndex)
+    const selectedMemberRosterIds = Array.from(new Set(this.props.assignments.filter(assignment => assignment.member_index === this.state.selectedMemberIndex).map(({ roster_id }) => roster_id)))
+    const selectedMemberC3 = this.props.c3.filter(c => c.member_index === this.state.selectedMemberIndex)
+    const selectedMemberC4 = this.props.c4.filter(c => c.member_index === this.state.selectedMemberIndex)
+    const selectedMemberC9 = this.props.c9.filter(c => c.member_index === this.state.selectedMemberIndex)
+    const selectedMemberC10 = this.props.c10.filter(c => c.member_index === this.state.selectedMemberIndex)
     return (
       <>
         <Toolbar>
@@ -187,6 +204,14 @@ class Members extends React.Component<Props, State> {
               <DialogContentText>この職員を削除します</DialogContentText>
               <Typography>{selectedMember.name}</Typography>
               <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.member_index === selectedMember.index).map(group_member => this.props.groups.find(group => group.index === group_member.group_index)!.name).join(', ')}</Typography>
+              {selectedMemberRosterIds.length > 0 && <DialogContentText>以下の勤務表の割り当ても削除されます</DialogContentText>}
+              {selectedMemberRosterIds.map(roster_id => <Typography key={roster_id}>{`勤務表${roster_id}`}</Typography>)}
+              {(selectedMemberC3.length > 0 || selectedMemberC4.length > 0 || selectedMemberC9.length > 0 || selectedMemberC10.length > 0) &&
+                <DialogContentText>以下の条件も削除されます</DialogContentText>}
+              {selectedMemberC3.map(c => <Typography key={c.index}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>)}
+              {selectedMemberC4.map(c => <Typography key={c.index}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>)}
+              {selectedMemberC9.map(c => <Typography key={c.index}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}を割り当てる`}</Typography>)}
+              {selectedMemberC10.map(c => <Typography key={c.index}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}を割り当てない`}</Typography>)}
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteMember}>削除</Button>
@@ -200,8 +225,14 @@ class Members extends React.Component<Props, State> {
 
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
+    assignments: state.present.assignments,
+    c10: state.present.c10,
+    c3: state.present.c3,
+    c4: state.present.c4,
+    c9: state.present.c9,
     group_members: state.present.group_members,
     groups: state.present.groups,
+    kinmus: state.present.kinmus,
     members: state.present.members,
   }
 }

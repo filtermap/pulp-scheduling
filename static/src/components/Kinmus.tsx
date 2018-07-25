@@ -17,11 +17,39 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
+import * as assignments from '../modules/assignments'
+import * as c1 from '../modules/c1'
+import * as c10 from '../modules/c10'
+import * as c2 from '../modules/c2'
+import * as c3 from '../modules/c3'
+import * as c4 from '../modules/c4'
+import * as c5 from '../modules/c5'
+import * as c6 from '../modules/c6'
+import * as c7 from '../modules/c7'
+import * as c8 from '../modules/c8'
+import * as c9 from '../modules/c9'
+import * as groups from '../modules/groups'
 import * as kinmus from '../modules/kinmus'
+import * as members from '../modules/members'
+import * as renzoku_kinshi_kinmus from '../modules/renzoku_kinshi_kinmus'
 
 type Props = {
   dispatch: Dispatch
   kinmus: kinmus.Kinmu[]
+  assignments: assignments.Assignment[]
+  renzoku_kinshi_kinmus: renzoku_kinshi_kinmus.RenzokuKinshiKinmu[]
+  c1: c1.C1[]
+  c2: c2.C2[]
+  c3: c3.C3[]
+  c4: c4.C4[]
+  c5: c5.C5[]
+  c6: c6.C6[]
+  c7: c7.C7[]
+  c8: c8.C8[]
+  c9: c9.C9[]
+  c10: c10.C10[]
+  members: members.Member[]
+  groups: groups.Group[]
 }
 
 type State = {
@@ -71,9 +99,20 @@ class Kinmus extends React.Component<Props, State> {
     this.setState({ deletionDialogIsOpen: false })
     this.props.dispatch(all.deleteKinmu(this.state.selectedKinmuIndex))
   }
-
   public render() {
     const selectedKinmu = this.props.kinmus.find(kinmu => kinmu.index === this.state.selectedKinmuIndex)
+    const selectedKinmuRosterIds = Array.from(new Set(this.props.assignments.filter(({ kinmu_index }) => kinmu_index === this.state.selectedKinmuIndex).map(({ roster_id }) => roster_id)))
+    const selectedKinmuSequenceIds = Array.from(new Set(this.props.renzoku_kinshi_kinmus.filter(({ kinmu_index }) => kinmu_index === this.state.selectedKinmuIndex).map(({ sequence_id }) => sequence_id)))
+    const selectedKinmuC1 = this.props.c1.filter(c => c.kinmu_index === this.state.selectedKinmuIndex)
+    const selectedKinmuC2 = this.props.c2.filter(c => c.kinmu_index === this.state.selectedKinmuIndex)
+    const selectedKinmuC3 = this.props.c3.filter(c => c.kinmu_index === this.state.selectedKinmuIndex)
+    const selectedKinmuC4 = this.props.c4.filter(c => c.kinmu_index === this.state.selectedKinmuIndex)
+    const selectedKinmuC5 = this.props.c5.filter(c => c.kinmu_index === this.state.selectedKinmuIndex)
+    const selectedKinmuC6 = this.props.c6.filter(c => c.kinmu_index === this.state.selectedKinmuIndex)
+    const selectedKinmuC7 = this.props.c7.filter(c => c.kinmu_index === this.state.selectedKinmuIndex)
+    const selectedKinmuC8 = this.props.c8.filter(c => c.kinmu_index === this.state.selectedKinmuIndex)
+    const selectedKinmuC9 = this.props.c9.filter(c => c.kinmu_index === this.state.selectedKinmuIndex)
+    const selectedKinmuC10 = this.props.c10.filter(c => c.kinmu_index === this.state.selectedKinmuIndex)
     return (
       <>
         <Toolbar>
@@ -119,6 +158,31 @@ class Kinmus extends React.Component<Props, State> {
             <DialogContent>
               <DialogContentText>この勤務を削除します</DialogContentText>
               <Typography>{selectedKinmu.name}</Typography>
+              {selectedKinmuRosterIds.length > 0 && <DialogContentText>以下の勤務表も削除されます</DialogContentText>}
+              {selectedKinmuRosterIds.map(roster_id => <Typography key={roster_id}>{`勤務表${roster_id}`}</Typography>)}
+              {(selectedKinmuSequenceIds.length > 0 ||
+                selectedKinmuC1.length > 0 ||
+                selectedKinmuC2.length > 0 ||
+                selectedKinmuC3.length > 0 ||
+                selectedKinmuC4.length > 0 ||
+                selectedKinmuC5.length > 0 ||
+                selectedKinmuC6.length > 0 ||
+                selectedKinmuC7.length > 0 ||
+                selectedKinmuC8.length > 0 ||
+                selectedKinmuC9.length > 0 ||
+                selectedKinmuC10.length > 0) &&
+                <DialogContentText>以下の条件も削除されます</DialogContentText>}
+              {selectedKinmuSequenceIds.map(sequenceId => <Typography key={sequenceId}>{this.props.renzoku_kinshi_kinmus.filter(({ sequence_id }) => sequence_id === sequenceId).sort((a, b) => a.sequence_number - b.sequence_number).map(({ kinmu_index }) => this.props.kinmus.find(kinmu => kinmu.index === kinmu_index)!.name).join(', ')}</Typography>)}
+              {selectedKinmuC1.map(c => <Typography key={c.index}>{`${c.start_date_name}から${c.stop_date_name}までの${selectedKinmu.name}に${this.props.groups.find(group => group.index === c.group_index)!.name}から${c.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>)}
+              {selectedKinmuC2.map(c => <Typography key={c.index}>{`${c.start_date_name}から${c.stop_date_name}までの${selectedKinmu.name}に${this.props.groups.find(group => group.index === c.group_index)!.name}から${c.max_number_of_assignments}人以下の職員を割り当てる`}</Typography>)}
+              {selectedKinmuC3.map(c => <Typography key={c.index}>{`${this.props.members.find(member => member.index === c.member_index)!.name}に${selectedKinmu.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>)}
+              {selectedKinmuC4.map(c => <Typography key={c.index}>{`${this.props.members.find(member => member.index === c.member_index)!.name}に${selectedKinmu.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>)}
+              {selectedKinmuC5.map(c => <Typography key={c.index}>{`${selectedKinmu.name}の連続日数を${c.min_number_of_days}日以上にする`}</Typography>)}
+              {selectedKinmuC6.map(c => <Typography key={c.index}>{`${selectedKinmu.name}の連続日数を${c.max_number_of_days}日以下にする`}</Typography>)}
+              {selectedKinmuC7.map(c => <Typography key={c.index}>{`${selectedKinmu.name}の間隔日数を${c.min_number_of_days}日以上にする`}</Typography>)}
+              {selectedKinmuC8.map(c => <Typography key={c.index}>{`${selectedKinmu.name}の間隔日数を${c.max_number_of_days}日以下にする`}</Typography>)}
+              {selectedKinmuC9.map(c => <Typography key={c.index}>{`${this.props.members.find(member => member.index === c.member_index)!.name}の${c.start_date_name}から${c.stop_date_name}までに${selectedKinmu.name}を割り当てる`}</Typography>)}
+              {selectedKinmuC10.map(c => <Typography key={c.index}>{`${this.props.members.find(member => member.index === c.member_index)!.name}の${c.start_date_name}から${c.stop_date_name}までに${selectedKinmu.name}を割り当てない`}</Typography>)}
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteKinmu}>削除</Button>
@@ -133,7 +197,21 @@ class Kinmus extends React.Component<Props, State> {
 
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    kinmus: state.present.kinmus
+    assignments: state.present.assignments,
+    c1: state.present.c1,
+    c10: state.present.c10,
+    c2: state.present.c2,
+    c3: state.present.c3,
+    c4: state.present.c4,
+    c5: state.present.c5,
+    c6: state.present.c6,
+    c7: state.present.c7,
+    c8: state.present.c8,
+    c9: state.present.c9,
+    groups: state.present.groups,
+    kinmus: state.present.kinmus,
+    members: state.present.members,
+    renzoku_kinshi_kinmus: state.present.renzoku_kinshi_kinmus,
   }
 }
 
