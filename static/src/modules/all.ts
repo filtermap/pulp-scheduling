@@ -1,6 +1,8 @@
 import reduceReducer from 'reduce-reducers'
 import { combineReducers } from 'redux'
 import * as assignments from './assignments'
+import * as c0 from './c0'
+import * as c0_kinmus from './c0_kinmus'
 import * as c1 from './c1'
 import * as c10 from './c10'
 import * as c2 from './c2'
@@ -15,15 +17,16 @@ import * as group_members from './group_members'
 import * as groups from './groups'
 import * as kinmus from './kinmus'
 import * as members from './members'
-import * as renzoku_kinshi_kinmus from './renzoku_kinshi_kinmus'
 import * as terms from './terms'
 
 const REPLACE_ALL = "REPLACE_ALL"
 const CREATE_MEMBER = 'CREATE_MEMBER'
 const CREATE_GROUP = 'CREATE_GROUP'
+const CREATE_C0 = 'CREATE_C0'
 const DELETE_MEMBER = 'DELETE_MEMBER'
 const DELETE_GROUP = 'DELETE_GROUP'
 const DELETE_KINMU = 'DELETE_KINMU'
+const DELETE_C0 = 'DELETE_C0'
 
 export type All = {
   members: members.Member[]
@@ -31,7 +34,8 @@ export type All = {
   kinmus: kinmus.Kinmu[]
   groups: groups.Group[]
   group_members: group_members.GroupMember[]
-  renzoku_kinshi_kinmus: renzoku_kinshi_kinmus.RenzokuKinshiKinmu[]
+  c0: c0.C0[]
+  c0_kinmus: c0_kinmus.C0Kinmu[]
   c1: c1.C1[]
   c2: c2.C2[]
   c3: c3.C3[]
@@ -62,6 +66,11 @@ type CreateGroup = {
   member_indices: number[]
 }
 
+type CreateC0 = {
+  type: typeof CREATE_C0
+  kinmu_indices: number[]
+}
+
 type DeleteMember = {
   type: typeof DELETE_MEMBER
   index: number
@@ -77,13 +86,20 @@ type DeleteKinmu = {
   index: number
 }
 
+type DeleteC0 = {
+  type: typeof DELETE_C0
+  sequence_id: number
+}
+
 type Action =
   | ReplaceAll
   | CreateMember
   | CreateGroup
+  | CreateC0
   | DeleteMember
   | DeleteGroup
   | DeleteKinmu
+  | DeleteC0
 
 export function replaceAll(all: All): ReplaceAll {
   return {
@@ -108,6 +124,13 @@ export function createGroup(name: string, member_indices: number[]): CreateGroup
   }
 }
 
+export function createC0(kinmu_indices: number[]): CreateC0 {
+  return {
+    kinmu_indices,
+    type: CREATE_C0,
+  }
+}
+
 export function deleteMember(index: number): DeleteMember {
   return {
     index,
@@ -129,10 +152,19 @@ export function deleteKinmu(index: number): DeleteKinmu {
   }
 }
 
+export function deleteC0(sequence_id: number): DeleteC0 {
+  return {
+    sequence_id,
+    type: DELETE_C0,
+  }
+}
+
 export type State = All
 
 const combinedReducer: (state: State, action: Action) => State = combineReducers({
   assignments: assignments.reducer,
+  c0: c0.reducer,
+  c0_kinmus: c0_kinmus.reducer,
   c1: c1.reducer,
   c10: c10.reducer,
   c2: c2.reducer,
@@ -147,7 +179,6 @@ const combinedReducer: (state: State, action: Action) => State = combineReducers
   groups: groups.reducer,
   kinmus: kinmus.reducer,
   members: members.reducer,
-  renzoku_kinshi_kinmus: renzoku_kinshi_kinmus.reducer,
   terms: terms.reducer,
 })
 
@@ -177,6 +208,23 @@ function crossSliceReducer(state: State, action: Action): State {
         groups: state.groups.concat({ index: group_index, name: action.name }),
       }
     }
+    case CREATE_C0: {
+      const sequence_id = Math.max(0, ...state.c0.map(c => c.sequence_id)) + 1
+      const c0_kinmu_index = Math.max(0, ...state.c0_kinmus.map(c0_kinmu => c0_kinmu.index)) + 1
+      return {
+        ...state,
+        c0: state.c0.concat({
+          index: Math.max(0, ...state.c0.map(c => c.index)) + 1,
+          sequence_id,
+        }),
+        c0_kinmus: state.c0_kinmus.concat(action.kinmu_indices.map((kinmu_index, index) => ({
+          index: c0_kinmu_index + index,
+          kinmu_index,
+          sequence_id,
+          sequence_number: index,
+        }))),
+      }
+    }
     case DELETE_MEMBER:
       return {
         ...state,
@@ -197,10 +245,13 @@ function crossSliceReducer(state: State, action: Action): State {
         groups: state.groups.filter(group => group.index !== action.index),
       }
     case DELETE_KINMU: {
+      const deleted_c0_sequence_ids = Array.from(new Set(state.c0_kinmus.filter(c0_kinmu => c0_kinmu.kinmu_index === action.index).map(({ sequence_id }) => sequence_id)))
       const deleted_roster_ids = Array.from(new Set(state.assignments.filter(assignment => assignment.kinmu_index === action.index).map(assignment => assignment.roster_id)))
       return {
         ...state,
         assignments: state.assignments.filter(assignment => !deleted_roster_ids.includes(assignment.roster_id)),
+        c0: state.c0.filter(c => !deleted_c0_sequence_ids.includes(c.sequence_id)),
+        c0_kinmus: state.c0_kinmus.filter(c0_kinmu => c0_kinmu.kinmu_index !== action.index),
         c1: state.c1.filter(c => c.kinmu_index !== action.index),
         c10: state.c10.filter(c => c.kinmu_index !== action.index),
         c2: state.c2.filter(c => c.kinmu_index !== action.index),
@@ -212,9 +263,14 @@ function crossSliceReducer(state: State, action: Action): State {
         c8: state.c8.filter(c => c.kinmu_index !== action.index),
         c9: state.c9.filter(c => c.kinmu_index !== action.index),
         kinmus: state.kinmus.filter(kinmu => kinmu.index !== action.index),
-        renzoku_kinshi_kinmus: state.renzoku_kinshi_kinmus.filter(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.kinmu_index !== action.index),
       }
     }
+    case DELETE_C0:
+      return {
+        ...state,
+        c0: state.c0.filter(c => c.sequence_id !== action.sequence_id),
+        c0_kinmus: state.c0_kinmus.filter(c0_kinmu => c0_kinmu.sequence_id !== action.sequence_id)
+      }
   }
   return state
 }

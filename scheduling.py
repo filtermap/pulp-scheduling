@@ -120,11 +120,26 @@ def write_group_members(group_members, groups, members):
     write_rows(rows, "group_members.csv", ["group_name", "member_name"])
 
 
-def read_renzoku_kinshi_kinmus(kinmus):
+def read_c0():
     """連続禁止勤務並びの集合。"""
-    with open(in_data_directory("renzoku_kinshi_kinmus.csv")) as f:
+    with open(in_data_directory("c0.csv")) as f:
         next(f)
-        renzoku_kinshi_kinmus = [
+        c0 = [
+            {"index": index, "sequence_id": r["並びID"]}
+            for index, r in enumerate(csv.DictReader(f, ["並びID"]))
+        ]
+    return c0
+
+
+def write_c0(c0):
+    write_rows(c0, "c0.csv", ["sequence_id"])
+
+
+def read_c0_kinmus(kinmus):
+    """連続禁止勤務並びの集合。"""
+    with open(in_data_directory("c0_kinmus.csv")) as f:
+        next(f)
+        c0_kinmus = [
             {
                 "index": index,
                 "sequence_id": r["並びID"],
@@ -135,26 +150,21 @@ def read_renzoku_kinshi_kinmus(kinmus):
             }
             for index, r in enumerate(csv.DictReader(f, ["並びID", "並び順", "勤務名"]))
         ]
-    return renzoku_kinshi_kinmus
+    return c0_kinmus
 
 
-def write_renzoku_kinshi_kinmus(renzoku_kinshi_kinmus, kinmus):
+def write_c0_kinmus(c0_kinmus, kinmus):
     rows = [
         {
-            "sequence_id": renzoku_kinshi_kinmu["sequence_id"],
-            "sequence_number": renzoku_kinshi_kinmu["sequence_number"],
+            "sequence_id": c0_kinmu["sequence_id"],
+            "sequence_number": c0_kinmu["sequence_number"],
             "kinmu_name": utils.find(
-                kinmus,
-                lambda kinmu: kinmu["index"] == renzoku_kinshi_kinmu["kinmu_index"],
+                kinmus, lambda kinmu: kinmu["index"] == c0_kinmu["kinmu_index"]
             )["name"],
         }
-        for renzoku_kinshi_kinmu in renzoku_kinshi_kinmus
+        for c0_kinmu in c0_kinmus
     ]
-    write_rows(
-        rows,
-        "renzoku_kinshi_kinmus.csv",
-        ["sequence_id", "sequence_number", "kinmu_name"],
-    )
+    write_rows(rows, "c0_kinmus.csv", ["sequence_id", "sequence_number", "kinmu_name"])
 
 
 def read_c1(kinmus, groups):
@@ -587,7 +597,8 @@ def read_all():
     kinmus = read_kinmus()
     groups = read_groups()
     group_members = read_group_members(groups, members)
-    renzoku_kinshi_kinmus = read_renzoku_kinshi_kinmus(kinmus)
+    c0 = read_c0()
+    c0_kinmus = read_c0_kinmus(kinmus)
     c1 = read_c1(kinmus, groups)
     c2 = read_c2(kinmus, groups)
     c3 = read_c3(members, kinmus)
@@ -605,7 +616,8 @@ def read_all():
         "kinmus": kinmus,
         "groups": groups,
         "group_members": group_members,
-        "renzoku_kinshi_kinmus": renzoku_kinshi_kinmus,
+        "c0": c0,
+        "c0_kinmus": c0_kinmus,
         "c1": c1,
         "c2": c2,
         "c3": c3,
@@ -640,7 +652,8 @@ def solve(all):
     kinmus = all["kinmus"]
     groups = all["groups"]
     group_members = all["group_members"]
-    renzoku_kinshi_kinmus = all["renzoku_kinshi_kinmus"]
+    c0 = all["c0"]
+    c0_kinmus = all["c0_kinmus"]
     c1 = all["c1"]
     c2 = all["c2"]
     c3 = all["c3"]
@@ -675,20 +688,13 @@ def solve(all):
         ]
         for g in G
     }
-    P = [
+    C0 = [
         [
-            renzoku_kinshi_kinmu["kinmu_index"]
-            for renzoku_kinshi_kinmu in sorted(
-                renzoku_kinshi_kinmus, key=operator.itemgetter("sequence_number")
-            )
-            if renzoku_kinshi_kinmu["sequence_id"] == sequence_id
+            c_kinmu["kinmu_index"]
+            for c_kinmu in sorted(c0_kinmus, key=operator.itemgetter("sequence_number"))
+            if c_kinmu["sequence_id"] == sequence_id
         ]
-        for sequence_id in list(
-            set(
-                renzoku_kinshi_kinmu["sequence_id"]
-                for renzoku_kinshi_kinmu in renzoku_kinshi_kinmus
-            )
-        )
+        for sequence_id in [c["sequence_id"] for c in c0]
     ]
     C1 = [
         {
@@ -838,12 +844,12 @@ def solve(all):
             problem += sum([x[m][d][k] for k in K]) == 1
 
     for m in M:
-        for p in P:
-            l = len(p) - 1
+        for c in C0:
+            l = len(c) - 1
             for d in D:
                 if d - l not in D:
                     continue
-                problem += sum(x[m][d - l + i][p[i]] for i in range(0, l + 1)) <= l
+                problem += sum(x[m][d - l + i][c[i]] for i in range(0, l + 1)) <= l
     for c in C1:
         problem += (
             sum(x[m][c["date_index"]][c["kinmu_index"]] for m in GM[c["group_index"]])

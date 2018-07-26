@@ -21,6 +21,7 @@ import { ActionCreators, StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
 import * as utils from '../utils'
 import Assignments from './Assignments'
+import C0 from './C0'
 import C1 from './C1'
 import C10 from './C10'
 import C2 from './C2'
@@ -34,7 +35,6 @@ import C9 from './C9'
 import Groups from './Groups'
 import Kinmus from './Kinmus'
 import Members from './Members'
-import RenzokuKinshiKinmus from './RenzokuKinshiKinmus'
 import Terms from './Terms'
 
 const drawerWidth = 240
@@ -104,8 +104,8 @@ function GroupsLink(props: any) {
   return <Link to="/groups" {...props} />
 }
 
-function RenzokuKinshiKinmusLink(props: any) {
-  return <Link to="/renzoku-kinshi-kinmus" {...props} />
+function C0Link(props: any) {
+  return <Link to="/c0" {...props} />
 }
 
 function C1Link(props: any) {
@@ -192,7 +192,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
         </List>
         <Divider />
         <List>
-          <ListItem button={true} component={RenzokuKinshiKinmusLink}>
+          <ListItem button={true} component={C0Link}>
             <ListItemText primary="連続禁止勤務並び" />
           </ListItem>
           <ListItem button={true} component={C1Link}>
@@ -284,7 +284,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
                 <Route path="/members" component={Members} />
                 <Route path="/kinmus" component={Kinmus} />
                 <Route path="/groups" component={Groups} />
-                <Route path="/renzoku-kinshi-kinmus" component={RenzokuKinshiKinmus} />
+                <Route path="/c0" component={C0} />
                 <Route path="/c1" component={C1} />
                 <Route path="/c2" component={C2} />
                 <Route path="/c3" component={C3} />

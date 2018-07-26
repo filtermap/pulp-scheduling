@@ -18,43 +18,45 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
+import * as c0 from '../modules/c0'
+import * as c0_kinmus from '../modules/c0_kinmus'
 import * as kinmus from '../modules/kinmus'
-import * as renzoku_kinshi_kinmus from '../modules/renzoku_kinshi_kinmus'
 
 type Props = {
   dispatch: Dispatch
-  renzoku_kinshi_kinmus: renzoku_kinshi_kinmus.RenzokuKinshiKinmu[]
+  c0: c0.C0[]
+  c0_kinmus: c0_kinmus.C0Kinmu[]
   kinmus: kinmus.Kinmu[]
 }
 
 type State = {
   creationDialogIsOpen: boolean
-  newSequenceKinmuIndices: number[]
+  newC0C0KinmuIndices: number[]
   deletionDialogIsOpen: boolean
-  selectedSequenceId: number
+  selectedC0SequenceId: number
 }
 
-class RenzokuKinshiKinmus extends React.Component<Props, State> {
+class C0 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
-    newSequenceKinmuIndices: this.props.kinmus.length > 0 ? [this.props.kinmus[0].index, this.props.kinmus[0].index] : [],
-    selectedSequenceId: this.props.renzoku_kinshi_kinmus.length > 0 ? this.props.renzoku_kinshi_kinmus[0].sequence_id : 0,
+    newC0C0KinmuIndices: this.props.kinmus.length > 0 ? [this.props.kinmus[0].index, this.props.kinmus[0].index] : [],
+    selectedC0SequenceId: this.props.c0.length > 0 ? this.props.c0[0].sequence_id : 0,
   }
-  public handleClickCreateRenzokuKinshiKinmu(sequence_id: number, sequence_number: number) {
+  public handleClickCreateC0Kinmu(sequence_id: number, sequence_number: number) {
     return (_: React.MouseEvent<HTMLButtonElement>) => {
       const kinmu_index = this.props.kinmus[0].index
-      this.props.dispatch(renzoku_kinshi_kinmus.createRenzokuKinshiKinmu(sequence_id, sequence_number, kinmu_index))
+      this.props.dispatch(c0_kinmus.createC0Kinmu(sequence_id, sequence_number, kinmu_index))
     }
   }
-  public handleChangeRenzokuKinshiKinmuKinmuIndex(index: number) {
+  public handleChangeC0KinmuKinmuIndex(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(renzoku_kinshi_kinmus.updateRenzokuKinshiKinmuKinmuIndex(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c0_kinmus.updateC0KinmuKinmuIndex(index, parseInt(event.target.value, 10)))
     }
   }
-  public handleClickDeleteRenzokuKinshiKinmu(index: number) {
+  public handleClickDeleteC0Kinmu(index: number) {
     return (_: React.MouseEvent<HTMLButtonElement>) => {
-      this.props.dispatch(renzoku_kinshi_kinmus.deleteRenzokuKinshiKinmu(index))
+      this.props.dispatch(c0_kinmus.deleteC0Kinmu(index))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -63,17 +65,17 @@ class RenzokuKinshiKinmus extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public handleClickCreateNewSequenceRenzokuKinshiKinmu(index: number) {
+  public handleClickCreateNewC0C0Kinmu(index: number) {
     return () => {
-      const newSequenceKinmuIndices = [...this.state.newSequenceKinmuIndices]
-      newSequenceKinmuIndices.splice(index, 0, this.props.kinmus[0].index)
-      this.setState({ newSequenceKinmuIndices })
+      const newC0C0KinmuIndices = [...this.state.newC0C0KinmuIndices]
+      newC0C0KinmuIndices.splice(index, 0, this.props.kinmus[0].index)
+      this.setState({ newC0C0KinmuIndices })
     }
   }
-  public handleChangeNewSequenceRenzokuKinshiKinmuIndex(index: number) {
+  public handleChangeNewC0C0KinmuIndex(index: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       this.setState({
-        newSequenceKinmuIndices: this.state.newSequenceKinmuIndices.map((kinmu_index, kinmuIndicesIndex) => {
+        newC0C0KinmuIndices: this.state.newC0C0KinmuIndices.map((kinmu_index, kinmuIndicesIndex) => {
           if (kinmuIndicesIndex !== index) {
             return kinmu_index
           }
@@ -82,68 +84,67 @@ class RenzokuKinshiKinmus extends React.Component<Props, State> {
       })
     }
   }
-  public handleClickDeleteNewSequenceRenzokuKinshiKinmu(index: number) {
+  public handleClickDeleteNewC0C0Kinmu(index: number) {
     return (_: React.MouseEvent<HTMLButtonElement>) => {
-      this.setState({ newSequenceKinmuIndices: this.state.newSequenceKinmuIndices.filter((__, kinmuIndicesIndex) => kinmuIndicesIndex !== index) })
+      this.setState({ newC0C0KinmuIndices: this.state.newC0C0KinmuIndices.filter((__, kinmuIndicesIndex) => kinmuIndicesIndex !== index) })
     }
   }
-  public handleClickCreateSequence = (_: React.MouseEvent<HTMLButtonElement>) => {
+  public handleClickCreateC0 = (_: React.MouseEvent<HTMLButtonElement>) => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(renzoku_kinshi_kinmus.createSequence(this.state.newSequenceKinmuIndices))
+    this.props.dispatch(all.createC0(this.state.newC0C0KinmuIndices))
   }
-  public handleClickOpenDeletionDialog(selectedSequenceId: number) {
+  public handleClickOpenDeletionDialog(selectedC0SequenceId: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedSequenceId,
+        selectedC0SequenceId,
       })
     }
   }
   public handleCloseDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: false })
   }
-  public handleClickDeleteSequence = () => {
+  public handleClickDeleteC0 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(renzoku_kinshi_kinmus.deleteSequence(this.state.selectedSequenceId))
+    this.props.dispatch(all.deleteC0(this.state.selectedC0SequenceId))
   }
   public render() {
-    const sequence_ids = Array.from(new Set(this.props.renzoku_kinshi_kinmus.map(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.sequence_id)))
-    const selectedSequence = this.props.renzoku_kinshi_kinmus.filter(({ sequence_id }) => sequence_id === this.state.selectedSequenceId).sort((a, b) => a.sequence_number - b.sequence_number)
+    const selectedSequence = this.props.c0_kinmus.filter(({ sequence_id }) => sequence_id === this.state.selectedC0SequenceId).sort((a, b) => a.sequence_number - b.sequence_number)
     return (
       <>
         <Toolbar>
           <Typography variant="subheading" style={{ flex: 1 }}>連続禁止勤務並び</Typography>
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
-        {sequence_ids.map(sequence_id => {
-          const renzoku_kinshi_kinmus_by_sequence_id = this.props.renzoku_kinshi_kinmus.filter(renzoku_kinshi_kinmu => renzoku_kinshi_kinmu.sequence_id === sequence_id).sort((a, b) => a.sequence_number - b.sequence_number)
+        {this.props.c0.map(c => {
+          const c0_kinmus_by_sequence_id = this.props.c0_kinmus.filter(c0_kinmu => c0_kinmu.sequence_id === c.sequence_id).sort((a, b) => a.sequence_number - b.sequence_number)
           return (
-            <ExpansionPanel key={sequence_id}>
+            <ExpansionPanel key={c.index}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>{renzoku_kinshi_kinmus_by_sequence_id.map(renzoku_kinshi_kinmu => this.props.kinmus.find(kinmu => kinmu.index === renzoku_kinshi_kinmu.kinmu_index)!.name).join(', ')}</Typography>
+                <Typography>{c0_kinmus_by_sequence_id.map(c0_kinmu => this.props.kinmus.find(kinmu => kinmu.index === c0_kinmu.kinmu_index)!.name).join(', ')}</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
-                <Button size="small" onClick={this.handleClickCreateRenzokuKinshiKinmu(sequence_id, 0)}>追加</Button>
-                {renzoku_kinshi_kinmus_by_sequence_id.map((renzoku_kinshi_kinmu, index) => (
-                  <React.Fragment key={renzoku_kinshi_kinmu.index}>
+                <Button size="small" onClick={this.handleClickCreateC0Kinmu(c.sequence_id, 0)}>追加</Button>
+                {c0_kinmus_by_sequence_id.map((c0_kinmu, index) => (
+                  <React.Fragment key={c0_kinmu.index}>
                     <TextField
                       select={true}
                       label={`勤務${index + 1}`}
-                      value={renzoku_kinshi_kinmu.kinmu_index}
-                      onChange={this.handleChangeRenzokuKinshiKinmuKinmuIndex(renzoku_kinshi_kinmu.index)}
+                      value={c0_kinmu.kinmu_index}
+                      onChange={this.handleChangeC0KinmuKinmuIndex(c0_kinmu.index)}
                       fullWidth={true}
                     >
                       {this.props.kinmus.map(kinmu => (
                         <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
                       ))}
                     </TextField>
-                    <Button size="small" onClick={this.handleClickDeleteRenzokuKinshiKinmu(renzoku_kinshi_kinmu.index)}>削除</Button>
-                    <Button size="small" onClick={this.handleClickCreateRenzokuKinshiKinmu(sequence_id, renzoku_kinshi_kinmu.sequence_number + 1)}>追加</Button>
+                    <Button size="small" onClick={this.handleClickDeleteC0Kinmu(c0_kinmu.index)}>削除</Button>
+                    <Button size="small" onClick={this.handleClickCreateC0Kinmu(c.sequence_id, c0_kinmu.sequence_number + 1)}>追加</Button>
                   </React.Fragment>
                 ))}
               </ExpansionPanelDetails>
               <ExpansionPanelActions>
-                <Button size="small" onClick={this.handleClickOpenDeletionDialog(sequence_id)}>削除</Button>
+                <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.sequence_id)}>削除</Button>
               </ExpansionPanelActions>
             </ExpansionPanel>
           )
@@ -161,27 +162,27 @@ class RenzokuKinshiKinmus extends React.Component<Props, State> {
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>連続禁止勤務並びの追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
-              <Button size="small" onClick={this.handleClickCreateNewSequenceRenzokuKinshiKinmu(0)}>追加</Button>
-              {this.state.newSequenceKinmuIndices.map((kinmu_index, index) => (
+              <Button size="small" onClick={this.handleClickCreateNewC0C0Kinmu(0)}>追加</Button>
+              {this.state.newC0C0KinmuIndices.map((kinmu_index, index) => (
                 <React.Fragment key={`${index}-${kinmu_index}`}>
                   <TextField
                     select={true}
                     label={`勤務${index + 1}`}
                     value={kinmu_index}
-                    onChange={this.handleChangeNewSequenceRenzokuKinshiKinmuIndex(index)}
+                    onChange={this.handleChangeNewC0C0KinmuIndex(index)}
                     fullWidth={true}
                   >
                     {this.props.kinmus.map(kinmu => (
                       <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
                     ))}
                   </TextField>
-                  <Button size="small" onClick={this.handleClickDeleteNewSequenceRenzokuKinshiKinmu(index)}>削除</Button>
-                  <Button size="small" onClick={this.handleClickCreateNewSequenceRenzokuKinshiKinmu(index + 1)}>追加</Button>
+                  <Button size="small" onClick={this.handleClickDeleteNewC0C0Kinmu(index)}>削除</Button>
+                  <Button size="small" onClick={this.handleClickCreateNewC0C0Kinmu(index + 1)}>追加</Button>
                 </React.Fragment>
               ))}
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateSequence}>追加</Button>
+              <Button color="primary" onClick={this.handleClickCreateC0}>追加</Button>
               <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
@@ -193,7 +194,7 @@ class RenzokuKinshiKinmus extends React.Component<Props, State> {
               <Typography>{selectedSequence.map(renzoku_kinshi_kinmu => this.props.kinmus.find(kinmu => kinmu.index === renzoku_kinshi_kinmu.kinmu_index)!.name).join(', ')}</Typography>
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickDeleteSequence}>削除</Button>
+              <Button color="primary" onClick={this.handleClickDeleteC0}>削除</Button>
               <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>
@@ -205,9 +206,10 @@ class RenzokuKinshiKinmus extends React.Component<Props, State> {
 
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
+    c0: state.present.c0,
+    c0_kinmus: state.present.c0_kinmus,
     kinmus: state.present.kinmus,
-    renzoku_kinshi_kinmus: state.present.renzoku_kinshi_kinmus,
   }
 }
 
-export default connect(mapStateToProps)(RenzokuKinshiKinmus)
+export default connect(mapStateToProps)(C0)
