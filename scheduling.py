@@ -5,6 +5,11 @@ import os
 import pulp
 import utils
 
+
+class UnsolvedException(Exception):
+    pass
+
+
 one_day = datetime.timedelta(days=1)
 data_directory = os.path.join(os.getcwd(), "data")
 
@@ -918,9 +923,10 @@ def solve(all):
         problem += x[c["member_index"]][c["date_index"]][c["kinmu_index"]] == 0
 
     problem.solve(pulp.solvers.PULP_CBC_CMD(msg=True))
-    print("Status:", pulp.LpStatus[problem.status])
-    if pulp.LpStatus[problem.status] != "Optimal":
-        return []
+    status = pulp.LpStatus[problem.status]
+    print("Status:", status)
+    if status != "Optimal":
+        raise UnsolvedException(status)
     return x_to_new_assignments(x, dates, members, kinmus)
 
 

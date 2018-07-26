@@ -3,6 +3,7 @@ import io
 import os
 import sys
 import flask
+import jsonrpc
 import jsonrpc.backend.flask
 import scheduling
 import settings
@@ -55,7 +56,10 @@ def write_all(all):
 
 @api.dispatcher.add_method
 def solve(all):
-    return scheduling.solve(all)
+    try:
+        return scheduling.solve(all)
+    except scheduling.UnsolvedException as e:
+        raise jsonrpc.exceptions.JSONRPCDispatchException(code=0, message=e.args[0])
 
 
 @api.dispatcher.add_method

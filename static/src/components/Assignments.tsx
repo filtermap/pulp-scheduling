@@ -56,6 +56,7 @@ type Props = {
 type State = {
   creationDialogIsOpen: boolean
   inProgress: boolean
+  errorMessage: string
   newRosterAssignments: assignments.Assignment[]
   deletionDialogIsOpen: boolean
   selectedRosterId: number
@@ -76,6 +77,7 @@ class Assignments extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
+    errorMessage: '',
     inProgress: false,
     newRosterAssignments: [],
     selectedRosterId: this.props.all.assignments.length > 0 ? this.props.all.assignments[0].roster_id : 0,
@@ -88,13 +90,17 @@ class Assignments extends React.Component<Props, State> {
   }
   public handleClickSolve = async () => {
     this.setState({ inProgress: true })
-    const newRosterAssignments = (await utils.sendJSONRPCRequest('solve', [this.props.all])).result
-    if (newRosterAssignments.length === 0) {
-      throw Error()
+    const response = await utils.sendJSONRPCRequest('solve', [this.props.all])
+    if (response.hasOwnProperty('error')) {
+      this.setState({
+        errorMessage: response.error.message,
+        inProgress: false,
+      })
+      return
     }
     this.setState({
       inProgress: false,
-      newRosterAssignments,
+      newRosterAssignments: response.result,
     })
   }
   public handleClickCreateRoster = () => {
@@ -187,50 +193,61 @@ class Assignments extends React.Component<Props, State> {
               <LinearProgress variant="query" />
             </DialogContent>
           </Dialog> :
-          this.state.newRosterAssignments.length === 0 ?
+          this.state.errorMessage !== '' ?
             <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
               <DialogTitle>勤務表の追加</DialogTitle>
               <DialogContent>
-                <Button size="small" onClick={this.handleClickSolve}>自動作成</Button>
+                <DialogContentText>勤務表を作成できませんでした</DialogContentText>
+                <Typography>エラーメッセージ：{this.state.errorMessage}</Typography>
               </DialogContent>
               <DialogActions>
                 <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
               </DialogActions>
             </Dialog> :
-            <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
-              <DialogTitle>勤務表の追加</DialogTitle>
-              <DialogContent style={{ display: 'flex' }}>
-                <div className={this.props.classes.dialogTableWrapper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell padding="dense" className={this.props.classes.topHeaderCell}>\</TableCell>
-                        {new_date_names.map(date_name => (
-                          <TableCell key={date_name} padding="dense" className={this.props.classes.topHeaderCell}>{date_name}</TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {members_by_new_assignments.map(member => {
-                        const assignments_by_member_index = this.state.newRosterAssignments.filter(assignment => assignment.member_index === member.index)
-                        return (
-                          <TableRow key={member.index}>
-                            <TableCell padding="dense" className={this.props.classes.leftHeaderCell}>{member.name}</TableCell>
-                            {new_date_names.map(date_name => (
-                              <TableCell padding="dense" key={date_name}>{this.props.all.kinmus.find(kinmu => kinmu.index === assignments_by_member_index.find(assignment => assignment.date_name === date_name)!.kinmu_index)!.name}</TableCell>
-                            ))}
-                          </TableRow>
-                        )
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
-              </DialogContent>
-              <DialogActions>
-                <Button color="primary" onClick={this.handleClickCreateRoster}>追加</Button>
-                <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
-              </DialogActions>
-            </Dialog>}
+            this.state.newRosterAssignments.length === 0 ?
+              <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
+                <DialogTitle>勤務表の追加</DialogTitle>
+                <DialogContent>
+                  <Button size="small" onClick={this.handleClickSolve}>自動作成</Button>
+                </DialogContent>
+                <DialogActions>
+                  <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
+                </DialogActions>
+              </Dialog> :
+              <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
+                <DialogTitle>勤務表の追加</DialogTitle>
+                <DialogContent style={{ display: 'flex' }}>
+                  <div className={this.props.classes.dialogTableWrapper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell padding="dense" className={this.props.classes.topHeaderCell}>\</TableCell>
+                          {new_date_names.map(date_name => (
+                            <TableCell key={date_name} padding="dense" className={this.props.classes.topHeaderCell}>{date_name}</TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {members_by_new_assignments.map(member => {
+                          const assignments_by_member_index = this.state.newRosterAssignments.filter(assignment => assignment.member_index === member.index)
+                          return (
+                            <TableRow key={member.index}>
+                              <TableCell padding="dense" className={this.props.classes.leftHeaderCell}>{member.name}</TableCell>
+                              {new_date_names.map(date_name => (
+                                <TableCell padding="dense" key={date_name}>{this.props.all.kinmus.find(kinmu => kinmu.index === assignments_by_member_index.find(assignment => assignment.date_name === date_name)!.kinmu_index)!.name}</TableCell>
+                              ))}
+                            </TableRow>
+                          )
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </DialogContent>
+                <DialogActions>
+                  <Button color="primary" onClick={this.handleClickCreateRoster}>追加</Button>
+                  <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
+                </DialogActions>
+              </Dialog>}
         {selectedRosterAssignments.length > 0 &&
           <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>勤務表の削除</DialogTitle>
