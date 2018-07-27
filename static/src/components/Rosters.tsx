@@ -73,7 +73,7 @@ function sortDateNames(dateNames: string[]): string[] {
   return [...dateNames].sort((a, b) => dateNameToDate(a).getTime() - dateNameToDate(b).getTime())
 }
 
-class Assignments extends React.Component<Props, State> {
+class Rosters extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
@@ -105,7 +105,7 @@ class Assignments extends React.Component<Props, State> {
   }
   public handleClickCreateRoster = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(assignments.createRoster(this.state.newRosterAssignments))
+    this.props.dispatch(all.createRoster(this.state.newRosterAssignments))
   }
   public handleClickOpenDeletionDialog(selectedRosterId: number) {
     return () => {
@@ -120,7 +120,7 @@ class Assignments extends React.Component<Props, State> {
   }
   public handleClickDeleteRoster = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(assignments.deleteRoster(this.state.selectedRosterId))
+    this.props.dispatch(all.deleteRoster(this.state.selectedRosterId))
   }
   public handleClickExportToCSV(roster_id: number) {
     return async (_: React.MouseEvent<HTMLButtonElement>) => {
@@ -132,7 +132,6 @@ class Assignments extends React.Component<Props, State> {
     }
   }
   public render() {
-    const roster_ids = Array.from(new Set(this.props.all.assignments.map(assignment => assignment.roster_id)))
     const date_names = sortDateNames(Array.from(new Set(this.props.all.assignments.map(assignment => assignment.date_name))))
     const new_date_names = sortDateNames(Array.from(new Set(this.state.newRosterAssignments.map(assignment => assignment.date_name))))
     const members_by_new_assignments = this.props.all.members.filter(member => this.state.newRosterAssignments.some(assignment => assignment.member_index === member.index))
@@ -143,13 +142,13 @@ class Assignments extends React.Component<Props, State> {
           <Typography variant="subheading" style={{ flex: 1 }}>勤務表</Typography>
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
-        {roster_ids.map(roster_id => {
-          const assignments_by_roster_id = this.props.all.assignments.filter(assignment => assignment.roster_id === roster_id)
+        {this.props.all.rosters.map(roster => {
+          const assignments_by_roster_id = this.props.all.assignments.filter(assignment => assignment.roster_id === roster.roster_id)
           const members_by_assignments = this.props.all.members.filter(member => assignments_by_roster_id.some(assignment => assignment.member_index === member.index))
           return (
-            <ExpansionPanel key={roster_id}>
+            <ExpansionPanel key={roster.roster_id}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>{`勤務表${roster_id}`}</Typography>
+                <Typography>{`勤務表${roster.roster_id}`}</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <div className={this.props.classes.tableWrapper}>
@@ -179,8 +178,8 @@ class Assignments extends React.Component<Props, State> {
                 </div>
               </ExpansionPanelDetails>
               <ExpansionPanelActions>
-                <Button size="small" onClick={this.handleClickOpenDeletionDialog(roster_id)}>削除</Button>
-                <Button size="small" onClick={this.handleClickExportToCSV(roster_id)}>CSV出力</Button>
+                <Button size="small" onClick={this.handleClickOpenDeletionDialog(roster.roster_id)}>削除</Button>
+                <Button size="small" onClick={this.handleClickExportToCSV(roster.roster_id)}>CSV出力</Button>
               </ExpansionPanelActions>
             </ExpansionPanel>
           )
@@ -271,4 +270,4 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(Assignments))
+export default connect(mapStateToProps)(withStyles(styles)(Rosters))

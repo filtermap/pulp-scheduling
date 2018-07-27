@@ -1,12 +1,9 @@
-export type Assignment = {
+export type Roster = {
   index: number
   roster_id: number
-  date_name: string
-  member_index: number
-  kinmu_index: number
 }
 
-export type State = Assignment[]
+export type State = Roster[]
 
 const initialState: State = []
 

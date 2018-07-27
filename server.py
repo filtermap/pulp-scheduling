@@ -51,6 +51,7 @@ def write_all(all):
     scheduling.write_c8(all["c8"], all["kinmus"])
     scheduling.write_c9(all["c9"], all["members"], all["kinmus"])
     scheduling.write_c10(all["c10"], all["members"], all["kinmus"])
+    scheduling.write_rosters(all["rosters"])
     scheduling.write_assignments(all["assignments"], all["members"], all["kinmus"])
     return True
 

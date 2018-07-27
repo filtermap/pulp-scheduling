@@ -20,7 +20,6 @@ import { Dispatch } from 'redux'
 import { ActionCreators, StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
 import * as utils from '../utils'
-import Assignments from './Assignments'
 import C0 from './C0'
 import C1 from './C1'
 import C10 from './C10'
@@ -35,6 +34,7 @@ import C9 from './C9'
 import Groups from './Groups'
 import Kinmus from './Kinmus'
 import Members from './Members'
+import Rosters from './Rosters'
 import Terms from './Terms'
 
 const drawerWidth = 240
@@ -84,8 +84,8 @@ type State = {
   mobileOpen: boolean,
 }
 
-function AssignmentsLink(props: any) {
-  return <Link to="/assignments" {...props} />
+function RostersLink(props: any) {
+  return <Link to="/rosters" {...props} />
 }
 
 function TermsLink(props: any) {
@@ -171,7 +171,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
         <div className={classes.toolbar} />
         <Divider />
         <List>
-          <ListItem button={true} component={AssignmentsLink}>
+          <ListItem button={true} component={RostersLink}>
             <ListItemText primary="勤務表" />
           </ListItem>
         </List>
@@ -279,7 +279,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
           <div style={{ padding: 16 }}>
             <Grid container={true} spacing={32}>
               <Grid item={true} xs={12}>
-                <Route path="/assignments" component={Assignments} />
+                <Route path="/rosters" component={Rosters} />
                 <Route path="/terms" component={Terms} />
                 <Route path="/members" component={Members} />
                 <Route path="/kinmus" component={Kinmus} />

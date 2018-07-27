@@ -551,6 +551,22 @@ def write_c10(c10, members, kinmus):
     )
 
 
+def read_rosters():
+    """勤務表。"""
+    with open(in_data_directory("rosters.csv")) as f:
+        next(f)
+        rosters = [
+            {"index": index, "roster_id": int(r["勤務表ID"])}
+            for index, r in enumerate(csv.DictReader(f, ["勤務表ID"]))
+        ]
+    return rosters
+
+
+def write_rosters(rosters):
+    rows = [{"roster_id": roster["roster_id"]} for roster in rosters]
+    write_rows(rows, "rosters.csv", ["roster_id"])
+
+
 def read_assignments(members, kinmus):
     """勤務表。"""
     with open(in_data_directory("assignments.csv")) as f:
@@ -609,6 +625,7 @@ def read_all():
     c8 = read_c8(kinmus)
     c9 = read_c9(members, kinmus)
     c10 = read_c10(members, kinmus)
+    rosters = read_rosters()
     assignments = read_assignments(members, kinmus)
     return {
         "members": members,
@@ -628,6 +645,7 @@ def read_all():
         "c8": c8,
         "c9": c9,
         "c10": c10,
+        "rosters": rosters,
         "assignments": assignments,
     }
 
@@ -664,7 +682,6 @@ def solve(all):
     c8 = all["c8"]
     c9 = all["c9"]
     c10 = all["c10"]
-    assignments = all["assignments"]
     dates = [
         {"index": index, "name": utils.date_to_str(date)}
         for term in terms
