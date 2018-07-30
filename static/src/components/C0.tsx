@@ -138,7 +138,8 @@ class C0 extends React.Component<Props, State> {
                         <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                       ))}
                     </TextField>
-                    <Button size="small" onClick={this.handleClickDeleteC0Kinmu(c0_kinmu.id)}>削除</Button>
+                    {c0_kinmus_by_sequence_id.length > 2 &&
+                      <Button size="small" onClick={this.handleClickDeleteC0Kinmu(c0_kinmu.id)}>削除</Button>}
                     <Button size="small" onClick={this.handleClickCreateC0Kinmu(c.id, c0_kinmu.sequence_number + 1)}>追加</Button>
                   </React.Fragment>
                 ))}
