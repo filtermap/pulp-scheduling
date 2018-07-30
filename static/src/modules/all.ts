@@ -29,6 +29,7 @@ const DELETE_MEMBER = 'DELETE_MEMBER'
 const DELETE_GROUP = 'DELETE_GROUP'
 const DELETE_KINMU = 'DELETE_KINMU'
 const DELETE_C0 = 'DELETE_C0'
+const DELETE_C0_KINMU = 'DELETE_C0_KINMU'
 const DELETE_ROSTER = 'DELETE_ROSTER'
 
 export type All = {
@@ -100,6 +101,11 @@ type DeleteC0 = {
   id: number
 }
 
+type DeleteC0Kinmu = {
+  type: typeof DELETE_C0_KINMU
+  id: number
+}
+
 type DeleteRoster = {
   type: typeof DELETE_ROSTER
   id: number
@@ -115,6 +121,7 @@ type Action =
   | DeleteGroup
   | DeleteKinmu
   | DeleteC0
+  | DeleteC0Kinmu
   | DeleteRoster
 
 export function replaceAll(all: All): ReplaceAll {
@@ -179,6 +186,13 @@ export function deleteC0(id: number): DeleteC0 {
   return {
     id,
     type: DELETE_C0,
+  }
+}
+
+export function deleteC0Kinmu(id: number): DeleteC0Kinmu {
+  return {
+    id,
+    type: DELETE_C0_KINMU,
   }
 }
 
@@ -329,6 +343,24 @@ function crossSliceReducer(state: State, action: Action): State {
         c0: state.c0.filter(c => c.id !== action.id),
         c0_kinmus: state.c0_kinmus.filter(({ c0_id }) => c0_id !== action.id),
       }
+    case DELETE_C0_KINMU: {
+      const deleted_c0_kinmu = state.c0_kinmus.find(({ id }) => id === action.id)!
+      const filtered_c0_kinmus = state.c0_kinmus.filter(({ id }) => id !== action.id)
+      const filtered_c0_kinmu_c0_ids = Array.from(new Set(filtered_c0_kinmus.map(({ c0_id }) => c0_id)))
+      return {
+        ...state,
+        c0: state.c0.filter(({ id }) => filtered_c0_kinmu_c0_ids.includes(id)),
+        c0_kinmus: filtered_c0_kinmus.map(c_kinmu => {
+          if (c_kinmu.c0_id !== deleted_c0_kinmu.c0_id) {
+            return c_kinmu
+          }
+          const sequence_number = c_kinmu.sequence_number < deleted_c0_kinmu.sequence_number ?
+            c_kinmu.sequence_number :
+            c_kinmu.sequence_number - 1
+          return { ...c_kinmu, sequence_number }
+        }),
+      }
+    }
     case DELETE_ROSTER:
       return {
         ...state,

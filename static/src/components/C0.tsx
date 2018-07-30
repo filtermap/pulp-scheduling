@@ -56,7 +56,7 @@ class C0 extends React.Component<Props, State> {
   }
   public handleClickDeleteC0Kinmu(id: number) {
     return (_: React.MouseEvent<HTMLButtonElement>) => {
-      this.props.dispatch(c0_kinmus.deleteC0Kinmu(id))
+      this.props.dispatch(all.deleteC0Kinmu(id))
     }
   }
   public handleClickOpenCreationDialog = () => {
