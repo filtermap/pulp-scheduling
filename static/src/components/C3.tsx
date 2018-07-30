@@ -31,35 +31,35 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
-  newC3MemberIndex: number
-  newC3KinmuIndex: number
+  newC3MemberId: number
+  newC3KinmuId: number
   newC3MinNumberOfAssignments: number
   deletionDialogIsOpen: boolean
-  selectedC3Index: number
+  selectedC3Id: number
 }
 
 class C3 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
-    newC3KinmuIndex: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
-    newC3MemberIndex: this.props.members.length > 0 ? this.props.members[0].index : 0,
+    newC3KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
+    newC3MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
     newC3MinNumberOfAssignments: 0,
-    selectedC3Index: this.props.c3.length > 0 ? this.props.c3[0].index : 0,
+    selectedC3Id: this.props.c3.length > 0 ? this.props.c3[0].id : 0,
   }
-  public handleChangeC3MemberIndex(index: number) {
+  public handleChangeC3MemberId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c3.updateC3MemberIndex(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c3.updateC3MemberId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC3KinmuIndex(index: number) {
+  public handleChangeC3KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c3.updateC3KinmuIndex(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c3.updateC3KinmuId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC3MinNumberOfAssignments(index: number) {
+  public handleChangeC3MinNumberOfAssignments(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c3.updateC3MinNumberOfAssignments(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c3.updateC3MinNumberOfAssignments(id, parseInt(event.target.value, 10)))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -68,24 +68,24 @@ class C3 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public handleChangeNewC3MemberIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC3MemberIndex: parseInt(event.target.value, 10) })
+  public handleChangeNewC3MemberId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newC3MemberId: parseInt(event.target.value, 10) })
   }
-  public handleChangeNewC3KinmuIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC3KinmuIndex: parseInt(event.target.value, 10) })
+  public handleChangeNewC3KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newC3KinmuId: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC3MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC3MinNumberOfAssignments: parseInt(event.target.value, 10) })
   }
   public handleClickCreateC3 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c3.createC3(this.state.newC3MemberIndex, this.state.newC3KinmuIndex, this.state.newC3MinNumberOfAssignments))
+    this.props.dispatch(c3.createC3(this.state.newC3MemberId, this.state.newC3KinmuId, this.state.newC3MinNumberOfAssignments))
   }
-  public handleClickOpenDeletionDialog(selectedC3Index: number) {
+  public handleClickOpenDeletionDialog(selectedC3Id: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedC3Index,
+        selectedC3Id,
       })
     }
   }
@@ -94,10 +94,10 @@ class C3 extends React.Component<Props, State> {
   }
   public handleClickDeleteC3 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(c3.deleteC3(this.state.selectedC3Index))
+    this.props.dispatch(c3.deleteC3(this.state.selectedC3Id))
   }
   public render() {
-    const selectedC3 = this.props.c3.find(c => c.index === this.state.selectedC3Index)
+    const selectedC3 = this.props.c3.find(c => c.id === this.state.selectedC3Id)
     return (
       <>
         <Toolbar>
@@ -105,43 +105,43 @@ class C3 extends React.Component<Props, State> {
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.c3.map(c => (
-          <ExpansionPanel key={c.index}>
+          <ExpansionPanel key={c.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{`${this.props.members.find(member => member.index === c.member_index)!.name}に${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>
+              <Typography>{`${this.props.members.find(member => member.id === c.member_id)!.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <TextField
                 select={true}
                 label="職員"
-                value={c.member_index}
-                onChange={this.handleChangeC3MemberIndex(c.index)}
+                value={c.member_id}
+                onChange={this.handleChangeC3MemberId(c.id)}
                 fullWidth={true}
               >
                 {this.props.members.map(member => (
-                  <MenuItem key={member.index} value={member.index}>{member.name}</MenuItem>
+                  <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
                 select={true}
                 label="勤務"
-                value={c.kinmu_index}
-                onChange={this.handleChangeC3KinmuIndex(c.index)}
+                value={c.kinmu_id}
+                onChange={this.handleChangeC3KinmuId(c.id)}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
-                  <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                  <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
                 label="割り当て数下限"
                 type="number"
                 defaultValue={c.min_number_of_assignments}
-                onChange={this.handleChangeC3MinNumberOfAssignments(c.index)}
+                onChange={this.handleChangeC3MinNumberOfAssignments(c.id)}
                 fullWidth={true}
               />
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.id)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
@@ -162,23 +162,23 @@ class C3 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="職員"
-                value={this.state.newC3MemberIndex}
-                onChange={this.handleChangeNewC3MemberIndex}
+                value={this.state.newC3MemberId}
+                onChange={this.handleChangeNewC3MemberId}
                 fullWidth={true}
               >
                 {this.props.members.map(member => (
-                  <MenuItem key={member.index} value={member.index}>{member.name}</MenuItem>
+                  <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.newC3KinmuIndex}
-                onChange={this.handleChangeNewC3KinmuIndex}
+                value={this.state.newC3KinmuId}
+                onChange={this.handleChangeNewC3KinmuId}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
-                  <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                  <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
@@ -199,7 +199,7 @@ class C3 extends React.Component<Props, State> {
             <DialogTitle>職員の勤務の割り当て数の下限の削除</DialogTitle>
             <DialogContent>
               <DialogContentText>この職員の勤務の割り当て数の下限を削除します</DialogContentText>
-              <Typography>{`${this.props.members.find(member => member.index === selectedC3.member_index)!.name}に${this.props.kinmus.find(kinmu => kinmu.index === selectedC3.kinmu_index)!.name}を${selectedC3.min_number_of_assignments}回以上割り当てる`}</Typography>
+              <Typography>{`${this.props.members.find(member => member.id === selectedC3.member_id)!.name}に${this.props.kinmus.find(kinmu => kinmu.id === selectedC3.kinmu_id)!.name}を${selectedC3.min_number_of_assignments}回以上割り当てる`}</Typography>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteC3}>削除</Button>

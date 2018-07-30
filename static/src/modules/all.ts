@@ -61,18 +61,18 @@ type ReplaceAll = {
 type CreateMember = {
   type: typeof CREATE_MEMBER
   name: string
-  group_indices: number[]
+  group_ids: number[]
 }
 
 type CreateGroup = {
   type: typeof CREATE_GROUP
   name: string
-  member_indices: number[]
+  member_ids: number[]
 }
 
 type CreateC0 = {
   type: typeof CREATE_C0
-  kinmu_indices: number[]
+  kinmu_ids: number[]
 }
 
 type CreateRoster = {
@@ -82,27 +82,27 @@ type CreateRoster = {
 
 type DeleteMember = {
   type: typeof DELETE_MEMBER
-  index: number
+  id: number
 }
 
 type DeleteGroup = {
   type: typeof DELETE_GROUP
-  index: number
+  id: number
 }
 
 type DeleteKinmu = {
   type: typeof DELETE_KINMU
-  index: number
+  id: number
 }
 
 type DeleteC0 = {
   type: typeof DELETE_C0
-  sequence_id: number
+  id: number
 }
 
 type DeleteRoster = {
   type: typeof DELETE_ROSTER
-  roster_id: number
+  id: number
 }
 
 type Action =
@@ -124,25 +124,25 @@ export function replaceAll(all: All): ReplaceAll {
   }
 }
 
-export function createMember(name: string, group_indices: number[]): CreateMember {
+export function createMember(name: string, group_ids: number[]): CreateMember {
   return {
-    group_indices,
+    group_ids,
     name,
     type: CREATE_MEMBER,
   }
 }
 
-export function createGroup(name: string, member_indices: number[]): CreateGroup {
+export function createGroup(name: string, member_ids: number[]): CreateGroup {
   return {
-    member_indices,
+    member_ids,
     name,
     type: CREATE_GROUP,
   }
 }
 
-export function createC0(kinmu_indices: number[]): CreateC0 {
+export function createC0(kinmu_ids: number[]): CreateC0 {
   return {
-    kinmu_indices,
+    kinmu_ids,
     type: CREATE_C0,
   }
 }
@@ -154,37 +154,37 @@ export function createRoster(new_assignments: assignments.Assignment[]): CreateR
   }
 }
 
-export function deleteMember(index: number): DeleteMember {
+export function deleteMember(id: number): DeleteMember {
   return {
-    index,
+    id,
     type: DELETE_MEMBER,
   }
 }
 
-export function deleteGroup(index: number): DeleteGroup {
+export function deleteGroup(id: number): DeleteGroup {
   return {
-    index,
+    id,
     type: DELETE_GROUP,
   }
 }
 
-export function deleteKinmu(index: number): DeleteKinmu {
+export function deleteKinmu(id: number): DeleteKinmu {
   return {
-    index,
+    id,
     type: DELETE_KINMU,
   }
 }
 
-export function deleteC0(sequence_id: number): DeleteC0 {
+export function deleteC0(id: number): DeleteC0 {
   return {
-    sequence_id,
+    id,
     type: DELETE_C0,
   }
 }
 
-export function deleteRoster(roster_id: number): DeleteRoster {
+export function deleteRoster(id: number): DeleteRoster {
   return {
-    roster_id,
+    id,
     type: DELETE_ROSTER,
   }
 }
@@ -218,115 +218,122 @@ function crossSliceReducer(state: State, action: Action): State {
     case REPLACE_ALL:
       return action.all
     case CREATE_MEMBER: {
-      const member_index = Math.max(0, ...state.members.map(member => member.index)) + 1
-      const group_member_index = Math.max(0, ...state.group_members.map(group_member => group_member.index)) + 1
+      const member_id = Math.max(0, ...state.members.map(({ id }) => id)) + 1
+      const group_member_id = Math.max(0, ...state.group_members.map(({ id }) => id)) + 1
       return {
         ...state,
         group_members: state.group_members.concat(
-          action.group_indices.map((group_index, index) => ({ index: group_member_index + index, group_index, member_index }))
+          action.group_ids.map((group_id, index) => ({
+            group_id,
+            id: group_member_id + index,
+            member_id,
+          }))
         ),
-        members: state.members.concat({ index: member_index, name: action.name }),
+        members: state.members.concat({
+          id: member_id,
+          name: action.name,
+        }),
       }
     }
     case CREATE_GROUP: {
-      const group_index = Math.max(0, ...state.groups.map(group => group.index)) + 1
-      const group_member_index = Math.max(0, ...state.group_members.map(group_member => group_member.index)) + 1
+      const group_id = Math.max(0, ...state.groups.map(({ id }) => id)) + 1
+      const group_member_id = Math.max(0, ...state.group_members.map(({ id }) => id)) + 1
       return {
         ...state,
-        group_members: state.group_members.concat(
-          action.member_indices.map((member_index, index) => ({ index: group_member_index + index, group_index, member_index }))
-        ),
-        groups: state.groups.concat({ index: group_index, name: action.name }),
+        group_members: state.group_members.concat(action.member_ids.map((member_id, index) => ({
+          group_id,
+          id: group_member_id + index,
+          member_id,
+        }))),
+        groups: state.groups.concat({
+          id: group_id,
+          name: action.name,
+        }),
       }
     }
     case CREATE_C0: {
-      const sequence_id = Math.max(0, ...state.c0.map(c => c.sequence_id)) + 1
-      const c0_kinmu_index = Math.max(0, ...state.c0_kinmus.map(c0_kinmu => c0_kinmu.index)) + 1
+      const c0_id = Math.max(0, ...state.c0.map(({ id }) => id)) + 1
+      const c0_kinmu_id = Math.max(0, ...state.c0_kinmus.map(({ id }) => id)) + 1
       return {
         ...state,
-        c0: state.c0.concat({
-          index: Math.max(0, ...state.c0.map(c => c.index)) + 1,
-          sequence_id,
-        }),
-        c0_kinmus: state.c0_kinmus.concat(action.kinmu_indices.map((kinmu_index, index) => ({
-          index: c0_kinmu_index + index,
-          kinmu_index,
-          sequence_id,
+        c0: state.c0.concat({ id: c0_id }),
+        c0_kinmus: state.c0_kinmus.concat(action.kinmu_ids.map((kinmu_id, index) => ({
+          c0_id,
+          id: c0_kinmu_id + index,
+          kinmu_id,
           sequence_number: index,
         }))),
       }
     }
     case CREATE_ROSTER: {
-      const roster_id = Math.max(0, ...state.rosters.map(roster => roster.roster_id)) + 1
-      const assignment_index = Math.max(0, ...state.assignments.map(({ index }) => index)) + 1
+      const roster_id = Math.max(0, ...state.rosters.map(({ id }) => id)) + 1
+      const assignment_id = Math.max(0, ...state.assignments.map(({ id }) => id)) + 1
       return {
         ...state,
         assignments: state.assignments.concat(action.new_assignments.map((new_assignment, index) => ({
           ...new_assignment,
-          index: assignment_index + index,
+          id: assignment_id + index,
           roster_id,
         }))),
-        rosters: state.rosters.concat({
-          index: Math.max(0, ...state.rosters.map(({ index }) => index)) + 1,
-          roster_id,
-        }),
+        rosters: state.rosters.concat({ id: roster_id, }),
       }
     }
-    case DELETE_MEMBER:
-      const filtered_assignments = state.assignments.filter(({member_index}) => member_index !== action.index)
-      const filtered_assignment_roster_ids = Array.from(new Set(filtered_assignments.map(({roster_id}) => roster_id)))
+    case DELETE_MEMBER: {
+      const filtered_assignments = state.assignments.filter(({ member_id }) => member_id !== action.id)
+      const filtered_assignment_roster_ids = Array.from(new Set(filtered_assignments.map(({ roster_id }) => roster_id)))
       return {
         ...state,
         assignments: filtered_assignments,
-        c10: state.c10.filter(c => c.member_index !== action.index),
-        c3: state.c3.filter(c => c.member_index !== action.index),
-        c4: state.c4.filter(c => c.member_index !== action.index),
-        c9: state.c9.filter(c => c.member_index !== action.index),
-        group_members: state.group_members.filter(group_member => group_member.member_index !== action.index),
-        members: state.members.filter(member => member.index !== action.index),
-        rosters: state.rosters.filter(({roster_id}) => filtered_assignment_roster_ids.includes(roster_id))
+        c10: state.c10.filter(c => c.member_id !== action.id),
+        c3: state.c3.filter(c => c.member_id !== action.id),
+        c4: state.c4.filter(c => c.member_id !== action.id),
+        c9: state.c9.filter(c => c.member_id !== action.id),
+        group_members: state.group_members.filter(({ member_id }) => member_id !== action.id),
+        members: state.members.filter(({ id }) => id !== action.id),
+        rosters: state.rosters.filter(({ id }) => filtered_assignment_roster_ids.includes(id))
       }
+    }
     case DELETE_GROUP:
       return {
         ...state,
-        c1: state.c1.filter(c => c.group_index !== action.index),
-        c2: state.c2.filter(c => c.group_index !== action.index),
-        group_members: state.group_members.filter(group_member => group_member.group_index !== action.index),
-        groups: state.groups.filter(group => group.index !== action.index),
+        c1: state.c1.filter(c => c.group_id !== action.id),
+        c2: state.c2.filter(c => c.group_id !== action.id),
+        group_members: state.group_members.filter(({ group_id }) => group_id !== action.id),
+        groups: state.groups.filter(({ id }) => id !== action.id),
       }
     case DELETE_KINMU: {
-      const deleted_c0_sequence_ids = Array.from(new Set(state.c0_kinmus.filter(c0_kinmu => c0_kinmu.kinmu_index === action.index).map(({ sequence_id }) => sequence_id)))
-      const deleted_roster_ids = Array.from(new Set(state.assignments.filter(assignment => assignment.kinmu_index === action.index).map(assignment => assignment.roster_id)))
+      const deleted_c0_ids = Array.from(new Set(state.c0_kinmus.filter(({ kinmu_id }) => kinmu_id === action.id).map(({ c0_id }) => c0_id)))
+      const deleted_roster_ids = Array.from(new Set(state.assignments.filter(({ kinmu_id }) => kinmu_id === action.id).map(({ roster_id }) => roster_id)))
       return {
         ...state,
         assignments: state.assignments.filter(assignment => !deleted_roster_ids.includes(assignment.roster_id)),
-        c0: state.c0.filter(c => !deleted_c0_sequence_ids.includes(c.sequence_id)),
-        c0_kinmus: state.c0_kinmus.filter(c0_kinmu => c0_kinmu.kinmu_index !== action.index),
-        c1: state.c1.filter(c => c.kinmu_index !== action.index),
-        c10: state.c10.filter(c => c.kinmu_index !== action.index),
-        c2: state.c2.filter(c => c.kinmu_index !== action.index),
-        c3: state.c3.filter(c => c.kinmu_index !== action.index),
-        c4: state.c4.filter(c => c.kinmu_index !== action.index),
-        c5: state.c5.filter(c => c.kinmu_index !== action.index),
-        c6: state.c6.filter(c => c.kinmu_index !== action.index),
-        c7: state.c7.filter(c => c.kinmu_index !== action.index),
-        c8: state.c8.filter(c => c.kinmu_index !== action.index),
-        c9: state.c9.filter(c => c.kinmu_index !== action.index),
-        kinmus: state.kinmus.filter(kinmu => kinmu.index !== action.index),
-        rosters: state.rosters.filter(roster => !deleted_roster_ids.includes(roster.roster_id)),
+        c0: state.c0.filter(c => !deleted_c0_ids.includes(c.id)),
+        c0_kinmus: state.c0_kinmus.filter(({ kinmu_id }) => kinmu_id !== action.id),
+        c1: state.c1.filter(c => c.kinmu_id !== action.id),
+        c10: state.c10.filter(c => c.kinmu_id !== action.id),
+        c2: state.c2.filter(c => c.kinmu_id !== action.id),
+        c3: state.c3.filter(c => c.kinmu_id !== action.id),
+        c4: state.c4.filter(c => c.kinmu_id !== action.id),
+        c5: state.c5.filter(c => c.kinmu_id !== action.id),
+        c6: state.c6.filter(c => c.kinmu_id !== action.id),
+        c7: state.c7.filter(c => c.kinmu_id !== action.id),
+        c8: state.c8.filter(c => c.kinmu_id !== action.id),
+        c9: state.c9.filter(c => c.kinmu_id !== action.id),
+        kinmus: state.kinmus.filter(({ id }) => id !== action.id),
+        rosters: state.rosters.filter(({ id }) => !deleted_roster_ids.includes(id)),
       }
     }
     case DELETE_C0:
       return {
         ...state,
-        c0: state.c0.filter(c => c.sequence_id !== action.sequence_id),
-        c0_kinmus: state.c0_kinmus.filter(c0_kinmu => c0_kinmu.sequence_id !== action.sequence_id),
+        c0: state.c0.filter(c => c.id !== action.id),
+        c0_kinmus: state.c0_kinmus.filter(({ c0_id }) => c0_id !== action.id),
       }
     case DELETE_ROSTER:
       return {
         ...state,
-        assignments: state.assignments.filter(({ roster_id }) => roster_id !== action.roster_id),
-        rosters: state.rosters.filter(({ roster_id }) => roster_id !== action.roster_id),
+        assignments: state.assignments.filter(({ roster_id }) => roster_id !== action.id),
+        rosters: state.rosters.filter(({ id }) => id !== action.id),
       }
   }
   return state

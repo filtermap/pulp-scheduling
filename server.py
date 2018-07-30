@@ -38,21 +38,21 @@ def write_all(all):
     scheduling.write_terms(all["terms"])
     scheduling.write_kinmus(all["kinmus"])
     scheduling.write_groups(all["groups"])
-    scheduling.write_group_members(all["group_members"], all["groups"], all["members"])
+    scheduling.write_group_members(all["group_members"])
     scheduling.write_c0(all["c0"])
-    scheduling.write_c0_kinmus(all["c0_kinmus"], all["kinmus"])
-    scheduling.write_c1(all["c1"], all["kinmus"], all["groups"])
-    scheduling.write_c2(all["c2"], all["kinmus"], all["groups"])
-    scheduling.write_c3(all["c3"], all["members"], all["kinmus"])
-    scheduling.write_c4(all["c4"], all["members"], all["kinmus"])
-    scheduling.write_c5(all["c5"], all["kinmus"])
-    scheduling.write_c6(all["c6"], all["kinmus"])
-    scheduling.write_c7(all["c7"], all["kinmus"])
-    scheduling.write_c8(all["c8"], all["kinmus"])
-    scheduling.write_c9(all["c9"], all["members"], all["kinmus"])
-    scheduling.write_c10(all["c10"], all["members"], all["kinmus"])
+    scheduling.write_c0_kinmus(all["c0_kinmus"])
+    scheduling.write_c1(all["c1"])
+    scheduling.write_c2(all["c2"])
+    scheduling.write_c3(all["c3"])
+    scheduling.write_c4(all["c4"])
+    scheduling.write_c5(all["c5"])
+    scheduling.write_c6(all["c6"])
+    scheduling.write_c7(all["c7"])
+    scheduling.write_c8(all["c8"])
+    scheduling.write_c9(all["c9"])
+    scheduling.write_c10(all["c10"])
     scheduling.write_rosters(all["rosters"])
-    scheduling.write_assignments(all["assignments"], all["members"], all["kinmus"])
+    scheduling.write_assignments(all["assignments"])
     return True
 
 
@@ -70,7 +70,7 @@ def download_csv(roster_id):
     kinmus = scheduling.read_kinmus()
     assignments = [
         assignment
-        for assignment in scheduling.read_assignments(members, kinmus)
+        for assignment in scheduling.read_assignments()
         if assignment["roster_id"] == roster_id
     ]
     date_names = sorted(
@@ -82,12 +82,12 @@ def download_csv(roster_id):
         + [
             utils.find(
                 kinmus,
-                lambda kinmu: kinmu["index"]
+                lambda kinmu: kinmu["id"]
                 == utils.find(
                     assignments,
-                    lambda assignment: assignment["member_index"] == member["index"]
+                    lambda assignment: assignment["member_id"] == member["id"]
                     and assignment["date_name"] == date_name,
-                )["kinmu_index"],
+                )["kinmu_id"],
             )["name"]
             for date_name in date_names
         ]

@@ -2,7 +2,7 @@ const CREATE_KINMU = 'CREATE_KINMU'
 const UPDATE_KINMU_NAME = 'UPDATE_KINMU_NAME'
 
 export type Kinmu = {
-  index: number
+  id: number
   name: string
 }
 
@@ -13,7 +13,7 @@ type CreateKinmu = {
 
 type UpdateKinmuName = {
   type: typeof UPDATE_KINMU_NAME
-  index: number
+  id: number
   name: string
 }
 
@@ -28,9 +28,9 @@ export function createKinmu(name: string): CreateKinmu {
   }
 }
 
-export function updateKinmuName(index: number, name: string): UpdateKinmuName {
+export function updateKinmuName(id: number, name: string): UpdateKinmuName {
   return {
-    index,
+    id,
     name,
     type: UPDATE_KINMU_NAME,
   }
@@ -43,10 +43,10 @@ const initialState: State = []
 export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case CREATE_KINMU:
-      return state.concat({ index: Math.max(0, ...state.map(kinmu => kinmu.index)) + 1, name: action.name })
+      return state.concat({ id: Math.max(0, ...state.map(kinmu => kinmu.id)) + 1, name: action.name })
     case UPDATE_KINMU_NAME:
       return state.map(kinmu => {
-        if (kinmu.index !== action.index) {
+        if (kinmu.id !== action.id) {
           return kinmu
         }
         return { ...kinmu, name: action.name }

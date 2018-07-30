@@ -1,70 +1,70 @@
 const CREATE_C8 = "CREATE_C8"
-const UPDATE_C8_KINMU_INDEX = 'UPDATE_C8_KINMU_INDEX'
+const UPDATE_C8_KINMU_ID = 'UPDATE_C8_KINMU_ID'
 const UPDATE_C8_MAX_NUMBER_OF_DAYS = 'UPDATE_C8_MAX_NUMBER_OF_DAYS'
 const DELETE_C8 = 'DELETE_C8'
 
 export type C8 = {
-  index: number
-  kinmu_index: number
+  id: number
+  kinmu_id: number
   max_number_of_days: number
 }
 
 type CreateC8 = {
   type: typeof CREATE_C8
-  kinmu_index: number
+  kinmu_id: number
   max_number_of_days: number
 }
 
-type UpdateC8KinmuIndex = {
-  type: typeof UPDATE_C8_KINMU_INDEX
-  index: number
-  kinmu_index: number
+type UpdateC8KinmuId = {
+  type: typeof UPDATE_C8_KINMU_ID
+  id: number
+  kinmu_id: number
 }
 
 type UpdateC8MaxNumberOfDays = {
   type: typeof UPDATE_C8_MAX_NUMBER_OF_DAYS
-  index: number
+  id: number
   max_number_of_days: number
 }
 
 type DeleteC8 = {
   type: typeof DELETE_C8
-  index: number
+  id: number
 }
 
 type Action =
   | CreateC8
-  | UpdateC8KinmuIndex
+  | UpdateC8KinmuId
   | UpdateC8MaxNumberOfDays
   | DeleteC8
 
-export function createC8(kinmu_index: number, max_number_of_days: number): CreateC8 {
+export function createC8(kinmu_id: number, max_number_of_days: number): CreateC8 {
   return {
-    kinmu_index,
+    kinmu_id,
     max_number_of_days,
     type: CREATE_C8,
   }
 }
 
-export function updateC8KinmuIndex(index: number, kinmu_index: number): UpdateC8KinmuIndex {
+export function updateC8KinmuId(id: number, kinmu_id: number): UpdateC8KinmuId {
   return {
-    index,
-    kinmu_index,
-    type: UPDATE_C8_KINMU_INDEX
+    id,
+    kinmu_id,
+    type: UPDATE_C8_KINMU_ID
   }
 }
 
-export function updateC8MaxNumberOfDays(index: number, max_number_of_days: number): UpdateC8MaxNumberOfDays {
+export function updateC8MaxNumberOfDays(id: number, max_number_of_days: number): UpdateC8MaxNumberOfDays {
   return {
-    index,
+    id,
     max_number_of_days,
     type: UPDATE_C8_MAX_NUMBER_OF_DAYS,
   }
 }
 
-export function deleteC8(index: number): DeleteC8 {
+export function deleteC8(id: number): DeleteC8 {
   return {
-    index,
+    id,
     type: DELETE_C8,
   }
 }
@@ -77,26 +77,26 @@ export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case CREATE_C8:
       return state.concat({
-        index: Math.max(0, ...state.map(c => c.index)) + 1,
-        kinmu_index: action.kinmu_index,
+        id: Math.max(0, ...state.map(c => c.id)) + 1,
+        kinmu_id: action.kinmu_id,
         max_number_of_days: action.max_number_of_days,
       })
-    case UPDATE_C8_KINMU_INDEX:
+    case UPDATE_C8_KINMU_ID:
       return state.map(c => {
-        if (c.index !== action.index) {
+        if (c.id !== action.id) {
           return c
         }
-        return { ...c, kinmu_index: action.kinmu_index }
+        return { ...c, kinmu_id: action.kinmu_id }
       })
     case UPDATE_C8_MAX_NUMBER_OF_DAYS:
       return state.map(c => {
-        if (c.index !== action.index) {
+        if (c.id !== action.id) {
           return c
         }
         return { ...c, max_number_of_days: action.max_number_of_days }
       })
     case DELETE_C8:
-      return state.filter(c => c.index !== action.index)
+      return state.filter(c => c.id !== action.id)
   }
   return state
 }

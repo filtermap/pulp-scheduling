@@ -1,21 +1,21 @@
 const UPDATE_MEMBER_NAME = 'UPDATE_MEMBER_NAME'
 
 export type Member = {
-  index: number
+  id: number
   name: string
 }
 
 type UpdateMemberName = {
   type: typeof UPDATE_MEMBER_NAME
-  index: number
+  id: number
   name: string
 }
 
 type Action = UpdateMemberName
 
-export function updateMemberName(index: number, name: string): UpdateMemberName {
+export function updateMemberName(id: number, name: string): UpdateMemberName {
   return {
-    index,
+    id,
     name,
     type: UPDATE_MEMBER_NAME,
   }
@@ -29,7 +29,7 @@ export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case UPDATE_MEMBER_NAME:
       return state.map(member => {
-        if (member.index !== action.index) {
+        if (member.id !== action.id) {
           return member
         }
         return { ...member, name: action.name }

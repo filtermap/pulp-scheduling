@@ -50,7 +50,7 @@ type State = {
   newMemberName: string
   newMemberGroupIndices: number[]
   deletionDialogIsOpen: boolean
-  selectedMemberIndex: number
+  selectedMemberId: number
 }
 
 class Members extends React.Component<Props, State> {
@@ -59,20 +59,20 @@ class Members extends React.Component<Props, State> {
     deletionDialogIsOpen: false,
     newMemberGroupIndices: [],
     newMemberName: '',
-    selectedMemberIndex: this.props.members.length > 0 ? this.props.members[0].index : 0,
+    selectedMemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
   }
-  public handleChangeMemberName(index: number) {
+  public handleChangeMemberName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(members.updateMemberName(index, event.target.value))
+      this.props.dispatch(members.updateMemberName(id, event.target.value))
     }
   }
-  public handleChangeGroupMember(groupIndex: number, memberIndex: number) {
+  public handleChangeGroupMember(groupId: number, memberId: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
       if (checked) {
-        this.props.dispatch(group_members.createGroupMember(groupIndex, memberIndex))
+        this.props.dispatch(group_members.createGroupMember(groupId, memberId))
         return
       }
-      this.props.dispatch(group_members.deleteGroupMember(groupIndex, memberIndex))
+      this.props.dispatch(group_members.deleteGroupMember(groupId, memberId))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -84,24 +84,24 @@ class Members extends React.Component<Props, State> {
   public handleChangeNewMemberName = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newMemberName: event.target.value })
   }
-  public handleChangeNewGroupMember(groupIndex: number) {
+  public handleChangeNewGroupMember(groupId: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
       if (checked) {
-        this.setState({ newMemberGroupIndices: this.state.newMemberGroupIndices.concat(groupIndex) })
+        this.setState({ newMemberGroupIndices: this.state.newMemberGroupIndices.concat(groupId) })
         return
       }
-      this.setState({ newMemberGroupIndices: this.state.newMemberGroupIndices.filter(group_index => group_index !== groupIndex) })
+      this.setState({ newMemberGroupIndices: this.state.newMemberGroupIndices.filter(group_id => group_id !== groupId) })
     }
   }
   public handleClickCreateMember = () => {
     this.setState({ creationDialogIsOpen: false })
     this.props.dispatch(all.createMember(this.state.newMemberName, this.state.newMemberGroupIndices))
   }
-  public handleClickOpenDeletionDialog(selectedMemberIndex: number) {
+  public handleClickOpenDeletionDialog(selectedMemberId: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedMemberIndex,
+        selectedMemberId,
       })
     }
   }
@@ -110,15 +110,15 @@ class Members extends React.Component<Props, State> {
   }
   public handleClickDeleteMember = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(all.deleteMember(this.state.selectedMemberIndex))
+    this.props.dispatch(all.deleteMember(this.state.selectedMemberId))
   }
   public render() {
-    const selectedMember = this.props.members.find(member => member.index === this.state.selectedMemberIndex)
-    const selectedMemberRosterIds = Array.from(new Set(this.props.assignments.filter(assignment => assignment.member_index === this.state.selectedMemberIndex).map(({ roster_id }) => roster_id)))
-    const selectedMemberC3 = this.props.c3.filter(c => c.member_index === this.state.selectedMemberIndex)
-    const selectedMemberC4 = this.props.c4.filter(c => c.member_index === this.state.selectedMemberIndex)
-    const selectedMemberC9 = this.props.c9.filter(c => c.member_index === this.state.selectedMemberIndex)
-    const selectedMemberC10 = this.props.c10.filter(c => c.member_index === this.state.selectedMemberIndex)
+    const selectedMember = this.props.members.find(member => member.id === this.state.selectedMemberId)
+    const selectedMemberRosterIds = Array.from(new Set(this.props.assignments.filter(assignment => assignment.member_id === this.state.selectedMemberId).map(({ roster_id }) => roster_id)))
+    const selectedMemberC3 = this.props.c3.filter(c => c.member_id === this.state.selectedMemberId)
+    const selectedMemberC4 = this.props.c4.filter(c => c.member_id === this.state.selectedMemberId)
+    const selectedMemberC9 = this.props.c9.filter(c => c.member_id === this.state.selectedMemberId)
+    const selectedMemberC10 = this.props.c10.filter(c => c.member_id === this.state.selectedMemberId)
     return (
       <>
         <Toolbar>
@@ -126,18 +126,18 @@ class Members extends React.Component<Props, State> {
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.members.map(member => (
-          <ExpansionPanel key={member.index}>
+          <ExpansionPanel key={member.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <div style={{ flexDirection: 'column' }}>
                 <Typography>{member.name}</Typography>
-                <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.member_index === member.index).map(group_member => this.props.groups.find(group => group.index === group_member.group_index)!.name).join(', ')}</Typography>
+                <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.member_id === member.id).map(group_member => this.props.groups.find(group => group.id === group_member.group_id)!.name).join(', ')}</Typography>
               </div>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <TextField
                 label="職員名"
                 defaultValue={member.name}
-                onChange={this.handleChangeMemberName(member.index)}
+                onChange={this.handleChangeMemberName(member.id)}
                 fullWidth={true}
               />
               <FormControl fullWidth={true}>
@@ -145,12 +145,12 @@ class Members extends React.Component<Props, State> {
                 <FormGroup>
                   {this.props.groups.map(group => (
                     <FormControlLabel
-                      key={group.index}
+                      key={group.id}
                       label={group.name}
                       control={
                         <Checkbox
-                          checked={this.props.group_members.some(group_member => group_member.group_index === group.index && group_member.member_index === member.index)}
-                          onChange={this.handleChangeGroupMember(group.index, member.index)}
+                          checked={this.props.group_members.some(group_member => group_member.group_id === group.id && group_member.member_id === member.id)}
+                          onChange={this.handleChangeGroupMember(group.id, member.id)}
                           color="primary"
                         />
                       }
@@ -160,7 +160,7 @@ class Members extends React.Component<Props, State> {
               </FormControl>
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickOpenDeletionDialog(member.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(member.id)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
@@ -178,12 +178,12 @@ class Members extends React.Component<Props, State> {
               <FormGroup>
                 {this.props.groups.map(group => (
                   <FormControlLabel
-                    key={group.index}
+                    key={group.id}
                     label={group.name}
                     control={
                       <Checkbox
-                        checked={this.state.newMemberGroupIndices.some(group_index => group_index === group.index)}
-                        onChange={this.handleChangeNewGroupMember(group.index)}
+                        checked={this.state.newMemberGroupIndices.some(group_id => group_id === group.id)}
+                        onChange={this.handleChangeNewGroupMember(group.id)}
                         color="primary"
                       />
                     }
@@ -203,15 +203,15 @@ class Members extends React.Component<Props, State> {
             <DialogContent>
               <DialogContentText>この職員を削除します</DialogContentText>
               <Typography>{selectedMember.name}</Typography>
-              <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.member_index === selectedMember.index).map(group_member => this.props.groups.find(group => group.index === group_member.group_index)!.name).join(', ')}</Typography>
+              <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.member_id === selectedMember.id).map(group_member => this.props.groups.find(group => group.id === group_member.group_id)!.name).join(', ')}</Typography>
               {selectedMemberRosterIds.length > 0 && <DialogContentText>以下の勤務表の割り当ても削除されます</DialogContentText>}
               {selectedMemberRosterIds.map(roster_id => <Typography key={roster_id}>{`勤務表${roster_id}`}</Typography>)}
               {(selectedMemberC3.length > 0 || selectedMemberC4.length > 0 || selectedMemberC9.length > 0 || selectedMemberC10.length > 0) &&
                 <DialogContentText>以下の条件も削除されます</DialogContentText>}
-              {selectedMemberC3.map(c => <Typography key={c.index}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>)}
-              {selectedMemberC4.map(c => <Typography key={c.index}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>)}
-              {selectedMemberC9.map(c => <Typography key={c.index}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}を割り当てる`}</Typography>)}
-              {selectedMemberC10.map(c => <Typography key={c.index}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}を割り当てない`}</Typography>)}
+              {selectedMemberC3.map(c => <Typography key={c.id}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>)}
+              {selectedMemberC4.map(c => <Typography key={c.id}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>)}
+              {selectedMemberC9.map(c => <Typography key={c.id}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を割り当てる`}</Typography>)}
+              {selectedMemberC10.map(c => <Typography key={c.id}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を割り当てない`}</Typography>)}
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteMember}>削除</Button>

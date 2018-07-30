@@ -34,11 +34,11 @@ type State = {
   creationDialogIsOpen: boolean
   newC1StartDateName: string
   newC1StopDateName: string
-  newC1KinmuIndex: number
-  newC1GroupIndex: number
+  newC1KinmuId: number
+  newC1GroupId: number
   newC1MinNumberOfAssignments: number
   deletionDialogIsOpen: boolean
-  selectedC1Index: number
+  selectedC1Id: number
 }
 
 class C1 extends React.Component<Props, State> {
@@ -48,37 +48,37 @@ class C1 extends React.Component<Props, State> {
     this.state = {
       creationDialogIsOpen: false,
       deletionDialogIsOpen: false,
-      newC1GroupIndex: this.props.groups.length > 0 ? this.props.groups[0].index : 0,
-      newC1KinmuIndex: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
+      newC1GroupId: this.props.groups.length > 0 ? this.props.groups[0].id : 0,
+      newC1KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
       newC1MinNumberOfAssignments: 0,
       newC1StartDateName: todayString,
       newC1StopDateName: todayString,
-      selectedC1Index: this.props.c1.length > 0 ? this.props.c1[0].index : 0
+      selectedC1Id: this.props.c1.length > 0 ? this.props.c1[0].id : 0
     }
   }
-  public handleChangeC1StartDateName(index: number) {
+  public handleChangeC1StartDateName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c1.updateC1StartDateName(index, event.target.value))
+      this.props.dispatch(c1.updateC1StartDateName(id, event.target.value))
     }
   }
-  public handleChangeC1StopDateName(index: number) {
+  public handleChangeC1StopDateName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c1.updateC1StopDateName(index, event.target.value))
+      this.props.dispatch(c1.updateC1StopDateName(id, event.target.value))
     }
   }
-  public handleChangeC1KinmuIndex(index: number) {
+  public handleChangeC1KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c1.updateC1KinmuIndex(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c1.updateC1KinmuId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC1GroupIndex(index: number) {
+  public handleChangeC1GroupId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c1.updateC1GroupIndex(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c1.updateC1GroupId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC1MinNumberOfAssignments(index: number) {
+  public handleChangeC1MinNumberOfAssignments(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c1.updateC1MinNumberOfAssignments(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c1.updateC1MinNumberOfAssignments(id, parseInt(event.target.value, 10)))
     }
   }
 
@@ -94,24 +94,24 @@ class C1 extends React.Component<Props, State> {
   public handleChangeNewC1StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC1StopDateName: event.target.value })
   }
-  public handleChangeNewC1KinmuIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC1KinmuIndex: parseInt(event.target.value, 10) })
+  public handleChangeNewC1KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newC1KinmuId: parseInt(event.target.value, 10) })
   }
-  public handleChangeNewC1GroupIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC1GroupIndex: parseInt(event.target.value, 10) })
+  public handleChangeNewC1GroupId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newC1GroupId: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC1MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC1MinNumberOfAssignments: parseInt(event.target.value, 10) })
   }
   public handleClickCreateC1 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c1.createC1(this.state.newC1StartDateName, this.state.newC1StopDateName, this.state.newC1KinmuIndex, this.state.newC1GroupIndex, this.state.newC1MinNumberOfAssignments))
+    this.props.dispatch(c1.createC1(this.state.newC1StartDateName, this.state.newC1StopDateName, this.state.newC1KinmuId, this.state.newC1GroupId, this.state.newC1MinNumberOfAssignments))
   }
-  public handleClickOpenDeletionDialog(selectedC1Index: number) {
+  public handleClickOpenDeletionDialog(selectedC1Id: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedC1Index,
+        selectedC1Id,
       })
     }
   }
@@ -120,10 +120,10 @@ class C1 extends React.Component<Props, State> {
   }
   public handleClickDeleteC1 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(c1.deleteC1(this.state.selectedC1Index))
+    this.props.dispatch(c1.deleteC1(this.state.selectedC1Id))
   }
   public render() {
-    const selectedC1 = this.props.c1.find(c => c.index === this.state.selectedC1Index)
+    const selectedC1 = this.props.c1.find(c => c.id === this.state.selectedC1Id)
     return (
       <>
         <Toolbar>
@@ -131,16 +131,16 @@ class C1 extends React.Component<Props, State> {
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.c1.map(c => (
-          <ExpansionPanel key={c.index}>
+          <ExpansionPanel key={c.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}に${this.props.groups.find(group => group.index === c.group_index)!.name}から${c.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>
+              <Typography>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}に${this.props.groups.find(group => group.id === c.group_id)!.name}から${c.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <TextField
                 label="開始日"
                 type="date"
                 defaultValue={c.start_date_name}
-                onChange={this.handleChangeC1StartDateName(c.index)}
+                onChange={this.handleChangeC1StartDateName(c.id)}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -150,7 +150,7 @@ class C1 extends React.Component<Props, State> {
                 label="終了日"
                 type="date"
                 defaultValue={c.stop_date_name}
-                onChange={this.handleChangeC1StopDateName(c.index)}
+                onChange={this.handleChangeC1StopDateName(c.id)}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -159,35 +159,35 @@ class C1 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={c.kinmu_index}
-                onChange={this.handleChangeC1KinmuIndex(c.index)}
+                value={c.kinmu_id}
+                onChange={this.handleChangeC1KinmuId(c.id)}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
-                  <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                  <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
                 select={true}
                 label="グループ"
-                value={c.group_index}
-                onChange={this.handleChangeC1GroupIndex(c.index)}
+                value={c.group_id}
+                onChange={this.handleChangeC1GroupId(c.id)}
                 fullWidth={true}
               >
                 {this.props.groups.map(group => (
-                  <MenuItem key={group.index} value={group.index}>{group.name}</MenuItem>
+                  <MenuItem key={group.id} value={group.id}>{group.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
                 label="割り当て職員数下限"
                 type="number"
                 defaultValue={c.min_number_of_assignments}
-                onChange={this.handleChangeC1MinNumberOfAssignments(c.index)}
+                onChange={this.handleChangeC1MinNumberOfAssignments(c.id)}
                 fullWidth={true}
               />
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.id)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
@@ -228,23 +228,23 @@ class C1 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.newC1KinmuIndex}
-                onChange={this.handleChangeNewC1KinmuIndex}
+                value={this.state.newC1KinmuId}
+                onChange={this.handleChangeNewC1KinmuId}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
-                  <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                  <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
                 select={true}
                 label="グループ"
-                value={this.state.newC1GroupIndex}
-                onChange={this.handleChangeNewC1GroupIndex}
+                value={this.state.newC1GroupId}
+                onChange={this.handleChangeNewC1GroupId}
                 fullWidth={true}
               >
                 {this.props.groups.map(group => (
-                  <MenuItem key={group.index} value={group.index}>{group.name}</MenuItem>
+                  <MenuItem key={group.id} value={group.id}>{group.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
@@ -265,7 +265,7 @@ class C1 extends React.Component<Props, State> {
             <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の削除</DialogTitle>
             <DialogContent>
               <DialogContentText>この期間の勤務にグループから割り当てる職員数の下限を削除します</DialogContentText>
-              <Typography>{`${selectedC1.start_date_name}から${selectedC1.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.index === selectedC1.kinmu_index)!.name}に${this.props.groups.find(group => group.index === selectedC1.group_index)!.name}から${selectedC1.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>
+              <Typography>{`${selectedC1.start_date_name}から${selectedC1.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.id === selectedC1.kinmu_id)!.name}に${this.props.groups.find(group => group.id === selectedC1.group_id)!.name}から${selectedC1.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteC1}>削除</Button>

@@ -44,7 +44,7 @@ const styles = createStyles({
     background: 'white',
     position: 'sticky',
     top: 0,
-    zIndex: 1,
+    zId: 1,
   },
 })
 
@@ -134,7 +134,7 @@ class Rosters extends React.Component<Props, State> {
   public render() {
     const date_names = sortDateNames(Array.from(new Set(this.props.all.assignments.map(assignment => assignment.date_name))))
     const new_date_names = sortDateNames(Array.from(new Set(this.state.newRosterAssignments.map(assignment => assignment.date_name))))
-    const members_by_new_assignments = this.props.all.members.filter(member => this.state.newRosterAssignments.some(assignment => assignment.member_index === member.index))
+    const members_by_new_assignments = this.props.all.members.filter(member => this.state.newRosterAssignments.some(assignment => assignment.member_id === member.id))
     const selectedRosterAssignments = this.props.all.assignments.filter(assignment => assignment.roster_id === this.state.selectedRosterId)
     return (
       <>
@@ -143,12 +143,12 @@ class Rosters extends React.Component<Props, State> {
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.all.rosters.map(roster => {
-          const assignments_by_roster_id = this.props.all.assignments.filter(assignment => assignment.roster_id === roster.roster_id)
-          const members_by_assignments = this.props.all.members.filter(member => assignments_by_roster_id.some(assignment => assignment.member_index === member.index))
+          const assignments_by_roster_id = this.props.all.assignments.filter(assignment => assignment.roster_id === roster.id)
+          const members_by_assignments = this.props.all.members.filter(member => assignments_by_roster_id.some(assignment => assignment.member_id === member.id))
           return (
-            <ExpansionPanel key={roster.roster_id}>
+            <ExpansionPanel key={roster.id}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>{`勤務表${roster.roster_id}`}</Typography>
+                <Typography>{`勤務表${roster.id}`}</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <div className={this.props.classes.tableWrapper}>
@@ -163,12 +163,12 @@ class Rosters extends React.Component<Props, State> {
                     </TableHead>
                     <TableBody>
                       {members_by_assignments.map(member => {
-                        const assignments_by_roster_id_and_member_index = assignments_by_roster_id.filter(assignment => assignment.member_index === member.index)
+                        const assignments_by_roster_id_and_member_id = assignments_by_roster_id.filter(assignment => assignment.member_id === member.id)
                         return (
-                          <TableRow key={member.index}>
+                          <TableRow key={member.id}>
                             <TableCell padding="dense" className={this.props.classes.leftHeaderCell}>{member.name}</TableCell>
                             {date_names.map(date_name => (
-                              <TableCell padding="dense" key={date_name}>{this.props.all.kinmus.find(kinmu => kinmu.index === assignments_by_roster_id_and_member_index.find(assignment => assignment.date_name === date_name)!.kinmu_index)!.name}</TableCell>
+                              <TableCell padding="dense" key={date_name}>{this.props.all.kinmus.find(kinmu => kinmu.id === assignments_by_roster_id_and_member_id.find(assignment => assignment.date_name === date_name)!.kinmu_id)!.name}</TableCell>
                             ))}
                           </TableRow>
                         )
@@ -178,8 +178,8 @@ class Rosters extends React.Component<Props, State> {
                 </div>
               </ExpansionPanelDetails>
               <ExpansionPanelActions>
-                <Button size="small" onClick={this.handleClickOpenDeletionDialog(roster.roster_id)}>削除</Button>
-                <Button size="small" onClick={this.handleClickExportToCSV(roster.roster_id)}>CSV出力</Button>
+                <Button size="small" onClick={this.handleClickOpenDeletionDialog(roster.id)}>削除</Button>
+                <Button size="small" onClick={this.handleClickExportToCSV(roster.id)}>CSV出力</Button>
               </ExpansionPanelActions>
             </ExpansionPanel>
           )
@@ -228,12 +228,12 @@ class Rosters extends React.Component<Props, State> {
                       </TableHead>
                       <TableBody>
                         {members_by_new_assignments.map(member => {
-                          const assignments_by_member_index = this.state.newRosterAssignments.filter(assignment => assignment.member_index === member.index)
+                          const assignments_by_member_id = this.state.newRosterAssignments.filter(assignment => assignment.member_id === member.id)
                           return (
-                            <TableRow key={member.index}>
+                            <TableRow key={member.id}>
                               <TableCell padding="dense" className={this.props.classes.leftHeaderCell}>{member.name}</TableCell>
                               {new_date_names.map(date_name => (
-                                <TableCell padding="dense" key={date_name}>{this.props.all.kinmus.find(kinmu => kinmu.index === assignments_by_member_index.find(assignment => assignment.date_name === date_name)!.kinmu_index)!.name}</TableCell>
+                                <TableCell padding="dense" key={date_name}>{this.props.all.kinmus.find(kinmu => kinmu.id === assignments_by_member_id.find(assignment => assignment.date_name === date_name)!.kinmu_id)!.name}</TableCell>
                               ))}
                             </TableRow>
                           )

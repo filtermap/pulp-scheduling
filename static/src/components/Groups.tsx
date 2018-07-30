@@ -44,7 +44,7 @@ type State = {
   newGroupName: string
   newGroupMemberIndices: number[]
   deletionDialogIsOpen: boolean
-  selectedGroupIndex: number
+  selectedGroupId: number
 }
 
 class Groups extends React.Component<Props, State> {
@@ -53,20 +53,20 @@ class Groups extends React.Component<Props, State> {
     deletionDialogIsOpen: false,
     newGroupMemberIndices: [],
     newGroupName: '',
-    selectedGroupIndex: this.props.groups.length > 0 ? this.props.groups[0].index : 0,
+    selectedGroupId: this.props.groups.length > 0 ? this.props.groups[0].id : 0,
   }
-  public handleChangeGroupName(index: number) {
+  public handleChangeGroupName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(groups.updateGroupName(index, event.target.value))
+      this.props.dispatch(groups.updateGroupName(id, event.target.value))
     }
   }
-  public handleChangeGroupMember(groupIndex: number, memberIndex: number) {
+  public handleChangeGroupMember(groupId: number, memberId: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
       if (checked) {
-        this.props.dispatch(group_members.createGroupMember(groupIndex, memberIndex))
+        this.props.dispatch(group_members.createGroupMember(groupId, memberId))
         return
       }
-      this.props.dispatch(group_members.deleteGroupMember(groupIndex, memberIndex))
+      this.props.dispatch(group_members.deleteGroupMember(groupId, memberId))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -78,24 +78,24 @@ class Groups extends React.Component<Props, State> {
   public handleChangeNewGroupName = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newGroupName: event.target.value })
   }
-  public handleChangeNewGroupMember(memberIndex: number) {
+  public handleChangeNewGroupMember(memberId: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
       if (checked) {
-        this.setState({ newGroupMemberIndices: this.state.newGroupMemberIndices.concat(memberIndex) })
+        this.setState({ newGroupMemberIndices: this.state.newGroupMemberIndices.concat(memberId) })
         return
       }
-      this.setState({ newGroupMemberIndices: this.state.newGroupMemberIndices.filter(member_index => member_index !== memberIndex) })
+      this.setState({ newGroupMemberIndices: this.state.newGroupMemberIndices.filter(member_id => member_id !== memberId) })
     }
   }
   public handleClickCreateGroup = () => {
     this.setState({ creationDialogIsOpen: false })
     this.props.dispatch(all.createGroup(this.state.newGroupName, this.state.newGroupMemberIndices))
   }
-  public handleClickOpenDeletionDialog(selectedGroupIndex: number) {
+  public handleClickOpenDeletionDialog(selectedGroupId: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedGroupIndex,
+        selectedGroupId,
       })
     }
   }
@@ -104,12 +104,12 @@ class Groups extends React.Component<Props, State> {
   }
   public handleClickDeleteGroup = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(all.deleteGroup(this.state.selectedGroupIndex))
+    this.props.dispatch(all.deleteGroup(this.state.selectedGroupId))
   }
   public render() {
-    const selectedGroup = this.props.groups.find(group => group.index === this.state.selectedGroupIndex)
-    const selectedGroupC1 = this.props.c1.filter(c => c.group_index === this.state.selectedGroupIndex)
-    const selectedGroupC2 = this.props.c2.filter(c => c.group_index === this.state.selectedGroupIndex)
+    const selectedGroup = this.props.groups.find(group => group.id === this.state.selectedGroupId)
+    const selectedGroupC1 = this.props.c1.filter(c => c.group_id === this.state.selectedGroupId)
+    const selectedGroupC2 = this.props.c2.filter(c => c.group_id === this.state.selectedGroupId)
     return (
       <>
         <Toolbar>
@@ -117,18 +117,18 @@ class Groups extends React.Component<Props, State> {
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.groups.map(group => (
-          <ExpansionPanel key={group.index}>
+          <ExpansionPanel key={group.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <div style={{ flexDirection: 'column' }}>
                 <Typography>{group.name}</Typography>
-                <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.group_index === group.index).map(group_member => this.props.members.find(member => member.index === group_member.member_index)!.name).join(', ')}</Typography>
+                <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.group_id === group.id).map(group_member => this.props.members.find(member => member.id === group_member.member_id)!.name).join(', ')}</Typography>
               </div>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <TextField
                 label="グループ名"
                 defaultValue={group.name}
-                onChange={this.handleChangeGroupName(group.index)}
+                onChange={this.handleChangeGroupName(group.id)}
                 fullWidth={true}
               />
               <FormControl fullWidth={true}>
@@ -136,12 +136,12 @@ class Groups extends React.Component<Props, State> {
                 <FormGroup>
                   {this.props.members.map(member => (
                     <FormControlLabel
-                      key={member.index}
+                      key={member.id}
                       label={member.name}
                       control={
                         <Checkbox
-                          checked={this.props.group_members.some(group_member => group_member.group_index === group.index && group_member.member_index === member.index)}
-                          onChange={this.handleChangeGroupMember(group.index, member.index)}
+                          checked={this.props.group_members.some(group_member => group_member.group_id === group.id && group_member.member_id === member.id)}
+                          onChange={this.handleChangeGroupMember(group.id, member.id)}
                           color="primary"
                         />
                       }
@@ -151,7 +151,7 @@ class Groups extends React.Component<Props, State> {
               </FormControl>
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickOpenDeletionDialog(group.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(group.id)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
@@ -169,12 +169,12 @@ class Groups extends React.Component<Props, State> {
               <FormGroup>
                 {this.props.members.map(member => (
                   <FormControlLabel
-                    key={member.index}
+                    key={member.id}
                     label={member.name}
                     control={
                       <Checkbox
-                        checked={this.state.newGroupMemberIndices.some(member_index => member_index === member.index)}
-                        onChange={this.handleChangeNewGroupMember(member.index)}
+                        checked={this.state.newGroupMemberIndices.some(member_id => member_id === member.id)}
+                        onChange={this.handleChangeNewGroupMember(member.id)}
                         color="primary"
                       />
                     }
@@ -194,11 +194,11 @@ class Groups extends React.Component<Props, State> {
             <DialogContent>
               <DialogContentText>このグループを削除します</DialogContentText>
               <Typography>{selectedGroup.name}</Typography>
-              <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.group_index === selectedGroup.index).map(group_member => this.props.members.find(member => member.index === group_member.member_index)!.name).join(', ')}</Typography>
+              <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.group_id === selectedGroup.id).map(group_member => this.props.members.find(member => member.id === group_member.member_id)!.name).join(', ')}</Typography>
               {(selectedGroupC1.length > 0 || selectedGroupC2.length > 0) &&
                 <DialogContentText>以下の条件も削除されます</DialogContentText>}
-              {selectedGroupC1.map(c => <Typography key={c.index}>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(({ index }) => index === c.kinmu_index)!.name}に${selectedGroup.name}から${c.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>)}
-              {selectedGroupC2.map(c => <Typography key={c.index}>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(({ index }) => index === c.kinmu_index)!.name}に${selectedGroup.name}から${c.max_number_of_assignments}人以下の職員を割り当てる`}</Typography>)}
+              {selectedGroupC1.map(c => <Typography key={c.id}>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(({ id }) => id === c.kinmu_id)!.name}に${selectedGroup.name}から${c.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>)}
+              {selectedGroupC2.map(c => <Typography key={c.id}>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(({ id }) => id === c.kinmu_id)!.name}に${selectedGroup.name}から${c.max_number_of_assignments}人以下の職員を割り当てる`}</Typography>)}
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteGroup}>削除</Button>

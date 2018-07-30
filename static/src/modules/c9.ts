@@ -1,108 +1,108 @@
 const CREATE_C9 = 'CREATE_C9'
-const UPDATE_C9_MEMBER_INDEX = 'UPDATE_C9_MEMBER_INDEX'
+const UPDATE_C9_MEMBER_ID = 'UPDATE_C9_MEMBER_ID'
 const UPDATE_C9_START_DATE_NAME = 'UPDATE_C9_START_DATE_NAME'
 const UPDATE_C9_STOP_DATE_NAME = 'UPDATE_C9_STOP_DATE_NAME'
-const UPDATE_C9_KINMU_INDEX = 'UPDATE_C9_KINMU_INDEX'
+const UPDATE_C9_KINMU_ID = 'UPDATE_C9_KINMU_ID'
 const DELETE_C9 = 'DELETE_C9'
 
 export type C9 = {
-  index: number
-  member_index: number
+  id: number
+  member_id: number
   start_date_name: string
   stop_date_name: string
-  kinmu_index: number
+  kinmu_id: number
 }
 
 type CreateC9 = {
   type: typeof CREATE_C9
-  member_index: number
+  member_id: number
   start_date_name: string
   stop_date_name: string
-  kinmu_index: number
+  kinmu_id: number
 }
 
-type UpdateC9MemberIndex = {
-  type: typeof UPDATE_C9_MEMBER_INDEX
-  index: number
-  member_index: number
+type UpdateC9MemberId = {
+  type: typeof UPDATE_C9_MEMBER_ID
+  id: number
+  member_id: number
 }
 
 type UpdateC9StartDateName = {
   type: typeof UPDATE_C9_START_DATE_NAME
-  index: number
+  id: number
   start_date_name: string
 }
 
 type UpdateC9StopDateName = {
   type: typeof UPDATE_C9_STOP_DATE_NAME
-  index: number
+  id: number
   stop_date_name: string
 }
 
-type UpdateC9KinmuIndex = {
-  type: typeof UPDATE_C9_KINMU_INDEX
-  index: number
-  kinmu_index: number
+type UpdateC9KinmuId = {
+  type: typeof UPDATE_C9_KINMU_ID
+  id: number
+  kinmu_id: number
 }
 
 type DeleteC9 = {
   type: typeof DELETE_C9
-  index: number
+  id: number
 }
 
 type Action =
   | CreateC9
-  | UpdateC9MemberIndex
+  | UpdateC9MemberId
   | UpdateC9StartDateName
   | UpdateC9StopDateName
-  | UpdateC9KinmuIndex
+  | UpdateC9KinmuId
   | DeleteC9
 
-export function createC9(member_index: number, start_date_name: string, stop_date_name: string, kinmu_index: number): CreateC9 {
+export function createC9(member_id: number, start_date_name: string, stop_date_name: string, kinmu_id: number): CreateC9 {
   return {
-    kinmu_index,
-    member_index,
+    kinmu_id,
+    member_id,
     start_date_name,
     stop_date_name,
     type: CREATE_C9,
   }
 }
 
-export function updateC9MemberIndex(index: number, member_index: number): UpdateC9MemberIndex {
+export function updateC9MemberId(id: number, member_id: number): UpdateC9MemberId {
   return {
-    index,
-    member_index,
-    type: UPDATE_C9_MEMBER_INDEX,
+    id,
+    member_id,
+    type: UPDATE_C9_MEMBER_ID,
   }
 }
 
-export function updateC9StartDateName(index: number, start_date_name: string): UpdateC9StartDateName {
+export function updateC9StartDateName(id: number, start_date_name: string): UpdateC9StartDateName {
   return {
-    index,
+    id,
     start_date_name,
     type: UPDATE_C9_START_DATE_NAME,
   }
 }
 
-export function updateC9StopDateName(index: number, stop_date_name: string): UpdateC9StopDateName {
+export function updateC9StopDateName(id: number, stop_date_name: string): UpdateC9StopDateName {
   return {
-    index,
+    id,
     stop_date_name,
     type: UPDATE_C9_STOP_DATE_NAME,
   }
 }
 
-export function updateC9KinmuIndex(index: number, kinmu_index: number): UpdateC9KinmuIndex {
+export function updateC9KinmuId(id: number, kinmu_id: number): UpdateC9KinmuId {
   return {
-    index,
-    kinmu_index,
-    type: UPDATE_C9_KINMU_INDEX,
+    id,
+    kinmu_id,
+    type: UPDATE_C9_KINMU_ID,
   }
 }
 
-export function deleteC9(index: number): DeleteC9 {
+export function deleteC9(id: number): DeleteC9 {
   return {
-    index,
+    id,
     type: DELETE_C9,
   }
 }
@@ -115,42 +115,42 @@ export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case CREATE_C9:
       return state.concat({
-        index: Math.max(0, ...state.map(c => c.index)) + 1,
-        kinmu_index: action.kinmu_index,
-        member_index: action.member_index,
+        id: Math.max(0, ...state.map(c => c.id)) + 1,
+        kinmu_id: action.kinmu_id,
+        member_id: action.member_id,
         start_date_name: action.start_date_name,
         stop_date_name: action.stop_date_name,
       })
-    case UPDATE_C9_MEMBER_INDEX:
+    case UPDATE_C9_MEMBER_ID:
       return state.map(c => {
-        if (c.index !== action.index) {
+        if (c.id !== action.id) {
           return c
         }
-        return { ...c, member_index: action.member_index }
+        return { ...c, member_id: action.member_id }
       })
     case UPDATE_C9_START_DATE_NAME:
       return state.map(c => {
-        if (c.index !== action.index) {
+        if (c.id !== action.id) {
           return c
         }
         return { ...c, start_date_name: action.start_date_name }
       })
     case UPDATE_C9_STOP_DATE_NAME:
       return state.map(c => {
-        if (c.index !== action.index) {
+        if (c.id !== action.id) {
           return c
         }
         return { ...c, stop_date_name: action.stop_date_name }
       })
-    case UPDATE_C9_KINMU_INDEX:
+    case UPDATE_C9_KINMU_ID:
       return state.map(c => {
-        if (c.index !== action.index) {
+        if (c.id !== action.id) {
           return c
         }
-        return { ...c, kinmu_index: action.kinmu_index }
+        return { ...c, kinmu_id: action.kinmu_id }
       })
     case DELETE_C9:
-      return state.filter(c => c.index !== action.index)
+      return state.filter(c => c.id !== action.id)
   }
   return state
 }

@@ -1,6 +1,5 @@
 export type C0 = {
-  index: number
-  sequence_id: number
+  id: number
 }
 
 export type State = C0[]

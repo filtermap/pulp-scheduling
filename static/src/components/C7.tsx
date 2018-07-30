@@ -29,28 +29,28 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
-  newC7KinmuIndex: number
+  newC7KinmuId: number
   newC7MinNumberOfDays: number
   deletionDialogIsOpen: boolean
-  selectedC7Index: number
+  selectedC7Id: number
 }
 
 class C7 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
-    newC7KinmuIndex: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
+    newC7KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newC7MinNumberOfDays: 0,
-    selectedC7Index: this.props.c7.length > 0 ? this.props.c7[0].index : 0,
+    selectedC7Id: this.props.c7.length > 0 ? this.props.c7[0].id : 0,
   }
-  public handleChangeC7KinmuIndex(index: number) {
+  public handleChangeC7KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c7.updateC7KinmuIndex(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c7.updateC7KinmuId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC7MinNumberOfDays(index: number) {
+  public handleChangeC7MinNumberOfDays(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c7.updateC7MinNumberOfDays(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c7.updateC7MinNumberOfDays(id, parseInt(event.target.value, 10)))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -59,21 +59,21 @@ class C7 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public handleChangeNewC7KinmuIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC7KinmuIndex: parseInt(event.target.value, 10) })
+  public handleChangeNewC7KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newC7KinmuId: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC7MinNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC7MinNumberOfDays: parseInt(event.target.value, 10) })
   }
   public handleClickCreateC7 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c7.createC7(this.state.newC7KinmuIndex, this.state.newC7MinNumberOfDays))
+    this.props.dispatch(c7.createC7(this.state.newC7KinmuId, this.state.newC7MinNumberOfDays))
   }
-  public handleClickOpenDeletionDialog(selectedC7Index: number) {
+  public handleClickOpenDeletionDialog(selectedC7Id: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedC7Index,
+        selectedC7Id,
       })
     }
   }
@@ -82,10 +82,10 @@ class C7 extends React.Component<Props, State> {
   }
   public handleClickDeleteC7 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(c7.deleteC7(this.state.selectedC7Index))
+    this.props.dispatch(c7.deleteC7(this.state.selectedC7Id))
   }
   public render() {
-    const selectedC7 = this.props.c7.find(c => c.index === this.state.selectedC7Index)
+    const selectedC7 = this.props.c7.find(c => c.id === this.state.selectedC7Id)
     return (
       <>
         <Toolbar>
@@ -93,32 +93,32 @@ class C7 extends React.Component<Props, State> {
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.c7.map(c => (
-          <ExpansionPanel key={c.index}>
+          <ExpansionPanel key={c.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}の間隔日数を${c.min_number_of_days}日以上にする`}</Typography>
+              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}の間隔日数を${c.min_number_of_days}日以上にする`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <TextField
                 select={true}
                 label="勤務"
-                value={c.kinmu_index}
-                onChange={this.handleChangeC7KinmuIndex(c.index)}
+                value={c.kinmu_id}
+                onChange={this.handleChangeC7KinmuId(c.id)}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
-                  <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                  <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
                 label="間隔日数下限"
                 type="number"
                 defaultValue={c.min_number_of_days}
-                onChange={this.handleChangeC7MinNumberOfDays(c.index)}
+                onChange={this.handleChangeC7MinNumberOfDays(c.id)}
                 fullWidth={true}
               />
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.id)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
@@ -138,12 +138,12 @@ class C7 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.newC7KinmuIndex}
-                onChange={this.handleChangeNewC7KinmuIndex}
+                value={this.state.newC7KinmuId}
+                onChange={this.handleChangeNewC7KinmuId}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
-                  <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                  <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
@@ -164,7 +164,7 @@ class C7 extends React.Component<Props, State> {
             <DialogTitle>勤務の間隔日数の下限の削除</DialogTitle>
             <DialogContent>
               <DialogContentText>この勤務の間隔日数の下限を削除します</DialogContentText>
-              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.index === selectedC7.kinmu_index)!.name}の間隔日数を${selectedC7.min_number_of_days}日以上にする`}</Typography>
+              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === selectedC7.kinmu_id)!.name}の間隔日数を${selectedC7.min_number_of_days}日以上にする`}</Typography>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteC7}>削除</Button>

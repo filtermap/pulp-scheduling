@@ -1,89 +1,89 @@
 const CREATE_C3 = 'CREATE_C3'
-const UPDATE_C3_MEMBER_INDEX = 'UPDATE_C3_MEMBER_INDEX'
-const UPDATE_C3_KINMU_INDEX = 'UPDATE_C3_KINMU_INDEX'
+const UPDATE_C3_MEMBER_ID = 'UPDATE_C3_MEMBER_ID'
+const UPDATE_C3_KINMU_ID = 'UPDATE_C3_KINMU_ID'
 const UPDATE_C3_MIN_NUMBER_OF_ASSIGNMENTS = 'UPDATE_C3_MIN_NUMBER_OF_ASSIGNMENTS'
 const DELETE_C3 = 'DELETE_C3'
 
 export type C3 = {
-  index: number
-  member_index: number
-  kinmu_index: number
+  id: number
+  member_id: number
+  kinmu_id: number
   min_number_of_assignments: number
 }
 
 type CreateC3 = {
   type: typeof CREATE_C3
-  member_index: number
-  kinmu_index: number
+  member_id: number
+  kinmu_id: number
   min_number_of_assignments: number
 }
 
-type UpdateC3MemberIndex = {
-  type: typeof UPDATE_C3_MEMBER_INDEX
-  index: number
-  member_index: number
+type UpdateC3MemberId = {
+  type: typeof UPDATE_C3_MEMBER_ID
+  id: number
+  member_id: number
 }
 
-type UpdateC3KinmuIndex = {
-  type: typeof UPDATE_C3_KINMU_INDEX
-  index: number
-  kinmu_index: number
+type UpdateC3KinmuId = {
+  type: typeof UPDATE_C3_KINMU_ID
+  id: number
+  kinmu_id: number
 }
 
 type UpdateC3MinNumberOfAssignments = {
   type: typeof UPDATE_C3_MIN_NUMBER_OF_ASSIGNMENTS
-  index: number
+  id: number
   min_number_of_assignments: number
 }
 
 type DeleteC3 = {
   type: typeof DELETE_C3
-  index: number
+  id: number
 }
 
 type Action =
   | CreateC3
-  | UpdateC3MemberIndex
-  | UpdateC3KinmuIndex
+  | UpdateC3MemberId
+  | UpdateC3KinmuId
   | UpdateC3MinNumberOfAssignments
   | DeleteC3
 
-export function createC3(member_index: number, kinmu_index: number, min_number_of_assignments: number): CreateC3 {
+export function createC3(member_id: number, kinmu_id: number, min_number_of_assignments: number): CreateC3 {
   return {
-    kinmu_index,
-    member_index,
+    kinmu_id,
+    member_id,
     min_number_of_assignments,
     type: CREATE_C3,
   }
 }
 
-export function updateC3MemberIndex(index: number, member_index: number): UpdateC3MemberIndex {
+export function updateC3MemberId(id: number, member_id: number): UpdateC3MemberId {
   return {
-    index,
-    member_index,
-    type: UPDATE_C3_MEMBER_INDEX,
+    id,
+    member_id,
+    type: UPDATE_C3_MEMBER_ID,
   }
 }
 
-export function updateC3KinmuIndex(index: number, kinmu_index: number): UpdateC3KinmuIndex {
+export function updateC3KinmuId(id: number, kinmu_id: number): UpdateC3KinmuId {
   return {
-    index,
-    kinmu_index,
-    type: UPDATE_C3_KINMU_INDEX,
+    id,
+    kinmu_id,
+    type: UPDATE_C3_KINMU_ID,
   }
 }
 
-export function updateC3MinNumberOfAssignments(index: number, min_number_of_assignments: number): UpdateC3MinNumberOfAssignments {
+export function updateC3MinNumberOfAssignments(id: number, min_number_of_assignments: number): UpdateC3MinNumberOfAssignments {
   return {
-    index,
+    id,
     min_number_of_assignments,
     type: UPDATE_C3_MIN_NUMBER_OF_ASSIGNMENTS
   }
 }
 
-export function deleteC3(index: number): DeleteC3 {
+export function deleteC3(id: number): DeleteC3 {
   return {
-    index,
+    id,
     type: DELETE_C3,
   }
 }
@@ -96,34 +96,34 @@ export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case CREATE_C3:
       return state.concat({
-        index: Math.max(0, ...state.map(c => c.index)) + 1,
-        kinmu_index: action.kinmu_index,
-        member_index: action.member_index,
+        id: Math.max(0, ...state.map(c => c.id)) + 1,
+        kinmu_id: action.kinmu_id,
+        member_id: action.member_id,
         min_number_of_assignments: action.min_number_of_assignments,
       })
-    case UPDATE_C3_MEMBER_INDEX:
+    case UPDATE_C3_MEMBER_ID:
       return state.map(c => {
-        if (c.index !== action.index) {
+        if (c.id !== action.id) {
           return c
         }
-        return { ...c, member_index: action.member_index }
+        return { ...c, member_id: action.member_id }
       })
-    case UPDATE_C3_KINMU_INDEX:
+    case UPDATE_C3_KINMU_ID:
       return state.map(c => {
-        if (c.index !== action.index) {
+        if (c.id !== action.id) {
           return c
         }
-        return { ...c, kinmu_index: action.kinmu_index }
+        return { ...c, kinmu_id: action.kinmu_id }
       })
     case UPDATE_C3_MIN_NUMBER_OF_ASSIGNMENTS:
       return state.map(c => {
-        if (c.index !== action.index) {
+        if (c.id !== action.id) {
           return c
         }
         return { ...c, min_number_of_assignments: action.min_number_of_assignments }
       })
     case DELETE_C3:
-      return state.filter(c => c.index !== action.index)
+      return state.filter(c => c.id !== action.id)
   }
   return state
 }

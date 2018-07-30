@@ -1,6 +1,5 @@
 export type Roster = {
-  index: number
-  roster_id: number
+  id: number
 }
 
 export type State = Roster[]

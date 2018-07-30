@@ -31,35 +31,35 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
-  newC4MemberIndex: number
-  newC4KinmuIndex: number
+  newC4MemberId: number
+  newC4KinmuId: number
   newC4MaxNumberOfAssignments: number
   deletionDialogIsOpen: boolean
-  selectedC4Index: number
+  selectedC4Id: number
 }
 
 class C4 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
-    newC4KinmuIndex: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
+    newC4KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newC4MaxNumberOfAssignments: 0,
-    newC4MemberIndex: this.props.members.length > 0 ? this.props.members[0].index : 0,
-    selectedC4Index: this.props.c4.length > 0 ? this.props.c4[0].index : 0,
+    newC4MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
+    selectedC4Id: this.props.c4.length > 0 ? this.props.c4[0].id : 0,
   }
-  public handleChangeC4MemberIndex(index: number) {
+  public handleChangeC4MemberId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c4.updateC4MemberIndex(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c4.updateC4MemberId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC4KinmuIndex(index: number) {
+  public handleChangeC4KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c4.updateC4KinmuIndex(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c4.updateC4KinmuId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC4MaxNumberOfAssignments(index: number) {
+  public handleChangeC4MaxNumberOfAssignments(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c4.updateC4MaxNumberOfAssignments(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c4.updateC4MaxNumberOfAssignments(id, parseInt(event.target.value, 10)))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -68,24 +68,24 @@ class C4 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public handleChangeNewC4MemberIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC4MemberIndex: parseInt(event.target.value, 10) })
+  public handleChangeNewC4MemberId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newC4MemberId: parseInt(event.target.value, 10) })
   }
-  public handleChangeNewC4KinmuIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC4KinmuIndex: parseInt(event.target.value, 10) })
+  public handleChangeNewC4KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newC4KinmuId: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC4MaxNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC4MaxNumberOfAssignments: parseInt(event.target.value, 10) })
   }
   public handleClickCreateC4 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c4.createC4(this.state.newC4MemberIndex, this.state.newC4KinmuIndex, this.state.newC4MaxNumberOfAssignments))
+    this.props.dispatch(c4.createC4(this.state.newC4MemberId, this.state.newC4KinmuId, this.state.newC4MaxNumberOfAssignments))
   }
-  public handleClickOpenDeletionDialog(selectedC4Index: number) {
+  public handleClickOpenDeletionDialog(selectedC4Id: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedC4Index,
+        selectedC4Id,
       })
     }
   }
@@ -94,10 +94,10 @@ class C4 extends React.Component<Props, State> {
   }
   public handleClickDeleteC4 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(c4.deleteC4(this.state.selectedC4Index))
+    this.props.dispatch(c4.deleteC4(this.state.selectedC4Id))
   }
   public render() {
-    const selectedC4 = this.props.c4.find(c => c.index === this.state.selectedC4Index)
+    const selectedC4 = this.props.c4.find(c => c.id === this.state.selectedC4Id)
     return (
       <>
         <Toolbar>
@@ -105,43 +105,43 @@ class C4 extends React.Component<Props, State> {
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.c4.map(c => (
-          <ExpansionPanel key={c.index}>
+          <ExpansionPanel key={c.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{`${this.props.members.find(member => member.index === c.member_index)!.name}に${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>
+              <Typography>{`${this.props.members.find(member => member.id === c.member_id)!.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <TextField
                 select={true}
                 label="職員"
-                value={c.member_index}
-                onChange={this.handleChangeC4MemberIndex(c.index)}
+                value={c.member_id}
+                onChange={this.handleChangeC4MemberId(c.id)}
                 fullWidth={true}
               >
                 {this.props.members.map(member => (
-                  <MenuItem key={member.index} value={member.index}>{member.name}</MenuItem>
+                  <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
                 select={true}
                 label="勤務"
-                value={c.kinmu_index}
-                onChange={this.handleChangeC4KinmuIndex(c.index)}
+                value={c.kinmu_id}
+                onChange={this.handleChangeC4KinmuId(c.id)}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
-                  <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                  <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
                 label="割り当て数上限"
                 type="number"
                 defaultValue={c.max_number_of_assignments}
-                onChange={this.handleChangeC4MaxNumberOfAssignments(c.index)}
+                onChange={this.handleChangeC4MaxNumberOfAssignments(c.id)}
                 fullWidth={true}
               />
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.id)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
@@ -162,23 +162,23 @@ class C4 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="職員"
-                value={this.state.newC4MemberIndex}
-                onChange={this.handleChangeNewC4MemberIndex}
+                value={this.state.newC4MemberId}
+                onChange={this.handleChangeNewC4MemberId}
                 fullWidth={true}
               >
                 {this.props.members.map(member => (
-                  <MenuItem key={member.index} value={member.index}>{member.name}</MenuItem>
+                  <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.newC4KinmuIndex}
-                onChange={this.handleChangeNewC4KinmuIndex}
+                value={this.state.newC4KinmuId}
+                onChange={this.handleChangeNewC4KinmuId}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
-                  <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                  <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
@@ -199,7 +199,7 @@ class C4 extends React.Component<Props, State> {
             <DialogTitle>職員の勤務の割り当て数の上限の削除</DialogTitle>
             <DialogContent>
               <DialogContentText>この職員の勤務の割り当て数の上限を削除します</DialogContentText>
-              <Typography>{`${this.props.members.find(member => member.index === selectedC4.member_index)!.name}に${this.props.kinmus.find(kinmu => kinmu.index === selectedC4.kinmu_index)!.name}を${selectedC4.max_number_of_assignments}回以下割り当てる`}</Typography>
+              <Typography>{`${this.props.members.find(member => member.id === selectedC4.member_id)!.name}に${this.props.kinmus.find(kinmu => kinmu.id === selectedC4.kinmu_id)!.name}を${selectedC4.max_number_of_assignments}回以下割り当てる`}</Typography>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteC4}>削除</Button>

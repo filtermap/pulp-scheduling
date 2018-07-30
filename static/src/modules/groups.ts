@@ -1,21 +1,21 @@
 const UPDATE_GROUP_NAME = 'UPDATE_GROUP_NAME'
 
 export type Group = {
-  index: number
+  id: number
   name: string
 }
 
 type UpdateGroupName = {
   type: typeof UPDATE_GROUP_NAME
-  index: number
+  id: number
   name: string
 }
 
 type Action = UpdateGroupName
 
-export function updateGroupName(index: number, name: string): UpdateGroupName {
+export function updateGroupName(id: number, name: string): UpdateGroupName {
   return {
-    index,
+    id,
     name,
     type: UPDATE_GROUP_NAME,
   }
@@ -29,7 +29,7 @@ export function reducer(state: State = initialState, action: Action): State {
   switch (action.type) {
     case UPDATE_GROUP_NAME:
       return state.map(group => {
-        if (group.index !== action.index) {
+        if (group.id !== action.id) {
           return group
         }
         return { ...group, name: action.name }

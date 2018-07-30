@@ -32,12 +32,12 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
-  newC9MemberIndex: number
+  newC9MemberId: number
   newC9StartDateName: string
   newC9StopDateName: string
-  newC9KinmuIndex: number
+  newC9KinmuId: number
   deletionDialogIsOpen: boolean
-  selectedC9Index: number
+  selectedC9Id: number
 }
 
 class C9 extends React.Component<Props, State> {
@@ -47,31 +47,31 @@ class C9 extends React.Component<Props, State> {
     this.state = {
       creationDialogIsOpen: false,
       deletionDialogIsOpen: false,
-      newC9KinmuIndex: this.props.kinmus.length > 0 ? this.props.kinmus[0].index : 0,
-      newC9MemberIndex: this.props.members.length > 0 ? this.props.members[0].index : 0,
+      newC9KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
+      newC9MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
       newC9StartDateName: todayString,
       newC9StopDateName: todayString,
-      selectedC9Index: this.props.c9.length > 0 ? this.props.c9[0].index : 0,
+      selectedC9Id: this.props.c9.length > 0 ? this.props.c9[0].id : 0,
     }
   }
-  public handleChangeC9MemberIndex(index: number) {
+  public handleChangeC9MemberId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c9.updateC9MemberIndex(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c9.updateC9MemberId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC9StartDateName(index: number) {
+  public handleChangeC9StartDateName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c9.updateC9StartDateName(index, event.target.value))
+      this.props.dispatch(c9.updateC9StartDateName(id, event.target.value))
     }
   }
-  public handleChangeC9StopDateName(index: number) {
+  public handleChangeC9StopDateName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c9.updateC9StopDateName(index, event.target.value))
+      this.props.dispatch(c9.updateC9StopDateName(id, event.target.value))
     }
   }
-  public handleChangeC9KinmuIndex(index: number) {
+  public handleChangeC9KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c9.updateC9KinmuIndex(index, parseInt(event.target.value, 10)))
+      this.props.dispatch(c9.updateC9KinmuId(id, parseInt(event.target.value, 10)))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -80,8 +80,8 @@ class C9 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public handleChangeNewC9MemberIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC9MemberIndex: parseInt(event.target.value, 10) })
+  public handleChangeNewC9MemberId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newC9MemberId: parseInt(event.target.value, 10) })
   }
   public handleChangeNewC9StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC9StartDateName: event.target.value })
@@ -89,18 +89,18 @@ class C9 extends React.Component<Props, State> {
   public handleChangeNewC9StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC9StopDateName: event.target.value })
   }
-  public handleChangeNewC9KinmuIndex = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC9KinmuIndex: parseInt(event.target.value, 10) })
+  public handleChangeNewC9KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newC9KinmuId: parseInt(event.target.value, 10) })
   }
   public handleClickCreateC9 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c9.createC9(this.state.newC9MemberIndex, this.state.newC9StartDateName, this.state.newC9StopDateName, this.state.newC9KinmuIndex))
+    this.props.dispatch(c9.createC9(this.state.newC9MemberId, this.state.newC9StartDateName, this.state.newC9StopDateName, this.state.newC9KinmuId))
   }
-  public handleClickOpenDeletionDialog(selectedC9Index: number) {
+  public handleClickOpenDeletionDialog(selectedC9Id: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedC9Index,
+        selectedC9Id,
       })
     }
   }
@@ -109,10 +109,10 @@ class C9 extends React.Component<Props, State> {
   }
   public handleClickDeleteC9 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(c9.deleteC9(this.state.selectedC9Index))
+    this.props.dispatch(c9.deleteC9(this.state.selectedC9Id))
   }
   public render() {
-    const selectedC9 = this.props.c9.find(c => c.index === this.state.selectedC9Index)
+    const selectedC9 = this.props.c9.find(c => c.id === this.state.selectedC9Id)
     return (
       <>
         <Toolbar>
@@ -120,27 +120,27 @@ class C9 extends React.Component<Props, State> {
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
         {this.props.c9.map(c => (
-          <ExpansionPanel key={c.index}>
+          <ExpansionPanel key={c.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{`${this.props.members.find(member => member.index === c.member_index)!.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.index === c.kinmu_index)!.name}を割り当てる`}</Typography>
+              <Typography>{`${this.props.members.find(member => member.id === c.member_id)!.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を割り当てる`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <TextField
                 select={true}
                 label="職員"
-                value={c.member_index}
-                onChange={this.handleChangeC9MemberIndex(c.index)}
+                value={c.member_id}
+                onChange={this.handleChangeC9MemberId(c.id)}
                 fullWidth={true}
               >
                 {this.props.members.map(member => (
-                  <MenuItem key={member.index} value={member.index}>{member.name}</MenuItem>
+                  <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
                 label="開始日"
                 type="date"
                 defaultValue={c.start_date_name}
-                onChange={this.handleChangeC9StartDateName(c.index)}
+                onChange={this.handleChangeC9StartDateName(c.id)}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -150,7 +150,7 @@ class C9 extends React.Component<Props, State> {
                 label="終了日"
                 type="date"
                 defaultValue={c.stop_date_name}
-                onChange={this.handleChangeC9StopDateName(c.index)}
+                onChange={this.handleChangeC9StopDateName(c.id)}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -159,17 +159,17 @@ class C9 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={c.kinmu_index}
-                onChange={this.handleChangeC9KinmuIndex(c.index)}
+                value={c.kinmu_id}
+                onChange={this.handleChangeC9KinmuId(c.id)}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
-                  <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                  <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                 ))}
               </TextField>
             </ExpansionPanelDetails>
             <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.index)}>削除</Button>
+              <Button size="small" onClick={this.handleClickOpenDeletionDialog(c.id)}>削除</Button>
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
@@ -190,12 +190,12 @@ class C9 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="職員"
-                value={this.state.newC9MemberIndex}
-                onChange={this.handleChangeNewC9MemberIndex}
+                value={this.state.newC9MemberId}
+                onChange={this.handleChangeNewC9MemberId}
                 fullWidth={true}
               >
                 {this.props.members.map(member => (
-                  <MenuItem key={member.index} value={member.index}>{member.name}</MenuItem>
+                  <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
                 ))}
               </TextField>
               <TextField
@@ -221,12 +221,12 @@ class C9 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.newC9KinmuIndex}
-                onChange={this.handleChangeNewC9KinmuIndex}
+                value={this.state.newC9KinmuId}
+                onChange={this.handleChangeNewC9KinmuId}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
-                  <MenuItem key={kinmu.index} value={kinmu.index}>{kinmu.name}</MenuItem>
+                  <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                 ))}
               </TextField>
             </DialogContent>
@@ -240,7 +240,7 @@ class C9 extends React.Component<Props, State> {
             <DialogTitle>職員の期間に割り当てる勤務の削除</DialogTitle>
             <DialogContent>
               <DialogContentText>この職員の期間に割り当てる勤務を削除します</DialogContentText>
-              <Typography>{`${this.props.members.find(member => member.index === selectedC9.member_index)!.name}の${selectedC9.start_date_name}から${selectedC9.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.index === selectedC9.kinmu_index)!.name}を割り当てる`}</Typography>
+              <Typography>{`${this.props.members.find(member => member.id === selectedC9.member_id)!.name}の${selectedC9.start_date_name}から${selectedC9.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === selectedC9.kinmu_id)!.name}を割り当てる`}</Typography>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteC9}>削除</Button>

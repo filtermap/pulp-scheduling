@@ -1,9 +1,9 @@
 export type Assignment = {
-  index: number
+  id: number
   roster_id: number
   date_name: string
-  member_index: number
-  kinmu_index: number
+  member_id: number
+  kinmu_id: number
 }
 
 export type State = Assignment[]

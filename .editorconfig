@@ -15,3 +15,7 @@ max_line_length = 80
 
 [*.md]
 trim_trailing_whitespace = false
+
+[*.csv]
+end_of_line = crlf
+trim_trailing_whitespace = false
