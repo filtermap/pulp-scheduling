@@ -65,17 +65,16 @@ def solve(all):
 
 
 @api.dispatcher.add_method
-def download_csv(roster_id):
-    members = scheduling.read_members()
-    kinmus = scheduling.read_kinmus()
-    assignments = [
-        assignment
-        for assignment in scheduling.read_assignments()
-        if assignment["roster_id"] == roster_id
-    ]
+def download_csv(assignments, members, kinmus):
     date_names = sorted(
         list(set([assignment["date_name"] for assignment in assignments])),
         key=lambda date_name: utils.str_to_date(date_name),
+    )
+    assignment_member_ids = list(
+        set([assignment["member_id"] for assignment in assignments])
+    )
+    assignment_members = filter(
+        lambda member: member["id"] in assignment_member_ids, members
     )
     rows = [[""] + date_names] + [
         [member["name"]]
@@ -91,7 +90,7 @@ def download_csv(roster_id):
             )["name"]
             for date_name in date_names
         ]
-        for member in members
+        for member in assignment_members
     ]
     stringIO = io.StringIO()
     writer = csv.writer(stringIO)

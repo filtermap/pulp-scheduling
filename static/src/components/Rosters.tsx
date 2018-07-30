@@ -123,8 +123,9 @@ class Rosters extends React.Component<Props, State> {
     this.props.dispatch(all.deleteRoster(this.state.selectedRosterId))
   }
   public handleClickExportToCSV(roster_id: number) {
-    return async (_: React.MouseEvent<HTMLButtonElement>) => {
-      const csv = iconv.encode((await utils.sendJSONRPCRequest('download_csv', [roster_id])).result, 'Shift_JIS')
+    return async () => {
+      const assignments_by_roster_id = this.props.all.assignments.filter(assignment => assignment.roster_id === roster_id)
+      const csv = iconv.encode((await utils.sendJSONRPCRequest('download_csv', [assignments_by_roster_id, this.props.all.members, this.props.all.kinmus])).result, 'Shift_JIS')
       const a = document.createElement('a')
       a.download = `勤務表${roster_id}.csv`
       a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
