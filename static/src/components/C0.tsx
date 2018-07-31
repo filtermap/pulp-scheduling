@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -8,6 +9,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -31,6 +33,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newC0IsEnabled: boolean
   newC0C0KinmuKinmuIds: number[]
   deletionDialogIsOpen: boolean
   selectedC0Id: number
@@ -41,7 +44,13 @@ class C0 extends React.Component<Props, State> {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
     newC0C0KinmuKinmuIds: this.props.kinmus.length > 0 ? [this.props.kinmus[0].id, this.props.kinmus[0].id] : [],
+    newC0IsEnabled: true,
     selectedC0Id: this.props.c0.length > 0 ? this.props.c0[0].id : 0,
+  }
+  public handleChangeC0IsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(c0.updateC0IsEnabled(id, checked))
+    }
   }
   public handleClickCreateC0Kinmu(c0_id: number, sequence_number: number) {
     return () => {
@@ -64,6 +73,9 @@ class C0 extends React.Component<Props, State> {
   }
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
+  }
+  public handleChangeNewC0IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newC0IsEnabled: checked })
   }
   public handleClickCreateNewC0C0Kinmu(id: number) {
     return () => {
@@ -91,7 +103,7 @@ class C0 extends React.Component<Props, State> {
   }
   public handleClickCreateC0 = (_: React.MouseEvent<HTMLButtonElement>) => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(all.createC0(this.state.newC0C0KinmuKinmuIds))
+    this.props.dispatch(all.createC0(this.state.newC0IsEnabled, this.state.newC0C0KinmuKinmuIds))
   }
   public handleClickOpenDeletionDialog(selectedC0Id: number) {
     return () => {
@@ -124,6 +136,16 @@ class C0 extends React.Component<Props, State> {
                 <Typography>{c0_kinmus_by_sequence_id.map(c0_kinmu => this.props.kinmus.find(kinmu => kinmu.id === c0_kinmu.kinmu_id)!.name).join(', ')}</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={c.is_enabled}
+                      onChange={this.handleChangeC0IsEnabled(c.id)}
+                      color="primary"
+                    />
+                  }
+                  label="有効"
+                />
                 <Button size="small" onClick={this.handleClickCreateC0Kinmu(c.id, 0)}>追加</Button>
                 {c0_kinmus_by_sequence_id.map((c0_kinmu, id) => (
                   <React.Fragment key={c0_kinmu.id}>
@@ -163,6 +185,16 @@ class C0 extends React.Component<Props, State> {
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>連続禁止勤務並びの追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.newC0IsEnabled}
+                    onChange={this.handleChangeNewC0IsEnabled}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <Button size="small" onClick={this.handleClickCreateNewC0C0Kinmu(0)}>追加</Button>
               {this.state.newC0C0KinmuKinmuIds.map((kinmuId, id) => (
                 <React.Fragment key={`${id}-${kinmuId}`}>

@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -8,6 +9,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -29,6 +31,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newC5IsEnabled: boolean
   newC5KinmuId: number
   newC5MinNumberOfDays: number
   deletionDialogIsOpen: boolean
@@ -39,9 +42,15 @@ class C5 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
+    newC5IsEnabled: true,
     newC5KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newC5MinNumberOfDays: 0,
     selectedC5Id: this.props.c5.length > 0 ? this.props.c5[0].id : 0,
+  }
+  public handleChangeC5IsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(c5.updateC5IsEnabled(id, checked))
+    }
   }
   public handleChangeC5KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +68,9 @@ class C5 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
+  public handleChangeNewC5IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newC5IsEnabled: checked })
+  }
   public handleChangeNewC5KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC5KinmuId: parseInt(event.target.value, 10) })
   }
@@ -67,7 +79,7 @@ class C5 extends React.Component<Props, State> {
   }
   public handleClickCreateC5 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c5.createC5(this.state.newC5KinmuId, this.state.newC5MinNumberOfDays))
+    this.props.dispatch(c5.createC5(this.state.newC5IsEnabled, this.state.newC5KinmuId, this.state.newC5MinNumberOfDays))
   }
   public handleClickOpenDeletionDialog(selectedC5Id: number) {
     return () => {
@@ -98,6 +110,16 @@ class C5 extends React.Component<Props, State> {
               <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}の連続日数を${c.min_number_of_days}日以上にする`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={c.is_enabled}
+                    onChange={this.handleChangeC5IsEnabled(c.id)}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="勤務"
@@ -135,6 +157,16 @@ class C5 extends React.Component<Props, State> {
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>勤務の連続日数の下限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.newC5IsEnabled}
+                    onChange={this.handleChangeNewC5IsEnabled}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="勤務"

@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -8,6 +9,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -31,6 +33,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newC3IsEnabled: boolean
   newC3MemberId: number
   newC3KinmuId: number
   newC3MinNumberOfAssignments: number
@@ -42,10 +45,16 @@ class C3 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
+    newC3IsEnabled: true,
     newC3KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newC3MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
     newC3MinNumberOfAssignments: 0,
     selectedC3Id: this.props.c3.length > 0 ? this.props.c3[0].id : 0,
+  }
+  public handleChangeC3IsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(c3.updateC3IsEnabled(id, checked))
+    }
   }
   public handleChangeC3MemberId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +77,9 @@ class C3 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
+  public handleChangeNewC3IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newC3IsEnabled: checked })
+  }
   public handleChangeNewC3MemberId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC3MemberId: parseInt(event.target.value, 10) })
   }
@@ -79,7 +91,7 @@ class C3 extends React.Component<Props, State> {
   }
   public handleClickCreateC3 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c3.createC3(this.state.newC3MemberId, this.state.newC3KinmuId, this.state.newC3MinNumberOfAssignments))
+    this.props.dispatch(c3.createC3(this.state.newC3IsEnabled, this.state.newC3MemberId, this.state.newC3KinmuId, this.state.newC3MinNumberOfAssignments))
   }
   public handleClickOpenDeletionDialog(selectedC3Id: number) {
     return () => {
@@ -110,6 +122,16 @@ class C3 extends React.Component<Props, State> {
               <Typography>{`${this.props.members.find(member => member.id === c.member_id)!.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={c.is_enabled}
+                    onChange={this.handleChangeC3IsEnabled(c.id)}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="職員"
@@ -159,6 +181,16 @@ class C3 extends React.Component<Props, State> {
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>職員の勤務の割り当て数の下限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.newC3IsEnabled}
+                    onChange={this.handleChangeNewC3IsEnabled}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="職員"

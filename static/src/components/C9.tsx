@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -8,6 +9,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -32,6 +34,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newC9IsEnabled: boolean
   newC9MemberId: number
   newC9StartDateName: string
   newC9StopDateName: string
@@ -47,11 +50,17 @@ class C9 extends React.Component<Props, State> {
     this.state = {
       creationDialogIsOpen: false,
       deletionDialogIsOpen: false,
+      newC9IsEnabled: true,
       newC9KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
       newC9MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
       newC9StartDateName: todayString,
       newC9StopDateName: todayString,
       selectedC9Id: this.props.c9.length > 0 ? this.props.c9[0].id : 0,
+    }
+  }
+  public handleChangeC9IsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(c9.updateC9IsEnabled(id, checked))
     }
   }
   public handleChangeC9MemberId(id: number) {
@@ -80,6 +89,9 @@ class C9 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
+  public handleChangeNewC9IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newC9IsEnabled: checked })
+  }
   public handleChangeNewC9MemberId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC9MemberId: parseInt(event.target.value, 10) })
   }
@@ -94,7 +106,7 @@ class C9 extends React.Component<Props, State> {
   }
   public handleClickCreateC9 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c9.createC9(this.state.newC9MemberId, this.state.newC9StartDateName, this.state.newC9StopDateName, this.state.newC9KinmuId))
+    this.props.dispatch(c9.createC9(this.state.newC9IsEnabled, this.state.newC9MemberId, this.state.newC9StartDateName, this.state.newC9StopDateName, this.state.newC9KinmuId))
   }
   public handleClickOpenDeletionDialog(selectedC9Id: number) {
     return () => {
@@ -125,6 +137,16 @@ class C9 extends React.Component<Props, State> {
               <Typography>{`${this.props.members.find(member => member.id === c.member_id)!.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を割り当てる`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={c.is_enabled}
+                    onChange={this.handleChangeC9IsEnabled(c.id)}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="職員"
@@ -187,6 +209,16 @@ class C9 extends React.Component<Props, State> {
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>職員の機関に割り当てる勤務の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.newC9IsEnabled}
+                    onChange={this.handleChangeNewC9IsEnabled}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="職員"

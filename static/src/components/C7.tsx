@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -8,6 +9,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -29,6 +31,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newC7IsEnabled: boolean
   newC7KinmuId: number
   newC7MinNumberOfDays: number
   deletionDialogIsOpen: boolean
@@ -39,9 +42,15 @@ class C7 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
+    newC7IsEnabled: true,
     newC7KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newC7MinNumberOfDays: 0,
     selectedC7Id: this.props.c7.length > 0 ? this.props.c7[0].id : 0,
+  }
+  public handleChangeC7IsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(c7.updateC7IsEnabled(id, checked))
+    }
   }
   public handleChangeC7KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +68,9 @@ class C7 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
+  public handleChangeNewC7IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newC7IsEnabled: checked })
+  }
   public handleChangeNewC7KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC7KinmuId: parseInt(event.target.value, 10) })
   }
@@ -67,7 +79,7 @@ class C7 extends React.Component<Props, State> {
   }
   public handleClickCreateC7 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c7.createC7(this.state.newC7KinmuId, this.state.newC7MinNumberOfDays))
+    this.props.dispatch(c7.createC7(this.state.newC7IsEnabled, this.state.newC7KinmuId, this.state.newC7MinNumberOfDays))
   }
   public handleClickOpenDeletionDialog(selectedC7Id: number) {
     return () => {
@@ -98,6 +110,16 @@ class C7 extends React.Component<Props, State> {
               <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}の間隔日数を${c.min_number_of_days}日以上にする`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={c.is_enabled}
+                    onChange={this.handleChangeC7IsEnabled(c.id)}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="勤務"
@@ -135,6 +157,16 @@ class C7 extends React.Component<Props, State> {
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>勤務の間隔日数の下限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.newC7IsEnabled}
+                    onChange={this.handleChangeNewC7IsEnabled}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="勤務"

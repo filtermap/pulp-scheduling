@@ -47,6 +47,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newMemberIsEnabled: boolean
   newMemberName: string
   newMemberGroupIndices: number[]
   deletionDialogIsOpen: boolean
@@ -58,8 +59,14 @@ class Members extends React.Component<Props, State> {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
     newMemberGroupIndices: [],
+    newMemberIsEnabled: true,
     newMemberName: '',
     selectedMemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
+  }
+  public handleChangeMemberIsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(members.updateMemberIsEnabled(id, checked))
+    }
   }
   public handleChangeMemberName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,6 +88,9 @@ class Members extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
+  public handleChangeNewMemberIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newMemberIsEnabled: checked })
+  }
   public handleChangeNewMemberName = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newMemberName: event.target.value })
   }
@@ -95,7 +105,7 @@ class Members extends React.Component<Props, State> {
   }
   public handleClickCreateMember = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(all.createMember(this.state.newMemberName, this.state.newMemberGroupIndices))
+    this.props.dispatch(all.createMember(this.state.newMemberIsEnabled, this.state.newMemberName, this.state.newMemberGroupIndices))
   }
   public handleClickOpenDeletionDialog(selectedMemberId: number) {
     return () => {
@@ -134,6 +144,16 @@ class Members extends React.Component<Props, State> {
               </div>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={member.is_enabled}
+                    onChange={this.handleChangeMemberIsEnabled(member.id)}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 label="職員名"
                 defaultValue={member.name}
@@ -167,6 +187,16 @@ class Members extends React.Component<Props, State> {
         <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
           <DialogTitle>職員の追加</DialogTitle>
           <DialogContent style={{ display: 'flex' }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.newMemberIsEnabled}
+                  onChange={this.handleChangeNewMemberIsEnabled}
+                  color="primary"
+                />
+              }
+              label="有効"
+            />
             <TextField
               label="職員名"
               defaultValue={this.state.newMemberName}

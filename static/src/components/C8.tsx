@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -8,6 +9,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -29,6 +31,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newC8IsEnabled: boolean
   newC8KinmuId: number
   newC8MaxNumberOfDays: number
   deletionDialogIsOpen: boolean
@@ -39,9 +42,15 @@ class C8 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
+    newC8IsEnabled: true,
     newC8KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newC8MaxNumberOfDays: 0,
     selectedC8Id: this.props.c8.length > 0 ? this.props.c8[0].id : 0,
+  }
+  public handleChangeC8IsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(c8.updateC8IsEnabled(id, checked))
+    }
   }
   public handleChangeC8KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +63,9 @@ class C8 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
+  public handleChangeNewC8IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newC8IsEnabled: checked })
+  }
   public handleChangeNewC8KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC8KinmuId: parseInt(event.target.value, 10) })
   }
@@ -62,7 +74,7 @@ class C8 extends React.Component<Props, State> {
   }
   public handleClickCreateC8 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c8.createC8(this.state.newC8KinmuId, this.state.newC8MaxNumberOfDays))
+    this.props.dispatch(c8.createC8(this.state.newC8IsEnabled, this.state.newC8KinmuId, this.state.newC8MaxNumberOfDays))
   }
   public handleChangeC8MaxNumberOfDays(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,6 +110,16 @@ class C8 extends React.Component<Props, State> {
               <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}の間隔日数を${c.max_number_of_days}日以下にする`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={c.is_enabled}
+                    onChange={this.handleChangeC8IsEnabled(c.id)}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="勤務"
@@ -135,6 +157,16 @@ class C8 extends React.Component<Props, State> {
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>勤務の間隔日数の下限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.newC8IsEnabled}
+                    onChange={this.handleChangeNewC8IsEnabled}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="勤務"

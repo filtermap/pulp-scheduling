@@ -1,4 +1,5 @@
 const CREATE_C3 = 'CREATE_C3'
+const UPDATE_C3_IS_ENABLED = 'UPDATE_C3_IS_ENABLED'
 const UPDATE_C3_MEMBER_ID = 'UPDATE_C3_MEMBER_ID'
 const UPDATE_C3_KINMU_ID = 'UPDATE_C3_KINMU_ID'
 const UPDATE_C3_MIN_NUMBER_OF_ASSIGNMENTS = 'UPDATE_C3_MIN_NUMBER_OF_ASSIGNMENTS'
@@ -6,6 +7,7 @@ const DELETE_C3 = 'DELETE_C3'
 
 export type C3 = {
   id: number
+  is_enabled: boolean
   member_id: number
   kinmu_id: number
   min_number_of_assignments: number
@@ -13,9 +15,16 @@ export type C3 = {
 
 type CreateC3 = {
   type: typeof CREATE_C3
+  is_enabled: boolean
   member_id: number
   kinmu_id: number
   min_number_of_assignments: number
+}
+
+type UpdateC3IsEnabled = {
+  type: typeof UPDATE_C3_IS_ENABLED
+  id: number
+  is_enabled: boolean
 }
 
 type UpdateC3MemberId = {
@@ -43,17 +52,27 @@ type DeleteC3 = {
 
 type Action =
   | CreateC3
+  | UpdateC3IsEnabled
   | UpdateC3MemberId
   | UpdateC3KinmuId
   | UpdateC3MinNumberOfAssignments
   | DeleteC3
 
-export function createC3(member_id: number, kinmu_id: number, min_number_of_assignments: number): CreateC3 {
+export function createC3(is_enabled: boolean, member_id: number, kinmu_id: number, min_number_of_assignments: number): CreateC3 {
   return {
+    is_enabled,
     kinmu_id,
     member_id,
     min_number_of_assignments,
     type: CREATE_C3,
+  }
+}
+
+export function updateC3IsEnabled(id: number, is_enabled: boolean): UpdateC3IsEnabled {
+  return {
+    id,
+    is_enabled,
+    type: UPDATE_C3_IS_ENABLED,
   }
 }
 
@@ -97,9 +116,17 @@ export function reducer(state: State = initialState, action: Action): State {
     case CREATE_C3:
       return state.concat({
         id: Math.max(0, ...state.map(c => c.id)) + 1,
+        is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         member_id: action.member_id,
         min_number_of_assignments: action.min_number_of_assignments,
+      })
+    case UPDATE_C3_IS_ENABLED:
+      return state.map(c => {
+        if (c.id !== action.id) {
+          return c
+        }
+        return { ...c, is_enabled: action.is_enabled }
       })
     case UPDATE_C3_MEMBER_ID:
       return state.map(c => {

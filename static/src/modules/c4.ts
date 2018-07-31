@@ -1,4 +1,5 @@
 const CREATE_C4 = 'CREATE_C4'
+const UPDATE_C4_IS_ENABLED = 'UPDATE_C4_IS_ENABLED'
 const UPDATE_C4_MEMBER_ID = 'UPDATE_C4_MEMBER_ID'
 const UPDATE_C4_KINMU_ID = 'UPDATE_C4_KINMU_ID'
 const UPDATE_C4_MAX_NUMBER_OF_ASSIGNMENTS = 'UPDATE_C4_MAX_NUMBER_OF_ASSIGNMENTS'
@@ -6,6 +7,7 @@ const DELETE_C4 = 'DELETE_C4'
 
 export type C4 = {
   id: number
+  is_enabled: boolean
   member_id: number
   kinmu_id: number
   max_number_of_assignments: number
@@ -13,9 +15,16 @@ export type C4 = {
 
 type CreateC4 = {
   type: typeof CREATE_C4
+  is_enabled: boolean
   member_id: number
   kinmu_id: number
   max_number_of_assignments: number
+}
+
+type UpdateC4IsEnabled = {
+  type: typeof UPDATE_C4_IS_ENABLED
+  id: number
+  is_enabled: boolean
 }
 
 type UpdateC4MemberId = {
@@ -42,18 +51,28 @@ type DeleteC4 = {
 }
 
 type Action =
-  |CreateC4
+  | CreateC4
+  | UpdateC4IsEnabled
   | UpdateC4MemberId
   | UpdateC4KinmuId
   | UpdateC4MaxNumberOfAssignments
   | DeleteC4
 
-export function createC4(member_id: number, kinmu_id: number, max_number_of_assignments: number): CreateC4 {
+export function createC4(is_enabled: boolean, member_id: number, kinmu_id: number, max_number_of_assignments: number): CreateC4 {
   return {
+    is_enabled,
     kinmu_id,
     max_number_of_assignments,
     member_id,
     type: CREATE_C4,
+  }
+}
+
+export function updateC4IsEnabled(id: number, is_enabled: boolean): UpdateC4IsEnabled {
+  return {
+    id,
+    is_enabled,
+    type: UPDATE_C4_IS_ENABLED,
   }
 }
 
@@ -97,9 +116,17 @@ export function reducer(state: State = initialState, action: Action): State {
     case CREATE_C4:
       return state.concat({
         id: Math.max(0, ...state.map(c => c.id)) + 1,
+        is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         max_number_of_assignments: action.max_number_of_assignments,
         member_id: action.member_id,
+      })
+    case UPDATE_C4_IS_ENABLED:
+      return state.map(c => {
+        if (c.id !== action.id) {
+          return c
+        }
+        return { ...c, is_enabled: action.is_enabled }
       })
     case UPDATE_C4_MEMBER_ID:
       return state.map(c => {

@@ -1,2 +1,2 @@
-id,kinmu_id,max_number_of_days
-1,1,3
+id,is_enabled,kinmu_id,max_number_of_days
+1,1,1,3

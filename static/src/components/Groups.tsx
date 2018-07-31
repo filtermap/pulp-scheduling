@@ -41,6 +41,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newGroupIsEnabled: boolean
   newGroupName: string
   newGroupMemberIndices: number[]
   deletionDialogIsOpen: boolean
@@ -51,9 +52,15 @@ class Groups extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
+    newGroupIsEnabled: true,
     newGroupMemberIndices: [],
     newGroupName: '',
     selectedGroupId: this.props.groups.length > 0 ? this.props.groups[0].id : 0,
+  }
+  public handleChangeGroupIsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(groups.updateGroupIsEnabled(id, checked))
+    }
   }
   public handleChangeGroupName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +82,9 @@ class Groups extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
+  public handleChangeNewGroupIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newGroupIsEnabled: checked })
+  }
   public handleChangeNewGroupName = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newGroupName: event.target.value })
   }
@@ -89,7 +99,7 @@ class Groups extends React.Component<Props, State> {
   }
   public handleClickCreateGroup = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(all.createGroup(this.state.newGroupName, this.state.newGroupMemberIndices))
+    this.props.dispatch(all.createGroup(this.state.newGroupIsEnabled, this.state.newGroupName, this.state.newGroupMemberIndices))
   }
   public handleClickOpenDeletionDialog(selectedGroupId: number) {
     return () => {
@@ -125,6 +135,16 @@ class Groups extends React.Component<Props, State> {
               </div>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={group.is_enabled}
+                    onChange={this.handleChangeGroupIsEnabled(group.id)}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 label="グループ名"
                 defaultValue={group.name}
@@ -158,6 +178,16 @@ class Groups extends React.Component<Props, State> {
         <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
           <DialogTitle>グループの追加</DialogTitle>
           <DialogContent style={{ display: 'flex' }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.newGroupIsEnabled}
+                  onChange={this.handleChangeNewGroupIsEnabled}
+                  color="primary"
+                />
+              }
+              label="有効"
+            />
             <TextField
               label="グループ名"
               defaultValue={this.state.newGroupName}

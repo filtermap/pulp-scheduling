@@ -1,4 +1,5 @@
 const CREATE_C9 = 'CREATE_C9'
+const UPDATE_C9_IS_ENABLED = 'UPDATE_C9_IS_ENABLED'
 const UPDATE_C9_MEMBER_ID = 'UPDATE_C9_MEMBER_ID'
 const UPDATE_C9_START_DATE_NAME = 'UPDATE_C9_START_DATE_NAME'
 const UPDATE_C9_STOP_DATE_NAME = 'UPDATE_C9_STOP_DATE_NAME'
@@ -7,6 +8,7 @@ const DELETE_C9 = 'DELETE_C9'
 
 export type C9 = {
   id: number
+  is_enabled: boolean
   member_id: number
   start_date_name: string
   stop_date_name: string
@@ -15,10 +17,17 @@ export type C9 = {
 
 type CreateC9 = {
   type: typeof CREATE_C9
+  is_enabled: boolean
   member_id: number
   start_date_name: string
   stop_date_name: string
   kinmu_id: number
+}
+
+type UpdateC9IsEnabled = {
+  type: typeof UPDATE_C9_IS_ENABLED
+  id: number
+  is_enabled: boolean
 }
 
 type UpdateC9MemberId = {
@@ -52,19 +61,29 @@ type DeleteC9 = {
 
 type Action =
   | CreateC9
+  | UpdateC9IsEnabled
   | UpdateC9MemberId
   | UpdateC9StartDateName
   | UpdateC9StopDateName
   | UpdateC9KinmuId
   | DeleteC9
 
-export function createC9(member_id: number, start_date_name: string, stop_date_name: string, kinmu_id: number): CreateC9 {
+export function createC9(is_enabled: boolean, member_id: number, start_date_name: string, stop_date_name: string, kinmu_id: number): CreateC9 {
   return {
+    is_enabled,
     kinmu_id,
     member_id,
     start_date_name,
     stop_date_name,
     type: CREATE_C9,
+  }
+}
+
+export function updateC9IsEnabled(id: number, is_enabled: boolean): UpdateC9IsEnabled {
+  return {
+    id,
+    is_enabled,
+    type: UPDATE_C9_IS_ENABLED,
   }
 }
 
@@ -116,10 +135,18 @@ export function reducer(state: State = initialState, action: Action): State {
     case CREATE_C9:
       return state.concat({
         id: Math.max(0, ...state.map(c => c.id)) + 1,
+        is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         member_id: action.member_id,
         start_date_name: action.start_date_name,
         stop_date_name: action.stop_date_name,
+      })
+    case UPDATE_C9_IS_ENABLED:
+      return state.map(c => {
+        if (c.id !== action.id) {
+          return c
+        }
+        return { ...c, is_enabled: action.is_enabled }
       })
     case UPDATE_C9_MEMBER_ID:
       return state.map(c => {

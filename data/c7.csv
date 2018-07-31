@@ -1,2 +1,2 @@
-id,kinmu_id,min_number_of_days
-1,1,2
+id,is_enabled,kinmu_id,min_number_of_days
+1,1,1,2

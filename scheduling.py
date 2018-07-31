@@ -27,20 +27,24 @@ def write_rows(rows, filename, fieldnames):
 
 
 members_filename = "members.csv"
-member_attribute_names = ["id", "name"]
+member_attribute_names = ["id", "is_enabled", "name"]
 
 
 def read_members():
     with open(in_data_directory(members_filename)) as f:
         next(f)
         members = [
-            {**r, "id": int(r["id"])} for r in csv.DictReader(f, member_attribute_names)
+            {**r, "id": int(r["id"]), "is_enabled": int(r["is_enabled"]) != 0}
+            for r in csv.DictReader(f, member_attribute_names)
         ]
     return members
 
 
 def write_members(members):
-    write_rows(members, members_filename, member_attribute_names)
+    rows = [
+        {**member, "is_enabled": 1 if member["is_enabled"] else 0} for member in members
+    ]
+    write_rows(rows, members_filename, member_attribute_names)
 
 
 terms_filename = "terms.csv"
@@ -61,37 +65,45 @@ def write_terms(terms):
 
 
 kinmus_filename = "kinmus.csv"
-kinmu_attribute_names = ["id", "name"]
+kinmu_attribute_names = ["id", "is_enabled", "name"]
 
 
 def read_kinmus():
     with open(in_data_directory(kinmus_filename)) as f:
         next(f)
         kinmus = [
-            {**r, "id": int(r["id"])} for r in csv.DictReader(f, kinmu_attribute_names)
+            {**r, "id": int(r["id"]), "is_enabled": int(r["is_enabled"]) != 0}
+            for r in csv.DictReader(f, kinmu_attribute_names)
         ]
     return kinmus
 
 
 def write_kinmus(kinmus):
-    write_rows(kinmus, kinmus_filename, kinmu_attribute_names)
+    rows = [
+        {**kinmu, "is_enabled": 1 if kinmu["is_enabled"] else 0} for kinmu in kinmus
+    ]
+    write_rows(rows, kinmus_filename, kinmu_attribute_names)
 
 
 groups_filename = "groups.csv"
-group_attribute_names = ["id", "name"]
+group_attribute_names = ["id", "is_enabled", "name"]
 
 
 def read_groups():
     with open(in_data_directory(groups_filename)) as f:
         next(f)
         groups = [
-            {**r, "id": int(r["id"])} for r in csv.DictReader(f, group_attribute_names)
+            {**r, "id": int(r["id"]), "is_enabled": int(r["is_enabled"]) != 0}
+            for r in csv.DictReader(f, group_attribute_names)
         ]
     return groups
 
 
 def write_groups(groups):
-    write_rows(groups, groups_filename, group_attribute_names)
+    rows = [
+        {**group, "is_enabled": 1 if group["is_enabled"] else 0} for group in groups
+    ]
+    write_rows(rows, groups_filename, group_attribute_names)
 
 
 group_members_filename = "group_members.csv"
@@ -118,18 +130,22 @@ def write_group_members(group_members):
 
 
 c0_filename = "c0.csv"
-c0_attribute_names = ["id"]
+c0_attribute_names = ["id", "is_enabled"]
 
 
 def read_c0():
     with open(in_data_directory(c0_filename)) as f:
         next(f)
-        c0 = [{**r, "id": int(r["id"])} for r in csv.DictReader(f, c0_attribute_names)]
+        c0 = [
+            {**r, "id": int(r["id"]), "is_enabled": int(r["is_enabled"]) != 0}
+            for r in csv.DictReader(f, c0_attribute_names)
+        ]
     return c0
 
 
 def write_c0(c0):
-    write_rows(c0, c0_filename, c0_attribute_names)
+    rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in c0]
+    write_rows(rows, c0_filename, c0_attribute_names)
 
 
 c0_kinmus_filename = "c0_kinmus.csv"
@@ -159,6 +175,7 @@ def write_c0_kinmus(c0_kinmus):
 c1_filename = "c1.csv"
 c1_attribute_names = [
     "id",
+    "is_enabled",
     "start_date_name",
     "stop_date_name",
     "kinmu_id",
@@ -174,6 +191,7 @@ def read_c1():
             {
                 **r,
                 "id": int(r["id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "group_id": int(r["group_id"]),
                 "min_number_of_assignments": int(r["min_number_of_assignments"]),
@@ -184,12 +202,14 @@ def read_c1():
 
 
 def write_c1(c1):
-    write_rows(c1, c1_filename, c1_attribute_names)
+    rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in c1]
+    write_rows(rows, c1_filename, c1_attribute_names)
 
 
 c2_filename = "c2.csv"
 c2_attribute_names = [
     "id",
+    "is_enabled",
     "start_date_name",
     "stop_date_name",
     "kinmu_id",
@@ -205,6 +225,7 @@ def read_c2():
             {
                 **r,
                 "id": int(r["id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "group_id": int(r["group_id"]),
                 "max_number_of_assignments": int(r["max_number_of_assignments"]),
@@ -215,11 +236,18 @@ def read_c2():
 
 
 def write_c2(c2):
-    write_rows(c2, c2_filename, c2_attribute_names)
+    rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in c2]
+    write_rows(rows, c2_filename, c2_attribute_names)
 
 
 c3_filename = "c3.csv"
-c3_attribute_names = ["id", "member_id", "kinmu_id", "min_number_of_assignments"]
+c3_attribute_names = [
+    "id",
+    "is_enabled",
+    "member_id",
+    "kinmu_id",
+    "min_number_of_assignments",
+]
 
 
 def read_c3():
@@ -229,6 +257,7 @@ def read_c3():
             {
                 **r,
                 "id": int(r["id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
                 "member_id": int(r["member_id"]),
                 "kinmu_id": int(r["kinmu_id"]),
                 "min_number_of_assignments": int(r["min_number_of_assignments"]),
@@ -239,11 +268,18 @@ def read_c3():
 
 
 def write_c3(c3):
-    write_rows(c3, c3_filename, c3_attribute_names)
+    rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in c3]
+    write_rows(rows, c3_filename, c3_attribute_names)
 
 
 c4_filename = "c4.csv"
-c4_attribute_names = ["id", "member_id", "kinmu_id", "max_number_of_assignments"]
+c4_attribute_names = [
+    "id",
+    "is_enabled",
+    "member_id",
+    "kinmu_id",
+    "max_number_of_assignments",
+]
 
 
 def read_c4():
@@ -253,6 +289,7 @@ def read_c4():
             {
                 **r,
                 "id": int(r["id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
                 "member_id": int(r["member_id"]),
                 "kinmu_id": int(r["kinmu_id"]),
                 "max_number_of_assignments": int(r["max_number_of_assignments"]),
@@ -263,11 +300,12 @@ def read_c4():
 
 
 def write_c4(c4):
-    write_rows(c4, c4_filename, c4_attribute_names)
+    rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in c4]
+    write_rows(rows, c4_filename, c4_attribute_names)
 
 
 c5_filename = "c5.csv"
-c5_attribute_names = ["id", "kinmu_id", "min_number_of_days"]
+c5_attribute_names = ["id", "is_enabled", "kinmu_id", "min_number_of_days"]
 
 
 def read_c5():
@@ -277,6 +315,7 @@ def read_c5():
             {
                 **r,
                 "id": int(r["id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "min_number_of_days": int(r["min_number_of_days"]),
             }
@@ -286,11 +325,12 @@ def read_c5():
 
 
 def write_c5(c5):
-    write_rows(c5, c5_filename, c5_attribute_names)
+    rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in c5]
+    write_rows(rows, c5_filename, c5_attribute_names)
 
 
 c6_filename = "c6.csv"
-c6_attribute_names = ["id", "kinmu_id", "max_number_of_days"]
+c6_attribute_names = ["id", "is_enabled", "kinmu_id", "max_number_of_days"]
 
 
 def read_c6():
@@ -300,6 +340,7 @@ def read_c6():
             {
                 **r,
                 "id": int(r["id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "max_number_of_days": int(r["max_number_of_days"]),
             }
@@ -309,11 +350,12 @@ def read_c6():
 
 
 def write_c6(c6):
-    write_rows(c6, c6_filename, c6_attribute_names)
+    rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in c6]
+    write_rows(rows, c6_filename, c6_attribute_names)
 
 
 c7_filename = "c7.csv"
-c7_attribute_names = ["id", "kinmu_id", "min_number_of_days"]
+c7_attribute_names = ["id", "is_enabled", "kinmu_id", "min_number_of_days"]
 
 
 def read_c7():
@@ -323,6 +365,7 @@ def read_c7():
             {
                 **r,
                 "id": int(r["id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "min_number_of_days": int(r["min_number_of_days"]),
             }
@@ -332,11 +375,12 @@ def read_c7():
 
 
 def write_c7(c7):
-    write_rows(c7, c7_filename, c7_attribute_names)
+    rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in c7]
+    write_rows(rows, c7_filename, c7_attribute_names)
 
 
 c8_filename = "c8.csv"
-c8_attribute_names = ["id", "kinmu_id", "max_number_of_days"]
+c8_attribute_names = ["id", "is_enabled", "kinmu_id", "max_number_of_days"]
 
 
 def read_c8():
@@ -346,6 +390,7 @@ def read_c8():
             {
                 **r,
                 "id": int(r["id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "max_number_of_days": int(r["max_number_of_days"]),
             }
@@ -355,12 +400,14 @@ def read_c8():
 
 
 def write_c8(c8):
-    write_rows(c8, c8_filename, c8_attribute_names)
+    rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in c8]
+    write_rows(rows, c8_filename, c8_attribute_names)
 
 
 c9_filename = "c9.csv"
 c9_attribute_names = [
     "id",
+    "is_enabled",
     "member_id",
     "start_date_name",
     "stop_date_name",
@@ -375,6 +422,7 @@ def read_c9():
             {
                 **r,
                 "id": int(r["id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
                 "member_id": int(r["member_id"]),
                 "kinmu_id": int(r["kinmu_id"]),
             }
@@ -384,12 +432,14 @@ def read_c9():
 
 
 def write_c9(c9):
-    write_rows(c9, c9_filename, c9_attribute_names)
+    rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in c9]
+    write_rows(rows, c9_filename, c9_attribute_names)
 
 
 c10_filename = "c10.csv"
 c10_attribute_names = [
     "id",
+    "is_enabled",
     "member_id",
     "start_date_name",
     "stop_date_name",
@@ -404,6 +454,7 @@ def read_c10():
             {
                 **r,
                 "id": int(r["id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
                 "member_id": int(r["member_id"]),
                 "kinmu_id": int(r["kinmu_id"]),
             }
@@ -413,7 +464,8 @@ def read_c10():
 
 
 def write_c10(c10):
-    write_rows(c10, c10_filename, c10_attribute_names)
+    rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in c10]
+    write_rows(rows, c10_filename, c10_attribute_names)
 
 
 rosters_filename = "rosters.csv"

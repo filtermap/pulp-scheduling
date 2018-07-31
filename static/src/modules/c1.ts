@@ -1,4 +1,5 @@
 const CREATE_C1 = 'CREATE_C1'
+const UPDATE_C1_IS_ENABLED = 'UPDATE_C1_IS_ENABLED'
 const UPDATE_C1_START_DATE_NAME = 'UPDATE_C1_START_DATE_NAME'
 const UPDATE_C1_STOP_DATE_NAME = 'UPDATE_C1_STOP_DATE_NAME'
 const UPDATE_C1_KINMU_ID = 'UPDATE_C1_KINMU_ID'
@@ -8,6 +9,7 @@ const DELETE_C1 = 'DELETE_C1'
 
 export type C1 = {
   id: number
+  is_enabled: boolean
   start_date_name: string
   stop_date_name: string
   kinmu_id: number
@@ -17,11 +19,18 @@ export type C1 = {
 
 type CreateC1 = {
   type: typeof CREATE_C1
+  is_enabled: boolean
   start_date_name: string
   stop_date_name: string
   kinmu_id: number
   group_id: number
   min_number_of_assignments: number
+}
+
+type UpdateC1IsEnabled = {
+  type: typeof UPDATE_C1_IS_ENABLED
+  id: number
+  is_enabled: boolean
 }
 
 type UpdateC1StartDateName = {
@@ -61,6 +70,7 @@ type DeleteC1 = {
 
 type Action =
   | CreateC1
+  | UpdateC1IsEnabled
   | UpdateC1StartDateName
   | UpdateC1StopDateName
   | UpdateC1KinmuId
@@ -68,14 +78,23 @@ type Action =
   | UpdateC1MinNumberOfAssignments
   | DeleteC1
 
-export function createC1(start_date_name: string, stop_date_name: string, kinmu_id: number, group_id: number, min_number_of_assignments: number): CreateC1 {
+export function createC1(is_enabled: boolean, start_date_name: string, stop_date_name: string, kinmu_id: number, group_id: number, min_number_of_assignments: number): CreateC1 {
   return {
     group_id,
+    is_enabled,
     kinmu_id,
     min_number_of_assignments,
     start_date_name,
     stop_date_name,
     type: CREATE_C1,
+  }
+}
+
+export function updateC1IsEnabled(id: number, is_enabled: boolean): UpdateC1IsEnabled {
+  return {
+    id,
+    is_enabled,
+    type: UPDATE_C1_IS_ENABLED,
   }
 }
 
@@ -136,10 +155,18 @@ export function reducer(state: State = initialState, action: Action): State {
       return state.concat({
         group_id: action.group_id,
         id: Math.max(0, ...state.map(c => c.id)) + 1,
+        is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         min_number_of_assignments: action.min_number_of_assignments,
         start_date_name: action.start_date_name,
         stop_date_name: action.stop_date_name,
+      })
+    case UPDATE_C1_IS_ENABLED:
+      return state.map(c => {
+        if (c.id !== action.id) {
+          return c
+        }
+        return { ...c, is_enabled: action.is_enabled }
       })
     case UPDATE_C1_START_DATE_NAME:
       return state.map(c => {

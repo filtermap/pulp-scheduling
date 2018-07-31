@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -8,6 +9,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -54,6 +56,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newKinmuIsEnabled: boolean
   newKinmuName: string
   deletionDialogIsOpen: boolean
   selectedKinmuId: number
@@ -63,8 +66,14 @@ class Kinmus extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
+    newKinmuIsEnabled: true,
     newKinmuName: '',
     selectedKinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
+  }
+  public handleChangeKinmuIsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(kinmus.updateKinmuIsEnabled(id, checked))
+    }
   }
   public handleChangeKinmuName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,12 +86,15 @@ class Kinmus extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
+  public handleChangeNewKinmuIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newKinmuIsEnabled: checked })
+  }
   public handleChangeNewKinmuName = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newKinmuName: event.target.value })
   }
   public handleClickCreateKinmu = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(kinmus.createKinmu(this.state.newKinmuName))
+    this.props.dispatch(kinmus.createKinmu(this.state.newKinmuIsEnabled, this.state.newKinmuName))
   }
   public handleClickOpenDeletionDialog(selectedKinmuId: number) {
     return () => {
@@ -125,6 +137,16 @@ class Kinmus extends React.Component<Props, State> {
               <Typography>{kinmu.name}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={kinmu.is_enabled}
+                    onChange={this.handleChangeKinmuIsEnabled(kinmu.id)}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 label="勤務名"
                 defaultValue={kinmu.name}
@@ -140,6 +162,16 @@ class Kinmus extends React.Component<Props, State> {
         <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
           <DialogTitle>勤務の追加</DialogTitle>
           <DialogContent style={{ display: 'flex' }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.newKinmuIsEnabled}
+                  onChange={this.handleChangeNewKinmuIsEnabled}
+                  color="primary"
+                />
+              }
+              label="有効"
+            />
             <TextField
               label="勤務名"
               defaultValue={this.state.newKinmuName}

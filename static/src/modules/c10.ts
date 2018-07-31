@@ -1,4 +1,5 @@
 const CREATE_C10 = 'CREATE_C10'
+const UPDATE_C10_IS_ENABLED = 'UPDATE_C10_IS_ENABLED'
 const UPDATE_C10_MEMBER_ID = 'UPDATE_C10_MEMBER_ID'
 const UPDATE_C10_START_DATE_NAME = 'UPDATE_C10_START_DATE_NAME'
 const UPDATE_C10_STOP_DATE_NAME = 'UPDATE_C10_STOP_DATE_NAME'
@@ -7,6 +8,7 @@ const DELETE_C10 = 'DELETE_C10'
 
 export type C10 = {
   id: number
+  is_enabled: boolean
   member_id: number
   start_date_name: string
   stop_date_name: string
@@ -15,10 +17,17 @@ export type C10 = {
 
 type CreateC10 = {
   type: typeof CREATE_C10
+  is_enabled: boolean
   member_id: number
   start_date_name: string
   stop_date_name: string
   kinmu_id: number
+}
+
+type UpdateC10IsEnabled = {
+  type: typeof UPDATE_C10_IS_ENABLED
+  id: number
+  is_enabled: boolean
 }
 
 type UpdateC10MemberId = {
@@ -52,19 +61,29 @@ type DeleteC10 = {
 
 type Action =
   | CreateC10
+  | UpdateC10IsEnabled
   | UpdateC10MemberId
   | UpdateC10StartDateName
   | UpdateC10StopDateName
   | UpdateC10KinmuId
   | DeleteC10
 
-export function createC10(member_id: number, start_date_name: string, stop_date_name: string, kinmu_id: number): CreateC10 {
+export function createC10(is_enabled: boolean, member_id: number, start_date_name: string, stop_date_name: string, kinmu_id: number): CreateC10 {
   return {
+    is_enabled,
     kinmu_id,
     member_id,
     start_date_name,
     stop_date_name,
     type: CREATE_C10,
+  }
+}
+
+export function updateC10IsEnabled(id: number, is_enabled: boolean): UpdateC10IsEnabled {
+  return {
+    id,
+    is_enabled,
+    type: UPDATE_C10_IS_ENABLED,
   }
 }
 
@@ -116,10 +135,18 @@ export function reducer(state: State = initialState, action: Action): State {
     case CREATE_C10:
       return state.concat({
         id: Math.max(0, ...state.map(c => c.id)) + 1,
+        is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         member_id: action.member_id,
         start_date_name: action.start_date_name,
         stop_date_name: action.stop_date_name,
+      })
+    case UPDATE_C10_IS_ENABLED:
+      return state.map(c => {
+        if (c.id !== action.id) {
+          return c
+        }
+        return { ...c, is_enabled: action.is_enabled }
       })
     case UPDATE_C10_MEMBER_ID:
       return state.map(c => {

@@ -1,18 +1,27 @@
 const CREATE_C5 = 'CREATE_C5'
+const UPDATE_C5_IS_ENABLED = 'UPDATE_C5_IS_ENABLED'
 const UPDATE_C5_KINMU_ID = 'UPDATE_C5_KINMU_ID'
 const UPDATE_C5_MIN_NUMBER_OF_DAYS = 'UPDATE_C5_MIN_NUMBER_OF_DAYS'
 const DELETE_C5 = 'DELETE_C5'
 
 export type C5 = {
   id: number
+  is_enabled: boolean
   kinmu_id: number
   min_number_of_days: number
 }
 
 type CreateC5 = {
   type: typeof CREATE_C5
+  is_enabled: boolean
   kinmu_id: number
   min_number_of_days: number
+}
+
+type UpdateC5IsEnabled = {
+  type: typeof UPDATE_C5_IS_ENABLED
+  id: number
+  is_enabled: boolean
 }
 
 type UpdateC5KinmuId = {
@@ -34,15 +43,25 @@ type DeleteC5 = {
 
 type Action =
   | CreateC5
+  | UpdateC5IsEnabled
   | UpdateC5KinmuId
   | UpdateC5MinNumberOfDays
   | DeleteC5
 
-export function createC5(kinmu_id: number, min_number_of_days: number): CreateC5 {
+export function createC5(is_enabled: boolean, kinmu_id: number, min_number_of_days: number): CreateC5 {
   return {
+    is_enabled,
     kinmu_id,
     min_number_of_days,
     type: CREATE_C5,
+  }
+}
+
+export function updateC5IsEnabled(id: number, is_enabled: boolean): UpdateC5IsEnabled {
+  return {
+    id,
+    is_enabled,
+    type: UPDATE_C5_IS_ENABLED,
   }
 }
 
@@ -78,8 +97,16 @@ export function reducer(state: State = initialState, action: Action): State {
     case CREATE_C5:
       return state.concat({
         id: Math.max(0, ...state.map(c => c.id)) + 1,
+        is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         min_number_of_days: action.min_number_of_days,
+      })
+    case UPDATE_C5_IS_ENABLED:
+      return state.map(c => {
+        if (c.id !== action.id) {
+          return c
+        }
+        return { ...c, is_enabled: action.is_enabled }
       })
     case UPDATE_C5_KINMU_ID:
       return state.map(c => {

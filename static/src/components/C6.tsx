@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -8,6 +9,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -29,6 +31,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newC6IsEnabled: boolean
   newC6KinmuId: number
   newC6MaxNumberOfDays: number
   deletionDialogIsOpen: boolean
@@ -39,9 +42,15 @@ class C6 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
+    newC6IsEnabled: true,
     newC6KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newC6MaxNumberOfDays: 0,
     selectedC6Id: this.props.c6.length > 0 ? this.props.c6[0].id : 0,
+  }
+  public handleChangeC6IsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(c6.updateC6IsEnabled(id, checked))
+    }
   }
   public handleChangeC6KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +68,9 @@ class C6 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
+  public handleChangeNewC6IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newC6IsEnabled: checked })
+  }
   public handleChangeNewC6KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC6KinmuId: parseInt(event.target.value, 10) })
   }
@@ -67,7 +79,7 @@ class C6 extends React.Component<Props, State> {
   }
   public handleClickCreateC6 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c6.createC6(this.state.newC6KinmuId, this.state.newC6MaxNumberOfDays))
+    this.props.dispatch(c6.createC6(this.state.newC6IsEnabled, this.state.newC6KinmuId, this.state.newC6MaxNumberOfDays))
   }
   public handleClickOpenDeletionDialog(selectedC6Id: number) {
     return () => {
@@ -98,6 +110,16 @@ class C6 extends React.Component<Props, State> {
               <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}の連続日数を${c.max_number_of_days}日以下にする`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={c.is_enabled}
+                    onChange={this.handleChangeC6IsEnabled(c.id)}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="勤務"
@@ -135,6 +157,16 @@ class C6 extends React.Component<Props, State> {
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>勤務の連続日数の上限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.newC6IsEnabled}
+                    onChange={this.handleChangeNewC6IsEnabled}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 select={true}
                 label="勤務"

@@ -61,18 +61,21 @@ type ReplaceAll = {
 
 type CreateMember = {
   type: typeof CREATE_MEMBER
+  is_enabled: boolean
   name: string
   group_ids: number[]
 }
 
 type CreateGroup = {
   type: typeof CREATE_GROUP
+  is_enabled: boolean
   name: string
   member_ids: number[]
 }
 
 type CreateC0 = {
   type: typeof CREATE_C0
+  is_enabled: boolean
   kinmu_ids: number[]
 }
 
@@ -131,24 +134,27 @@ export function replaceAll(all: All): ReplaceAll {
   }
 }
 
-export function createMember(name: string, group_ids: number[]): CreateMember {
+export function createMember(is_enabled: boolean, name: string, group_ids: number[]): CreateMember {
   return {
     group_ids,
+    is_enabled,
     name,
     type: CREATE_MEMBER,
   }
 }
 
-export function createGroup(name: string, member_ids: number[]): CreateGroup {
+export function createGroup(is_enabled: boolean, name: string, member_ids: number[]): CreateGroup {
   return {
+    is_enabled,
     member_ids,
     name,
     type: CREATE_GROUP,
   }
 }
 
-export function createC0(kinmu_ids: number[]): CreateC0 {
+export function createC0(is_enabled: boolean, kinmu_ids: number[]): CreateC0 {
   return {
+    is_enabled,
     kinmu_ids,
     type: CREATE_C0,
   }
@@ -245,6 +251,7 @@ function crossSliceReducer(state: State, action: Action): State {
         ),
         members: state.members.concat({
           id: member_id,
+          is_enabled: action.is_enabled,
           name: action.name,
         }),
       }
@@ -261,6 +268,7 @@ function crossSliceReducer(state: State, action: Action): State {
         }))),
         groups: state.groups.concat({
           id: group_id,
+          is_enabled: action.is_enabled,
           name: action.name,
         }),
       }
@@ -270,7 +278,10 @@ function crossSliceReducer(state: State, action: Action): State {
       const c0_kinmu_id = Math.max(0, ...state.c0_kinmus.map(({ id }) => id)) + 1
       return {
         ...state,
-        c0: state.c0.concat({ id: c0_id }),
+        c0: state.c0.concat({
+          id: c0_id,
+          is_enabled: action.is_enabled,
+        }),
         c0_kinmus: state.c0_kinmus.concat(action.kinmu_ids.map((kinmu_id, index) => ({
           c0_id,
           id: c0_kinmu_id + index,

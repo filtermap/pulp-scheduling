@@ -1,18 +1,27 @@
 const CREATE_C8 = "CREATE_C8"
+const UPDATE_C8_IS_ENABLED = 'UPDATE_C8_IS_ENABLED'
 const UPDATE_C8_KINMU_ID = 'UPDATE_C8_KINMU_ID'
 const UPDATE_C8_MAX_NUMBER_OF_DAYS = 'UPDATE_C8_MAX_NUMBER_OF_DAYS'
 const DELETE_C8 = 'DELETE_C8'
 
 export type C8 = {
   id: number
+  is_enabled: boolean
   kinmu_id: number
   max_number_of_days: number
 }
 
 type CreateC8 = {
   type: typeof CREATE_C8
+  is_enabled: boolean
   kinmu_id: number
   max_number_of_days: number
+}
+
+type UpdateC8IsEnabled = {
+  type: typeof UPDATE_C8_IS_ENABLED
+  id: number
+  is_enabled: boolean
 }
 
 type UpdateC8KinmuId = {
@@ -34,15 +43,25 @@ type DeleteC8 = {
 
 type Action =
   | CreateC8
+  | UpdateC8IsEnabled
   | UpdateC8KinmuId
   | UpdateC8MaxNumberOfDays
   | DeleteC8
 
-export function createC8(kinmu_id: number, max_number_of_days: number): CreateC8 {
+export function createC8(is_enabled: boolean, kinmu_id: number, max_number_of_days: number): CreateC8 {
   return {
+    is_enabled,
     kinmu_id,
     max_number_of_days,
     type: CREATE_C8,
+  }
+}
+
+export function updateC8IsEnabled(id: number, is_enabled: boolean): UpdateC8IsEnabled {
+  return {
+    id,
+    is_enabled,
+    type: UPDATE_C8_IS_ENABLED,
   }
 }
 
@@ -78,8 +97,16 @@ export function reducer(state: State = initialState, action: Action): State {
     case CREATE_C8:
       return state.concat({
         id: Math.max(0, ...state.map(c => c.id)) + 1,
+        is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         max_number_of_days: action.max_number_of_days,
+      })
+    case UPDATE_C8_IS_ENABLED:
+      return state.map(c => {
+        if (c.id !== action.id) {
+          return c
+        }
+        return { ...c, is_enabled: action.is_enabled }
       })
     case UPDATE_C8_KINMU_ID:
       return state.map(c => {

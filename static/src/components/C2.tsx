@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -8,6 +9,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -32,6 +34,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newC2IsEnabled: boolean
   newC2StartDateName: string
   newC2StopDateName: string
   newC2KinmuId: number
@@ -49,11 +52,17 @@ class C2 extends React.Component<Props, State> {
       creationDialogIsOpen: false,
       deletionDialogIsOpen: false,
       newC2GroupId: this.props.groups.length > 0 ? this.props.groups[0].id : 0,
+      newC2IsEnabled: true,
       newC2KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
       newC2MaxNumberOfAssignments: 0,
       newC2StartDateName: todayString,
       newC2StopDateName: todayString,
       selectedC2Id: this.props.c2.length > 0 ? this.props.c2[0].id : 0,
+    }
+  }
+  public handleChangeC2IsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(c2.updateC2IsEnabled(id, checked))
     }
   }
   public handleChangeC2StartDateName(id: number) {
@@ -87,6 +96,9 @@ class C2 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
+  public handleChangeNewC2IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newC2IsEnabled: checked })
+  }
   public handleChangeNewC2StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC2StartDateName: event.target.value })
   }
@@ -104,7 +116,7 @@ class C2 extends React.Component<Props, State> {
   }
   public handleClickCreateC2 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c2.createC2(this.state.newC2StartDateName, this.state.newC2StopDateName, this.state.newC2KinmuId, this.state.newC2GroupId, this.state.newC2MaxNumberOfAssignments))
+    this.props.dispatch(c2.createC2(this.state.newC2IsEnabled, this.state.newC2StartDateName, this.state.newC2StopDateName, this.state.newC2KinmuId, this.state.newC2GroupId, this.state.newC2MaxNumberOfAssignments))
   }
   public handleClickOpenDeletionDialog(selectedC2Id: number) {
     return () => {
@@ -135,6 +147,16 @@ class C2 extends React.Component<Props, State> {
               <Typography>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}に${this.props.groups.find(group => group.id === c.group_id)!.name}から${c.max_number_of_assignments}人以下の職員を割り当てる`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={c.is_enabled}
+                    onChange={this.handleChangeC2IsEnabled(c.id)}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 label="開始日"
                 type="date"
@@ -204,6 +226,16 @@ class C2 extends React.Component<Props, State> {
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>期間の勤務にグループから割り当てる職員数の上限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.newC2IsEnabled}
+                    onChange={this.handleChangeNewC2IsEnabled}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 label="開始日"
                 type="date"

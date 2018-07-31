@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -8,6 +9,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -32,6 +34,7 @@ type Props = {
 
 type State = {
   creationDialogIsOpen: boolean
+  newC1IsEnabled: boolean
   newC1StartDateName: string
   newC1StopDateName: string
   newC1KinmuId: number
@@ -49,11 +52,17 @@ class C1 extends React.Component<Props, State> {
       creationDialogIsOpen: false,
       deletionDialogIsOpen: false,
       newC1GroupId: this.props.groups.length > 0 ? this.props.groups[0].id : 0,
+      newC1IsEnabled: true,
       newC1KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
       newC1MinNumberOfAssignments: 0,
       newC1StartDateName: todayString,
       newC1StopDateName: todayString,
       selectedC1Id: this.props.c1.length > 0 ? this.props.c1[0].id : 0
+    }
+  }
+  public handleChangeC1IsEnabled(id: number) {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      this.props.dispatch(c1.updateC1IsEnabled(id, checked))
     }
   }
   public handleChangeC1StartDateName(id: number) {
@@ -81,12 +90,14 @@ class C1 extends React.Component<Props, State> {
       this.props.dispatch(c1.updateC1MinNumberOfAssignments(id, parseInt(event.target.value, 10)))
     }
   }
-
   public handleClickOpenCreationDialog = () => {
     this.setState({ creationDialogIsOpen: true })
   }
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
+  }
+  public handleChangeNewC1IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newC1IsEnabled: checked })
   }
   public handleChangeNewC1StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newC1StartDateName: event.target.value })
@@ -105,7 +116,7 @@ class C1 extends React.Component<Props, State> {
   }
   public handleClickCreateC1 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c1.createC1(this.state.newC1StartDateName, this.state.newC1StopDateName, this.state.newC1KinmuId, this.state.newC1GroupId, this.state.newC1MinNumberOfAssignments))
+    this.props.dispatch(c1.createC1(this.state.newC1IsEnabled, this.state.newC1StartDateName, this.state.newC1StopDateName, this.state.newC1KinmuId, this.state.newC1GroupId, this.state.newC1MinNumberOfAssignments))
   }
   public handleClickOpenDeletionDialog(selectedC1Id: number) {
     return () => {
@@ -136,6 +147,16 @@ class C1 extends React.Component<Props, State> {
               <Typography>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}に${this.props.groups.find(group => group.id === c.group_id)!.name}から${c.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={c.is_enabled}
+                    onChange={this.handleChangeC1IsEnabled(c.id)}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 label="開始日"
                 type="date"
@@ -205,6 +226,16 @@ class C1 extends React.Component<Props, State> {
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.newC1IsEnabled}
+                    onChange={this.handleChangeNewC1IsEnabled}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
               <TextField
                 label="開始日"
                 type="date"
