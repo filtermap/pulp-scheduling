@@ -23,10 +23,10 @@ import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
 import * as assignments from '../modules/assignments'
-import * as c10 from '../modules/c10'
-import * as c3 from '../modules/c3'
-import * as c4 from '../modules/c4'
-import * as c9 from '../modules/c9'
+import * as constraints10 from '../modules/constraints10'
+import * as constraints3 from '../modules/constraints3'
+import * as constraints4 from '../modules/constraints4'
+import * as constraints9 from '../modules/constraints9'
 import * as group_members from '../modules/group_members'
 import * as groups from '../modules/groups'
 import * as kinmus from '../modules/kinmus'
@@ -38,10 +38,10 @@ type Props = {
   groups: groups.Group[]
   group_members: group_members.GroupMember[]
   assignments: assignments.Assignment[]
-  c3: c3.C3[]
-  c4: c4.C4[]
-  c9: c9.C9[]
-  c10: c10.C10[]
+  constraints3: constraints3.Constraint3[]
+  constraints4: constraints4.Constraint4[]
+  constraints9: constraints9.Constraint9[]
+  constraints10: constraints10.Constraint10[]
   kinmus: kinmus.Kinmu[]
 }
 
@@ -125,10 +125,10 @@ class Members extends React.Component<Props, State> {
   public render() {
     const selectedMember = this.props.members.find(member => member.id === this.state.selectedMemberId)
     const selectedMemberRosterIds = Array.from(new Set(this.props.assignments.filter(assignment => assignment.member_id === this.state.selectedMemberId).map(({ roster_id }) => roster_id)))
-    const selectedMemberC3 = this.props.c3.filter(c => c.member_id === this.state.selectedMemberId)
-    const selectedMemberC4 = this.props.c4.filter(c => c.member_id === this.state.selectedMemberId)
-    const selectedMemberC9 = this.props.c9.filter(c => c.member_id === this.state.selectedMemberId)
-    const selectedMemberC10 = this.props.c10.filter(c => c.member_id === this.state.selectedMemberId)
+    const selectedMemberConstraints3 = this.props.constraints3.filter(c => c.member_id === this.state.selectedMemberId)
+    const selectedMemberConstraints4 = this.props.constraints4.filter(c => c.member_id === this.state.selectedMemberId)
+    const selectedMemberConstraints9 = this.props.constraints9.filter(c => c.member_id === this.state.selectedMemberId)
+    const selectedMemberConstraints10 = this.props.constraints10.filter(c => c.member_id === this.state.selectedMemberId)
     return (
       <>
         <Toolbar>
@@ -236,12 +236,12 @@ class Members extends React.Component<Props, State> {
               <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.member_id === selectedMember.id).map(group_member => this.props.groups.find(group => group.id === group_member.group_id)!.name).join(', ')}</Typography>
               {selectedMemberRosterIds.length > 0 && <DialogContentText>以下の勤務表の割り当ても削除されます</DialogContentText>}
               {selectedMemberRosterIds.map(roster_id => <Typography key={roster_id}>{`勤務表${roster_id}`}</Typography>)}
-              {(selectedMemberC3.length > 0 || selectedMemberC4.length > 0 || selectedMemberC9.length > 0 || selectedMemberC10.length > 0) &&
+              {(selectedMemberConstraints3.length > 0 || selectedMemberConstraints4.length > 0 || selectedMemberConstraints9.length > 0 || selectedMemberConstraints10.length > 0) &&
                 <DialogContentText>以下の条件も削除されます</DialogContentText>}
-              {selectedMemberC3.map(c => <Typography key={c.id}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>)}
-              {selectedMemberC4.map(c => <Typography key={c.id}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>)}
-              {selectedMemberC9.map(c => <Typography key={c.id}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を割り当てる`}</Typography>)}
-              {selectedMemberC10.map(c => <Typography key={c.id}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を割り当てない`}</Typography>)}
+              {selectedMemberConstraints3.map(c => <Typography key={c.id}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>)}
+              {selectedMemberConstraints4.map(c => <Typography key={c.id}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>)}
+              {selectedMemberConstraints9.map(c => <Typography key={c.id}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を割り当てる`}</Typography>)}
+              {selectedMemberConstraints10.map(c => <Typography key={c.id}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を割り当てない`}</Typography>)}
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteMember}>削除</Button>
@@ -256,10 +256,10 @@ class Members extends React.Component<Props, State> {
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
     assignments: state.present.assignments,
-    c10: state.present.c10,
-    c3: state.present.c3,
-    c4: state.present.c4,
-    c9: state.present.c9,
+    constraints10: state.present.constraints10,
+    constraints3: state.present.constraints3,
+    constraints4: state.present.constraints4,
+    constraints9: state.present.constraints9,
     group_members: state.present.group_members,
     groups: state.present.groups,
     kinmus: state.present.kinmus,

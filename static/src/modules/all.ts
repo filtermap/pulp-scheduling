@@ -1,18 +1,18 @@
 import reduceReducer from 'reduce-reducers'
 import { combineReducers } from 'redux'
 import * as assignments from './assignments'
-import * as c0 from './c0'
-import * as c0_kinmus from './c0_kinmus'
-import * as c1 from './c1'
-import * as c10 from './c10'
-import * as c2 from './c2'
-import * as c3 from './c3'
-import * as c4 from './c4'
-import * as c5 from './c5'
-import * as c6 from './c6'
-import * as c7 from './c7'
-import * as c8 from './c8'
-import * as c9 from './c9'
+import * as constraint0_kinmus from './constraint0_kinmus'
+import * as constraints0 from './constraints0'
+import * as constraints1 from './constraints1'
+import * as constraints10 from './constraints10'
+import * as constraints2 from './constraints2'
+import * as constraints3 from './constraints3'
+import * as constraints4 from './constraints4'
+import * as constraints5 from './constraints5'
+import * as constraints6 from './constraints6'
+import * as constraints7 from './constraints7'
+import * as constraints8 from './constraints8'
+import * as constraints9 from './constraints9'
 import * as group_members from './group_members'
 import * as groups from './groups'
 import * as kinmus from './kinmus'
@@ -23,13 +23,13 @@ import * as terms from './terms'
 const REPLACE_ALL = "REPLACE_ALL"
 const CREATE_MEMBER = 'CREATE_MEMBER'
 const CREATE_GROUP = 'CREATE_GROUP'
-const CREATE_C0 = 'CREATE_C0'
+const CREATE_CONSTRAINT0 = 'CREATE_CONSTRAINT0'
 const CREATE_ROSTER = 'CREATE_ROSTER'
 const DELETE_MEMBER = 'DELETE_MEMBER'
 const DELETE_GROUP = 'DELETE_GROUP'
 const DELETE_KINMU = 'DELETE_KINMU'
-const DELETE_C0 = 'DELETE_C0'
-const DELETE_C0_KINMU = 'DELETE_C0_KINMU'
+const DELETE_CONSTRAINT0 = 'DELETE_CONSTRAINT0'
+const DELETE_CONSTRAINT0_KINMU = 'DELETE_CONSTRAINT0_KINMU'
 const DELETE_ROSTER = 'DELETE_ROSTER'
 
 export type All = {
@@ -38,18 +38,18 @@ export type All = {
   kinmus: kinmus.Kinmu[]
   groups: groups.Group[]
   group_members: group_members.GroupMember[]
-  c0: c0.C0[]
-  c0_kinmus: c0_kinmus.C0Kinmu[]
-  c1: c1.C1[]
-  c2: c2.C2[]
-  c3: c3.C3[]
-  c4: c4.C4[]
-  c5: c5.C5[]
-  c6: c6.C6[]
-  c7: c7.C7[]
-  c8: c8.C8[]
-  c9: c9.C9[]
-  c10: c10.C10[]
+  constraints0: constraints0.Constraint0[]
+  constraint0_kinmus: constraint0_kinmus.Constraint0Kinmu[]
+  constraints1: constraints1.Constraint1[]
+  constraints2: constraints2.Constraint2[]
+  constraints3: constraints3.Constraint3[]
+  constraints4: constraints4.Constraint4[]
+  constraints5: constraints5.Constraint5[]
+  constraints6: constraints6.Constraint6[]
+  constraints7: constraints7.Constraint7[]
+  constraints8: constraints8.Constraint8[]
+  constraints9: constraints9.Constraint9[]
+  constraints10: constraints10.Constraint10[]
   rosters: rosters.Roster[]
   assignments: assignments.Assignment[]
 }
@@ -73,8 +73,8 @@ type CreateGroup = {
   member_ids: number[]
 }
 
-type CreateC0 = {
-  type: typeof CREATE_C0
+type CreateConstraint0 = {
+  type: typeof CREATE_CONSTRAINT0
   is_enabled: boolean
   kinmu_ids: number[]
 }
@@ -99,13 +99,13 @@ type DeleteKinmu = {
   id: number
 }
 
-type DeleteC0 = {
-  type: typeof DELETE_C0
+type DeleteConstraint0 = {
+  type: typeof DELETE_CONSTRAINT0
   id: number
 }
 
-type DeleteC0Kinmu = {
-  type: typeof DELETE_C0_KINMU
+type DeleteConstraint0Kinmu = {
+  type: typeof DELETE_CONSTRAINT0_KINMU
   id: number
 }
 
@@ -118,13 +118,13 @@ type Action =
   | ReplaceAll
   | CreateMember
   | CreateGroup
-  | CreateC0
+  | CreateConstraint0
   | CreateRoster
   | DeleteMember
   | DeleteGroup
   | DeleteKinmu
-  | DeleteC0
-  | DeleteC0Kinmu
+  | DeleteConstraint0
+  | DeleteConstraint0Kinmu
   | DeleteRoster
 
 export function replaceAll(all: All): ReplaceAll {
@@ -152,11 +152,11 @@ export function createGroup(is_enabled: boolean, name: string, member_ids: numbe
   }
 }
 
-export function createC0(is_enabled: boolean, kinmu_ids: number[]): CreateC0 {
+export function createConstraint0(is_enabled: boolean, kinmu_ids: number[]): CreateConstraint0 {
   return {
     is_enabled,
     kinmu_ids,
-    type: CREATE_C0,
+    type: CREATE_CONSTRAINT0,
   }
 }
 
@@ -188,17 +188,17 @@ export function deleteKinmu(id: number): DeleteKinmu {
   }
 }
 
-export function deleteC0(id: number): DeleteC0 {
+export function deleteConstraint0(id: number): DeleteConstraint0 {
   return {
     id,
-    type: DELETE_C0,
+    type: DELETE_CONSTRAINT0,
   }
 }
 
-export function deleteC0Kinmu(id: number): DeleteC0Kinmu {
+export function deleteConstraint0Kinmu(id: number): DeleteConstraint0Kinmu {
   return {
     id,
-    type: DELETE_C0_KINMU,
+    type: DELETE_CONSTRAINT0_KINMU,
   }
 }
 
@@ -213,18 +213,18 @@ export type State = All
 
 const combinedReducer: (state: State, action: Action) => State = combineReducers({
   assignments: assignments.reducer,
-  c0: c0.reducer,
-  c0_kinmus: c0_kinmus.reducer,
-  c1: c1.reducer,
-  c10: c10.reducer,
-  c2: c2.reducer,
-  c3: c3.reducer,
-  c4: c4.reducer,
-  c5: c5.reducer,
-  c6: c6.reducer,
-  c7: c7.reducer,
-  c8: c8.reducer,
-  c9: c9.reducer,
+  constraint0_kinmus: constraint0_kinmus.reducer,
+  constraints0: constraints0.reducer,
+  constraints1: constraints1.reducer,
+  constraints10: constraints10.reducer,
+  constraints2: constraints2.reducer,
+  constraints3: constraints3.reducer,
+  constraints4: constraints4.reducer,
+  constraints5: constraints5.reducer,
+  constraints6: constraints6.reducer,
+  constraints7: constraints7.reducer,
+  constraints8: constraints8.reducer,
+  constraints9: constraints9.reducer,
   group_members: group_members.reducer,
   groups: groups.reducer,
   kinmus: kinmus.reducer,
@@ -273,21 +273,21 @@ function crossSliceReducer(state: State, action: Action): State {
         }),
       }
     }
-    case CREATE_C0: {
-      const c0_id = Math.max(0, ...state.c0.map(({ id }) => id)) + 1
-      const c0_kinmu_id = Math.max(0, ...state.c0_kinmus.map(({ id }) => id)) + 1
+    case CREATE_CONSTRAINT0: {
+      const constraint0_id = Math.max(0, ...state.constraints0.map(({ id }) => id)) + 1
+      const constraint0_kinmu_id = Math.max(0, ...state.constraint0_kinmus.map(({ id }) => id)) + 1
       return {
         ...state,
-        c0: state.c0.concat({
-          id: c0_id,
-          is_enabled: action.is_enabled,
-        }),
-        c0_kinmus: state.c0_kinmus.concat(action.kinmu_ids.map((kinmu_id, index) => ({
-          c0_id,
-          id: c0_kinmu_id + index,
+        constraint0_kinmus: state.constraint0_kinmus.concat(action.kinmu_ids.map((kinmu_id, index) => ({
+          constraint0_id,
+          id: constraint0_kinmu_id + index,
           kinmu_id,
           sequence_number: index,
         }))),
+        constraints0: state.constraints0.concat({
+          id: constraint0_id,
+          is_enabled: action.is_enabled,
+        }),
       }
     }
     case CREATE_ROSTER: {
@@ -309,10 +309,10 @@ function crossSliceReducer(state: State, action: Action): State {
       return {
         ...state,
         assignments: filtered_assignments,
-        c10: state.c10.filter(c => c.member_id !== action.id),
-        c3: state.c3.filter(c => c.member_id !== action.id),
-        c4: state.c4.filter(c => c.member_id !== action.id),
-        c9: state.c9.filter(c => c.member_id !== action.id),
+        constraints10: state.constraints10.filter(c => c.member_id !== action.id),
+        constraints3: state.constraints3.filter(c => c.member_id !== action.id),
+        constraints4: state.constraints4.filter(c => c.member_id !== action.id),
+        constraints9: state.constraints9.filter(c => c.member_id !== action.id),
         group_members: state.group_members.filter(({ member_id }) => member_id !== action.id),
         members: state.members.filter(({ id }) => id !== action.id),
         rosters: state.rosters.filter(({ id }) => filtered_assignment_roster_ids.includes(id))
@@ -321,55 +321,55 @@ function crossSliceReducer(state: State, action: Action): State {
     case DELETE_GROUP:
       return {
         ...state,
-        c1: state.c1.filter(c => c.group_id !== action.id),
-        c2: state.c2.filter(c => c.group_id !== action.id),
+        constraints1: state.constraints1.filter(c => c.group_id !== action.id),
+        constraints2: state.constraints2.filter(c => c.group_id !== action.id),
         group_members: state.group_members.filter(({ group_id }) => group_id !== action.id),
         groups: state.groups.filter(({ id }) => id !== action.id),
       }
     case DELETE_KINMU: {
-      const deleted_c0_ids = Array.from(new Set(state.c0_kinmus.filter(({ kinmu_id }) => kinmu_id === action.id).map(({ c0_id }) => c0_id)))
+      const deleted_constraint0_ids = Array.from(new Set(state.constraint0_kinmus.filter(({ kinmu_id }) => kinmu_id === action.id).map(({ constraint0_id }) => constraint0_id)))
       const deleted_roster_ids = Array.from(new Set(state.assignments.filter(({ kinmu_id }) => kinmu_id === action.id).map(({ roster_id }) => roster_id)))
       return {
         ...state,
         assignments: state.assignments.filter(assignment => !deleted_roster_ids.includes(assignment.roster_id)),
-        c0: state.c0.filter(c => !deleted_c0_ids.includes(c.id)),
-        c0_kinmus: state.c0_kinmus.filter(({ kinmu_id }) => kinmu_id !== action.id),
-        c1: state.c1.filter(c => c.kinmu_id !== action.id),
-        c10: state.c10.filter(c => c.kinmu_id !== action.id),
-        c2: state.c2.filter(c => c.kinmu_id !== action.id),
-        c3: state.c3.filter(c => c.kinmu_id !== action.id),
-        c4: state.c4.filter(c => c.kinmu_id !== action.id),
-        c5: state.c5.filter(c => c.kinmu_id !== action.id),
-        c6: state.c6.filter(c => c.kinmu_id !== action.id),
-        c7: state.c7.filter(c => c.kinmu_id !== action.id),
-        c8: state.c8.filter(c => c.kinmu_id !== action.id),
-        c9: state.c9.filter(c => c.kinmu_id !== action.id),
+        constraint0_kinmus: state.constraint0_kinmus.filter(({ kinmu_id }) => kinmu_id !== action.id),
+        constraints0: state.constraints0.filter(c => !deleted_constraint0_ids.includes(c.id)),
+        constraints1: state.constraints1.filter(c => c.kinmu_id !== action.id),
+        constraints10: state.constraints10.filter(c => c.kinmu_id !== action.id),
+        constraints2: state.constraints2.filter(c => c.kinmu_id !== action.id),
+        constraints3: state.constraints3.filter(c => c.kinmu_id !== action.id),
+        constraints4: state.constraints4.filter(c => c.kinmu_id !== action.id),
+        constraints5: state.constraints5.filter(c => c.kinmu_id !== action.id),
+        constraints6: state.constraints6.filter(c => c.kinmu_id !== action.id),
+        constraints7: state.constraints7.filter(c => c.kinmu_id !== action.id),
+        constraints8: state.constraints8.filter(c => c.kinmu_id !== action.id),
+        constraints9: state.constraints9.filter(c => c.kinmu_id !== action.id),
         kinmus: state.kinmus.filter(({ id }) => id !== action.id),
         rosters: state.rosters.filter(({ id }) => !deleted_roster_ids.includes(id)),
       }
     }
-    case DELETE_C0:
+    case DELETE_CONSTRAINT0:
       return {
         ...state,
-        c0: state.c0.filter(c => c.id !== action.id),
-        c0_kinmus: state.c0_kinmus.filter(({ c0_id }) => c0_id !== action.id),
+        constraint0_kinmus: state.constraint0_kinmus.filter(({ constraint0_id }) => constraint0_id !== action.id),
+        constraints0: state.constraints0.filter(c => c.id !== action.id),
       }
-    case DELETE_C0_KINMU: {
-      const deleted_c0_kinmu = state.c0_kinmus.find(({ id }) => id === action.id)!
-      const filtered_c0_kinmus = state.c0_kinmus.filter(({ id }) => id !== action.id)
-      const filtered_c0_kinmu_c0_ids = Array.from(new Set(filtered_c0_kinmus.map(({ c0_id }) => c0_id)))
+    case DELETE_CONSTRAINT0_KINMU: {
+      const deleted_constraint0_kinmu = state.constraint0_kinmus.find(({ id }) => id === action.id)!
+      const filtered_constraint0_kinmus = state.constraint0_kinmus.filter(({ id }) => id !== action.id)
+      const filtered_constraint0_kinmu_constraint0_ids = Array.from(new Set(filtered_constraint0_kinmus.map(({ constraint0_id }) => constraint0_id)))
       return {
         ...state,
-        c0: state.c0.filter(({ id }) => filtered_c0_kinmu_c0_ids.includes(id)),
-        c0_kinmus: filtered_c0_kinmus.map(c_kinmu => {
-          if (c_kinmu.c0_id !== deleted_c0_kinmu.c0_id) {
+        constraint0_kinmus: filtered_constraint0_kinmus.map(c_kinmu => {
+          if (c_kinmu.constraint0_id !== deleted_constraint0_kinmu.constraint0_id) {
             return c_kinmu
           }
-          const sequence_number = c_kinmu.sequence_number < deleted_c0_kinmu.sequence_number ?
+          const sequence_number = c_kinmu.sequence_number < deleted_constraint0_kinmu.sequence_number ?
             c_kinmu.sequence_number :
             c_kinmu.sequence_number - 1
           return { ...c_kinmu, sequence_number }
         }),
+        constraints0: state.constraints0.filter(({ id }) => filtered_constraint0_kinmu_constraint0_ids.includes(id)),
       }
     }
     case DELETE_ROSTER:

@@ -20,46 +20,41 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
-import * as c6 from '../modules/c6'
+import * as constraints8 from '../modules/constraints8'
 import * as kinmus from '../modules/kinmus'
 
 type Props = {
   dispatch: Dispatch
-  c6: c6.C6[]
+  constraints8: constraints8.Constraint8[]
   kinmus: kinmus.Kinmu[]
 }
 
 type State = {
   creationDialogIsOpen: boolean
-  newC6IsEnabled: boolean
-  newC6KinmuId: number
-  newC6MaxNumberOfDays: number
+  newConstraint8IsEnabled: boolean
+  newConstraint8KinmuId: number
+  newConstraint8MaxNumberOfDays: number
   deletionDialogIsOpen: boolean
-  selectedC6Id: number
+  selectedConstraint8Id: number
 }
 
-class C6 extends React.Component<Props, State> {
+class Constraints8 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
-    newC6IsEnabled: true,
-    newC6KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-    newC6MaxNumberOfDays: 0,
-    selectedC6Id: this.props.c6.length > 0 ? this.props.c6[0].id : 0,
+    newConstraint8IsEnabled: true,
+    newConstraint8KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
+    newConstraint8MaxNumberOfDays: 0,
+    selectedConstraint8Id: this.props.constraints8.length > 0 ? this.props.constraints8[0].id : 0,
   }
-  public handleChangeC6IsEnabled(id: number) {
+  public handleChangeConstraint8IsEnabled(id: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      this.props.dispatch(c6.updateC6IsEnabled(id, checked))
+      this.props.dispatch(constraints8.updateConstraint8IsEnabled(id, checked))
     }
   }
-  public handleChangeC6KinmuId(id: number) {
+  public handleChangeConstraint8KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c6.updateC6KinmuId(id, parseInt(event.target.value, 10)))
-    }
-  }
-  public handleChangeC6MaxNumberOfDays(id: number) {
-    return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c6.updateC6MaxNumberOfDays(id, parseInt(event.target.value, 10)))
+      this.props.dispatch(constraints8.updateConstraint8KinmuId(id, parseInt(event.target.value, 10)))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -68,53 +63,58 @@ class C6 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public handleChangeNewC6IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    this.setState({ newC6IsEnabled: checked })
+  public handleChangeNewConstraint8IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newConstraint8IsEnabled: checked })
   }
-  public handleChangeNewC6KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC6KinmuId: parseInt(event.target.value, 10) })
+  public handleChangeNewConstraint8KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint8KinmuId: parseInt(event.target.value, 10) })
   }
-  public handleChangeNewC6MaxNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC6MaxNumberOfDays: parseInt(event.target.value, 10) })
+  public handleChangeNewConstraint8MaxNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint8MaxNumberOfDays: parseInt(event.target.value, 10) })
   }
-  public handleClickCreateC6 = () => {
+  public handleClickCreateConstraint8 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c6.createC6(this.state.newC6IsEnabled, this.state.newC6KinmuId, this.state.newC6MaxNumberOfDays))
+    this.props.dispatch(constraints8.createConstraint8(this.state.newConstraint8IsEnabled, this.state.newConstraint8KinmuId, this.state.newConstraint8MaxNumberOfDays))
   }
-  public handleClickOpenDeletionDialog(selectedC6Id: number) {
+  public handleChangeConstraint8MaxNumberOfDays(id: number) {
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      this.props.dispatch(constraints8.updateConstraint8MaxNumberOfDays(id, parseInt(event.target.value, 10)))
+    }
+  }
+  public handleClickOpenDeletionDialog(selectedConstraint8Id: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedC6Id,
+        selectedConstraint8Id,
       })
     }
   }
   public handleCloseDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: false })
   }
-  public handleClickDeleteC6 = () => {
+  public handleClickDeleteConstraint8 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(c6.deleteC6(this.state.selectedC6Id))
+    this.props.dispatch(constraints8.deleteConstraint8(this.state.selectedConstraint8Id))
   }
   public render() {
-    const selectedC6 = this.props.c6.find(c => c.id === this.state.selectedC6Id)
+    const selectedConstraint8 = this.props.constraints8.find(c => c.id === this.state.selectedConstraint8Id)
     return (
       <>
         <Toolbar>
-          <Typography variant="subheading" style={{ flex: 1 }}>勤務の連続日数の上限</Typography>
+          <Typography variant="subheading" style={{ flex: 1 }}>勤務の間隔日数の上限</Typography>
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
-        {this.props.c6.map(c => (
+        {this.props.constraints8.map(c => (
           <ExpansionPanel key={c.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}の連続日数を${c.max_number_of_days}日以下にする`}</Typography>
+              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}の間隔日数を${c.max_number_of_days}日以下にする`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={c.is_enabled}
-                    onChange={this.handleChangeC6IsEnabled(c.id)}
+                    onChange={this.handleChangeConstraint8IsEnabled(c.id)}
                     color="primary"
                   />
                 }
@@ -124,7 +124,7 @@ class C6 extends React.Component<Props, State> {
                 select={true}
                 label="勤務"
                 value={c.kinmu_id}
-                onChange={this.handleChangeC6KinmuId(c.id)}
+                onChange={this.handleChangeConstraint8KinmuId(c.id)}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
@@ -132,10 +132,10 @@ class C6 extends React.Component<Props, State> {
                 ))}
               </TextField>
               <TextField
-                label="連続日数上限"
+                label="間隔日数上限"
                 type="number"
                 defaultValue={c.max_number_of_days}
-                onChange={this.handleChangeC6MaxNumberOfDays(c.id)}
+                onChange={this.handleChangeConstraint8MaxNumberOfDays(c.id)}
                 fullWidth={true}
               />
             </ExpansionPanelDetails>
@@ -146,7 +146,7 @@ class C6 extends React.Component<Props, State> {
         ))}
         {this.props.kinmus.length === 0 ?
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>勤務の連続日数の上限を追加できません</DialogTitle>
+            <DialogTitle>勤務の間隔日数の上限を追加できません</DialogTitle>
             <DialogContent>
               {this.props.kinmus.length === 0 ? <DialogContentText>勤務がありません</DialogContentText> : null}
             </DialogContent>
@@ -155,13 +155,13 @@ class C6 extends React.Component<Props, State> {
             </DialogActions>
           </Dialog> :
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>勤務の連続日数の上限の追加</DialogTitle>
+            <DialogTitle>勤務の間隔日数の下限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.newC6IsEnabled}
-                    onChange={this.handleChangeNewC6IsEnabled}
+                    checked={this.state.newConstraint8IsEnabled}
+                    onChange={this.handleChangeNewConstraint8IsEnabled}
                     color="primary"
                   />
                 }
@@ -170,8 +170,8 @@ class C6 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.newC6KinmuId}
-                onChange={this.handleChangeNewC6KinmuId}
+                value={this.state.newConstraint8KinmuId}
+                onChange={this.handleChangeNewConstraint8KinmuId}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
@@ -179,27 +179,27 @@ class C6 extends React.Component<Props, State> {
                 ))}
               </TextField>
               <TextField
-                label="連続日数上限"
+                label="間隔日数下限"
                 type="number"
-                defaultValue={this.state.newC6MaxNumberOfDays}
-                onChange={this.handleChangeNewC6MaxNumberOfDays}
+                defaultValue={this.state.newConstraint8MaxNumberOfDays}
+                onChange={this.handleChangeNewConstraint8MaxNumberOfDays}
                 fullWidth={true}
               />
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateC6}>追加</Button>
+              <Button color="primary" onClick={this.handleClickCreateConstraint8}>追加</Button>
               <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
-        {selectedC6 &&
+        {selectedConstraint8 &&
           <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>勤務の連続日数の上限の削除</DialogTitle>
+            <DialogTitle>勤務の間隔日数の上限の削除</DialogTitle>
             <DialogContent>
-              <DialogContentText>この勤務の連続日数の上限を削除します</DialogContentText>
-              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === selectedC6.kinmu_id)!.name}の連続日数を${selectedC6.max_number_of_days}日以下にする`}</Typography>
+              <DialogContentText>この勤務の間隔日数の上限を削除します</DialogContentText>
+              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === selectedConstraint8.kinmu_id)!.name}の間隔日数を${selectedConstraint8.max_number_of_days}日以下にする`}</Typography>
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickDeleteC6}>削除</Button>
+              <Button color="primary" onClick={this.handleClickDeleteConstraint8}>削除</Button>
               <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
@@ -210,9 +210,9 @@ class C6 extends React.Component<Props, State> {
 
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    c6: state.present.c6,
-    kinmus: state.present.kinmus
+    constraints8: state.present.constraints8,
+    kinmus: state.present.kinmus,
   }
 }
 
-export default connect(mapStateToProps)(C6)
+export default connect(mapStateToProps)(Constraints8)

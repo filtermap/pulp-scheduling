@@ -20,17 +20,17 @@ import { Dispatch } from 'redux'
 import { ActionCreators, StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
 import * as utils from '../utils'
-import C0 from './C0'
-import C1 from './C1'
-import C10 from './C10'
-import C2 from './C2'
-import C3 from './C3'
-import C4 from './C4'
-import C5 from './C5'
-import C6 from './C6'
-import C7 from './C7'
-import C8 from './C8'
-import C9 from './C9'
+import Constraints0 from './Constraints0'
+import Constraints1 from './Constraints1'
+import Constraints10 from './Constraints10'
+import Constraints2 from './Constraints2'
+import Constraints3 from './Constraints3'
+import Constraints4 from './Constraints4'
+import Constraints5 from './Constraints5'
+import Constraints6 from './Constraints6'
+import Constraints7 from './Constraints7'
+import Constraints8 from './Constraints8'
+import Constraints9 from './Constraints9'
 import Groups from './Groups'
 import Kinmus from './Kinmus'
 import Members from './Members'
@@ -104,48 +104,48 @@ function GroupsLink(props: any) {
   return <Link to="/groups" {...props} />
 }
 
-function C0Link(props: any) {
-  return <Link to="/c0" {...props} />
+function Constraints0Link(props: any) {
+  return <Link to="/constraints0" {...props} />
 }
 
-function C1Link(props: any) {
-  return <Link to="/c1" {...props} />
+function Constraints1Link(props: any) {
+  return <Link to="/constraints1" {...props} />
 }
 
-function C2Link(props: any) {
-  return <Link to="/c2" {...props} />
+function Constraints2Link(props: any) {
+  return <Link to="/constraints2" {...props} />
 }
 
-function C3Link(props: any) {
-  return <Link to="/c3" {...props} />
+function Constraints3Link(props: any) {
+  return <Link to="/constraints3" {...props} />
 }
 
-function C4Link(props: any) {
-  return <Link to="/c4" {...props} />
+function Constraints4Link(props: any) {
+  return <Link to="/constraints4" {...props} />
 }
 
-function C5Link(props: any) {
-  return <Link to="/c5" {...props} />
+function Constraints5Link(props: any) {
+  return <Link to="/constraints5" {...props} />
 }
 
-function C6Link(props: any) {
-  return <Link to="/c6" {...props} />
+function Constraints6Link(props: any) {
+  return <Link to="/constraints6" {...props} />
 }
 
-function C7Link(props: any) {
-  return <Link to="/c7" {...props} />
+function Constraints7Link(props: any) {
+  return <Link to="/constraints7" {...props} />
 }
 
-function C8Link(props: any) {
-  return <Link to="/c8" {...props} />
+function Constraints8Link(props: any) {
+  return <Link to="/constraints8" {...props} />
 }
 
-function C9Link(props: any) {
-  return <Link to="/c9" {...props} />
+function Constraints9Link(props: any) {
+  return <Link to="/constraints9" {...props} />
 }
 
-function C10Link(props: any) {
-  return <Link to="/c10" {...props} />
+function Constraints10Link(props: any) {
+  return <Link to="/constraints10" {...props} />
 }
 
 class ResponsiveDrawer extends React.Component<Props, State> {
@@ -192,37 +192,37 @@ class ResponsiveDrawer extends React.Component<Props, State> {
         </List>
         <Divider />
         <List>
-          <ListItem button={true} component={C0Link}>
+          <ListItem button={true} component={Constraints0Link}>
             <ListItemText primary="連続禁止勤務並び" />
           </ListItem>
-          <ListItem button={true} component={C1Link}>
+          <ListItem button={true} component={Constraints1Link}>
             <ListItemText primary="期間の勤務にグループから割り当てる職員数の下限" />
           </ListItem>
-          <ListItem button={true} component={C2Link}>
+          <ListItem button={true} component={Constraints2Link}>
             <ListItemText primary="期間の勤務にグループから割り当てる職員数の上限" />
           </ListItem>
-          <ListItem button={true} component={C3Link}>
+          <ListItem button={true} component={Constraints3Link}>
             <ListItemText primary="職員の勤務の割り当て数の下限" />
           </ListItem>
-          <ListItem button={true} component={C4Link}>
+          <ListItem button={true} component={Constraints4Link}>
             <ListItemText primary="職員の勤務の割り当て数の上限" />
           </ListItem>
-          <ListItem button={true} component={C5Link}>
+          <ListItem button={true} component={Constraints5Link}>
             <ListItemText primary="勤務の連続日数の下限" />
           </ListItem>
-          <ListItem button={true} component={C6Link}>
+          <ListItem button={true} component={Constraints6Link}>
             <ListItemText primary="勤務の連続日数の上限" />
           </ListItem>
-          <ListItem button={true} component={C7Link}>
+          <ListItem button={true} component={Constraints7Link}>
             <ListItemText primary="勤務の間隔日数の下限" />
           </ListItem>
-          <ListItem button={true} component={C8Link}>
+          <ListItem button={true} component={Constraints8Link}>
             <ListItemText primary="勤務の間隔日数の上限" />
           </ListItem>
-          <ListItem button={true} component={C9Link}>
+          <ListItem button={true} component={Constraints9Link}>
             <ListItemText primary="職員の期間に割り当てる勤務" />
           </ListItem>
-          <ListItem button={true} component={C10Link}>
+          <ListItem button={true} component={Constraints10Link}>
             <ListItemText primary="職員の期間に割り当てない勤務" />
           </ListItem>
         </List>
@@ -284,17 +284,17 @@ class ResponsiveDrawer extends React.Component<Props, State> {
                 <Route path="/members" component={Members} />
                 <Route path="/kinmus" component={Kinmus} />
                 <Route path="/groups" component={Groups} />
-                <Route path="/c0" component={C0} />
-                <Route path="/c1" component={C1} />
-                <Route path="/c2" component={C2} />
-                <Route path="/c3" component={C3} />
-                <Route path="/c4" component={C4} />
-                <Route path="/c5" component={C5} />
-                <Route path="/c6" component={C6} />
-                <Route path="/c7" component={C7} />
-                <Route path="/c8" component={C8} />
-                <Route path="/c9" component={C9} />
-                <Route path="/c10" component={C10} />
+                <Route path="/constraints0" component={Constraints0} />
+                <Route path="/constraints1" component={Constraints1} />
+                <Route path="/constraints2" component={Constraints2} />
+                <Route path="/constraints3" component={Constraints3} />
+                <Route path="/constraints4" component={Constraints4} />
+                <Route path="/constraints5" component={Constraints5} />
+                <Route path="/constraints6" component={Constraints6} />
+                <Route path="/constraints7" component={Constraints7} />
+                <Route path="/constraints8" component={Constraints8} />
+                <Route path="/constraints9" component={Constraints9} />
+                <Route path="/constraints10" component={Constraints10} />
               </Grid>
             </Grid>
           </div>

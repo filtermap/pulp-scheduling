@@ -20,46 +20,46 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
-import * as c5 from '../modules/c5'
+import * as constraints5 from '../modules/constraints5'
 import * as kinmus from '../modules/kinmus'
 
 type Props = {
   dispatch: Dispatch
-  c5: c5.C5[]
+  constraints5: constraints5.Constraint5[]
   kinmus: kinmus.Kinmu[]
 }
 
 type State = {
   creationDialogIsOpen: boolean
-  newC5IsEnabled: boolean
-  newC5KinmuId: number
-  newC5MinNumberOfDays: number
+  newConstraint5IsEnabled: boolean
+  newConstraint5KinmuId: number
+  newConstraint5MinNumberOfDays: number
   deletionDialogIsOpen: boolean
-  selectedC5Id: number
+  selectedConstraint5Id: number
 }
 
-class C5 extends React.Component<Props, State> {
+class Constraints5 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
-    newC5IsEnabled: true,
-    newC5KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-    newC5MinNumberOfDays: 0,
-    selectedC5Id: this.props.c5.length > 0 ? this.props.c5[0].id : 0,
+    newConstraint5IsEnabled: true,
+    newConstraint5KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
+    newConstraint5MinNumberOfDays: 0,
+    selectedConstraint5Id: this.props.constraints5.length > 0 ? this.props.constraints5[0].id : 0,
   }
-  public handleChangeC5IsEnabled(id: number) {
+  public handleChangeConstraint5IsEnabled(id: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      this.props.dispatch(c5.updateC5IsEnabled(id, checked))
+      this.props.dispatch(constraints5.updateConstraint5IsEnabled(id, checked))
     }
   }
-  public handleChangeC5KinmuId(id: number) {
+  public handleChangeConstraint5KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c5.updateC5KinmuId(id, parseInt(event.target.value, 10)))
+      this.props.dispatch(constraints5.updateConstraint5KinmuId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC5MinNumberOfDays(id: number) {
+  public handleChangeConstraint5MinNumberOfDays(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c5.updateC5MinNumberOfDays(id, parseInt(event.target.value, 10)))
+      this.props.dispatch(constraints5.updateConstraint5MinNumberOfDays(id, parseInt(event.target.value, 10)))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -68,43 +68,43 @@ class C5 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public handleChangeNewC5IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    this.setState({ newC5IsEnabled: checked })
+  public handleChangeNewConstraint5IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newConstraint5IsEnabled: checked })
   }
-  public handleChangeNewC5KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC5KinmuId: parseInt(event.target.value, 10) })
+  public handleChangeNewConstraint5KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint5KinmuId: parseInt(event.target.value, 10) })
   }
-  public handleChangeNewC5MinNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC5MinNumberOfDays: parseInt(event.target.value, 10) })
+  public handleChangeNewConstraint5MinNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint5MinNumberOfDays: parseInt(event.target.value, 10) })
   }
-  public handleClickCreateC5 = () => {
+  public handleClickCreateConstraint5 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c5.createC5(this.state.newC5IsEnabled, this.state.newC5KinmuId, this.state.newC5MinNumberOfDays))
+    this.props.dispatch(constraints5.createConstraint5(this.state.newConstraint5IsEnabled, this.state.newConstraint5KinmuId, this.state.newConstraint5MinNumberOfDays))
   }
-  public handleClickOpenDeletionDialog(selectedC5Id: number) {
+  public handleClickOpenDeletionDialog(selectedConstraint5Id: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedC5Id,
+        selectedConstraint5Id,
       })
     }
   }
   public handleCloseDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: false })
   }
-  public handleClickDeleteC5 = () => {
+  public handleClickDeleteConstraint5 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(c5.deleteC5(this.state.selectedC5Id))
+    this.props.dispatch(constraints5.deleteConstraint5(this.state.selectedConstraint5Id))
   }
   public render() {
-    const selectedC5 = this.props.c5.find(c => c.id === this.state.selectedC5Id)
+    const selectedConstraint5 = this.props.constraints5.find(c => c.id === this.state.selectedConstraint5Id)
     return (
       <>
         <Toolbar>
           <Typography variant="subheading" style={{ flex: 1 }}>勤務の連続日数の下限</Typography>
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
-        {this.props.c5.map(c => (
+        {this.props.constraints5.map(c => (
           <ExpansionPanel key={c.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}の連続日数を${c.min_number_of_days}日以上にする`}</Typography>
@@ -114,7 +114,7 @@ class C5 extends React.Component<Props, State> {
                 control={
                   <Checkbox
                     checked={c.is_enabled}
-                    onChange={this.handleChangeC5IsEnabled(c.id)}
+                    onChange={this.handleChangeConstraint5IsEnabled(c.id)}
                     color="primary"
                   />
                 }
@@ -124,7 +124,7 @@ class C5 extends React.Component<Props, State> {
                 select={true}
                 label="勤務"
                 value={c.kinmu_id}
-                onChange={this.handleChangeC5KinmuId(c.id)}
+                onChange={this.handleChangeConstraint5KinmuId(c.id)}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
@@ -135,7 +135,7 @@ class C5 extends React.Component<Props, State> {
                 label="連続日数下限"
                 type="number"
                 defaultValue={c.min_number_of_days}
-                onChange={this.handleChangeC5MinNumberOfDays(c.id)}
+                onChange={this.handleChangeConstraint5MinNumberOfDays(c.id)}
                 fullWidth={true}
               />
             </ExpansionPanelDetails>
@@ -160,8 +160,8 @@ class C5 extends React.Component<Props, State> {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.newC5IsEnabled}
-                    onChange={this.handleChangeNewC5IsEnabled}
+                    checked={this.state.newConstraint5IsEnabled}
+                    onChange={this.handleChangeNewConstraint5IsEnabled}
                     color="primary"
                   />
                 }
@@ -170,8 +170,8 @@ class C5 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.newC5KinmuId}
-                onChange={this.handleChangeNewC5KinmuId}
+                value={this.state.newConstraint5KinmuId}
+                onChange={this.handleChangeNewConstraint5KinmuId}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
@@ -181,25 +181,25 @@ class C5 extends React.Component<Props, State> {
               <TextField
                 label="連続日数下限"
                 type="number"
-                defaultValue={this.state.newC5MinNumberOfDays}
-                onChange={this.handleChangeNewC5MinNumberOfDays}
+                defaultValue={this.state.newConstraint5MinNumberOfDays}
+                onChange={this.handleChangeNewConstraint5MinNumberOfDays}
                 fullWidth={true}
               />
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateC5}>追加</Button>
+              <Button color="primary" onClick={this.handleClickCreateConstraint5}>追加</Button>
               <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
-        {selectedC5 &&
+        {selectedConstraint5 &&
           <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>勤務の連続日数の下限の削除</DialogTitle>
             <DialogContent>
               <DialogContentText>この勤務の連続日数の下限を削除します</DialogContentText>
-              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === selectedC5.kinmu_id)!.name}の連続日数を${selectedC5.min_number_of_days}日以上にする`}</Typography>
+              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === selectedConstraint5.kinmu_id)!.name}の連続日数を${selectedConstraint5.min_number_of_days}日以上にする`}</Typography>
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickDeleteC5}>削除</Button>
+              <Button color="primary" onClick={this.handleClickDeleteConstraint5}>削除</Button>
               <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
@@ -210,10 +210,10 @@ class C5 extends React.Component<Props, State> {
 
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    c5: state.present.c5,
+    constraints5: state.present.constraints5,
     kinmus: state.present.kinmus,
     members: state.present.members,
   }
 }
 
-export default connect(mapStateToProps)(C5)
+export default connect(mapStateToProps)(Constraints5)

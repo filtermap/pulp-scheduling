@@ -20,67 +20,67 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
-import * as c9 from '../modules/c9'
+import * as constraints9 from '../modules/constraints9'
 import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
 import * as utils from '../utils'
 
 type Props = {
   dispatch: Dispatch
-  c9: c9.C9[]
+  constraints9: constraints9.Constraint9[]
   members: members.Member[]
   kinmus: kinmus.Kinmu[]
 }
 
 type State = {
   creationDialogIsOpen: boolean
-  newC9IsEnabled: boolean
-  newC9MemberId: number
-  newC9StartDateName: string
-  newC9StopDateName: string
-  newC9KinmuId: number
+  newConstraint9IsEnabled: boolean
+  newConstraint9MemberId: number
+  newConstraint9StartDateName: string
+  newConstraint9StopDateName: string
+  newConstraint9KinmuId: number
   deletionDialogIsOpen: boolean
-  selectedC9Id: number
+  selectedConstraint9Id: number
 }
 
-class C9 extends React.Component<Props, State> {
+class Constraints9 extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     const todayString = utils.dateToString(new Date())
     this.state = {
       creationDialogIsOpen: false,
       deletionDialogIsOpen: false,
-      newC9IsEnabled: true,
-      newC9KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-      newC9MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
-      newC9StartDateName: todayString,
-      newC9StopDateName: todayString,
-      selectedC9Id: this.props.c9.length > 0 ? this.props.c9[0].id : 0,
+      newConstraint9IsEnabled: true,
+      newConstraint9KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
+      newConstraint9MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
+      newConstraint9StartDateName: todayString,
+      newConstraint9StopDateName: todayString,
+      selectedConstraint9Id: this.props.constraints9.length > 0 ? this.props.constraints9[0].id : 0,
     }
   }
-  public handleChangeC9IsEnabled(id: number) {
+  public handleChangeConstraint9IsEnabled(id: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      this.props.dispatch(c9.updateC9IsEnabled(id, checked))
+      this.props.dispatch(constraints9.updateConstraint9IsEnabled(id, checked))
     }
   }
-  public handleChangeC9MemberId(id: number) {
+  public handleChangeConstraint9MemberId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c9.updateC9MemberId(id, parseInt(event.target.value, 10)))
+      this.props.dispatch(constraints9.updateConstraint9MemberId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC9StartDateName(id: number) {
+  public handleChangeConstraint9StartDateName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c9.updateC9StartDateName(id, event.target.value))
+      this.props.dispatch(constraints9.updateConstraint9StartDateName(id, event.target.value))
     }
   }
-  public handleChangeC9StopDateName(id: number) {
+  public handleChangeConstraint9StopDateName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c9.updateC9StopDateName(id, event.target.value))
+      this.props.dispatch(constraints9.updateConstraint9StopDateName(id, event.target.value))
     }
   }
-  public handleChangeC9KinmuId(id: number) {
+  public handleChangeConstraint9KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c9.updateC9KinmuId(id, parseInt(event.target.value, 10)))
+      this.props.dispatch(constraints9.updateConstraint9KinmuId(id, parseInt(event.target.value, 10)))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -89,49 +89,49 @@ class C9 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public handleChangeNewC9IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    this.setState({ newC9IsEnabled: checked })
+  public handleChangeNewConstraint9IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newConstraint9IsEnabled: checked })
   }
-  public handleChangeNewC9MemberId = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC9MemberId: parseInt(event.target.value, 10) })
+  public handleChangeNewConstraint9MemberId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint9MemberId: parseInt(event.target.value, 10) })
   }
-  public handleChangeNewC9StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC9StartDateName: event.target.value })
+  public handleChangeNewConstraint9StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint9StartDateName: event.target.value })
   }
-  public handleChangeNewC9StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC9StopDateName: event.target.value })
+  public handleChangeNewConstraint9StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint9StopDateName: event.target.value })
   }
-  public handleChangeNewC9KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC9KinmuId: parseInt(event.target.value, 10) })
+  public handleChangeNewConstraint9KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint9KinmuId: parseInt(event.target.value, 10) })
   }
-  public handleClickCreateC9 = () => {
+  public handleClickCreateConstraint9 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c9.createC9(this.state.newC9IsEnabled, this.state.newC9MemberId, this.state.newC9StartDateName, this.state.newC9StopDateName, this.state.newC9KinmuId))
+    this.props.dispatch(constraints9.createConstraint9(this.state.newConstraint9IsEnabled, this.state.newConstraint9MemberId, this.state.newConstraint9StartDateName, this.state.newConstraint9StopDateName, this.state.newConstraint9KinmuId))
   }
-  public handleClickOpenDeletionDialog(selectedC9Id: number) {
+  public handleClickOpenDeletionDialog(selectedConstraint9Id: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedC9Id,
+        selectedConstraint9Id,
       })
     }
   }
   public handleCloseDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: false })
   }
-  public handleClickDeleteC9 = () => {
+  public handleClickDeleteConstraint9 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(c9.deleteC9(this.state.selectedC9Id))
+    this.props.dispatch(constraints9.deleteConstraint9(this.state.selectedConstraint9Id))
   }
   public render() {
-    const selectedC9 = this.props.c9.find(c => c.id === this.state.selectedC9Id)
+    const selectedConstraint9 = this.props.constraints9.find(c => c.id === this.state.selectedConstraint9Id)
     return (
       <>
         <Toolbar>
           <Typography variant="subheading" style={{ flex: 1 }}>職員の期間に割り当てる勤務</Typography>
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
-        {this.props.c9.map(c => (
+        {this.props.constraints9.map(c => (
           <ExpansionPanel key={c.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               <Typography>{`${this.props.members.find(member => member.id === c.member_id)!.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を割り当てる`}</Typography>
@@ -141,7 +141,7 @@ class C9 extends React.Component<Props, State> {
                 control={
                   <Checkbox
                     checked={c.is_enabled}
-                    onChange={this.handleChangeC9IsEnabled(c.id)}
+                    onChange={this.handleChangeConstraint9IsEnabled(c.id)}
                     color="primary"
                   />
                 }
@@ -151,7 +151,7 @@ class C9 extends React.Component<Props, State> {
                 select={true}
                 label="職員"
                 value={c.member_id}
-                onChange={this.handleChangeC9MemberId(c.id)}
+                onChange={this.handleChangeConstraint9MemberId(c.id)}
                 fullWidth={true}
               >
                 {this.props.members.map(member => (
@@ -162,7 +162,7 @@ class C9 extends React.Component<Props, State> {
                 label="開始日"
                 type="date"
                 defaultValue={c.start_date_name}
-                onChange={this.handleChangeC9StartDateName(c.id)}
+                onChange={this.handleChangeConstraint9StartDateName(c.id)}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -172,7 +172,7 @@ class C9 extends React.Component<Props, State> {
                 label="終了日"
                 type="date"
                 defaultValue={c.stop_date_name}
-                onChange={this.handleChangeC9StopDateName(c.id)}
+                onChange={this.handleChangeConstraint9StopDateName(c.id)}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -182,7 +182,7 @@ class C9 extends React.Component<Props, State> {
                 select={true}
                 label="勤務"
                 value={c.kinmu_id}
-                onChange={this.handleChangeC9KinmuId(c.id)}
+                onChange={this.handleChangeConstraint9KinmuId(c.id)}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
@@ -212,8 +212,8 @@ class C9 extends React.Component<Props, State> {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.newC9IsEnabled}
-                    onChange={this.handleChangeNewC9IsEnabled}
+                    checked={this.state.newConstraint9IsEnabled}
+                    onChange={this.handleChangeNewConstraint9IsEnabled}
                     color="primary"
                   />
                 }
@@ -222,8 +222,8 @@ class C9 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="職員"
-                value={this.state.newC9MemberId}
-                onChange={this.handleChangeNewC9MemberId}
+                value={this.state.newConstraint9MemberId}
+                onChange={this.handleChangeNewConstraint9MemberId}
                 fullWidth={true}
               >
                 {this.props.members.map(member => (
@@ -233,8 +233,8 @@ class C9 extends React.Component<Props, State> {
               <TextField
                 label="開始日"
                 type="date"
-                defaultValue={this.state.newC9StartDateName}
-                onChange={this.handleChangeNewC9StartDateName}
+                defaultValue={this.state.newConstraint9StartDateName}
+                onChange={this.handleChangeNewConstraint9StartDateName}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -243,8 +243,8 @@ class C9 extends React.Component<Props, State> {
               <TextField
                 label="終了日"
                 type="date"
-                defaultValue={this.state.newC9StopDateName}
-                onChange={this.handleChangeNewC9StopDateName}
+                defaultValue={this.state.newConstraint9StopDateName}
+                onChange={this.handleChangeNewConstraint9StopDateName}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -253,8 +253,8 @@ class C9 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.newC9KinmuId}
-                onChange={this.handleChangeNewC9KinmuId}
+                value={this.state.newConstraint9KinmuId}
+                onChange={this.handleChangeNewConstraint9KinmuId}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
@@ -263,19 +263,19 @@ class C9 extends React.Component<Props, State> {
               </TextField>
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateC9}>追加</Button>
+              <Button color="primary" onClick={this.handleClickCreateConstraint9}>追加</Button>
               <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
-        {selectedC9 &&
+        {selectedConstraint9 &&
           <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>職員の期間に割り当てる勤務の削除</DialogTitle>
             <DialogContent>
               <DialogContentText>この職員の期間に割り当てる勤務を削除します</DialogContentText>
-              <Typography>{`${this.props.members.find(member => member.id === selectedC9.member_id)!.name}の${selectedC9.start_date_name}から${selectedC9.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === selectedC9.kinmu_id)!.name}を割り当てる`}</Typography>
+              <Typography>{`${this.props.members.find(member => member.id === selectedConstraint9.member_id)!.name}の${selectedConstraint9.start_date_name}から${selectedConstraint9.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === selectedConstraint9.kinmu_id)!.name}を割り当てる`}</Typography>
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickDeleteC9}>削除</Button>
+              <Button color="primary" onClick={this.handleClickDeleteConstraint9}>削除</Button>
               <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
@@ -286,10 +286,10 @@ class C9 extends React.Component<Props, State> {
 
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    c9: state.present.c9,
+    constraints9: state.present.constraints9,
     kinmus: state.present.kinmus,
     members: state.present.members,
   }
 }
 
-export default connect(mapStateToProps)(C9)
+export default connect(mapStateToProps)(Constraints9)

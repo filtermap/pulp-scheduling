@@ -20,52 +20,52 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
-import * as c0 from '../modules/c0'
-import * as c0_kinmus from '../modules/c0_kinmus'
+import * as constraint0_kinmus from '../modules/constraint0_kinmus'
+import * as constraints0 from '../modules/constraints0'
 import * as kinmus from '../modules/kinmus'
 
 type Props = {
   dispatch: Dispatch
-  c0: c0.C0[]
-  c0_kinmus: c0_kinmus.C0Kinmu[]
+  constraints0: constraints0.Constraint0[]
+  constraint0_kinmus: constraint0_kinmus.Constraint0Kinmu[]
   kinmus: kinmus.Kinmu[]
 }
 
 type State = {
   creationDialogIsOpen: boolean
-  newC0IsEnabled: boolean
-  newC0C0KinmuKinmuIds: number[]
+  newConstraint0IsEnabled: boolean
+  newConstraint0Constraint0KinmuKinmuIds: number[]
   deletionDialogIsOpen: boolean
-  selectedC0Id: number
+  selectedConstraint0Id: number
 }
 
-class C0 extends React.Component<Props, State> {
+class Constraints0 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
-    newC0C0KinmuKinmuIds: this.props.kinmus.length > 0 ? [this.props.kinmus[0].id, this.props.kinmus[0].id] : [],
-    newC0IsEnabled: true,
-    selectedC0Id: this.props.c0.length > 0 ? this.props.c0[0].id : 0,
+    newConstraint0Constraint0KinmuKinmuIds: this.props.kinmus.length > 0 ? [this.props.kinmus[0].id, this.props.kinmus[0].id] : [],
+    newConstraint0IsEnabled: true,
+    selectedConstraint0Id: this.props.constraints0.length > 0 ? this.props.constraints0[0].id : 0,
   }
-  public handleChangeC0IsEnabled(id: number) {
+  public handleChangeConstraint0IsEnabled(id: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      this.props.dispatch(c0.updateC0IsEnabled(id, checked))
+      this.props.dispatch(constraints0.updateConstraint0IsEnabled(id, checked))
     }
   }
-  public handleClickCreateC0Kinmu(c0_id: number, sequence_number: number) {
+  public handleClickCreateConstraint0Kinmu(constraint0_id: number, sequence_number: number) {
     return () => {
       const kinmu_id = this.props.kinmus[0].id
-      this.props.dispatch(c0_kinmus.createC0Kinmu(c0_id, sequence_number, kinmu_id))
+      this.props.dispatch(constraint0_kinmus.createConstraint0Kinmu(constraint0_id, sequence_number, kinmu_id))
     }
   }
-  public handleChangeC0KinmuKinmuId(id: number) {
+  public handleChangeConstraint0KinmuKinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c0_kinmus.updateC0KinmuKinmuId(id, parseInt(event.target.value, 10)))
+      this.props.dispatch(constraint0_kinmus.updateConstraint0KinmuKinmuId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleClickDeleteC0Kinmu(id: number) {
+  public handleClickDeleteConstraint0Kinmu(id: number) {
     return (_: React.MouseEvent<HTMLButtonElement>) => {
-      this.props.dispatch(all.deleteC0Kinmu(id))
+      this.props.dispatch(all.deleteConstraint0Kinmu(id))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -74,21 +74,21 @@ class C0 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public handleChangeNewC0IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    this.setState({ newC0IsEnabled: checked })
+  public handleChangeNewConstraint0IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newConstraint0IsEnabled: checked })
   }
-  public handleClickCreateNewC0C0Kinmu(id: number) {
+  public handleClickCreateNewConstraint0Constraint0Kinmu(id: number) {
     return () => {
-      const newC0C0KinmuKinmuIds = [...this.state.newC0C0KinmuKinmuIds]
-      newC0C0KinmuKinmuIds.splice(id, 0, this.props.kinmus[0].id)
-      this.setState({ newC0C0KinmuKinmuIds })
+      const newConstraint0Constraint0KinmuKinmuIds = [...this.state.newConstraint0Constraint0KinmuKinmuIds]
+      newConstraint0Constraint0KinmuKinmuIds.splice(id, 0, this.props.kinmus[0].id)
+      this.setState({ newConstraint0Constraint0KinmuKinmuIds })
     }
   }
-  public handleChangeNewC0C0KinmuKinmuId(newC0C0KinmuKinmuIdsIndex: number) {
+  public handleChangeNewConstraint0Constraint0KinmuKinmuId(newConstraint0Constraint0KinmuKinmuIdsIndex: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       this.setState({
-        newC0C0KinmuKinmuIds: this.state.newC0C0KinmuKinmuIds.map((kinmuId, index) => {
-          if (index !== newC0C0KinmuKinmuIdsIndex) {
+        newConstraint0Constraint0KinmuKinmuIds: this.state.newConstraint0Constraint0KinmuKinmuIds.map((kinmuId, index) => {
+          if (index !== newConstraint0Constraint0KinmuKinmuIdsIndex) {
             return kinmuId
           }
           return parseInt(event.target.value, 10)
@@ -96,73 +96,73 @@ class C0 extends React.Component<Props, State> {
       })
     }
   }
-  public handleClickDeleteNewC0C0Kinmu(newC0C0KinmuKinmuIdsId: number) {
+  public handleClickDeleteNewConstraint0Constraint0Kinmu(newConstraint0Constraint0KinmuKinmuIdsId: number) {
     return () => {
-      this.setState({ newC0C0KinmuKinmuIds: this.state.newC0C0KinmuKinmuIds.filter((_, id) => id !== newC0C0KinmuKinmuIdsId) })
+      this.setState({ newConstraint0Constraint0KinmuKinmuIds: this.state.newConstraint0Constraint0KinmuKinmuIds.filter((_, id) => id !== newConstraint0Constraint0KinmuKinmuIdsId) })
     }
   }
-  public handleClickCreateC0 = (_: React.MouseEvent<HTMLButtonElement>) => {
+  public handleClickCreateConstraint0 = (_: React.MouseEvent<HTMLButtonElement>) => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(all.createC0(this.state.newC0IsEnabled, this.state.newC0C0KinmuKinmuIds))
+    this.props.dispatch(all.createConstraint0(this.state.newConstraint0IsEnabled, this.state.newConstraint0Constraint0KinmuKinmuIds))
   }
-  public handleClickOpenDeletionDialog(selectedC0Id: number) {
+  public handleClickOpenDeletionDialog(selectedConstraint0Id: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedC0Id,
+        selectedConstraint0Id,
       })
     }
   }
   public handleCloseDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: false })
   }
-  public handleClickDeleteC0 = () => {
+  public handleClickDeleteConstraint0 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(all.deleteC0(this.state.selectedC0Id))
+    this.props.dispatch(all.deleteConstraint0(this.state.selectedConstraint0Id))
   }
   public render() {
-    const selected_c0_kinmus = this.props.c0_kinmus.filter(({ c0_id }) => c0_id === this.state.selectedC0Id).sort((a, b) => a.sequence_number - b.sequence_number)
+    const selected_constraint0_kinmus = this.props.constraint0_kinmus.filter(({ constraint0_id }) => constraint0_id === this.state.selectedConstraint0Id).sort((a, b) => a.sequence_number - b.sequence_number)
     return (
       <>
         <Toolbar>
           <Typography variant="subheading" style={{ flex: 1 }}>連続禁止勤務並び</Typography>
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
-        {this.props.c0.map(c => {
-          const c0_kinmus_by_sequence_id = this.props.c0_kinmus.filter(c0_kinmu => c0_kinmu.c0_id === c.id).sort((a, b) => a.sequence_number - b.sequence_number)
+        {this.props.constraints0.map(c => {
+          const constraint0_kinmus_by_sequence_id = this.props.constraint0_kinmus.filter(constraint0_kinmu => constraint0_kinmu.constraint0_id === c.id).sort((a, b) => a.sequence_number - b.sequence_number)
           return (
             <ExpansionPanel key={c.id}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>{c0_kinmus_by_sequence_id.map(c0_kinmu => this.props.kinmus.find(kinmu => kinmu.id === c0_kinmu.kinmu_id)!.name).join(', ')}</Typography>
+                <Typography>{constraint0_kinmus_by_sequence_id.map(constraint0_kinmu => this.props.kinmus.find(kinmu => kinmu.id === constraint0_kinmu.kinmu_id)!.name).join(', ')}</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
                 <FormControlLabel
                   control={
                     <Checkbox
                       checked={c.is_enabled}
-                      onChange={this.handleChangeC0IsEnabled(c.id)}
+                      onChange={this.handleChangeConstraint0IsEnabled(c.id)}
                       color="primary"
                     />
                   }
                   label="有効"
                 />
-                <Button size="small" onClick={this.handleClickCreateC0Kinmu(c.id, 0)}>追加</Button>
-                {c0_kinmus_by_sequence_id.map((c0_kinmu, id) => (
-                  <React.Fragment key={c0_kinmu.id}>
+                <Button size="small" onClick={this.handleClickCreateConstraint0Kinmu(c.id, 0)}>追加</Button>
+                {constraint0_kinmus_by_sequence_id.map((constraint0_kinmu, id) => (
+                  <React.Fragment key={constraint0_kinmu.id}>
                     <TextField
                       select={true}
                       label={`勤務${id + 1}`}
-                      value={c0_kinmu.kinmu_id}
-                      onChange={this.handleChangeC0KinmuKinmuId(c0_kinmu.id)}
+                      value={constraint0_kinmu.kinmu_id}
+                      onChange={this.handleChangeConstraint0KinmuKinmuId(constraint0_kinmu.id)}
                       fullWidth={true}
                     >
                       {this.props.kinmus.map(kinmu => (
                         <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                       ))}
                     </TextField>
-                    {c0_kinmus_by_sequence_id.length > 2 &&
-                      <Button size="small" onClick={this.handleClickDeleteC0Kinmu(c0_kinmu.id)}>削除</Button>}
-                    <Button size="small" onClick={this.handleClickCreateC0Kinmu(c.id, c0_kinmu.sequence_number + 1)}>追加</Button>
+                    {constraint0_kinmus_by_sequence_id.length > 2 &&
+                      <Button size="small" onClick={this.handleClickDeleteConstraint0Kinmu(constraint0_kinmu.id)}>削除</Button>}
+                    <Button size="small" onClick={this.handleClickCreateConstraint0Kinmu(c.id, constraint0_kinmu.sequence_number + 1)}>追加</Button>
                   </React.Fragment>
                 ))}
               </ExpansionPanelDetails>
@@ -188,46 +188,46 @@ class C0 extends React.Component<Props, State> {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.newC0IsEnabled}
-                    onChange={this.handleChangeNewC0IsEnabled}
+                    checked={this.state.newConstraint0IsEnabled}
+                    onChange={this.handleChangeNewConstraint0IsEnabled}
                     color="primary"
                   />
                 }
                 label="有効"
               />
-              <Button size="small" onClick={this.handleClickCreateNewC0C0Kinmu(0)}>追加</Button>
-              {this.state.newC0C0KinmuKinmuIds.map((kinmuId, id) => (
+              <Button size="small" onClick={this.handleClickCreateNewConstraint0Constraint0Kinmu(0)}>追加</Button>
+              {this.state.newConstraint0Constraint0KinmuKinmuIds.map((kinmuId, id) => (
                 <React.Fragment key={`${id}-${kinmuId}`}>
                   <TextField
                     select={true}
                     label={`勤務${id + 1}`}
                     value={kinmuId}
-                    onChange={this.handleChangeNewC0C0KinmuKinmuId(id)}
+                    onChange={this.handleChangeNewConstraint0Constraint0KinmuKinmuId(id)}
                     fullWidth={true}
                   >
                     {this.props.kinmus.map(kinmu => (
                       <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
                     ))}
                   </TextField>
-                  <Button size="small" onClick={this.handleClickDeleteNewC0C0Kinmu(id)}>削除</Button>
-                  <Button size="small" onClick={this.handleClickCreateNewC0C0Kinmu(id + 1)}>追加</Button>
+                  <Button size="small" onClick={this.handleClickDeleteNewConstraint0Constraint0Kinmu(id)}>削除</Button>
+                  <Button size="small" onClick={this.handleClickCreateNewConstraint0Constraint0Kinmu(id + 1)}>追加</Button>
                 </React.Fragment>
               ))}
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateC0}>追加</Button>
+              <Button color="primary" onClick={this.handleClickCreateConstraint0}>追加</Button>
               <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
-        {selected_c0_kinmus.length > 0 &&
+        {selected_constraint0_kinmus.length > 0 &&
           <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
             <DialogTitle>連続禁止勤務並びの削除</DialogTitle>
             <DialogContent>
               <DialogContentText>この連続禁止勤務並びを削除します</DialogContentText>
-              <Typography>{selected_c0_kinmus.map(c0_kinmu => this.props.kinmus.find(kinmu => kinmu.id === c0_kinmu.kinmu_id)!.name).join(', ')}</Typography>
+              <Typography>{selected_constraint0_kinmus.map(constraint0_kinmu => this.props.kinmus.find(kinmu => kinmu.id === constraint0_kinmu.kinmu_id)!.name).join(', ')}</Typography>
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickDeleteC0}>削除</Button>
+              <Button color="primary" onClick={this.handleClickDeleteConstraint0}>削除</Button>
               <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>
@@ -239,10 +239,10 @@ class C0 extends React.Component<Props, State> {
 
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    c0: state.present.c0,
-    c0_kinmus: state.present.c0_kinmus,
+    constraint0_kinmus: state.present.constraint0_kinmus,
+    constraints0: state.present.constraints0,
     kinmus: state.present.kinmus,
   }
 }
 
-export default connect(mapStateToProps)(C0)
+export default connect(mapStateToProps)(Constraints0)

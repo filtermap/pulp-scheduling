@@ -22,8 +22,8 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
-import * as c1 from '../modules/c1'
-import * as c2 from '../modules/c2'
+import * as constraints1 from '../modules/constraints1'
+import * as constraints2 from '../modules/constraints2'
 import * as group_members from '../modules/group_members'
 import * as groups from '../modules/groups'
 import * as kinmus from '../modules/kinmus'
@@ -34,8 +34,8 @@ type Props = {
   groups: groups.Group[]
   members: members.Member[]
   group_members: group_members.GroupMember[]
-  c1: c1.C1[]
-  c2: c2.C2[]
+  constraints1: constraints1.Constraint1[]
+  constraints2: constraints2.Constraint2[]
   kinmus: kinmus.Kinmu[]
 }
 
@@ -118,8 +118,8 @@ class Groups extends React.Component<Props, State> {
   }
   public render() {
     const selectedGroup = this.props.groups.find(group => group.id === this.state.selectedGroupId)
-    const selectedGroupC1 = this.props.c1.filter(c => c.group_id === this.state.selectedGroupId)
-    const selectedGroupC2 = this.props.c2.filter(c => c.group_id === this.state.selectedGroupId)
+    const selectedGroupConstraints1 = this.props.constraints1.filter(c => c.group_id === this.state.selectedGroupId)
+    const selectedGroupConstraints2 = this.props.constraints2.filter(c => c.group_id === this.state.selectedGroupId)
     return (
       <>
         <Toolbar>
@@ -225,10 +225,10 @@ class Groups extends React.Component<Props, State> {
               <DialogContentText>このグループを削除します</DialogContentText>
               <Typography>{selectedGroup.name}</Typography>
               <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.group_id === selectedGroup.id).map(group_member => this.props.members.find(member => member.id === group_member.member_id)!.name).join(', ')}</Typography>
-              {(selectedGroupC1.length > 0 || selectedGroupC2.length > 0) &&
+              {(selectedGroupConstraints1.length > 0 || selectedGroupConstraints2.length > 0) &&
                 <DialogContentText>以下の条件も削除されます</DialogContentText>}
-              {selectedGroupC1.map(c => <Typography key={c.id}>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(({ id }) => id === c.kinmu_id)!.name}に${selectedGroup.name}から${c.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>)}
-              {selectedGroupC2.map(c => <Typography key={c.id}>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(({ id }) => id === c.kinmu_id)!.name}に${selectedGroup.name}から${c.max_number_of_assignments}人以下の職員を割り当てる`}</Typography>)}
+              {selectedGroupConstraints1.map(c => <Typography key={c.id}>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(({ id }) => id === c.kinmu_id)!.name}に${selectedGroup.name}から${c.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>)}
+              {selectedGroupConstraints2.map(c => <Typography key={c.id}>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(({ id }) => id === c.kinmu_id)!.name}に${selectedGroup.name}から${c.max_number_of_assignments}人以下の職員を割り当てる`}</Typography>)}
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteGroup}>削除</Button>
@@ -242,8 +242,8 @@ class Groups extends React.Component<Props, State> {
 
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    c1: state.present.c1,
-    c2: state.present.c2,
+    constraints1: state.present.constraints1,
+    constraints2: state.present.constraints2,
     group_members: state.present.group_members,
     groups: state.present.groups,
     kinmus: state.present.kinmus,

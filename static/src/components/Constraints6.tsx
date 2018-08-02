@@ -20,55 +20,46 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
-import * as c4 from '../modules/c4'
+import * as constraints6 from '../modules/constraints6'
 import * as kinmus from '../modules/kinmus'
-import * as members from '../modules/members'
 
 type Props = {
   dispatch: Dispatch
-  c4: c4.C4[]
-  members: members.Member[]
+  constraints6: constraints6.Constraint6[]
   kinmus: kinmus.Kinmu[]
 }
 
 type State = {
   creationDialogIsOpen: boolean
-  newC4IsEnabled: boolean
-  newC4MemberId: number
-  newC4KinmuId: number
-  newC4MaxNumberOfAssignments: number
+  newConstraint6IsEnabled: boolean
+  newConstraint6KinmuId: number
+  newConstraint6MaxNumberOfDays: number
   deletionDialogIsOpen: boolean
-  selectedC4Id: number
+  selectedConstraint6Id: number
 }
 
-class C4 extends React.Component<Props, State> {
+class Constraints6 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     deletionDialogIsOpen: false,
-    newC4IsEnabled: true,
-    newC4KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-    newC4MaxNumberOfAssignments: 0,
-    newC4MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
-    selectedC4Id: this.props.c4.length > 0 ? this.props.c4[0].id : 0,
+    newConstraint6IsEnabled: true,
+    newConstraint6KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
+    newConstraint6MaxNumberOfDays: 0,
+    selectedConstraint6Id: this.props.constraints6.length > 0 ? this.props.constraints6[0].id : 0,
   }
-  public handleChangeC4IsEnabled(id: number) {
+  public handleChangeConstraint6IsEnabled(id: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      this.props.dispatch(c4.updateC4IsEnabled(id, checked))
+      this.props.dispatch(constraints6.updateConstraint6IsEnabled(id, checked))
     }
   }
-  public handleChangeC4MemberId(id: number) {
+  public handleChangeConstraint6KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c4.updateC4MemberId(id, parseInt(event.target.value, 10)))
+      this.props.dispatch(constraints6.updateConstraint6KinmuId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC4KinmuId(id: number) {
+  public handleChangeConstraint6MaxNumberOfDays(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c4.updateC4KinmuId(id, parseInt(event.target.value, 10)))
-    }
-  }
-  public handleChangeC4MaxNumberOfAssignments(id: number) {
-    return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c4.updateC4MaxNumberOfAssignments(id, parseInt(event.target.value, 10)))
+      this.props.dispatch(constraints6.updateConstraint6MaxNumberOfDays(id, parseInt(event.target.value, 10)))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -77,56 +68,53 @@ class C4 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public handleChangeNewC4IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    this.setState({ newC4IsEnabled: checked })
+  public handleChangeNewConstraint6IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newConstraint6IsEnabled: checked })
   }
-  public handleChangeNewC4MemberId = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC4MemberId: parseInt(event.target.value, 10) })
+  public handleChangeNewConstraint6KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint6KinmuId: parseInt(event.target.value, 10) })
   }
-  public handleChangeNewC4KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC4KinmuId: parseInt(event.target.value, 10) })
+  public handleChangeNewConstraint6MaxNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint6MaxNumberOfDays: parseInt(event.target.value, 10) })
   }
-  public handleChangeNewC4MaxNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC4MaxNumberOfAssignments: parseInt(event.target.value, 10) })
-  }
-  public handleClickCreateC4 = () => {
+  public handleClickCreateConstraint6 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c4.createC4(this.state.newC4IsEnabled, this.state.newC4MemberId, this.state.newC4KinmuId, this.state.newC4MaxNumberOfAssignments))
+    this.props.dispatch(constraints6.createConstraint6(this.state.newConstraint6IsEnabled, this.state.newConstraint6KinmuId, this.state.newConstraint6MaxNumberOfDays))
   }
-  public handleClickOpenDeletionDialog(selectedC4Id: number) {
+  public handleClickOpenDeletionDialog(selectedConstraint6Id: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedC4Id,
+        selectedConstraint6Id,
       })
     }
   }
   public handleCloseDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: false })
   }
-  public handleClickDeleteC4 = () => {
+  public handleClickDeleteConstraint6 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(c4.deleteC4(this.state.selectedC4Id))
+    this.props.dispatch(constraints6.deleteConstraint6(this.state.selectedConstraint6Id))
   }
   public render() {
-    const selectedC4 = this.props.c4.find(c => c.id === this.state.selectedC4Id)
+    const selectedConstraint6 = this.props.constraints6.find(c => c.id === this.state.selectedConstraint6Id)
     return (
       <>
         <Toolbar>
-          <Typography variant="subheading" style={{ flex: 1 }}>職員の勤務の割り当て数の上限</Typography>
+          <Typography variant="subheading" style={{ flex: 1 }}>勤務の連続日数の上限</Typography>
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
-        {this.props.c4.map(c => (
+        {this.props.constraints6.map(c => (
           <ExpansionPanel key={c.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{`${this.props.members.find(member => member.id === c.member_id)!.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>
+              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}の連続日数を${c.max_number_of_days}日以下にする`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={c.is_enabled}
-                    onChange={this.handleChangeC4IsEnabled(c.id)}
+                    onChange={this.handleChangeConstraint6IsEnabled(c.id)}
                     color="primary"
                   />
                 }
@@ -134,20 +122,9 @@ class C4 extends React.Component<Props, State> {
               />
               <TextField
                 select={true}
-                label="職員"
-                value={c.member_id}
-                onChange={this.handleChangeC4MemberId(c.id)}
-                fullWidth={true}
-              >
-                {this.props.members.map(member => (
-                  <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                select={true}
                 label="勤務"
                 value={c.kinmu_id}
-                onChange={this.handleChangeC4KinmuId(c.id)}
+                onChange={this.handleChangeConstraint6KinmuId(c.id)}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
@@ -155,10 +132,10 @@ class C4 extends React.Component<Props, State> {
                 ))}
               </TextField>
               <TextField
-                label="割り当て数上限"
+                label="連続日数上限"
                 type="number"
-                defaultValue={c.max_number_of_assignments}
-                onChange={this.handleChangeC4MaxNumberOfAssignments(c.id)}
+                defaultValue={c.max_number_of_days}
+                onChange={this.handleChangeConstraint6MaxNumberOfDays(c.id)}
                 fullWidth={true}
               />
             </ExpansionPanelDetails>
@@ -167,11 +144,10 @@ class C4 extends React.Component<Props, State> {
             </ExpansionPanelActions>
           </ExpansionPanel>
         ))}
-        {this.props.members.length === 0 || this.props.kinmus.length === 0 ?
+        {this.props.kinmus.length === 0 ?
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>職員の勤務の割り当て数の上限を追加できません</DialogTitle>
+            <DialogTitle>勤務の連続日数の上限を追加できません</DialogTitle>
             <DialogContent>
-              {this.props.members.length === 0 ? <DialogContentText>職員がいません</DialogContentText> : null}
               {this.props.kinmus.length === 0 ? <DialogContentText>勤務がありません</DialogContentText> : null}
             </DialogContent>
             <DialogActions>
@@ -179,13 +155,13 @@ class C4 extends React.Component<Props, State> {
             </DialogActions>
           </Dialog> :
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>職員の勤務の割り当て数の上限の追加</DialogTitle>
+            <DialogTitle>勤務の連続日数の上限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.newC4IsEnabled}
-                    onChange={this.handleChangeNewC4IsEnabled}
+                    checked={this.state.newConstraint6IsEnabled}
+                    onChange={this.handleChangeNewConstraint6IsEnabled}
                     color="primary"
                   />
                 }
@@ -193,20 +169,9 @@ class C4 extends React.Component<Props, State> {
               />
               <TextField
                 select={true}
-                label="職員"
-                value={this.state.newC4MemberId}
-                onChange={this.handleChangeNewC4MemberId}
-                fullWidth={true}
-              >
-                {this.props.members.map(member => (
-                  <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                select={true}
                 label="勤務"
-                value={this.state.newC4KinmuId}
-                onChange={this.handleChangeNewC4KinmuId}
+                value={this.state.newConstraint6KinmuId}
+                onChange={this.handleChangeNewConstraint6KinmuId}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
@@ -214,27 +179,27 @@ class C4 extends React.Component<Props, State> {
                 ))}
               </TextField>
               <TextField
-                label="割り当て数上限"
+                label="連続日数上限"
                 type="number"
-                defaultValue={this.state.newC4MaxNumberOfAssignments}
-                onChange={this.handleChangeNewC4MaxNumberOfAssignments}
+                defaultValue={this.state.newConstraint6MaxNumberOfDays}
+                onChange={this.handleChangeNewConstraint6MaxNumberOfDays}
                 fullWidth={true}
               />
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateC4}>追加</Button>
+              <Button color="primary" onClick={this.handleClickCreateConstraint6}>追加</Button>
               <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
-        {selectedC4 &&
+        {selectedConstraint6 &&
           <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>職員の勤務の割り当て数の上限の削除</DialogTitle>
+            <DialogTitle>勤務の連続日数の上限の削除</DialogTitle>
             <DialogContent>
-              <DialogContentText>この職員の勤務の割り当て数の上限を削除します</DialogContentText>
-              <Typography>{`${this.props.members.find(member => member.id === selectedC4.member_id)!.name}に${this.props.kinmus.find(kinmu => kinmu.id === selectedC4.kinmu_id)!.name}を${selectedC4.max_number_of_assignments}回以下割り当てる`}</Typography>
+              <DialogContentText>この勤務の連続日数の上限を削除します</DialogContentText>
+              <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === selectedConstraint6.kinmu_id)!.name}の連続日数を${selectedConstraint6.max_number_of_days}日以下にする`}</Typography>
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickDeleteC4}>削除</Button>
+              <Button color="primary" onClick={this.handleClickDeleteConstraint6}>削除</Button>
               <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
@@ -245,10 +210,9 @@ class C4 extends React.Component<Props, State> {
 
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    c4: state.present.c4,
-    kinmus: state.present.kinmus,
-    members: state.present.members,
+    constraints6: state.present.constraints6,
+    kinmus: state.present.kinmus
   }
 }
 
-export default connect(mapStateToProps)(C4)
+export default connect(mapStateToProps)(Constraints6)

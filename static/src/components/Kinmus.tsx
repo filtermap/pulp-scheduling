@@ -20,17 +20,17 @@ import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
 import * as assignments from '../modules/assignments'
-import * as c0_kinmus from '../modules/c0_kinmus'
-import * as c1 from '../modules/c1'
-import * as c10 from '../modules/c10'
-import * as c2 from '../modules/c2'
-import * as c3 from '../modules/c3'
-import * as c4 from '../modules/c4'
-import * as c5 from '../modules/c5'
-import * as c6 from '../modules/c6'
-import * as c7 from '../modules/c7'
-import * as c8 from '../modules/c8'
-import * as c9 from '../modules/c9'
+import * as constraint0_kinmus from '../modules/constraint0_kinmus'
+import * as constraints1 from '../modules/constraints1'
+import * as constraints10 from '../modules/constraints10'
+import * as constraints2 from '../modules/constraints2'
+import * as constraints3 from '../modules/constraints3'
+import * as constraints4 from '../modules/constraints4'
+import * as constraints5 from '../modules/constraints5'
+import * as constraints6 from '../modules/constraints6'
+import * as constraints7 from '../modules/constraints7'
+import * as constraints8 from '../modules/constraints8'
+import * as constraints9 from '../modules/constraints9'
 import * as groups from '../modules/groups'
 import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
@@ -39,17 +39,17 @@ type Props = {
   dispatch: Dispatch
   kinmus: kinmus.Kinmu[]
   assignments: assignments.Assignment[]
-  c0_kinmus: c0_kinmus.C0Kinmu[]
-  c1: c1.C1[]
-  c2: c2.C2[]
-  c3: c3.C3[]
-  c4: c4.C4[]
-  c5: c5.C5[]
-  c6: c6.C6[]
-  c7: c7.C7[]
-  c8: c8.C8[]
-  c9: c9.C9[]
-  c10: c10.C10[]
+  constraint0_kinmus: constraint0_kinmus.Constraint0Kinmu[]
+  constraints1: constraints1.Constraint1[]
+  constraints2: constraints2.Constraint2[]
+  constraints3: constraints3.Constraint3[]
+  constraints4: constraints4.Constraint4[]
+  constraints5: constraints5.Constraint5[]
+  constraints6: constraints6.Constraint6[]
+  constraints7: constraints7.Constraint7[]
+  constraints8: constraints8.Constraint8[]
+  constraints9: constraints9.Constraint9[]
+  constraints10: constraints10.Constraint10[]
   members: members.Member[]
   groups: groups.Group[]
 }
@@ -114,17 +114,17 @@ class Kinmus extends React.Component<Props, State> {
   public render() {
     const selectedKinmu = this.props.kinmus.find(kinmu => kinmu.id === this.state.selectedKinmuId)
     const selectedKinmuRosterIds = Array.from(new Set(this.props.assignments.filter(({ kinmu_id }) => kinmu_id === this.state.selectedKinmuId).map(({ roster_id }) => roster_id)))
-    const selectedKinmuC0Ids = Array.from(new Set(this.props.c0_kinmus.filter(({ kinmu_id }) => kinmu_id === this.state.selectedKinmuId).map(({ c0_id }) => c0_id)))
-    const selectedKinmuC1 = this.props.c1.filter(c => c.kinmu_id === this.state.selectedKinmuId)
-    const selectedKinmuC2 = this.props.c2.filter(c => c.kinmu_id === this.state.selectedKinmuId)
-    const selectedKinmuC3 = this.props.c3.filter(c => c.kinmu_id === this.state.selectedKinmuId)
-    const selectedKinmuC4 = this.props.c4.filter(c => c.kinmu_id === this.state.selectedKinmuId)
-    const selectedKinmuC5 = this.props.c5.filter(c => c.kinmu_id === this.state.selectedKinmuId)
-    const selectedKinmuC6 = this.props.c6.filter(c => c.kinmu_id === this.state.selectedKinmuId)
-    const selectedKinmuC7 = this.props.c7.filter(c => c.kinmu_id === this.state.selectedKinmuId)
-    const selectedKinmuC8 = this.props.c8.filter(c => c.kinmu_id === this.state.selectedKinmuId)
-    const selectedKinmuC9 = this.props.c9.filter(c => c.kinmu_id === this.state.selectedKinmuId)
-    const selectedKinmuC10 = this.props.c10.filter(c => c.kinmu_id === this.state.selectedKinmuId)
+    const selectedKinmuConstraint0Ids = Array.from(new Set(this.props.constraint0_kinmus.filter(({ kinmu_id }) => kinmu_id === this.state.selectedKinmuId).map(({ constraint0_id }) => constraint0_id)))
+    const selectedKinmuConstraints1 = this.props.constraints1.filter(c => c.kinmu_id === this.state.selectedKinmuId)
+    const selectedKinmuConstraints2 = this.props.constraints2.filter(c => c.kinmu_id === this.state.selectedKinmuId)
+    const selectedKinmuConstraints3 = this.props.constraints3.filter(c => c.kinmu_id === this.state.selectedKinmuId)
+    const selectedKinmuConstraints4 = this.props.constraints4.filter(c => c.kinmu_id === this.state.selectedKinmuId)
+    const selectedKinmuConstraints5 = this.props.constraints5.filter(c => c.kinmu_id === this.state.selectedKinmuId)
+    const selectedKinmuConstraints6 = this.props.constraints6.filter(c => c.kinmu_id === this.state.selectedKinmuId)
+    const selectedKinmuConstraints7 = this.props.constraints7.filter(c => c.kinmu_id === this.state.selectedKinmuId)
+    const selectedKinmuConstraints8 = this.props.constraints8.filter(c => c.kinmu_id === this.state.selectedKinmuId)
+    const selectedKinmuConstraints9 = this.props.constraints9.filter(c => c.kinmu_id === this.state.selectedKinmuId)
+    const selectedKinmuConstraints10 = this.props.constraints10.filter(c => c.kinmu_id === this.state.selectedKinmuId)
     return (
       <>
         <Toolbar>
@@ -192,29 +192,29 @@ class Kinmus extends React.Component<Props, State> {
               <Typography>{selectedKinmu.name}</Typography>
               {selectedKinmuRosterIds.length > 0 && <DialogContentText>以下の勤務表も削除されます</DialogContentText>}
               {selectedKinmuRosterIds.map(roster_id => <Typography key={roster_id}>{`勤務表${roster_id}`}</Typography>)}
-              {(selectedKinmuC0Ids.length > 0 ||
-                selectedKinmuC1.length > 0 ||
-                selectedKinmuC2.length > 0 ||
-                selectedKinmuC3.length > 0 ||
-                selectedKinmuC4.length > 0 ||
-                selectedKinmuC5.length > 0 ||
-                selectedKinmuC6.length > 0 ||
-                selectedKinmuC7.length > 0 ||
-                selectedKinmuC8.length > 0 ||
-                selectedKinmuC9.length > 0 ||
-                selectedKinmuC10.length > 0) &&
+              {(selectedKinmuConstraint0Ids.length > 0 ||
+                selectedKinmuConstraints1.length > 0 ||
+                selectedKinmuConstraints2.length > 0 ||
+                selectedKinmuConstraints3.length > 0 ||
+                selectedKinmuConstraints4.length > 0 ||
+                selectedKinmuConstraints5.length > 0 ||
+                selectedKinmuConstraints6.length > 0 ||
+                selectedKinmuConstraints7.length > 0 ||
+                selectedKinmuConstraints8.length > 0 ||
+                selectedKinmuConstraints9.length > 0 ||
+                selectedKinmuConstraints10.length > 0) &&
                 <DialogContentText>以下の条件も削除されます</DialogContentText>}
-              {selectedKinmuC0Ids.map(c0_id => <Typography key={c0_id}>{this.props.c0_kinmus.filter(c0_kinmu => c0_kinmu.c0_id === c0_id).sort((a, b) => a.sequence_number - b.sequence_number).map(({ kinmu_id }) => this.props.kinmus.find(kinmu => kinmu.id === kinmu_id)!.name).join(', ')}</Typography>)}
-              {selectedKinmuC1.map(c => <Typography key={c.id}>{`${c.start_date_name}から${c.stop_date_name}までの${selectedKinmu.name}に${this.props.groups.find(group => group.id === c.group_id)!.name}から${c.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>)}
-              {selectedKinmuC2.map(c => <Typography key={c.id}>{`${c.start_date_name}から${c.stop_date_name}までの${selectedKinmu.name}に${this.props.groups.find(group => group.id === c.group_id)!.name}から${c.max_number_of_assignments}人以下の職員を割り当てる`}</Typography>)}
-              {selectedKinmuC3.map(c => <Typography key={c.id}>{`${this.props.members.find(member => member.id === c.member_id)!.name}に${selectedKinmu.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>)}
-              {selectedKinmuC4.map(c => <Typography key={c.id}>{`${this.props.members.find(member => member.id === c.member_id)!.name}に${selectedKinmu.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>)}
-              {selectedKinmuC5.map(c => <Typography key={c.id}>{`${selectedKinmu.name}の連続日数を${c.min_number_of_days}日以上にする`}</Typography>)}
-              {selectedKinmuC6.map(c => <Typography key={c.id}>{`${selectedKinmu.name}の連続日数を${c.max_number_of_days}日以下にする`}</Typography>)}
-              {selectedKinmuC7.map(c => <Typography key={c.id}>{`${selectedKinmu.name}の間隔日数を${c.min_number_of_days}日以上にする`}</Typography>)}
-              {selectedKinmuC8.map(c => <Typography key={c.id}>{`${selectedKinmu.name}の間隔日数を${c.max_number_of_days}日以下にする`}</Typography>)}
-              {selectedKinmuC9.map(c => <Typography key={c.id}>{`${this.props.members.find(member => member.id === c.member_id)!.name}の${c.start_date_name}から${c.stop_date_name}までに${selectedKinmu.name}を割り当てる`}</Typography>)}
-              {selectedKinmuC10.map(c => <Typography key={c.id}>{`${this.props.members.find(member => member.id === c.member_id)!.name}の${c.start_date_name}から${c.stop_date_name}までに${selectedKinmu.name}を割り当てない`}</Typography>)}
+              {selectedKinmuConstraint0Ids.map(constraint0_id => <Typography key={constraint0_id}>{this.props.constraint0_kinmus.filter(constraint0_kinmu => constraint0_kinmu.constraint0_id === constraint0_id).sort((a, b) => a.sequence_number - b.sequence_number).map(({ kinmu_id }) => this.props.kinmus.find(kinmu => kinmu.id === kinmu_id)!.name).join(', ')}</Typography>)}
+              {selectedKinmuConstraints1.map(c => <Typography key={c.id}>{`${c.start_date_name}から${c.stop_date_name}までの${selectedKinmu.name}に${this.props.groups.find(group => group.id === c.group_id)!.name}から${c.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>)}
+              {selectedKinmuConstraints2.map(c => <Typography key={c.id}>{`${c.start_date_name}から${c.stop_date_name}までの${selectedKinmu.name}に${this.props.groups.find(group => group.id === c.group_id)!.name}から${c.max_number_of_assignments}人以下の職員を割り当てる`}</Typography>)}
+              {selectedKinmuConstraints3.map(c => <Typography key={c.id}>{`${this.props.members.find(member => member.id === c.member_id)!.name}に${selectedKinmu.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>)}
+              {selectedKinmuConstraints4.map(c => <Typography key={c.id}>{`${this.props.members.find(member => member.id === c.member_id)!.name}に${selectedKinmu.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>)}
+              {selectedKinmuConstraints5.map(c => <Typography key={c.id}>{`${selectedKinmu.name}の連続日数を${c.min_number_of_days}日以上にする`}</Typography>)}
+              {selectedKinmuConstraints6.map(c => <Typography key={c.id}>{`${selectedKinmu.name}の連続日数を${c.max_number_of_days}日以下にする`}</Typography>)}
+              {selectedKinmuConstraints7.map(c => <Typography key={c.id}>{`${selectedKinmu.name}の間隔日数を${c.min_number_of_days}日以上にする`}</Typography>)}
+              {selectedKinmuConstraints8.map(c => <Typography key={c.id}>{`${selectedKinmu.name}の間隔日数を${c.max_number_of_days}日以下にする`}</Typography>)}
+              {selectedKinmuConstraints9.map(c => <Typography key={c.id}>{`${this.props.members.find(member => member.id === c.member_id)!.name}の${c.start_date_name}から${c.stop_date_name}までに${selectedKinmu.name}を割り当てる`}</Typography>)}
+              {selectedKinmuConstraints10.map(c => <Typography key={c.id}>{`${this.props.members.find(member => member.id === c.member_id)!.name}の${c.start_date_name}から${c.stop_date_name}までに${selectedKinmu.name}を割り当てない`}</Typography>)}
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={this.handleClickDeleteKinmu}>削除</Button>
@@ -230,17 +230,17 @@ class Kinmus extends React.Component<Props, State> {
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
     assignments: state.present.assignments,
-    c0_kinmus: state.present.c0_kinmus,
-    c1: state.present.c1,
-    c10: state.present.c10,
-    c2: state.present.c2,
-    c3: state.present.c3,
-    c4: state.present.c4,
-    c5: state.present.c5,
-    c6: state.present.c6,
-    c7: state.present.c7,
-    c8: state.present.c8,
-    c9: state.present.c9,
+    constraint0_kinmus: state.present.constraint0_kinmus,
+    constraints1: state.present.constraints1,
+    constraints10: state.present.constraints10,
+    constraints2: state.present.constraints2,
+    constraints3: state.present.constraints3,
+    constraints4: state.present.constraints4,
+    constraints5: state.present.constraints5,
+    constraints6: state.present.constraints6,
+    constraints7: state.present.constraints7,
+    constraints8: state.present.constraints8,
+    constraints9: state.present.constraints9,
     groups: state.present.groups,
     kinmus: state.present.kinmus,
     members: state.present.members,

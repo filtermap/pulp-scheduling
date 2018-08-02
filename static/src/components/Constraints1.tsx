@@ -10,6 +10,7 @@ import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -18,76 +19,75 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
-import MenuItem from '../../node_modules/@material-ui/core/MenuItem'
 import * as all from '../modules/all'
-import * as c2 from '../modules/c2'
+import * as constraints1 from '../modules/constraints1'
 import * as groups from '../modules/groups'
 import * as kinmus from '../modules/kinmus'
 import * as utils from '../utils'
 
 type Props = {
   dispatch: Dispatch
-  c2: c2.C2[]
+  constraints1: constraints1.Constraint1[]
   kinmus: kinmus.Kinmu[]
   groups: groups.Group[]
 }
 
 type State = {
   creationDialogIsOpen: boolean
-  newC2IsEnabled: boolean
-  newC2StartDateName: string
-  newC2StopDateName: string
-  newC2KinmuId: number
-  newC2GroupId: number
-  newC2MaxNumberOfAssignments: number
+  newConstraint1IsEnabled: boolean
+  newConstraint1StartDateName: string
+  newConstraint1StopDateName: string
+  newConstraint1KinmuId: number
+  newConstraint1GroupId: number
+  newConstraint1MinNumberOfAssignments: number
   deletionDialogIsOpen: boolean
-  selectedC2Id: number
+  selectedConstraint1Id: number
 }
 
-class C2 extends React.Component<Props, State> {
+class Constraints1 extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     const todayString = utils.dateToString(new Date())
     this.state = {
       creationDialogIsOpen: false,
       deletionDialogIsOpen: false,
-      newC2GroupId: this.props.groups.length > 0 ? this.props.groups[0].id : 0,
-      newC2IsEnabled: true,
-      newC2KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-      newC2MaxNumberOfAssignments: 0,
-      newC2StartDateName: todayString,
-      newC2StopDateName: todayString,
-      selectedC2Id: this.props.c2.length > 0 ? this.props.c2[0].id : 0,
+      newConstraint1GroupId: this.props.groups.length > 0 ? this.props.groups[0].id : 0,
+      newConstraint1IsEnabled: true,
+      newConstraint1KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
+      newConstraint1MinNumberOfAssignments: 0,
+      newConstraint1StartDateName: todayString,
+      newConstraint1StopDateName: todayString,
+      selectedConstraint1Id: this.props.constraints1.length > 0 ? this.props.constraints1[0].id : 0
     }
   }
-  public handleChangeC2IsEnabled(id: number) {
+  public handleChangeConstraint1IsEnabled(id: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      this.props.dispatch(c2.updateC2IsEnabled(id, checked))
+      this.props.dispatch(constraints1.updateConstraint1IsEnabled(id, checked))
     }
   }
-  public handleChangeC2StartDateName(id: number) {
+  public handleChangeConstraint1StartDateName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c2.updateC2StartDateName(id, event.target.value))
+      this.props.dispatch(constraints1.updateConstraint1StartDateName(id, event.target.value))
     }
   }
-  public handleChangeC2StopDateName(id: number) {
+  public handleChangeConstraint1StopDateName(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c2.updateC2StopDateName(id, event.target.value))
+      this.props.dispatch(constraints1.updateConstraint1StopDateName(id, event.target.value))
     }
   }
-  public handleChangeC2KinmuId(id: number) {
+  public handleChangeConstraint1KinmuId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c2.updateC2KinmuId(id, parseInt(event.target.value, 10)))
+      this.props.dispatch(constraints1.updateConstraint1KinmuId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC2GroupId(id: number) {
+  public handleChangeConstraint1GroupId(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c2.updateC2GroupId(id, parseInt(event.target.value, 10)))
+      this.props.dispatch(constraints1.updateConstraint1GroupId(id, parseInt(event.target.value, 10)))
     }
   }
-  public handleChangeC2MaxNumberOfAssignments(id: number) {
+  public handleChangeConstraint1MinNumberOfAssignments(id: number) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(c2.updateC2MaxNumberOfAssignments(id, parseInt(event.target.value, 10)))
+      this.props.dispatch(constraints1.updateConstraint1MinNumberOfAssignments(id, parseInt(event.target.value, 10)))
     }
   }
   public handleClickOpenCreationDialog = () => {
@@ -96,62 +96,62 @@ class C2 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public handleChangeNewC2IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    this.setState({ newC2IsEnabled: checked })
+  public handleChangeNewConstraint1IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    this.setState({ newConstraint1IsEnabled: checked })
   }
-  public handleChangeNewC2StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC2StartDateName: event.target.value })
+  public handleChangeNewConstraint1StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint1StartDateName: event.target.value })
   }
-  public handleChangeNewC2StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC2StopDateName: event.target.value })
+  public handleChangeNewConstraint1StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint1StopDateName: event.target.value })
   }
-  public handleChangeNewC2KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC2KinmuId: parseInt(event.target.value, 10) })
+  public handleChangeNewConstraint1KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint1KinmuId: parseInt(event.target.value, 10) })
   }
-  public handleChangeNewC2GroupId = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC2GroupId: parseInt(event.target.value, 10) })
+  public handleChangeNewConstraint1GroupId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint1GroupId: parseInt(event.target.value, 10) })
   }
-  public handleChangeNewC2MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newC2MaxNumberOfAssignments: parseInt(event.target.value, 10) })
+  public handleChangeNewConstraint1MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newConstraint1MinNumberOfAssignments: parseInt(event.target.value, 10) })
   }
-  public handleClickCreateC2 = () => {
+  public handleClickCreateConstraint1 = () => {
     this.setState({ creationDialogIsOpen: false })
-    this.props.dispatch(c2.createC2(this.state.newC2IsEnabled, this.state.newC2StartDateName, this.state.newC2StopDateName, this.state.newC2KinmuId, this.state.newC2GroupId, this.state.newC2MaxNumberOfAssignments))
+    this.props.dispatch(constraints1.createConstraint1(this.state.newConstraint1IsEnabled, this.state.newConstraint1StartDateName, this.state.newConstraint1StopDateName, this.state.newConstraint1KinmuId, this.state.newConstraint1GroupId, this.state.newConstraint1MinNumberOfAssignments))
   }
-  public handleClickOpenDeletionDialog(selectedC2Id: number) {
+  public handleClickOpenDeletionDialog(selectedConstraint1Id: number) {
     return () => {
       this.setState({
         deletionDialogIsOpen: true,
-        selectedC2Id,
+        selectedConstraint1Id,
       })
     }
   }
   public handleCloseDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: false })
   }
-  public handleClickDeleteC2 = () => {
+  public handleClickDeleteConstraint1 = () => {
     this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(c2.deleteC2(this.state.selectedC2Id))
+    this.props.dispatch(constraints1.deleteConstraint1(this.state.selectedConstraint1Id))
   }
   public render() {
-    const selectedC2 = this.props.c2.find(c => c.id === this.state.selectedC2Id)
+    const selectedConstraint1 = this.props.constraints1.find(c => c.id === this.state.selectedConstraint1Id)
     return (
       <>
         <Toolbar>
-          <Typography variant="subheading" style={{ flex: 1 }}>期間の勤務にグループから割り当てる職員数の上限</Typography>
+          <Typography variant="subheading" style={{ flex: 1 }}> 期間の勤務にグループから割り当てる職員数の下限</Typography>
           <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
         </Toolbar>
-        {this.props.c2.map(c => (
+        {this.props.constraints1.map(c => (
           <ExpansionPanel key={c.id}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}に${this.props.groups.find(group => group.id === c.group_id)!.name}から${c.max_number_of_assignments}人以下の職員を割り当てる`}</Typography>
+              <Typography>{`${c.start_date_name}から${c.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}に${this.props.groups.find(group => group.id === c.group_id)!.name}から${c.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={c.is_enabled}
-                    onChange={this.handleChangeC2IsEnabled(c.id)}
+                    onChange={this.handleChangeConstraint1IsEnabled(c.id)}
                     color="primary"
                   />
                 }
@@ -161,7 +161,7 @@ class C2 extends React.Component<Props, State> {
                 label="開始日"
                 type="date"
                 defaultValue={c.start_date_name}
-                onChange={this.handleChangeC2StartDateName(c.id)}
+                onChange={this.handleChangeConstraint1StartDateName(c.id)}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -171,7 +171,7 @@ class C2 extends React.Component<Props, State> {
                 label="終了日"
                 type="date"
                 defaultValue={c.stop_date_name}
-                onChange={this.handleChangeC2StopDateName(c.id)}
+                onChange={this.handleChangeConstraint1StopDateName(c.id)}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -181,7 +181,7 @@ class C2 extends React.Component<Props, State> {
                 select={true}
                 label="勤務"
                 value={c.kinmu_id}
-                onChange={this.handleChangeC2KinmuId(c.id)}
+                onChange={this.handleChangeConstraint1KinmuId(c.id)}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
@@ -192,7 +192,7 @@ class C2 extends React.Component<Props, State> {
                 select={true}
                 label="グループ"
                 value={c.group_id}
-                onChange={this.handleChangeC2GroupId(c.id)}
+                onChange={this.handleChangeConstraint1GroupId(c.id)}
                 fullWidth={true}
               >
                 {this.props.groups.map(group => (
@@ -200,10 +200,10 @@ class C2 extends React.Component<Props, State> {
                 ))}
               </TextField>
               <TextField
-                label="割り当て職員数上限"
+                label="割り当て職員数下限"
                 type="number"
-                defaultValue={c.max_number_of_assignments}
-                onChange={this.handleChangeC2MaxNumberOfAssignments(c.id)}
+                defaultValue={c.min_number_of_assignments}
+                onChange={this.handleChangeConstraint1MinNumberOfAssignments(c.id)}
                 fullWidth={true}
               />
             </ExpansionPanelDetails>
@@ -214,7 +214,7 @@ class C2 extends React.Component<Props, State> {
         ))}
         {this.props.kinmus.length === 0 || this.props.groups.length === 0 ?
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>期間の勤務にグループから割り当てる職員数の上限を追加できません</DialogTitle>
+            <DialogTitle>期間の勤務にグループから割り当てる職員数の下限を追加できません</DialogTitle>
             <DialogContent>
               {this.props.kinmus.length === 0 ? <DialogContentText>勤務がありません</DialogContentText> : null}
               {this.props.groups.length === 0 ? <DialogContentText>グループがありません</DialogContentText> : null}
@@ -224,13 +224,13 @@ class C2 extends React.Component<Props, State> {
             </DialogActions>
           </Dialog> :
           <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>期間の勤務にグループから割り当てる職員数の上限の追加</DialogTitle>
+            <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の追加</DialogTitle>
             <DialogContent style={{ display: 'flex' }}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.newC2IsEnabled}
-                    onChange={this.handleChangeNewC2IsEnabled}
+                    checked={this.state.newConstraint1IsEnabled}
+                    onChange={this.handleChangeNewConstraint1IsEnabled}
                     color="primary"
                   />
                 }
@@ -239,8 +239,8 @@ class C2 extends React.Component<Props, State> {
               <TextField
                 label="開始日"
                 type="date"
-                defaultValue={this.state.newC2StartDateName}
-                onChange={this.handleChangeNewC2StartDateName}
+                defaultValue={this.state.newConstraint1StartDateName}
+                onChange={this.handleChangeNewConstraint1StartDateName}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -249,8 +249,8 @@ class C2 extends React.Component<Props, State> {
               <TextField
                 label="終了日"
                 type="date"
-                defaultValue={this.state.newC2StopDateName}
-                onChange={this.handleChangeNewC2StopDateName}
+                defaultValue={this.state.newConstraint1StopDateName}
+                onChange={this.handleChangeNewConstraint1StopDateName}
                 fullWidth={true}
                 InputLabelProps={{
                   shrink: true,
@@ -259,8 +259,8 @@ class C2 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="勤務"
-                value={this.state.newC2KinmuId}
-                onChange={this.handleChangeNewC2KinmuId}
+                value={this.state.newConstraint1KinmuId}
+                onChange={this.handleChangeNewConstraint1KinmuId}
                 fullWidth={true}
               >
                 {this.props.kinmus.map(kinmu => (
@@ -270,8 +270,8 @@ class C2 extends React.Component<Props, State> {
               <TextField
                 select={true}
                 label="グループ"
-                value={this.state.newC2GroupId}
-                onChange={this.handleChangeNewC2GroupId}
+                value={this.state.newConstraint1GroupId}
+                onChange={this.handleChangeNewConstraint1GroupId}
                 fullWidth={true}
               >
                 {this.props.groups.map(group => (
@@ -279,27 +279,27 @@ class C2 extends React.Component<Props, State> {
                 ))}
               </TextField>
               <TextField
-                label="割り当て職員数上限"
+                label="割り当て職員数下限"
                 type="number"
-                defaultValue={this.state.newC2MaxNumberOfAssignments}
-                onChange={this.handleChangeNewC2MinNumberOfAssignments}
+                defaultValue={this.state.newConstraint1MinNumberOfAssignments}
+                onChange={this.handleChangeNewConstraint1MinNumberOfAssignments}
                 fullWidth={true}
               />
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateC2}>追加</Button>
+              <Button color="primary" onClick={this.handleClickCreateConstraint1}>追加</Button>
               <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
-        {selectedC2 &&
+        {selectedConstraint1 &&
           <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>期間の勤務にグループから割り当てる職員数の上限の削除</DialogTitle>
+            <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の削除</DialogTitle>
             <DialogContent>
-              <DialogContentText>この期間の勤務にグループから割り当てる職員数の上限を削除します</DialogContentText>
-              <Typography>{`${selectedC2.start_date_name}から${selectedC2.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.id === selectedC2.kinmu_id)!.name}に${this.props.groups.find(group => group.id === selectedC2.group_id)!.name}から${selectedC2.max_number_of_assignments}人以下の職員を割り当てる`}</Typography>
+              <DialogContentText>この期間の勤務にグループから割り当てる職員数の下限を削除します</DialogContentText>
+              <Typography>{`${selectedConstraint1.start_date_name}から${selectedConstraint1.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.id === selectedConstraint1.kinmu_id)!.name}に${this.props.groups.find(group => group.id === selectedConstraint1.group_id)!.name}から${selectedConstraint1.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickDeleteC2}>削除</Button>
+              <Button color="primary" onClick={this.handleClickDeleteConstraint1}>削除</Button>
               <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
             </DialogActions>
           </Dialog>}
@@ -310,10 +310,10 @@ class C2 extends React.Component<Props, State> {
 
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    c2: state.present.c2,
+    constraints1: state.present.constraints1,
     groups: state.present.groups,
     kinmus: state.present.kinmus,
   }
 }
 
-export default connect(mapStateToProps)(C2)
+export default connect(mapStateToProps)(Constraints1)
