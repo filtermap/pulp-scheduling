@@ -3,46 +3,31 @@ import Checkbox from '@material-ui/core/Checkbox'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormLabel from '@material-ui/core/FormLabel'
+import Grid from '@material-ui/core/Grid'
+import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import { StateWithHistory } from 'redux-undo'
 import * as all from '../modules/all'
-import * as assignments from '../modules/assignments'
-import * as constraints10 from '../modules/constraints10'
-import * as constraints3 from '../modules/constraints3'
-import * as constraints4 from '../modules/constraints4'
-import * as constraints9 from '../modules/constraints9'
 import * as group_members from '../modules/group_members'
 import * as groups from '../modules/groups'
-import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
+import Member from './Member'
 
 type Props = {
   dispatch: Dispatch
   members: members.Member[]
   groups: groups.Group[]
   group_members: group_members.GroupMember[]
-  assignments: assignments.Assignment[]
-  constraints3: constraints3.Constraint3[]
-  constraints4: constraints4.Constraint4[]
-  constraints9: constraints9.Constraint9[]
-  constraints10: constraints10.Constraint10[]
-  kinmus: kinmus.Kinmu[]
 }
 
 type State = {
@@ -50,37 +35,14 @@ type State = {
   newMemberIsEnabled: boolean
   newMemberName: string
   newMemberGroupIndices: number[]
-  deletionDialogIsOpen: boolean
-  selectedMemberId: number
 }
 
 class Members extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    deletionDialogIsOpen: false,
     newMemberGroupIndices: [],
     newMemberIsEnabled: true,
     newMemberName: '',
-    selectedMemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
-  }
-  public handleChangeMemberIsEnabled(id: number) {
-    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      this.props.dispatch(members.updateMemberIsEnabled(id, checked))
-    }
-  }
-  public handleChangeMemberName(id: number) {
-    return (event: React.ChangeEvent<HTMLInputElement>) => {
-      this.props.dispatch(members.updateMemberName(id, event.target.value))
-    }
-  }
-  public handleChangeGroupMember(groupId: number, memberId: number) {
-    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      if (checked) {
-        this.props.dispatch(group_members.createGroupMember(groupId, memberId))
-        return
-      }
-      this.props.dispatch(group_members.deleteGroupMember(groupId, memberId))
-    }
   }
   public handleClickOpenCreationDialog = () => {
     this.setState({ creationDialogIsOpen: true })
@@ -107,147 +69,75 @@ class Members extends React.Component<Props, State> {
     this.setState({ creationDialogIsOpen: false })
     this.props.dispatch(all.createMember(this.state.newMemberIsEnabled, this.state.newMemberName, this.state.newMemberGroupIndices))
   }
-  public handleClickOpenDeletionDialog(selectedMemberId: number) {
-    return () => {
-      this.setState({
-        deletionDialogIsOpen: true,
-        selectedMemberId,
-      })
-    }
-  }
-  public handleCloseDeletionDialog = () => {
-    this.setState({ deletionDialogIsOpen: false })
-  }
-  public handleClickDeleteMember = () => {
-    this.setState({ deletionDialogIsOpen: false })
-    this.props.dispatch(all.deleteMember(this.state.selectedMemberId))
-  }
   public render() {
-    const selectedMember = this.props.members.find(member => member.id === this.state.selectedMemberId)
-    const selectedMemberRosterIds = Array.from(new Set(this.props.assignments.filter(assignment => assignment.member_id === this.state.selectedMemberId).map(({ roster_id }) => roster_id)))
-    const selectedMemberConstraints3 = this.props.constraints3.filter(c => c.member_id === this.state.selectedMemberId)
-    const selectedMemberConstraints4 = this.props.constraints4.filter(c => c.member_id === this.state.selectedMemberId)
-    const selectedMemberConstraints9 = this.props.constraints9.filter(c => c.member_id === this.state.selectedMemberId)
-    const selectedMemberConstraints10 = this.props.constraints10.filter(c => c.member_id === this.state.selectedMemberId)
     return (
       <>
-        <Toolbar>
-          <Typography variant="subheading" style={{ flex: 1 }}>職員</Typography>
-          <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
-        </Toolbar>
-        {this.props.members.map(member => (
-          <ExpansionPanel key={member.id}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <div style={{ flexDirection: 'column' }}>
-                <Typography>{member.name}</Typography>
-                <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.member_id === member.id).map(group_member => this.props.groups.find(group => group.id === group_member.group_id)!.name).join(', ')}</Typography>
-              </div>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={member.is_enabled}
-                    onChange={this.handleChangeMemberIsEnabled(member.id)}
-                    color="primary"
-                  />
-                }
-                label="有効"
-              />
-              <TextField
-                label="職員名"
-                defaultValue={member.name}
-                onChange={this.handleChangeMemberName(member.id)}
-                fullWidth={true}
-              />
-              <FormControl fullWidth={true}>
-                <FormLabel>職員が所属するグループ</FormLabel>
-                <FormGroup>
-                  {this.props.groups.map(group => (
-                    <FormControlLabel
-                      key={group.id}
-                      label={group.name}
-                      control={
-                        <Checkbox
-                          checked={this.props.group_members.some(group_member => group_member.group_id === group.id && group_member.member_id === member.id)}
-                          onChange={this.handleChangeGroupMember(group.id, member.id)}
-                          color="primary"
-                        />
-                      }
-                    />
-                  ))}
-                </FormGroup>
-              </FormControl>
-            </ExpansionPanelDetails>
-            <ExpansionPanelActions>
-              <Button size="small" onClick={this.handleClickOpenDeletionDialog(member.id)}>削除</Button>
-            </ExpansionPanelActions>
-          </ExpansionPanel>
-        ))}
+        <div style={{ padding: 8 }}>
+          <Grid container={true} spacing={8}>
+            <Grid item={true} xs={12}>
+              <Toolbar>
+                <Typography variant="subheading" style={{ flex: 1 }}>職員</Typography>
+                <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
+              </Toolbar>
+            </Grid>
+            {this.props.members.map(member => (
+              <Grid key={member.id} item={true} xs={12}>
+                <Member member={member} />
+              </Grid>
+            ))}
+          </Grid>
+        </div>
         <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
           <DialogTitle>職員の追加</DialogTitle>
-          <DialogContent style={{ display: 'flex' }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={this.state.newMemberIsEnabled}
-                  onChange={this.handleChangeNewMemberIsEnabled}
-                  color="primary"
+          <DialogContent>
+            <Grid container={true} spacing={8}>
+              <Grid item={true} xs={12}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={this.state.newMemberIsEnabled}
+                      onChange={this.handleChangeNewMemberIsEnabled}
+                      color="primary"
+                    />
+                  }
+                  label="有効"
                 />
-              }
-              label="有効"
-            />
-            <TextField
-              label="職員名"
-              defaultValue={this.state.newMemberName}
-              onChange={this.handleChangeNewMemberName}
-              fullWidth={true}
-            />
-            <FormControl fullWidth={true}>
-              <FormLabel>職員が所属するグループ</FormLabel>
-              <FormGroup>
-                {this.props.groups.map(group => (
-                  <FormControlLabel
-                    key={group.id}
-                    label={group.name}
-                    control={
-                      <Checkbox
-                        checked={this.state.newMemberGroupIndices.some(group_id => group_id === group.id)}
-                        onChange={this.handleChangeNewGroupMember(group.id)}
-                        color="primary"
+              </Grid>
+              <Grid item={true} xs={12}>
+                <TextField
+                  label="職員名"
+                  defaultValue={this.state.newMemberName}
+                  onChange={this.handleChangeNewMemberName}
+                  fullWidth={true}
+                />
+              </Grid>
+              <Grid item={true} xs={12}>
+                <FormControl fullWidth={true}>
+                  <FormLabel>職員が所属するグループ</FormLabel>
+                  <FormGroup>
+                    {this.props.groups.map(group => (
+                      <FormControlLabel
+                        key={group.id}
+                        label={group.name}
+                        control={
+                          <Checkbox
+                            checked={this.state.newMemberGroupIndices.some(group_id => group_id === group.id)}
+                            onChange={this.handleChangeNewGroupMember(group.id)}
+                            color="primary"
+                          />
+                        }
                       />
-                    }
-                  />
-                ))}
-              </FormGroup>
-            </FormControl>
+                    ))}
+                  </FormGroup>
+                </FormControl>
+              </Grid>
+            </Grid>
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={this.handleClickCreateMember}>追加</Button>
             <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
           </DialogActions>
         </Dialog>
-        {selectedMember &&
-          <Dialog onClose={this.handleCloseDeletionDialog} open={this.state.deletionDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>職員の削除</DialogTitle>
-            <DialogContent>
-              <DialogContentText>この職員を削除します</DialogContentText>
-              <Typography>{selectedMember.name}</Typography>
-              <Typography variant="caption">{this.props.group_members.filter(group_member => group_member.member_id === selectedMember.id).map(group_member => this.props.groups.find(group => group.id === group_member.group_id)!.name).join(', ')}</Typography>
-              {selectedMemberRosterIds.length > 0 && <DialogContentText>以下の勤務表の割り当ても削除されます</DialogContentText>}
-              {selectedMemberRosterIds.map(roster_id => <Typography key={roster_id}>{`勤務表${roster_id}`}</Typography>)}
-              {(selectedMemberConstraints3.length > 0 || selectedMemberConstraints4.length > 0 || selectedMemberConstraints9.length > 0 || selectedMemberConstraints10.length > 0) &&
-                <DialogContentText>以下の条件も削除されます</DialogContentText>}
-              {selectedMemberConstraints3.map(c => <Typography key={c.id}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.min_number_of_assignments}回以上割り当てる`}</Typography>)}
-              {selectedMemberConstraints4.map(c => <Typography key={c.id}>{`${selectedMember.name}に${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を${c.max_number_of_assignments}回以下割り当てる`}</Typography>)}
-              {selectedMemberConstraints9.map(c => <Typography key={c.id}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を割り当てる`}</Typography>)}
-              {selectedMemberConstraints10.map(c => <Typography key={c.id}>{`${selectedMember.name}の${c.start_date_name}から${c.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === c.kinmu_id)!.name}を割り当てない`}</Typography>)}
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={this.handleClickDeleteMember}>削除</Button>
-              <Button color="primary" onClick={this.handleCloseDeletionDialog}>閉じる</Button>
-            </DialogActions>
-          </Dialog>}
       </>
     )
   }
@@ -255,14 +145,8 @@ class Members extends React.Component<Props, State> {
 
 function mapStateToProps(state: StateWithHistory<all.State>) {
   return {
-    assignments: state.present.assignments,
-    constraints10: state.present.constraints10,
-    constraints3: state.present.constraints3,
-    constraints4: state.present.constraints4,
-    constraints9: state.present.constraints9,
     group_members: state.present.group_members,
     groups: state.present.groups,
-    kinmus: state.present.kinmus,
     members: state.present.members,
   }
 }
