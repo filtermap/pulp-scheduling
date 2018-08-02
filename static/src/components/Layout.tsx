@@ -2,7 +2,6 @@ import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
 import Divider from '@material-ui/core/Divider'
 import Drawer from '@material-ui/core/Drawer'
-import Grid from '@material-ui/core/Grid'
 import Hidden from '@material-ui/core/Hidden'
 import IconButton from '@material-ui/core/IconButton'
 import List from '@material-ui/core/List'
@@ -276,28 +275,22 @@ class ResponsiveDrawer extends React.Component<Props, State> {
         </Hidden>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <div style={{ padding: 16 }}>
-            <Grid container={true} spacing={32}>
-              <Grid item={true} xs={12}>
-                <Route path="/rosters" component={Rosters} />
-                <Route path="/terms" component={Terms} />
-                <Route path="/members" component={Members} />
-                <Route path="/kinmus" component={Kinmus} />
-                <Route path="/groups" component={Groups} />
-                <Route path="/constraints0" component={Constraints0} />
-                <Route path="/constraints1" component={Constraints1} />
-                <Route path="/constraints2" component={Constraints2} />
-                <Route path="/constraints3" component={Constraints3} />
-                <Route path="/constraints4" component={Constraints4} />
-                <Route path="/constraints5" component={Constraints5} />
-                <Route path="/constraints6" component={Constraints6} />
-                <Route path="/constraints7" component={Constraints7} />
-                <Route path="/constraints8" component={Constraints8} />
-                <Route path="/constraints9" component={Constraints9} />
-                <Route path="/constraints10" component={Constraints10} />
-              </Grid>
-            </Grid>
-          </div>
+          <Route path="/rosters" component={Rosters} />
+          <Route path="/terms" component={Terms} />
+          <Route path="/members" component={Members} />
+          <Route path="/kinmus" component={Kinmus} />
+          <Route path="/groups" component={Groups} />
+          <Route path="/constraints0" component={Constraints0} />
+          <Route path="/constraints1" component={Constraints1} />
+          <Route path="/constraints2" component={Constraints2} />
+          <Route path="/constraints3" component={Constraints3} />
+          <Route path="/constraints4" component={Constraints4} />
+          <Route path="/constraints5" component={Constraints5} />
+          <Route path="/constraints6" component={Constraints6} />
+          <Route path="/constraints7" component={Constraints7} />
+          <Route path="/constraints8" component={Constraints8} />
+          <Route path="/constraints9" component={Constraints9} />
+          <Route path="/constraints10" component={Constraints10} />
         </main>
       </div>
     )
