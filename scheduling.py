@@ -571,24 +571,108 @@ def x_to_new_assignments(x, dates, members, kinmus):
     ]
 
 
-def solve(all):
-    members = all["members"]
-    terms = all["terms"]
-    kinmus = all["kinmus"]
-    groups = all["groups"]
-    group_members = all["group_members"]
-    constraints0 = all["constraints0"]
-    constraint0_kinmus = all["constraint0_kinmus"]
-    constraints1 = all["constraints1"]
-    constraints2 = all["constraints2"]
-    constraints3 = all["constraints3"]
-    constraints4 = all["constraints4"]
-    constraints5 = all["constraints5"]
-    constraints6 = all["constraints6"]
-    constraints7 = all["constraints7"]
-    constraints8 = all["constraints8"]
-    constraints9 = all["constraints9"]
-    constraints10 = all["constraints10"]
+def solve(all_):
+    members = all_["members"]
+    enabled_members = [member for member in members if member["is_enabled"]]
+    enabled_member_ids = [member["id"] for member in enabled_members]
+    terms = all_["terms"]
+    kinmus = all_["kinmus"]
+    enabled_kinmus = [kinmu for kinmu in kinmus if kinmu["is_enabled"]]
+    enabled_kinmu_ids = [kinmu["id"] for kinmu in enabled_kinmus]
+    groups = all_["groups"]
+    enabled_groups = [group for group in groups if group["is_enabled"]]
+    enabled_group_ids = [group["id"] for group in enabled_groups]
+    group_members = all_["group_members"]
+    enabled_group_members = [
+        group_member
+        for group_member in group_members
+        if group_member["group_id"] in enabled_group_ids
+        and group_member["member_id"] in enabled_member_ids
+    ]
+    constraints0 = all_["constraints0"]
+    constraint0_kinmus = all_["constraint0_kinmus"]
+    enabled_constraints0 = [
+        constraint
+        for constraint in constraints0
+        if constraint["is_enabled"]
+        and all(
+            constraint0_kinmu["kinmu_id"] in enabled_kinmu_ids
+            for constraint0_kinmu in constraint0_kinmus
+            if constraint0_kinmu["constraint0_id"] == constraint["id"]
+        )
+    ]
+    constraints1 = all_["constraints1"]
+    enabled_constraints1 = [
+        constraint
+        for constraint in constraints1
+        if constraint["is_enabled"]
+        and constraint["kinmu_id"] in enabled_kinmu_ids
+        and constraint["group_id"] in enabled_group_ids
+    ]
+    constraints2 = all_["constraints2"]
+    enabled_constraints2 = [
+        constraint
+        for constraint in constraints2
+        if constraint["is_enabled"]
+        and constraint["kinmu_id"] in enabled_kinmu_ids
+        and constraint["group_id"] in enabled_group_ids
+    ]
+    constraints3 = all_["constraints3"]
+    enabled_constraints3 = [
+        constraint
+        for constraint in constraints3
+        if constraint["is_enabled"]
+        and constraint["member_id"] in enabled_member_ids
+        and constraint["kinmu_id"] in enabled_kinmu_ids
+    ]
+    constraints4 = all_["constraints4"]
+    enabled_constraints4 = [
+        constraint
+        for constraint in constraints4
+        if constraint["is_enabled"]
+        and constraint["member_id"] in enabled_member_ids
+        and constraint["kinmu_id"] in enabled_kinmu_ids
+    ]
+    constraints5 = all_["constraints5"]
+    enabled_constraints5 = [
+        constraint
+        for constraint in constraints5
+        if constraint["is_enabled"] and constraint["kinmu_id"] in enabled_kinmu_ids
+    ]
+    constraints6 = all_["constraints6"]
+    enabled_constraints6 = [
+        constraint
+        for constraint in constraints6
+        if constraint["is_enabled"] and constraint["kinmu_id"] in enabled_kinmu_ids
+    ]
+    constraints7 = all_["constraints7"]
+    enabled_constraints7 = [
+        constraint
+        for constraint in constraints7
+        if constraint["is_enabled"] and constraint["kinmu_id"] in enabled_kinmu_ids
+    ]
+    constraints8 = all_["constraints8"]
+    enabled_constraints8 = [
+        constraint
+        for constraint in constraints8
+        if constraint["is_enabled"] and constraint["kinmu_id"] in enabled_kinmu_ids
+    ]
+    constraints9 = all_["constraints9"]
+    enabled_constraints9 = [
+        constraint
+        for constraint in constraints9
+        if constraint["is_enabled"]
+        and constraint["member_id"] in enabled_member_ids
+        and constraint["kinmu_id"] in enabled_kinmu_ids
+    ]
+    constraints10 = all_["constraints10"]
+    enabled_constraints10 = [
+        constraint
+        for constraint in constraints10
+        if constraint["is_enabled"]
+        and constraint["member_id"] in enabled_member_ids
+        and constraint["kinmu_id"] in enabled_kinmu_ids
+    ]
     dates = [
         {"index": index, "name": utils.date_to_str(date)}
         for term in terms
@@ -600,14 +684,14 @@ def solve(all):
         )
     ]
 
-    M = [m["id"] for m in members]
+    M = [m["id"] for m in enabled_members]
     D = [d["index"] for d in dates]
-    K = [k["id"] for k in kinmus]
-    G = [g["id"] for g in groups]
+    K = [k["id"] for k in enabled_kinmus]
+    G = [g["id"] for g in enabled_groups]
     GM = {
         g: [
             group_member["member_id"]
-            for group_member in group_members
+            for group_member in enabled_group_members
             if group_member["group_id"] == g
         ]
         for g in G
@@ -620,7 +704,7 @@ def solve(all):
             )
             if c_kinmu["constraint0_id"] == constraint0_id
         ]
-        for constraint0_id in [c["id"] for c in constraints0]
+        for constraint0_id in [c["id"] for c in enabled_constraints0]
     ]
     C1 = [
         {
@@ -633,7 +717,7 @@ def solve(all):
         }
         for c, date_name in [
             (c, utils.date_to_str(date))
-            for c in constraints1
+            for c in enabled_constraints1
             for date in utils.date_range(
                 utils.str_to_date(c["start_date_name"]),
                 utils.str_to_date(c["stop_date_name"]) + one_day,
@@ -651,19 +735,19 @@ def solve(all):
         }
         for (c, date_name) in [
             (c, utils.date_to_str(date))
-            for c in constraints2
+            for c in enabled_constraints2
             for date in utils.date_range(
                 utils.str_to_date(c["start_date_name"]),
                 utils.str_to_date(c["stop_date_name"]) + one_day,
             )
         ]
     ]
-    C3 = constraints3
-    C4 = constraints4
-    C5 = constraints5
-    C6 = constraints6
-    C7 = constraints7
-    C8 = constraints8
+    C3 = enabled_constraints3
+    C4 = enabled_constraints4
+    C5 = enabled_constraints5
+    C6 = enabled_constraints6
+    C7 = enabled_constraints7
+    C8 = enabled_constraints8
     C9 = [
         {
             "member_id": c["member_id"],
@@ -674,7 +758,7 @@ def solve(all):
         }
         for (c, date_name) in [
             (c, utils.date_to_str(date))
-            for c in constraints9
+            for c in enabled_constraints9
             for date in utils.date_range(
                 utils.str_to_date(c["start_date_name"]),
                 utils.str_to_date(c["stop_date_name"]) + one_day,
@@ -691,7 +775,7 @@ def solve(all):
         }
         for (c, date_name) in [
             (c, utils.date_to_str(date))
-            for c in constraints10
+            for c in enabled_constraints10
             for date in utils.date_range(
                 utils.str_to_date(c["start_date_name"]),
                 utils.str_to_date(c["stop_date_name"]) + one_day,
