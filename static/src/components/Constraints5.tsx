@@ -87,51 +87,58 @@ class Constraints5 extends React.Component<Props, State> {
               <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>勤務の連続日数の下限の追加</DialogTitle>
-            <DialogContent >
-              <Grid container={true} spacing={8}>
-                <Grid item={true} xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={this.state.newConstraint5IsEnabled}
-                        onChange={this.handleChangeNewConstraint5IsEnabled}
-                        color="primary"
+          (() => {
+            const newConstraint5Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint5KinmuId)!
+            const relativesAreEnabled = newConstraint5Kinmu.is_enabled
+            return (
+              <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
+                <DialogTitle>勤務の連続日数の下限の追加</DialogTitle>
+                <DialogContent >
+                  <Grid container={true} spacing={8}>
+                    <Grid item={true} xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={this.state.newConstraint5IsEnabled && relativesAreEnabled}
+                            disabled={!relativesAreEnabled}
+                            onChange={this.handleChangeNewConstraint5IsEnabled}
+                            color="primary"
+                          />
+                        }
+                        label="有効"
                       />
-                    }
-                    label="有効"
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    select={true}
-                    label="勤務"
-                    value={this.state.newConstraint5KinmuId}
-                    onChange={this.handleChangeNewConstraint5KinmuId}
-                    fullWidth={true}
-                  >
-                    {this.props.kinmus.map(kinmu => (
-                      <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    label="連続日数下限"
-                    type="number"
-                    defaultValue={this.state.newConstraint5MinNumberOfDays}
-                    onChange={this.handleChangeNewConstraint5MinNumberOfDays}
-                    fullWidth={true}
-                  />
-                </Grid>
-              </Grid>
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateConstraint5}>追加</Button>
-              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
-            </DialogActions>
-          </Dialog>}
+                    </Grid>
+                    <Grid item={true} xs={12}>
+                      <TextField
+                        select={true}
+                        label="勤務"
+                        value={this.state.newConstraint5KinmuId}
+                        onChange={this.handleChangeNewConstraint5KinmuId}
+                        fullWidth={true}
+                      >
+                        {this.props.kinmus.map(kinmu => (
+                          <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                    <Grid item={true} xs={12}>
+                      <TextField
+                        label="連続日数下限"
+                        type="number"
+                        defaultValue={this.state.newConstraint5MinNumberOfDays}
+                        onChange={this.handleChangeNewConstraint5MinNumberOfDays}
+                        fullWidth={true}
+                      />
+                    </Grid>
+                  </Grid>
+                </DialogContent>
+                <DialogActions>
+                  <Button color="primary" onClick={this.handleClickCreateConstraint5}>追加</Button>
+                  <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
+                </DialogActions>
+              </Dialog>
+            )
+          })()}
       </>
     )
   }

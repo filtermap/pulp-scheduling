@@ -78,6 +78,7 @@ class Constraint9 extends React.Component<Props, State> {
   public render() {
     const constraint9Member = this.props.members.find(({ id }) => id === this.props.constraint9.member_id)!
     const constraint9Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint9.kinmu_id)!
+    const relativesAreEnabled = constraint9Member.is_enabled && constraint9Kinmu.is_enabled
     const title = `${constraint9Member.name}の${this.props.constraint9.start_date_name}から${this.props.constraint9.stop_date_name}までに${constraint9Kinmu.name}を割り当てる`
     return (
       <>
@@ -86,7 +87,8 @@ class Constraint9 extends React.Component<Props, State> {
             action={
               <>
                 <Switch
-                  checked={this.props.constraint9.is_enabled}
+                  checked={this.props.constraint9.is_enabled && relativesAreEnabled}
+                  disabled={!relativesAreEnabled}
                   onChange={this.handleChangeConstraint9IsEnabled}
                   color="primary"
                 />

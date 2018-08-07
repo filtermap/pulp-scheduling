@@ -75,6 +75,7 @@ class Constraint3 extends React.Component<Props, State> {
   public render() {
     const constraint3Member = this.props.members.find(({ id }) => id === this.props.constraint3.member_id)!
     const constraint3Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint3.kinmu_id)!
+    const relativesAreEnabled = constraint3Member.is_enabled && constraint3Kinmu.is_enabled
     const title = `${constraint3Member.name}に${constraint3Kinmu.name}を${this.props.constraint3.min_number_of_assignments}回以上割り当てる`
     return (
       <>
@@ -83,7 +84,8 @@ class Constraint3 extends React.Component<Props, State> {
             action={
               <>
                 <Switch
-                  checked={this.props.constraint3.is_enabled}
+                  checked={this.props.constraint3.is_enabled && relativesAreEnabled}
+                  disabled={!relativesAreEnabled}
                   onChange={this.handleChangeConstraint3IsEnabled}
                   color="primary"
                 />

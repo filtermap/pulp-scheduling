@@ -110,88 +110,96 @@ class Constraints1 extends React.Component<Props, State> {
               <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の追加</DialogTitle>
-            <DialogContent>
-              <Grid container={true} spacing={8}>
-                <Grid item={true} xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={this.state.newConstraint1IsEnabled}
-                        onChange={this.handleChangeNewConstraint1IsEnabled}
-                        color="primary"
+          (() => {
+            const newConstraint1Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint1KinmuId)!
+            const newConstraint1Group = this.props.groups.find(({ id }) => id === this.state.newConstraint1GroupId)!
+            const relativesAreEnabled = newConstraint1Kinmu.is_enabled && newConstraint1Group.is_enabled
+            return (
+              <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
+                <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の追加</DialogTitle>
+                <DialogContent>
+                  <Grid container={true} spacing={8}>
+                    <Grid item={true} xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={this.state.newConstraint1IsEnabled && relativesAreEnabled}
+                            disabled={!relativesAreEnabled}
+                            onChange={this.handleChangeNewConstraint1IsEnabled}
+                            color="primary"
+                          />
+                        }
+                        label="有効"
                       />
-                    }
-                    label="有効"
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    label="開始日"
-                    type="date"
-                    defaultValue={this.state.newConstraint1StartDateName}
-                    onChange={this.handleChangeNewConstraint1StartDateName}
-                    fullWidth={true}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    label="終了日"
-                    type="date"
-                    defaultValue={this.state.newConstraint1StopDateName}
-                    onChange={this.handleChangeNewConstraint1StopDateName}
-                    fullWidth={true}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    select={true}
-                    label="勤務"
-                    value={this.state.newConstraint1KinmuId}
-                    onChange={this.handleChangeNewConstraint1KinmuId}
-                    fullWidth={true}
-                  >
-                    {this.props.kinmus.map(kinmu => (
-                      <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    select={true}
-                    label="グループ"
-                    value={this.state.newConstraint1GroupId}
-                    onChange={this.handleChangeNewConstraint1GroupId}
-                    fullWidth={true}
-                  >
-                    {this.props.groups.map(group => (
-                      <MenuItem key={group.id} value={group.id}>{group.name}</MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    label="割り当て職員数下限"
-                    type="number"
-                    defaultValue={this.state.newConstraint1MinNumberOfAssignments}
-                    onChange={this.handleChangeNewConstraint1MinNumberOfAssignments}
-                    fullWidth={true}
-                  />
-                </Grid>
-              </Grid>
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateConstraint1}>追加</Button>
-              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
-            </DialogActions>
-          </Dialog>}
+                    </Grid>
+                    <Grid item={true} xs={12}>
+                      <TextField
+                        label="開始日"
+                        type="date"
+                        defaultValue={this.state.newConstraint1StartDateName}
+                        onChange={this.handleChangeNewConstraint1StartDateName}
+                        fullWidth={true}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item={true} xs={12}>
+                      <TextField
+                        label="終了日"
+                        type="date"
+                        defaultValue={this.state.newConstraint1StopDateName}
+                        onChange={this.handleChangeNewConstraint1StopDateName}
+                        fullWidth={true}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item={true} xs={12}>
+                      <TextField
+                        select={true}
+                        label="勤務"
+                        value={this.state.newConstraint1KinmuId}
+                        onChange={this.handleChangeNewConstraint1KinmuId}
+                        fullWidth={true}
+                      >
+                        {this.props.kinmus.map(kinmu => (
+                          <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                    <Grid item={true} xs={12}>
+                      <TextField
+                        select={true}
+                        label="グループ"
+                        value={this.state.newConstraint1GroupId}
+                        onChange={this.handleChangeNewConstraint1GroupId}
+                        fullWidth={true}
+                      >
+                        {this.props.groups.map(group => (
+                          <MenuItem key={group.id} value={group.id}>{group.name}</MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                    <Grid item={true} xs={12}>
+                      <TextField
+                        label="割り当て職員数下限"
+                        type="number"
+                        defaultValue={this.state.newConstraint1MinNumberOfAssignments}
+                        onChange={this.handleChangeNewConstraint1MinNumberOfAssignments}
+                        fullWidth={true}
+                      />
+                    </Grid>
+                  </Grid>
+                </DialogContent>
+                <DialogActions>
+                  <Button color="primary" onClick={this.handleClickCreateConstraint1}>追加</Button>
+                  <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
+                </DialogActions>
+              </Dialog>
+            )
+          })()}
       </>
     )
   }

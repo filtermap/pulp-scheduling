@@ -69,6 +69,7 @@ class Constraint5 extends React.Component<Props, State> {
   }
   public render() {
     const constraint5Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint5.kinmu_id)!
+    const relativesAreEnabled = constraint5Kinmu.is_enabled
     const title = `${constraint5Kinmu.name}の連続日数を${this.props.constraint5.min_number_of_days}日以上にする`
     return (
       <>
@@ -77,7 +78,8 @@ class Constraint5 extends React.Component<Props, State> {
             action={
               <>
                 <Switch
-                  checked={this.props.constraint5.is_enabled}
+                  checked={this.props.constraint5.is_enabled && relativesAreEnabled}
+                  disabled={!relativesAreEnabled}
                   onChange={this.handleChangeConstraint5IsEnabled}
                   color="primary"
                 />

@@ -75,6 +75,7 @@ class Constraint4 extends React.Component<Props, State> {
   public render() {
     const constraint4Member = this.props.members.find(({ id }) => id === this.props.constraint4.member_id)!
     const constraint4Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint4.kinmu_id)!
+    const relativesAreEnabled = constraint4Member.is_enabled && constraint4Kinmu.is_enabled
     const title = `${constraint4Member.name}に${constraint4Kinmu.name}を${this.props.constraint4.max_number_of_assignments}回以下割り当てる`
     return (
       <>
@@ -83,7 +84,8 @@ class Constraint4 extends React.Component<Props, State> {
             action={
               <>
                 <Switch
-                  checked={this.props.constraint4.is_enabled}
+                  checked={this.props.constraint4.is_enabled && relativesAreEnabled}
+                  disabled={!relativesAreEnabled}
                   onChange={this.handleChangeConstraint4IsEnabled}
                   color="primary"
                 />

@@ -105,79 +105,87 @@ class Constraints10 extends React.Component<Props, State> {
               <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>職員の期間に割り当てない勤務の追加</DialogTitle>
-            <DialogContent>
-              <Grid container={true} spacing={8}>
-                <Grid item={true} xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={this.state.newConstraint10IsEnabled}
-                        onChange={this.handleChangeNewConstraint10IsEnabled}
-                        color="primary"
+          (() => {
+            const newConstraint10Member = this.props.members.find(({ id }) => id === this.state.newConstraint10MemberId)!
+            const newConstraint10Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint10KinmuId)!
+            const relativesAreEnabled = newConstraint10Member.is_enabled && newConstraint10Kinmu.is_enabled
+            return (
+              <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
+                <DialogTitle>職員の期間に割り当てない勤務の追加</DialogTitle>
+                <DialogContent>
+                  <Grid container={true} spacing={8}>
+                    <Grid item={true} xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={this.state.newConstraint10IsEnabled && relativesAreEnabled}
+                            disabled={!relativesAreEnabled}
+                            onChange={this.handleChangeNewConstraint10IsEnabled}
+                            color="primary"
+                          />
+                        }
+                        label="有効"
                       />
-                    }
-                    label="有効"
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    select={true}
-                    label="職員"
-                    value={this.state.newConstraint10MemberId}
-                    onChange={this.handleChangeNewConstraint10MemberId}
-                    fullWidth={true}
-                  >
-                    {this.props.members.map(member => (
-                      <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    label="開始日"
-                    type="date"
-                    defaultValue={this.state.newConstraint10StartDateName}
-                    onChange={this.handleChangeNewConstraint10StartDateName}
-                    fullWidth={true}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    label="終了日"
-                    type="date"
-                    defaultValue={this.state.newConstraint10StopDateName}
-                    onChange={this.handleChangeNewConstraint10StopDateName}
-                    fullWidth={true}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    select={true}
-                    label="勤務"
-                    value={this.state.newConstraint10KinmuId}
-                    onChange={this.handleChangeNewConstraint10KinmuId}
-                    fullWidth={true}
-                  >
-                    {this.props.kinmus.map(kinmu => (
-                      <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-              </Grid>
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateConstraint10}>追加</Button>
-              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
-            </DialogActions>
-          </Dialog>}
+                    </Grid>
+                    <Grid item={true} xs={12}>
+                      <TextField
+                        select={true}
+                        label="職員"
+                        value={this.state.newConstraint10MemberId}
+                        onChange={this.handleChangeNewConstraint10MemberId}
+                        fullWidth={true}
+                      >
+                        {this.props.members.map(member => (
+                          <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                    <Grid item={true} xs={12}>
+                      <TextField
+                        label="開始日"
+                        type="date"
+                        defaultValue={this.state.newConstraint10StartDateName}
+                        onChange={this.handleChangeNewConstraint10StartDateName}
+                        fullWidth={true}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item={true} xs={12}>
+                      <TextField
+                        label="終了日"
+                        type="date"
+                        defaultValue={this.state.newConstraint10StopDateName}
+                        onChange={this.handleChangeNewConstraint10StopDateName}
+                        fullWidth={true}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item={true} xs={12}>
+                      <TextField
+                        select={true}
+                        label="勤務"
+                        value={this.state.newConstraint10KinmuId}
+                        onChange={this.handleChangeNewConstraint10KinmuId}
+                        fullWidth={true}
+                      >
+                        {this.props.kinmus.map(kinmu => (
+                          <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                  </Grid>
+                </DialogContent>
+                <DialogActions>
+                  <Button color="primary" onClick={this.handleClickCreateConstraint10}>追加</Button>
+                  <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
+                </DialogActions>
+              </Dialog>
+            )
+          })()}
       </>
     )
   }

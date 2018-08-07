@@ -78,6 +78,7 @@ class Constraint10 extends React.Component<Props, State> {
   public render() {
     const constraint10Member = this.props.members.find(({ id }) => id === this.props.constraint10.member_id)!
     const constraint10Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint10.kinmu_id)!
+    const relativesAreEnabled = constraint10Member.is_enabled && constraint10Kinmu.is_enabled
     const title = `${constraint10Member.name}の${this.props.constraint10.start_date_name}から${this.props.constraint10.stop_date_name}までに${constraint10Kinmu.name}を割り当てない`
     return (
       <>
@@ -86,7 +87,8 @@ class Constraint10 extends React.Component<Props, State> {
             action={
               <>
                 <Switch
-                  checked={this.props.constraint10.is_enabled}
+                  checked={this.props.constraint10.is_enabled && relativesAreEnabled}
+                  disabled={!relativesAreEnabled}
                   onChange={this.handleChangeConstraint10IsEnabled}
                   color="primary"
                 />

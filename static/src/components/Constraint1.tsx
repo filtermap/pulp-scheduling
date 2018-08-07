@@ -81,6 +81,7 @@ class Constraint1 extends React.Component<Props, State> {
   public render() {
     const constraint1Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint1.kinmu_id)!
     const constraint1Group = this.props.groups.find(({ id }) => id === this.props.constraint1.group_id)!
+    const relativesAreEnabled = constraint1Kinmu.is_enabled && constraint1Group.is_enabled
     const title = `${this.props.constraint1.start_date_name}から${this.props.constraint1.stop_date_name}までの${constraint1Kinmu.name}に${constraint1Group.name}から${this.props.constraint1.min_number_of_assignments}人以上の職員を割り当てる`
     return (
       <>
@@ -89,7 +90,8 @@ class Constraint1 extends React.Component<Props, State> {
             action={
               <>
                 <Switch
-                  checked={this.props.constraint1.is_enabled}
+                  checked={this.props.constraint1.is_enabled && relativesAreEnabled}
+                  disabled={!relativesAreEnabled}
                   onChange={this.handleChangeConstraint1IsEnabled}
                   color="primary"
                 />

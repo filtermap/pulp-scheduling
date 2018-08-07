@@ -82,6 +82,7 @@ class Constraint0 extends React.Component<Props, State> {
   public render() {
     const constraint0Constraint0Kinmus = this.props.constraint0_kinmus.filter(({ constraint0_id }) => constraint0_id === this.props.constraint0.id).sort((a, b) => a.sequence_number - b.sequence_number)
     const constraint0Constraint0KinmuKinmus = constraint0Constraint0Kinmus.map(({ kinmu_id }) => this.props.kinmus.find(kinmu => kinmu.id === kinmu_id)!)
+    const relativesAreEnabled = constraint0Constraint0KinmuKinmus.every(({ is_enabled }) => is_enabled)
     const title = constraint0Constraint0KinmuKinmus.map(({ name }) => name).join(', ')
     return (
       <>
@@ -90,7 +91,8 @@ class Constraint0 extends React.Component<Props, State> {
             action={
               <>
                 <Switch
-                  checked={this.props.constraint0.is_enabled}
+                  checked={this.props.constraint0.is_enabled && relativesAreEnabled}
+                  disabled={!relativesAreEnabled}
                   onChange={this.handleChangeConstraint0IsEnabled}
                   color="primary"
                 />

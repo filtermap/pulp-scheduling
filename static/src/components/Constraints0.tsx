@@ -105,56 +105,63 @@ class Constraints0 extends React.Component<Props, State> {
               <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
             </DialogActions>
           </Dialog> :
-          <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
-            <DialogTitle>連続禁止勤務並びの追加</DialogTitle>
-            <DialogContent>
-              <Grid container={true} spacing={8}>
-                <Grid item={true} xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={this.state.newConstraint0IsEnabled}
-                        onChange={this.handleChangeNewConstraint0IsEnabled}
-                        color="primary"
+          (() => {
+            const newConstraint0Constraint0KinmuKinmus = this.state.newConstraint0Constraint0KinmuKinmuIds.map(kinmu_id => this.props.kinmus.find(({ id }) => id === kinmu_id)!)
+            const relativesAreEnabled = newConstraint0Constraint0KinmuKinmus.every(({ is_enabled }) => is_enabled)
+            return (
+              <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
+                <DialogTitle>連続禁止勤務並びの追加</DialogTitle>
+                <DialogContent>
+                  <Grid container={true} spacing={8}>
+                    <Grid item={true} xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={this.state.newConstraint0IsEnabled && relativesAreEnabled}
+                            disabled={!relativesAreEnabled}
+                            onChange={this.handleChangeNewConstraint0IsEnabled}
+                            color="primary"
+                          />
+                        }
+                        label="有効"
                       />
-                    }
-                    label="有効"
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <Button size="small" onClick={this.handleClickCreateNewConstraint0Constraint0Kinmu(0)}>追加</Button>
-                </Grid>
-                {this.state.newConstraint0Constraint0KinmuKinmuIds.map((kinmuId, id) => (
-                  <React.Fragment key={`${id}-${kinmuId}`}>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        select={true}
-                        label={`勤務${id + 1}`}
-                        value={kinmuId}
-                        onChange={this.handleChangeNewConstraint0Constraint0KinmuKinmuId(id)}
-                        fullWidth={true}
-                      >
-                        {this.props.kinmus.map(kinmu => (
-                          <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
-                        ))}
-                      </TextField>
                     </Grid>
                     <Grid item={true} xs={12}>
-                      {this.state.newConstraint0Constraint0KinmuKinmuIds.length > 2 &&
-                        <Button size="small" onClick={this.handleClickDeleteNewConstraint0Constraint0Kinmu(id)}>削除</Button>}
+                      <Button size="small" onClick={this.handleClickCreateNewConstraint0Constraint0Kinmu(0)}>追加</Button>
                     </Grid>
-                    <Grid item={true} xs={12}>
-                      <Button size="small" onClick={this.handleClickCreateNewConstraint0Constraint0Kinmu(id + 1)}>追加</Button>
-                    </Grid>
-                  </React.Fragment>
-                ))}
-              </Grid>
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateConstraint0}>追加</Button>
-              <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
-            </DialogActions>
-          </Dialog>}
+                    {this.state.newConstraint0Constraint0KinmuKinmuIds.map((kinmuId, id) => (
+                      <React.Fragment key={`${id}-${kinmuId}`}>
+                        <Grid item={true} xs={12}>
+                          <TextField
+                            select={true}
+                            label={`勤務${id + 1}`}
+                            value={kinmuId}
+                            onChange={this.handleChangeNewConstraint0Constraint0KinmuKinmuId(id)}
+                            fullWidth={true}
+                          >
+                            {this.props.kinmus.map(kinmu => (
+                              <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                            ))}
+                          </TextField>
+                        </Grid>
+                        <Grid item={true} xs={12}>
+                          {this.state.newConstraint0Constraint0KinmuKinmuIds.length > 2 &&
+                            <Button size="small" onClick={this.handleClickDeleteNewConstraint0Constraint0Kinmu(id)}>削除</Button>}
+                        </Grid>
+                        <Grid item={true} xs={12}>
+                          <Button size="small" onClick={this.handleClickCreateNewConstraint0Constraint0Kinmu(id + 1)}>追加</Button>
+                        </Grid>
+                      </React.Fragment>
+                    ))}
+                  </Grid>
+                </DialogContent>
+                <DialogActions>
+                  <Button color="primary" onClick={this.handleClickCreateConstraint0}>追加</Button>
+                  <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
+                </DialogActions>
+              </Dialog>
+            )
+          })()}
       </>
     )
   }
