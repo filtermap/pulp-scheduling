@@ -81,6 +81,8 @@ class Constraint0 extends React.Component<Props, State> {
   }
   public render() {
     const constraint0Constraint0Kinmus = this.props.constraint0_kinmus.filter(({ constraint0_id }) => constraint0_id === this.props.constraint0.id).sort((a, b) => a.sequence_number - b.sequence_number)
+    const constraint0Constraint0KinmuKinmus = constraint0Constraint0Kinmus.map(({ kinmu_id }) => this.props.kinmus.find(kinmu => kinmu.id === kinmu_id)!)
+    const title = constraint0Constraint0KinmuKinmus.map(({ name }) => name).join(', ')
     return (
       <>
         <Card>
@@ -103,7 +105,7 @@ class Constraint0 extends React.Component<Props, State> {
                 </IconButton>
               </>
             }
-            title={constraint0Constraint0Kinmus.map(constraint0_kinmu => this.props.kinmus.find(kinmu => kinmu.id === constraint0_kinmu.kinmu_id)!.name).join(', ')}
+            title={title}
           />
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit={true}>
             <CardContent>
@@ -146,7 +148,7 @@ class Constraint0 extends React.Component<Props, State> {
           <DialogTitle>連続禁止勤務並びの削除</DialogTitle>
           <DialogContent>
             <DialogContentText>この連続禁止勤務並びを削除します</DialogContentText>
-            <Typography>{constraint0Constraint0Kinmus.map(constraint0_kinmu => this.props.kinmus.find(kinmu => kinmu.id === constraint0_kinmu.kinmu_id)!.name).join(', ')}</Typography>
+            <Typography>{title}</Typography>
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={this.handleClickDeleteConstraint0}>削除</Button>

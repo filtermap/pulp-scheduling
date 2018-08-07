@@ -79,6 +79,9 @@ class Constraint1 extends React.Component<Props, State> {
     this.props.dispatch(constraints1.deleteConstraint1(this.props.constraint1.id))
   }
   public render() {
+    const constraint1Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint1.kinmu_id)!
+    const constraint1Group = this.props.groups.find(({ id }) => id === this.props.constraint1.group_id)!
+    const title = `${this.props.constraint1.start_date_name}から${this.props.constraint1.stop_date_name}までの${constraint1Kinmu.name}に${constraint1Group.name}から${this.props.constraint1.min_number_of_assignments}人以上の職員を割り当てる`
     return (
       <>
         <Card>
@@ -101,7 +104,7 @@ class Constraint1 extends React.Component<Props, State> {
                 </IconButton>
               </>
             }
-            title={`${this.props.constraint1.start_date_name}から${this.props.constraint1.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.id === this.props.constraint1.kinmu_id)!.name}に${this.props.groups.find(group => group.id === this.props.constraint1.group_id)!.name}から${this.props.constraint1.min_number_of_assignments}人以上の職員を割り当てる`}
+            title={title}
           />
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit={true}>
             <CardContent>
@@ -176,7 +179,7 @@ class Constraint1 extends React.Component<Props, State> {
           <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の削除</DialogTitle>
           <DialogContent>
             <DialogContentText>この期間の勤務にグループから割り当てる職員数の下限を削除します</DialogContentText>
-            <Typography>{`${this.props.constraint1.start_date_name}から${this.props.constraint1.stop_date_name}までの${this.props.kinmus.find(kinmu => kinmu.id === this.props.constraint1.kinmu_id)!.name}に${this.props.groups.find(group => group.id === this.props.constraint1.group_id)!.name}から${this.props.constraint1.min_number_of_assignments}人以上の職員を割り当てる`}</Typography>
+            <Typography>{title}</Typography>
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={this.handleClickDeleteConstraint1}>削除</Button>

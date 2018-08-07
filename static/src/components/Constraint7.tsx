@@ -68,6 +68,8 @@ class Constraint7 extends React.Component<Props, State> {
     this.props.dispatch(constraints7.deleteConstraint7(this.props.constraint7.id))
   }
   public render() {
+    const constraint7Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint7.kinmu_id)!
+    const title = `${constraint7Kinmu.name}の間隔日数を${this.props.constraint7.min_number_of_days}日以上にする`
     return (
       <>
         <Card>
@@ -90,7 +92,7 @@ class Constraint7 extends React.Component<Props, State> {
                 </IconButton>
               </>
             }
-            title={`${this.props.kinmus.find(kinmu => kinmu.id === this.props.constraint7.kinmu_id)!.name}の間隔日数を${this.props.constraint7.min_number_of_days}日以上にする`}
+            title={title}
           />
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit={true}>
             <CardContent>
@@ -128,7 +130,7 @@ class Constraint7 extends React.Component<Props, State> {
           <DialogTitle>勤務の間隔日数の下限の削除</DialogTitle>
           <DialogContent>
             <DialogContentText>この勤務の間隔日数の下限を削除します</DialogContentText>
-            <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === this.props.constraint7.kinmu_id)!.name}の間隔日数を${this.props.constraint7.min_number_of_days}日以上にする`}</Typography>
+            <Typography>{title}</Typography>
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={this.handleClickDeleteConstraint7}>削除</Button>

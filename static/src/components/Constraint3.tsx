@@ -73,6 +73,9 @@ class Constraint3 extends React.Component<Props, State> {
     this.props.dispatch(constraints3.deleteConstraint3(this.props.constraint3.id))
   }
   public render() {
+    const constraint3Member = this.props.members.find(({ id }) => id === this.props.constraint3.member_id)!
+    const constraint3Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint3.kinmu_id)!
+    const title = `${constraint3Member.name}に${constraint3Kinmu.name}を${this.props.constraint3.min_number_of_assignments}回以上割り当てる`
     return (
       <>
         <Card>
@@ -95,7 +98,7 @@ class Constraint3 extends React.Component<Props, State> {
                 </IconButton>
               </>
             }
-            title={`${this.props.members.find(member => member.id === this.props.constraint3.member_id)!.name}に${this.props.kinmus.find(kinmu => kinmu.id === this.props.constraint3.kinmu_id)!.name}を${this.props.constraint3.min_number_of_assignments}回以上割り当てる`}
+            title={title}
           />
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit={true}>
             <CardContent>
@@ -146,7 +149,7 @@ class Constraint3 extends React.Component<Props, State> {
           <DialogTitle>職員の勤務の割り当て数の下限の削除</DialogTitle>
           <DialogContent>
             <DialogContentText>この職員の勤務の割り当て数の下限を削除します</DialogContentText>
-            <Typography>{`${this.props.members.find(member => member.id === this.props.constraint3.member_id)!.name}に${this.props.kinmus.find(kinmu => kinmu.id === this.props.constraint3.kinmu_id)!.name}を${this.props.constraint3.min_number_of_assignments}回以上割り当てる`}</Typography>
+            <Typography>{title}</Typography>
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={this.handleClickDeleteConstraint3}>削除</Button>

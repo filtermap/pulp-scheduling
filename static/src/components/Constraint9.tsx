@@ -76,6 +76,9 @@ class Constraint9 extends React.Component<Props, State> {
     this.props.dispatch(constraints9.deleteConstraint9(this.props.constraint9.id))
   }
   public render() {
+    const constraint9Member = this.props.members.find(({ id }) => id === this.props.constraint9.member_id)!
+    const constraint9Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint9.kinmu_id)!
+    const title = `${constraint9Member.name}の${this.props.constraint9.start_date_name}から${this.props.constraint9.stop_date_name}までに${constraint9Kinmu.name}を割り当てる`
     return (
       <>
         <Card>
@@ -98,7 +101,7 @@ class Constraint9 extends React.Component<Props, State> {
                 </IconButton>
               </>
             }
-            title={`${this.props.members.find(member => member.id === this.props.constraint9.member_id)!.name}の${this.props.constraint9.start_date_name}から${this.props.constraint9.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === this.props.constraint9.kinmu_id)!.name}を割り当てる`}
+            title={title}
           />
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit={true}>
             <CardContent>
@@ -164,7 +167,7 @@ class Constraint9 extends React.Component<Props, State> {
           <DialogTitle>職員の期間に割り当てる勤務の削除</DialogTitle>
           <DialogContent>
             <DialogContentText>この職員の期間に割り当てる勤務を削除します</DialogContentText>
-            <Typography>{`${this.props.members.find(member => member.id === this.props.constraint9.member_id)!.name}の${this.props.constraint9.start_date_name}から${this.props.constraint9.stop_date_name}までに${this.props.kinmus.find(kinmu => kinmu.id === this.props.constraint9.kinmu_id)!.name}を割り当てる`}</Typography>
+            <Typography>{title}</Typography>
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={this.handleClickDeleteConstraint9}>削除</Button>

@@ -68,6 +68,8 @@ class Constraint6 extends React.Component<Props, State> {
     this.props.dispatch(constraints6.deleteConstraint6(this.props.constraint6.id))
   }
   public render() {
+    const constraint6Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint6.kinmu_id)!
+    const title = `${constraint6Kinmu.name}の連続日数を${this.props.constraint6.max_number_of_days}日以下にする`
     return (
       <>
         <Card>
@@ -90,7 +92,7 @@ class Constraint6 extends React.Component<Props, State> {
                 </IconButton>
               </>
             }
-            title={`${this.props.kinmus.find(kinmu => kinmu.id === this.props.constraint6.kinmu_id)!.name}の連続日数を${this.props.constraint6.max_number_of_days}日以下にする`}
+            title={title}
           />
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit={true}>
             <CardContent>
@@ -128,7 +130,7 @@ class Constraint6 extends React.Component<Props, State> {
           <DialogTitle>勤務の連続日数の上限の削除</DialogTitle>
           <DialogContent>
             <DialogContentText>この勤務の連続日数の上限を削除します</DialogContentText>
-            <Typography>{`${this.props.kinmus.find(kinmu => kinmu.id === this.props.constraint6.kinmu_id)!.name}の連続日数を${this.props.constraint6.max_number_of_days}日以下にする`}</Typography>
+            <Typography>{title}</Typography>
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={this.handleClickDeleteConstraint6}>削除</Button>
