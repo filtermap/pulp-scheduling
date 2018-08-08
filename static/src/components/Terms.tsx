@@ -1,4 +1,7 @@
 import Grid from '@material-ui/core/Grid'
+import { WithStyles } from '@material-ui/core/styles'
+import createStyles from '@material-ui/core/styles/createStyles'
+import withStyles from '@material-ui/core/styles/withStyles'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import * as React from 'react'
@@ -12,11 +15,11 @@ import Term from './Term'
 type Props = {
   dispatch: Dispatch
   terms: terms.Term[]
-}
+} & WithStyles<typeof styles>
 
 function Terms(props: Props) {
   return (
-    <div style={{ padding: 8 }}>
+    <div className={props.classes.gridFrame}>
       <Grid container={true} spacing={8}>
         <Grid item={true} xs={12}>
           <Toolbar>
@@ -39,4 +42,10 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
   }
 }
 
-export default connect(mapStateToProps)(Terms)
+const styles = createStyles({
+  gridFrame: {
+    padding: 8,
+  },
+})
+
+export default connect(mapStateToProps)(withStyles(styles)(Terms))

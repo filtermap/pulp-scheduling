@@ -5,6 +5,9 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Grid from '@material-ui/core/Grid'
+import { WithStyles } from '@material-ui/core/styles'
+import createStyles from '@material-ui/core/styles/createStyles'
+import withStyles from '@material-ui/core/styles/withStyles'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -20,7 +23,7 @@ import Kinmu from './Kinmu'
 type Props = {
   dispatch: Dispatch
   kinmus: kinmus.Kinmu[]
-}
+} & WithStyles<typeof styles>
 
 type State = {
   creationDialogIsOpen: boolean
@@ -53,11 +56,11 @@ class Kinmus extends React.Component<Props, State> {
   public render() {
     return (
       <>
-        <div style={{ padding: 8 }}>
+        <div className={this.props.classes.gridFrame}>
           <Grid container={true} spacing={8}>
             <Grid item={true} xs={12}>
               <Toolbar>
-                <Typography variant="subheading" style={{ flex: 1 }}>勤務</Typography>
+                <Typography variant="subheading" className={this.props.classes.toolbarTitle}>勤務</Typography>
                 <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
               </Toolbar>
             </Grid>
@@ -110,4 +113,13 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
   }
 }
 
-export default connect(mapStateToProps)(Kinmus)
+const styles = createStyles({
+  gridFrame: {
+    padding: 8,
+  },
+  toolbarTitle: {
+    flex: 1,
+  },
+})
+
+export default withStyles(styles)(connect(mapStateToProps)(Kinmus))

@@ -6,7 +6,9 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Grid from '@material-ui/core/Grid'
 import LinearProgress from '@material-ui/core/LinearProgress'
-import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles'
+import { WithStyles } from '@material-ui/core/styles'
+import createStyles from '@material-ui/core/styles/createStyles'
+import withStyles from '@material-ui/core/styles/withStyles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -84,11 +86,11 @@ class Rosters extends React.Component<Props, State> {
     const newRosterMembers = this.props.all.members.filter(({ id }) => newRosterMemberIds.includes(id))
     return (
       <>
-        <div style={{ padding: 8 }}>
+        <div className={this.props.classes.gridFrame}>
           <Grid container={true} spacing={8}>
             <Grid item={true} xs={12}>
               <Toolbar>
-                <Typography variant="subheading" style={{ flex: 1 }}>勤務表</Typography>
+                <Typography variant="subheading" className={this.props.classes.toolbarTitle}>勤務表</Typography>
                 <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
               </Toolbar>
             </Grid>
@@ -130,12 +132,12 @@ class Rosters extends React.Component<Props, State> {
               </Dialog> :
               <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
                 <DialogTitle>勤務表の追加</DialogTitle>
-                <DialogContent style={{ display: 'flex' }}>
+                <DialogContent className={this.props.classes.dialogTableContent}>
                   <div className={this.props.classes.dialogTableWrapper}>
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell padding="dense" className={this.props.classes.topHeaderCell}>\</TableCell>
+                          <TableCell padding="dense" className={this.props.classes.leftTopHeaderCell}>\</TableCell>
                           {newRosterDateNames.map(date_name => (
                             <TableCell key={date_name} padding="dense" className={this.props.classes.topHeaderCell}>{date_name}</TableCell>
                           ))}
@@ -174,23 +176,35 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
 }
 
 const styles = createStyles({
+  dialogTableContent: {
+    display: 'flex',
+  },
   dialogTableWrapper: {
     overflow: 'auto',
+  },
+  gridFrame: {
+    padding: 8,
   },
   leftHeaderCell: {
     background: 'white',
     left: 0,
     position: 'sticky',
   },
-  tableWrapper: {
-    maxHeight: 'calc(100vh - 200px)',
-    overflow: 'auto',
+  leftTopHeaderCell: {
+    background: 'white',
+    left: 0,
+    position: 'sticky',
+    top: 0,
+    zIndex: 2,
+  },
+  toolbarTitle: {
+    flex: 1,
   },
   topHeaderCell: {
     background: 'white',
     position: 'sticky',
     top: 0,
-    zId: 1,
+    zIndex: 1,
   },
 })
 

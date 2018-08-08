@@ -7,6 +7,9 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Grid from '@material-ui/core/Grid'
 import MenuItem from '@material-ui/core/MenuItem'
+import { WithStyles } from '@material-ui/core/styles'
+import createStyles from '@material-ui/core/styles/createStyles'
+import withStyles from '@material-ui/core/styles/withStyles'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -27,7 +30,7 @@ type Props = {
   constraints1: constraints1.Constraint1[]
   kinmus: kinmus.Kinmu[]
   groups: groups.Group[]
-}
+} & WithStyles<typeof styles>
 
 type State = {
   creationDialogIsOpen: boolean
@@ -84,11 +87,11 @@ class Constraints1 extends React.Component<Props, State> {
   public render() {
     return (
       <>
-        <div style={{ padding: 8 }}>
+        <div className={this.props.classes.gridFrame}>
           <Grid container={true} spacing={8}>
             <Grid item={true} xs={12}>
               <Toolbar>
-                <Typography variant="subheading" style={{ flex: 1 }}> 期間の勤務にグループから割り当てる職員数の下限</Typography>
+                <Typography variant="subheading" className={this.props.classes.toolbarTitle}> 期間の勤務にグループから割り当てる職員数の下限</Typography>
                 <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
               </Toolbar>
             </Grid>
@@ -213,4 +216,13 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
   }
 }
 
-export default connect(mapStateToProps)(Constraints1)
+const styles = createStyles({
+  gridFrame: {
+    padding: 8,
+  },
+  toolbarTitle: {
+    flex: 1,
+  },
+})
+
+export default withStyles(styles)(connect(mapStateToProps)(Constraints1))

@@ -116,7 +116,7 @@ class Roster extends React.Component<Props, State> {
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell padding="dense" className={this.props.classes.topHeaderCell}>\</TableCell>
+                          <TableCell padding="dense" className={this.props.classes.leftTopHeaderCell}>\</TableCell>
                           {roster_date_names.map(date_name => (
                             <TableCell key={date_name} padding="dense" className={this.props.classes.topHeaderCell}>{date_name}</TableCell>
                           ))}
@@ -185,6 +185,13 @@ const styles = (theme: Theme) => createStyles({
     left: 0,
     position: 'sticky',
   },
+  leftTopHeaderCell: {
+    background: 'white',
+    left: 0,
+    position: 'sticky',
+    top: 0,
+    zIndex: 2,
+  },
   tableWrapper: {
     maxHeight: 'calc(100vh - 200px)',
     overflow: 'auto',
@@ -193,7 +200,7 @@ const styles = (theme: Theme) => createStyles({
     background: 'white',
     position: 'sticky',
     top: 0,
-    zId: 1,
+    zIndex: 1,
   },
 })
 

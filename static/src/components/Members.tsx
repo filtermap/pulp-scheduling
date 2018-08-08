@@ -9,6 +9,9 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormLabel from '@material-ui/core/FormLabel'
 import Grid from '@material-ui/core/Grid'
+import { WithStyles } from '@material-ui/core/styles'
+import createStyles from '@material-ui/core/styles/createStyles'
+import withStyles from '@material-ui/core/styles/withStyles'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -28,7 +31,7 @@ type Props = {
   members: members.Member[]
   groups: groups.Group[]
   group_members: group_members.GroupMember[]
-}
+} & WithStyles<typeof styles>
 
 type State = {
   creationDialogIsOpen: boolean
@@ -72,11 +75,11 @@ class Members extends React.Component<Props, State> {
   public render() {
     return (
       <>
-        <div style={{ padding: 8 }}>
+        <div className={this.props.classes.gridFrame}>
           <Grid container={true} spacing={8}>
             <Grid item={true} xs={12}>
               <Toolbar>
-                <Typography variant="subheading" style={{ flex: 1 }}>職員</Typography>
+                <Typography variant="subheading" className={this.props.classes.toolbarTitle}>職員</Typography>
                 <Button size="small" onClick={this.handleClickOpenCreationDialog}>追加</Button>
               </Toolbar>
             </Grid>
@@ -151,4 +154,13 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
   }
 }
 
-export default connect(mapStateToProps)(Members)
+const styles = createStyles({
+  gridFrame: {
+    padding: 8,
+  },
+  toolbarTitle: {
+    flex: 1,
+  },
+})
+
+export default withStyles(styles)(connect(mapStateToProps)(Members))
