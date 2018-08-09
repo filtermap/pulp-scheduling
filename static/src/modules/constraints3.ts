@@ -13,6 +13,8 @@ export type Constraint3 = {
   min_number_of_assignments: number
 }
 
+export const minOfConstraint3MinNumberOfAssignments = 1
+
 type CreateConstraint3 = {
   type: typeof CREATE_CONSTRAINT3
   is_enabled: boolean

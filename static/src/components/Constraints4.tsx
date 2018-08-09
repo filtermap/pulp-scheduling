@@ -44,7 +44,7 @@ class Constraints4 extends React.Component<Props, State> {
     creationDialogIsOpen: false,
     newConstraint4IsEnabled: true,
     newConstraint4KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-    newConstraint4MaxNumberOfAssignments: 0,
+    newConstraint4MaxNumberOfAssignments: constraints4.minOfConstraint4MaxNumberOfAssignments,
     newConstraint4MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
   }
   public handleClickOpenCreationDialog = () => {
@@ -153,6 +153,9 @@ class Constraints4 extends React.Component<Props, State> {
                         defaultValue={this.state.newConstraint4MaxNumberOfAssignments}
                         onChange={this.handleChangeNewConstraint4MaxNumberOfAssignments}
                         fullWidth={true}
+                        inputProps={{
+                          min: constraints4.minOfConstraint4MaxNumberOfAssignments,
+                        }}
                       />
                     </Grid>
                   </Grid>

@@ -51,7 +51,7 @@ class Constraints1 extends React.Component<Props, State> {
       newConstraint1GroupId: this.props.groups.length > 0 ? this.props.groups[0].id : 0,
       newConstraint1IsEnabled: true,
       newConstraint1KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-      newConstraint1MinNumberOfAssignments: 0,
+      newConstraint1MinNumberOfAssignments: constraints1.minOfConstraint1MinNumberOfAssignments,
       newConstraint1StartDateName: todayString,
       newConstraint1StopDateName: todayString,
     }
@@ -192,6 +192,9 @@ class Constraints1 extends React.Component<Props, State> {
                         defaultValue={this.state.newConstraint1MinNumberOfAssignments}
                         onChange={this.handleChangeNewConstraint1MinNumberOfAssignments}
                         fullWidth={true}
+                        inputProps={{
+                          min: constraints1.minOfConstraint1MinNumberOfAssignments,
+                        }}
                       />
                     </Grid>
                   </Grid>

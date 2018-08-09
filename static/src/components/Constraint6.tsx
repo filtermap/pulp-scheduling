@@ -119,6 +119,9 @@ class Constraint6 extends React.Component<Props, State> {
                     defaultValue={this.props.constraint6.max_number_of_days}
                     onChange={this.handleChangeConstraint6MaxNumberOfDays}
                     fullWidth={true}
+                    inputProps={{
+                      min: constraints6.minOfConstraint6MaxNumberOfDays,
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -164,4 +167,3 @@ const styles = (theme: Theme) => createStyles({
 })
 
 export default withStyles(styles)(connect(mapStateToProps)(Constraint6))
-

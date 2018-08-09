@@ -11,6 +11,8 @@ export type Constraint6 = {
   max_number_of_days: number
 }
 
+export const minOfConstraint6MaxNumberOfDays = 2
+
 type CreateConstraint6 = {
   type: typeof CREATE_CONSTRAINT6
   is_enabled: boolean

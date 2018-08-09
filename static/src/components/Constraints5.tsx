@@ -41,7 +41,7 @@ class Constraints5 extends React.Component<Props, State> {
     creationDialogIsOpen: false,
     newConstraint5IsEnabled: true,
     newConstraint5KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-    newConstraint5MinNumberOfDays: 0,
+    newConstraint5MinNumberOfDays: constraints5.minOfConstraint5MinNumberOfDays,
   }
   public handleClickOpenCreationDialog = () => {
     this.setState({ creationDialogIsOpen: true })
@@ -131,6 +131,9 @@ class Constraints5 extends React.Component<Props, State> {
                         defaultValue={this.state.newConstraint5MinNumberOfDays}
                         onChange={this.handleChangeNewConstraint5MinNumberOfDays}
                         fullWidth={true}
+                        inputProps={{
+                          min: constraints5.minOfConstraint5MinNumberOfDays,
+                        }}
                       />
                     </Grid>
                   </Grid>

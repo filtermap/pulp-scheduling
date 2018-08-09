@@ -11,6 +11,8 @@ export type Constraint7 = {
   min_number_of_days: number
 }
 
+export const minOfConstraint7MinNumberOfDays = 2
+
 type CreateConstraint7 = {
   type: typeof CREATE_CONSTRAINT7
   is_enabled: boolean

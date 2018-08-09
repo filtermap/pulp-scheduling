@@ -45,7 +45,7 @@ class Constraints3 extends React.Component<Props, State> {
     newConstraint3IsEnabled: true,
     newConstraint3KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newConstraint3MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
-    newConstraint3MinNumberOfAssignments: 0,
+    newConstraint3MinNumberOfAssignments: constraints3.minOfConstraint3MinNumberOfAssignments,
   }
   public handleClickOpenCreationDialog = () => {
     this.setState({ creationDialogIsOpen: true })
@@ -153,6 +153,9 @@ class Constraints3 extends React.Component<Props, State> {
                         defaultValue={this.state.newConstraint3MinNumberOfAssignments}
                         onChange={this.handleChangeNewConstraint3MinNumberOfAssignments}
                         fullWidth={true}
+                        inputProps={{
+                          min: constraints3.minOfConstraint3MinNumberOfAssignments,
+                        }}
                       />
                     </Grid>
                   </Grid>

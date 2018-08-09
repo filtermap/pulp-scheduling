@@ -119,6 +119,9 @@ class Constraint7 extends React.Component<Props, State> {
                     defaultValue={this.props.constraint7.min_number_of_days}
                     onChange={this.handleChangeConstraint7MinNumberOfDays}
                     fullWidth={true}
+                    inputProps={{
+                      min: constraints7.minOfConstraint7MinNumberOfDays,
+                    }}
                   />
                 </Grid>
               </Grid>

@@ -41,7 +41,7 @@ class Constraints8 extends React.Component<Props, State> {
     creationDialogIsOpen: false,
     newConstraint8IsEnabled: true,
     newConstraint8KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-    newConstraint8MaxNumberOfDays: 0,
+    newConstraint8MaxNumberOfDays: constraints8.minOfConstraint8MaxNumberOfDays,
   }
   public handleClickOpenCreationDialog = () => {
     this.setState({ creationDialogIsOpen: true })
@@ -131,6 +131,9 @@ class Constraints8 extends React.Component<Props, State> {
                         defaultValue={this.state.newConstraint8MaxNumberOfDays}
                         onChange={this.handleChangeNewConstraint8MaxNumberOfDays}
                         fullWidth={true}
+                        inputProps={{
+                          min: constraints8.minOfConstraint8MaxNumberOfDays,
+                        }}
                       />
                     </Grid>
                   </Grid>

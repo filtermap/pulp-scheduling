@@ -17,6 +17,8 @@ export type Constraint2 = {
   max_number_of_assignments: number
 }
 
+export const minOfConstraint2MaxNumberOfAssignments = 0
+
 type CreateConstraint2 = {
   type: typeof CREATE_CONSTRAINT2
   is_enabled: boolean

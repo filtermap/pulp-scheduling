@@ -168,6 +168,9 @@ class Constraint2 extends React.Component<Props, State> {
                     defaultValue={this.props.constraint2.max_number_of_assignments}
                     onChange={this.handleChangeConstraint2MaxNumberOfAssignments}
                     fullWidth={true}
+                    inputProps={{
+                      min: constraints2.minOfConstraint2MaxNumberOfAssignments,
+                    }}
                   />
                 </Grid>
               </Grid>

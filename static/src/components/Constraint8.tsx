@@ -119,6 +119,9 @@ class Constraint8 extends React.Component<Props, State> {
                     defaultValue={this.props.constraint8.max_number_of_days}
                     onChange={this.handleChangeConstraint8MaxNumberOfDays}
                     fullWidth={true}
+                    inputProps={{
+                      min: constraints8.minOfConstraint8MaxNumberOfDays,
+                    }}
                   />
                 </Grid>
               </Grid>

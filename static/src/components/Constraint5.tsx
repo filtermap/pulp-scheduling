@@ -119,6 +119,9 @@ class Constraint5 extends React.Component<Props, State> {
                     defaultValue={this.props.constraint5.min_number_of_days}
                     onChange={this.handleChangeConstraint5MinNumberOfDays}
                     fullWidth={true}
+                    inputProps={{
+                      min: constraints5.minOfConstraint5MinNumberOfDays,
+                    }}
                   />
                 </Grid>
               </Grid>

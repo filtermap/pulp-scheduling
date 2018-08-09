@@ -51,7 +51,7 @@ class Constraints2 extends React.Component<Props, State> {
       newConstraint2GroupId: this.props.groups.length > 0 ? this.props.groups[0].id : 0,
       newConstraint2IsEnabled: true,
       newConstraint2KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-      newConstraint2MaxNumberOfAssignments: 0,
+      newConstraint2MaxNumberOfAssignments: constraints2.minOfConstraint2MaxNumberOfAssignments,
       newConstraint2StartDateName: todayString,
       newConstraint2StopDateName: todayString,
     }
@@ -192,6 +192,9 @@ class Constraints2 extends React.Component<Props, State> {
                         defaultValue={this.state.newConstraint2MaxNumberOfAssignments}
                         onChange={this.handleChangeNewConstraint2MinNumberOfAssignments}
                         fullWidth={true}
+                        inputProps={{
+                          min: constraints2.minOfConstraint2MaxNumberOfAssignments,
+                        }}
                       />
                     </Grid>
                   </Grid>
