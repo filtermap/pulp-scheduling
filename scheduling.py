@@ -895,7 +895,7 @@ def solve(all_):
     print("Status:", status)
     if status != "Optimal":
         raise UnsolvedException(status)
-    return x_to_new_assignments(x, dates, members, kinmus)
+    return x_to_new_assignments(x, dates, enabled_members, enabled_kinmus)
 
 
 if __name__ == "__main__":
