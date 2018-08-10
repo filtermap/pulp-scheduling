@@ -305,4 +305,4 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
   }
 }
 
-export default withTheme()(withStyles(styles)(withRouter(connect(mapStateToProps)(ResponsiveDrawer))))
+export default withRouter(connect(mapStateToProps)(withTheme()(withStyles(styles)(ResponsiveDrawer))))
