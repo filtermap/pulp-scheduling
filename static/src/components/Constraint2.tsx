@@ -87,31 +87,34 @@ class Constraint2 extends React.Component<Props, State> {
       <>
         <Card>
           <CardHeader
+            avatar={
+              <Switch
+                checked={this.props.constraint2.is_enabled && relativesAreEnabled}
+                disabled={!relativesAreEnabled}
+                onChange={this.handleChangeConstraint2IsEnabled}
+                color="primary"
+              />
+            }
             action={
-              <>
-                <Switch
-                  checked={this.props.constraint2.is_enabled && relativesAreEnabled}
-                  disabled={!relativesAreEnabled}
-                  onChange={this.handleChangeConstraint2IsEnabled}
-                  color="primary"
-                />
-                <IconButton
-                  className={classnames(this.props.classes.expand, {
-                    [this.props.classes.expandOpen]: this.state.expanded,
-                  })}
-                  onClick={this.handleClickExpand}
-                  aria-expanded={this.state.expanded}
-                >
-                  <ExpandMoreIcon />
-                </IconButton>
-              </>
+              <IconButton
+                className={classnames(this.props.classes.expand, {
+                  [this.props.classes.expandOpen]: this.state.expanded,
+                })}
+                onClick={this.handleClickExpand}
+                aria-expanded={this.state.expanded}
+              >
+                <ExpandMoreIcon />
+              </IconButton>
             }
             title={title}
+            titleTypographyProps={{
+              variant: 'headline',
+            }}
           />
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit={true}>
             <CardContent>
               <Grid container={true} spacing={8}>
-               <Grid item={true} xs={12}>
+                <Grid item={true} xs={12}>
                   <TextField
                     label="開始日"
                     type="date"

@@ -100,26 +100,32 @@ class Member extends React.Component<Props, State> {
       <>
         <Card>
           <CardHeader
+            avatar={
+              <Switch
+                checked={this.props.member.is_enabled}
+                onChange={this.handleChangeMemberIsEnabled}
+                color="primary"
+              />
+            }
             action={
-              <>
-                <Switch
-                  checked={this.props.member.is_enabled}
-                  onChange={this.handleChangeMemberIsEnabled}
-                  color="primary"
-                />
-                <IconButton
-                  className={classnames(this.props.classes.expand, {
-                    [this.props.classes.expandOpen]: this.state.expanded,
-                  })}
-                  onClick={this.handleClickExpand}
-                  aria-expanded={this.state.expanded}
-                >
-                  <ExpandMoreIcon />
-                </IconButton>
-              </>
+              <IconButton
+                className={classnames(this.props.classes.expand, {
+                  [this.props.classes.expandOpen]: this.state.expanded,
+                })}
+                onClick={this.handleClickExpand}
+                aria-expanded={this.state.expanded}
+              >
+                <ExpandMoreIcon />
+              </IconButton>
             }
             title={this.props.member.name}
+            titleTypographyProps={{
+              variant: 'headline',
+            }}
             subheader={this.props.group_members.filter(group_member => group_member.member_id === this.props.member.id).map(group_member => this.props.groups.find(group => group.id === group_member.group_id)!.name).join(', ')}
+            subheaderTypographyProps={{
+              variant: 'body1',
+            }}
           />
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit={true}>
             <CardContent>

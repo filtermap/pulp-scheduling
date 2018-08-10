@@ -106,25 +106,28 @@ class Kinmu extends React.Component<Props, State> {
       <>
         <Card>
           <CardHeader
+            avatar={
+              <Switch
+                checked={this.props.kinmu.is_enabled}
+                onChange={this.handleChangeKinmuIsEnabled}
+                color="primary"
+              />
+            }
             action={
-              <>
-                <Switch
-                  checked={this.props.kinmu.is_enabled}
-                  onChange={this.handleChangeKinmuIsEnabled}
-                  color="primary"
-                />
-                <IconButton
-                  className={classnames(this.props.classes.expand, {
-                    [this.props.classes.expandOpen]: this.state.expanded,
-                  })}
-                  onClick={this.handleClickExpand}
-                  aria-expanded={this.state.expanded}
-                >
-                  <ExpandMoreIcon />
-                </IconButton>
-              </>
+              <IconButton
+                className={classnames(this.props.classes.expand, {
+                  [this.props.classes.expandOpen]: this.state.expanded,
+                })}
+                onClick={this.handleClickExpand}
+                aria-expanded={this.state.expanded}
+              >
+                <ExpandMoreIcon />
+              </IconButton>
             }
             title={this.props.kinmu.name}
+            titleTypographyProps={{
+              variant: 'headline',
+            }}
           />
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit={true}>
             <CardContent>
