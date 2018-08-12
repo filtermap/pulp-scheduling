@@ -606,6 +606,13 @@ def solve(all_):
         constraint
         for constraint in constraints1
         if constraint["is_enabled"]
+        and all(
+            utils.str_to_date(term["start_date_name"])
+            <= utils.str_to_date(constraint["start_date_name"])
+            and utils.str_to_date(constraint["stop_date_name"])
+            <= utils.str_to_date(term["stop_date_name"])
+            for term in terms
+        )
         and constraint["kinmu_id"] in enabled_kinmu_ids
         and constraint["group_id"] in enabled_group_ids
     ]
@@ -614,6 +621,13 @@ def solve(all_):
         constraint
         for constraint in constraints2
         if constraint["is_enabled"]
+        and all(
+            utils.str_to_date(term["start_date_name"])
+            <= utils.str_to_date(constraint["start_date_name"])
+            and utils.str_to_date(term["stop_date_name"])
+            <= utils.str_to_date(term["stop_date_name"])
+            for term in terms
+        )
         and constraint["kinmu_id"] in enabled_kinmu_ids
         and constraint["group_id"] in enabled_group_ids
     ]
@@ -662,6 +676,13 @@ def solve(all_):
         constraint
         for constraint in constraints9
         if constraint["is_enabled"]
+        and all(
+            utils.str_to_date(term["start_date_name"])
+            <= utils.str_to_date(constraint["start_date_name"])
+            and utils.str_to_date(term["stop_date_name"])
+            <= utils.str_to_date(term["stop_date_name"])
+            for term in terms
+        )
         and constraint["member_id"] in enabled_member_ids
         and constraint["kinmu_id"] in enabled_kinmu_ids
     ]
@@ -670,6 +691,13 @@ def solve(all_):
         constraint
         for constraint in constraints10
         if constraint["is_enabled"]
+        and all(
+            utils.str_to_date(term["start_date_name"])
+            <= utils.str_to_date(constraint["start_date_name"])
+            and utils.str_to_date(term["stop_date_name"])
+            <= utils.str_to_date(term["stop_date_name"])
+            for term in terms
+        )
         and constraint["member_id"] in enabled_member_ids
         and constraint["kinmu_id"] in enabled_kinmu_ids
     ]

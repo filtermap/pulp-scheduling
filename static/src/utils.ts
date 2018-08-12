@@ -3,6 +3,13 @@ export async function sendJSONRPCRequest<T>(method: string, params: T[] | object
   return await response.json()
 }
 
+const dateStringPattern = /^(\d{4})-(\d{1,2})-(\d{1,2})$/
+
+export function stringToDate(dateString: string): Date {
+  const [, year, month, day] = dateString.match(dateStringPattern)!
+  return new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10))
+}
+
 export function dateToString(date: Date): string {
   const year = date.getFullYear()
   const month = `${date.getMonth() + 1}`.padStart(2, '0')

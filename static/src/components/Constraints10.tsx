@@ -22,6 +22,7 @@ import * as all from '../modules/all'
 import * as constraints10 from '../modules/constraints10'
 import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
+import * as terms from '../modules/terms'
 import * as utils from '../utils'
 import Constraint10 from './Constraint10'
 
@@ -29,6 +30,7 @@ type Props = {
   dispatch: Dispatch
   constraints10: constraints10.Constraint10[]
   members: members.Member[]
+  terms: terms.Term[]
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
@@ -110,8 +112,11 @@ class Constraints10 extends React.Component<Props, State> {
           </Dialog> :
           (() => {
             const newConstraint10Member = this.props.members.find(({ id }) => id === this.state.newConstraint10MemberId)!
+            const newConstraint10StartDate = utils.stringToDate(this.state.newConstraint10StartDateName)
+            const newConstraint10StopDate = utils.stringToDate(this.state.newConstraint10StopDateName)
+            const newConstraint10TermIsIncluded = this.props.terms.every(({ start_date_name, stop_date_name }) => utils.stringToDate(start_date_name) <= newConstraint10StartDate && newConstraint10StopDate <= utils.stringToDate(stop_date_name))
             const newConstraint10Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint10KinmuId)!
-            const relativesAreEnabled = newConstraint10Member.is_enabled && newConstraint10Kinmu.is_enabled
+            const relativesAreEnabled = newConstraint10Member.is_enabled && newConstraint10TermIsIncluded && newConstraint10Kinmu.is_enabled
             return (
               <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
                 <DialogTitle>職員の期間に割り当てない勤務の追加</DialogTitle>
@@ -199,6 +204,7 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
     constraints10: state.present.constraints10,
     kinmus: state.present.kinmus,
     members: state.present.members,
+    terms: state.present.terms,
   }
 }
 

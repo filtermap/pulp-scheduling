@@ -22,6 +22,7 @@ import * as all from '../modules/all'
 import * as constraints9 from '../modules/constraints9'
 import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
+import * as terms from '../modules/terms'
 import * as utils from '../utils'
 import Constraint9 from './Constraint9'
 
@@ -29,6 +30,7 @@ type Props = {
   dispatch: Dispatch
   constraints9: constraints9.Constraint9[]
   members: members.Member[]
+  terms: terms.Term[]
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
@@ -110,8 +112,11 @@ class Constraints9 extends React.Component<Props, State> {
           </Dialog> :
           (() => {
             const newConstraint9Member = this.props.members.find(({ id }) => id === this.state.newConstraint9MemberId)!
+            const newConstraint9StartDate = utils.stringToDate(this.state.newConstraint9StartDateName)
+            const newConstraint9StopDate = utils.stringToDate(this.state.newConstraint9StopDateName)
+            const newConstraint9TermIsIncluded = this.props.terms.every(({ start_date_name, stop_date_name }) => utils.stringToDate(start_date_name) <= newConstraint9StartDate && newConstraint9StopDate <= utils.stringToDate(stop_date_name))
             const newConstraint9Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint9KinmuId)!
-            const relativesAreEnabled = newConstraint9Member.is_enabled && newConstraint9Kinmu.is_enabled
+            const relativesAreEnabled = newConstraint9Member.is_enabled && newConstraint9TermIsIncluded && newConstraint9Kinmu.is_enabled
             return (
               <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
                 <DialogTitle>職員の機関に割り当てる勤務の追加</DialogTitle>
@@ -199,6 +204,7 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
     constraints9: state.present.constraints9,
     kinmus: state.present.kinmus,
     members: state.present.members,
+    terms: state.present.terms,
   }
 }
 

@@ -28,12 +28,15 @@ import * as all from '../modules/all'
 import * as constraints10 from '../modules/constraints10'
 import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
+import * as terms from '../modules/terms'
+import * as utils from '../utils'
 
 type Props = {
   dispatch: Dispatch
   constraint10: constraints10.Constraint10
   constraints10: constraints10.Constraint10[]
   members: members.Member[]
+  terms: terms.Term[]
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
@@ -77,8 +80,11 @@ class Constraint10 extends React.Component<Props, State> {
   }
   public render() {
     const constraint10Member = this.props.members.find(({ id }) => id === this.props.constraint10.member_id)!
+    const constraint10StartDate = utils.stringToDate(this.props.constraint10.start_date_name)
+    const constraint10StopDate = utils.stringToDate(this.props.constraint10.stop_date_name)
+    const constraint10TermIsIncluded = this.props.terms.every(({ start_date_name, stop_date_name }) => utils.stringToDate(start_date_name) <= constraint10StartDate && constraint10StopDate <= utils.stringToDate(stop_date_name))
     const constraint10Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint10.kinmu_id)!
-    const relativesAreEnabled = constraint10Member.is_enabled && constraint10Kinmu.is_enabled
+    const relativesAreEnabled = constraint10Member.is_enabled && constraint10TermIsIncluded && constraint10Kinmu.is_enabled
     const title = `${constraint10Member.name}の${this.props.constraint10.start_date_name}から${this.props.constraint10.stop_date_name}までに${constraint10Kinmu.name}を割り当てない`
     return (
       <>
@@ -189,6 +195,7 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
     constraints10: state.present.constraints10,
     kinmus: state.present.kinmus,
     members: state.present.members,
+    terms: state.present.terms,
   }
 }
 

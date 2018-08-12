@@ -22,12 +22,14 @@ import * as all from '../modules/all'
 import * as constraints1 from '../modules/constraints1'
 import * as groups from '../modules/groups'
 import * as kinmus from '../modules/kinmus'
+import * as terms from '../modules/terms'
 import * as utils from '../utils'
 import Constraint1 from './Constraint1'
 
 type Props = {
   dispatch: Dispatch
   constraints1: constraints1.Constraint1[]
+  terms: terms.Term[]
   kinmus: kinmus.Kinmu[]
   groups: groups.Group[]
 } & WithStyles<typeof styles>
@@ -114,9 +116,12 @@ class Constraints1 extends React.Component<Props, State> {
             </DialogActions>
           </Dialog> :
           (() => {
+            const newConstraint1StartDate = utils.stringToDate(this.state.newConstraint1StartDateName)
+            const newConstraint1StopDate = utils.stringToDate(this.state.newConstraint1StopDateName)
+            const newConstraint1TermIsIncluded = this.props.terms.every(({ start_date_name, stop_date_name }) => utils.stringToDate(start_date_name) <= newConstraint1StartDate && newConstraint1StopDate <= utils.stringToDate(stop_date_name))
             const newConstraint1Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint1KinmuId)!
             const newConstraint1Group = this.props.groups.find(({ id }) => id === this.state.newConstraint1GroupId)!
-            const relativesAreEnabled = newConstraint1Kinmu.is_enabled && newConstraint1Group.is_enabled
+            const relativesAreEnabled = newConstraint1TermIsIncluded && newConstraint1Kinmu.is_enabled && newConstraint1Group.is_enabled
             return (
               <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
                 <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の追加</DialogTitle>
@@ -216,6 +221,7 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
     constraints1: state.present.constraints1,
     groups: state.present.groups,
     kinmus: state.present.kinmus,
+    terms: state.present.terms,
   }
 }
 

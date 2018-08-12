@@ -28,11 +28,14 @@ import * as all from '../modules/all'
 import * as constraints1 from '../modules/constraints1'
 import * as groups from '../modules/groups'
 import * as kinmus from '../modules/kinmus'
+import * as terms from '../modules/terms'
+import * as utils from '../utils'
 
 type Props = {
   dispatch: Dispatch
   constraint1: constraints1.Constraint1
   constraints1: constraints1.Constraint1[]
+  terms: terms.Term[]
   kinmus: kinmus.Kinmu[]
   groups: groups.Group[]
 } & WithStyles<typeof styles>
@@ -79,9 +82,12 @@ class Constraint1 extends React.Component<Props, State> {
     this.props.dispatch(constraints1.deleteConstraint1(this.props.constraint1.id))
   }
   public render() {
+    const constraint1StartDate = utils.stringToDate(this.props.constraint1.start_date_name)
+    const constraint1StopDate = utils.stringToDate(this.props.constraint1.stop_date_name)
+    const constraint1TermIsIncluded = this.props.terms.every(({ start_date_name, stop_date_name }) => utils.stringToDate(start_date_name) <= constraint1StartDate && constraint1StopDate <= utils.stringToDate(stop_date_name))
     const constraint1Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint1.kinmu_id)!
     const constraint1Group = this.props.groups.find(({ id }) => id === this.props.constraint1.group_id)!
-    const relativesAreEnabled = constraint1Kinmu.is_enabled && constraint1Group.is_enabled
+    const relativesAreEnabled = constraint1TermIsIncluded && constraint1Kinmu.is_enabled && constraint1Group.is_enabled
     const title = `${this.props.constraint1.start_date_name}から${this.props.constraint1.stop_date_name}までの${constraint1Kinmu.name}に${constraint1Group.name}から${this.props.constraint1.min_number_of_assignments}人以上の職員を割り当てる`
     return (
       <>
@@ -204,6 +210,7 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
     constraints1: state.present.constraints1,
     groups: state.present.groups,
     kinmus: state.present.kinmus,
+    terms: state.present.terms,
   }
 }
 

@@ -28,12 +28,15 @@ import * as all from '../modules/all'
 import * as constraints9 from '../modules/constraints9'
 import * as kinmus from '../modules/kinmus'
 import * as members from '../modules/members'
+import * as terms from '../modules/terms'
+import * as utils from '../utils'
 
 type Props = {
   dispatch: Dispatch
   constraint9: constraints9.Constraint9
   constraints9: constraints9.Constraint9[]
   members: members.Member[]
+  terms: terms.Term[]
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
@@ -77,8 +80,11 @@ class Constraint9 extends React.Component<Props, State> {
   }
   public render() {
     const constraint9Member = this.props.members.find(({ id }) => id === this.props.constraint9.member_id)!
+    const constraint9StartDate = utils.stringToDate(this.props.constraint9.start_date_name)
+    const constraint9StopDate = utils.stringToDate(this.props.constraint9.stop_date_name)
+    const constraint9TermIsIncluded = this.props.terms.every(({ start_date_name, stop_date_name }) => utils.stringToDate(start_date_name) <= constraint9StartDate && constraint9StopDate <= utils.stringToDate(stop_date_name))
     const constraint9Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint9.kinmu_id)!
-    const relativesAreEnabled = constraint9Member.is_enabled && constraint9Kinmu.is_enabled
+    const relativesAreEnabled = constraint9Member.is_enabled && constraint9TermIsIncluded && constraint9Kinmu.is_enabled
     const title = `${constraint9Member.name}の${this.props.constraint9.start_date_name}から${this.props.constraint9.stop_date_name}までに${constraint9Kinmu.name}を割り当てる`
     return (
       <>
@@ -189,6 +195,7 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
     constraints9: state.present.constraints9,
     kinmus: state.present.kinmus,
     members: state.present.members,
+    terms: state.present.terms,
   }
 }
 

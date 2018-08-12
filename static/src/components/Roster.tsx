@@ -47,15 +47,8 @@ type State = {
   deletionDialogIsOpen: boolean
 }
 
-const dateNamePattern = /^(\d{4})-(\d{1,2})-(\d{1,2})$/
-
-function dateNameToDate(dateName: string): Date {
-  const [, year, month, day] = dateName.match(dateNamePattern)!
-  return new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10))
-}
-
 function sortDateNames(dateNames: string[]): string[] {
-  return [...dateNames].sort((a, b) => dateNameToDate(a).getTime() - dateNameToDate(b).getTime())
+  return [...dateNames].sort((a, b) => utils.stringToDate(a).getTime() - utils.stringToDate(b).getTime())
 }
 
 class Roster extends React.Component<Props, State> {
