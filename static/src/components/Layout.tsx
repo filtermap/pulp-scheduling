@@ -239,7 +239,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="title" color="inherit" noWrap={true} className={classes.title}>データ</Typography>
+            <Typography variant="title" color="inherit" noWrap={true} className={classes.title}>pulp-scheduling</Typography>
             <Button color="inherit" onClick={this.handleClickUndo} disabled={!this.props.pastExists}>元に戻す</Button>
             <Button color="inherit" onClick={this.handleClickRedo} disabled={!this.props.futureExists}>やり直す</Button>
             <Button color="inherit" onClick={this.writeAll}>保存</Button>
