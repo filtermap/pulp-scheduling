@@ -7,7 +7,7 @@
 ## 使用方法 (usage)
 
 下記のリンクからzipファイルをダウンロードしてください。 (Download the zipped file from the link below.)
-[https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.0/dist.zip](https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.0/dist.zip)
+[https://github.com/filtermap/pulp-scheduling/releases](https://github.com/filtermap/pulp-scheduling/releases)
 
 zipファイルを解凍してください。 (Unzip the file.)
 
