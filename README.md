@@ -1,19 +1,18 @@
 # pulp-scheduling
 
-## 勤務表自動作成機 (Automatic Scheduler)
+勤務表を自動で作成するアプリです。[PuLP](https://pythonhosted.org/PuLP/)を使用しています。 (This is an automatic scheduilng app using [PuLP](https://pythonhosted.org/PuLP/).)
 
-[PuLP](https://pythonhosted.org/PuLP/)を使用した勤務表を自動的に作成するアプリです。 (This app was made using [PuLP](https://pythonhosted.org/PuLP/).)
-
-## 使用方法 (usage)
+## 使用方法 (Usage)
 
 下記のリンクからzipファイルをダウンロードしてください。 (Download the zipped file from the link below.)
+
 [https://github.com/filtermap/pulp-scheduling/releases](https://github.com/filtermap/pulp-scheduling/releases)
 
 zipファイルを解凍してください。 (Unzip the file.)
 
 解凍後のフォルダの中にあるscheduling.exeを実行してください。 (Execute scheduling.exe in the unzipped folder.)
 
-## 設定可能な勤務条件 (available conditions)
+## 設定可能な勤務条件 (Available conditions)
 
 1. 連続禁止勤務並び<br>連続してはいけない勤務や休みを設定できます。<br>例：夜勤の次の日は日勤を割り当てない。
 
@@ -37,9 +36,9 @@ zipファイルを解凍してください。 (Unzip the file.)
 
 11. 職員の期間に割り当てない勤務<br>あらかじめ割り当ててはいけない勤務や休みを設定できます。
 
-## 開発者向け説明 (for developers)
+## 開発者向け説明 (For developers)
 
-### インストール (install)
+### インストール (Install)
 
 ```sh
 conda env create
@@ -49,13 +48,13 @@ yarn
 cd ..
 ```
 
-### 実行 (run)
+### 実行 (Run)
 
 ```sh
 python main.py
 ```
 
-### ビルド (build)
+### ビルド (Build)
 
 ```sh
 python build.py
