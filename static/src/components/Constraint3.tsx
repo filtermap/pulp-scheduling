@@ -76,7 +76,11 @@ class Constraint3 extends React.Component<Props, State> {
     const constraint3Member = this.props.members.find(({ id }) => id === this.props.constraint3.member_id)!
     const constraint3Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint3.kinmu_id)!
     const relativesAreEnabled = constraint3Member.is_enabled && constraint3Kinmu.is_enabled
-    const title = `${constraint3Member.name}に${constraint3Kinmu.name}を${this.props.constraint3.min_number_of_assignments}回以上割り当てる`
+    const title = (
+      <>
+        <span className={classnames({ [this.props.classes.lineThrough]: !constraint3Member.is_enabled })}>{constraint3Member.name}</span>に<span className={classnames({ [this.props.classes.lineThrough]: !constraint3Kinmu.is_enabled })}>{constraint3Kinmu.name}</span>を{this.props.constraint3.min_number_of_assignments}回以上割り当てる
+      </>
+    )
     return (
       <>
         <Card>
@@ -117,7 +121,9 @@ class Constraint3 extends React.Component<Props, State> {
                     fullWidth={true}
                   >
                     {this.props.members.map(member => (
-                      <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
+                      <MenuItem key={member.id} value={member.id}>{
+                        <span className={classnames({ [this.props.classes.lineThrough]: !member.is_enabled })}>{member.name}</span>
+                      }</MenuItem>
                     ))}
                   </TextField>
                 </Grid>
@@ -130,7 +136,9 @@ class Constraint3 extends React.Component<Props, State> {
                     fullWidth={true}
                   >
                     {this.props.kinmus.map(kinmu => (
-                      <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                      <MenuItem key={kinmu.id} value={kinmu.id}>{
+                        <span className={classnames({ [this.props.classes.lineThrough]: !kinmu.is_enabled })}>{kinmu.name}</span>
+                      }</MenuItem>
                     ))}
                   </TextField>
                 </Grid>
@@ -186,6 +194,12 @@ const styles = (theme: Theme) => createStyles({
   },
   expandOpen: {
     transform: 'rotate(180deg)',
+  },
+  lineThrough: {
+    '&::-webkit-datetime-edit-fields-wrapper': {
+      textDecoration: 'line-through',
+    },
+    textDecoration: 'line-through',
   },
 })
 

@@ -81,11 +81,16 @@ class Constraint9 extends React.Component<Props, State> {
   public render() {
     const constraint9Member = this.props.members.find(({ id }) => id === this.props.constraint9.member_id)!
     const constraint9StartDate = utils.stringToDate(this.props.constraint9.start_date_name)
+    const constraint9StartDateIsEnabled = this.props.terms.every(({ start_date_name }) => utils.stringToDate(start_date_name) <= constraint9StartDate)
     const constraint9StopDate = utils.stringToDate(this.props.constraint9.stop_date_name)
-    const constraint9TermIsIncluded = this.props.terms.every(({ start_date_name, stop_date_name }) => utils.stringToDate(start_date_name) <= constraint9StartDate && constraint9StopDate <= utils.stringToDate(stop_date_name))
+    const constraint9StopDateIsEnabled = this.props.terms.every(({ stop_date_name }) => utils.stringToDate(stop_date_name) >= constraint9StopDate)
     const constraint9Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint9.kinmu_id)!
-    const relativesAreEnabled = constraint9Member.is_enabled && constraint9TermIsIncluded && constraint9Kinmu.is_enabled
-    const title = `${constraint9Member.name}の${this.props.constraint9.start_date_name}から${this.props.constraint9.stop_date_name}までに${constraint9Kinmu.name}を割り当てる`
+    const relativesAreEnabled = constraint9Member.is_enabled && constraint9StartDateIsEnabled && constraint9StopDateIsEnabled && constraint9Kinmu.is_enabled
+    const title = (
+      <>
+        <span className={classnames({ [this.props.classes.lineThrough]: !constraint9Member.is_enabled })}>{constraint9Member.name}</span>の<span className={classnames({ [this.props.classes.lineThrough]: !constraint9StartDateIsEnabled })}>{this.props.constraint9.start_date_name}</span>から<span className={classnames({ [this.props.classes.lineThrough]: !constraint9StopDateIsEnabled })}>{this.props.constraint9.stop_date_name}</span>までに<span className={classnames({ [this.props.classes.lineThrough]: !constraint9Kinmu.is_enabled })}>{constraint9Kinmu.name}</span>を割り当てる
+      </>
+    )
     return (
       <>
         <Card>
@@ -126,7 +131,9 @@ class Constraint9 extends React.Component<Props, State> {
                     fullWidth={true}
                   >
                     {this.props.members.map(member => (
-                      <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
+                      <MenuItem key={member.id} value={member.id}>{
+                        <span className={classnames({ [this.props.classes.lineThrough]: !member.is_enabled })}>{member.name}</span>
+                      }</MenuItem>
                     ))}
                   </TextField>
                 </Grid>
@@ -140,6 +147,9 @@ class Constraint9 extends React.Component<Props, State> {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    inputProps={{
+                      className: classnames({ [this.props.classes.lineThrough]: !constraint9StartDateIsEnabled })
+                    }}
                   />
                 </Grid>
                 <Grid item={true} xs={12}>
@@ -152,6 +162,9 @@ class Constraint9 extends React.Component<Props, State> {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    inputProps={{
+                      className: classnames({ [this.props.classes.lineThrough]: !constraint9StopDateIsEnabled })
+                    }}
                   />
                 </Grid>
                 <Grid item={true} xs={12}>
@@ -163,7 +176,9 @@ class Constraint9 extends React.Component<Props, State> {
                     fullWidth={true}
                   >
                     {this.props.kinmus.map(kinmu => (
-                      <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                      <MenuItem key={kinmu.id} value={kinmu.id}>{
+                        <span className={classnames({ [this.props.classes.lineThrough]: !kinmu.is_enabled })}>{kinmu.name}</span>
+                      }</MenuItem>
                     ))}
                   </TextField>
                 </Grid>
@@ -208,6 +223,12 @@ const styles = (theme: Theme) => createStyles({
   },
   expandOpen: {
     transform: 'rotate(180deg)',
+  },
+  lineThrough: {
+    '&::-webkit-datetime-edit-fields-wrapper': {
+      textDecoration: 'line-through',
+    },
+    textDecoration: 'line-through',
   },
 })
 

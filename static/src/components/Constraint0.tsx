@@ -28,6 +28,7 @@ import * as all from '../modules/all'
 import * as constraint0_kinmus from '../modules/constraint0_kinmus'
 import * as constraints0 from '../modules/constraints0'
 import * as kinmus from '../modules/kinmus'
+import * as utils from '../utils'
 
 type Props = {
   dispatch: Dispatch
@@ -83,7 +84,7 @@ class Constraint0 extends React.Component<Props, State> {
     const constraint0Constraint0Kinmus = this.props.constraint0_kinmus.filter(({ constraint0_id }) => constraint0_id === this.props.constraint0.id).sort((a, b) => a.sequence_number - b.sequence_number)
     const constraint0Constraint0KinmuKinmus = constraint0Constraint0Kinmus.map(({ kinmu_id }) => this.props.kinmus.find(kinmu => kinmu.id === kinmu_id)!)
     const relativesAreEnabled = constraint0Constraint0KinmuKinmus.every(({ is_enabled }) => is_enabled)
-    const title = constraint0Constraint0KinmuKinmus.map(({ name }) => name).join(', ')
+    const title = utils.intersperse(constraint0Constraint0KinmuKinmus.map(kinmu => <span key={kinmu.id} className={classnames({ [this.props.classes.lineThrough]: !kinmu.is_enabled })}>{kinmu.name}</span>), ', ')
     return (
       <>
         <Card>
@@ -129,7 +130,9 @@ class Constraint0 extends React.Component<Props, State> {
                         fullWidth={true}
                       >
                         {this.props.kinmus.map(kinmu => (
-                          <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                          <MenuItem key={kinmu.id} value={kinmu.id}>{
+                            <span className={classnames({ [this.props.classes.lineThrough]: !kinmu.is_enabled })}>{kinmu.name}</span>
+                          }</MenuItem>
                         ))}
                       </TextField>
                     </Grid>
@@ -182,6 +185,12 @@ const styles = (theme: Theme) => createStyles({
   },
   expandOpen: {
     transform: 'rotate(180deg)',
+  },
+  lineThrough: {
+    '&::-webkit-datetime-edit-fields-wrapper': {
+      textDecoration: 'line-through',
+    },
+    textDecoration: 'line-through',
   },
 })
 

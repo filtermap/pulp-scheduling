@@ -70,7 +70,11 @@ class Constraint6 extends React.Component<Props, State> {
   public render() {
     const constraint6Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint6.kinmu_id)!
     const relativesAreEnabled = constraint6Kinmu.is_enabled
-    const title = `${constraint6Kinmu.name}の連続日数を${this.props.constraint6.max_number_of_days}日以下にする`
+    const title = (
+      <>
+        <span className={classnames({ [this.props.classes.lineThrough]: !constraint6Kinmu.is_enabled })}>{constraint6Kinmu.name}</span>の連続日数を{this.props.constraint6.max_number_of_days}日以下にする
+      </>
+    )
     return (
       <>
         <Card>
@@ -111,7 +115,9 @@ class Constraint6 extends React.Component<Props, State> {
                     fullWidth={true}
                   >
                     {this.props.kinmus.map(kinmu => (
-                      <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                      <MenuItem key={kinmu.id} value={kinmu.id}>{
+                        <span className={classnames({ [this.props.classes.lineThrough]: !kinmu.is_enabled })}>{kinmu.name}</span>
+                      }</MenuItem>
                     ))}
                   </TextField>
                 </Grid>
@@ -166,6 +172,12 @@ const styles = (theme: Theme) => createStyles({
   },
   expandOpen: {
     transform: 'rotate(180deg)',
+  },
+  lineThrough: {
+    '&::-webkit-datetime-edit-fields-wrapper': {
+      textDecoration: 'line-through',
+    },
+    textDecoration: 'line-through',
   },
 })
 

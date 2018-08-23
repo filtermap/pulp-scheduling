@@ -14,6 +14,7 @@ import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
+import classnames from 'classnames'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -129,7 +130,9 @@ class Constraints4 extends React.Component<Props, State> {
                         fullWidth={true}
                       >
                         {this.props.members.map(member => (
-                          <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
+                          <MenuItem key={member.id} value={member.id}>{
+                            <span className={classnames({ [this.props.classes.lineThrough]: !member.is_enabled })}>{member.name}</span>
+                          }</MenuItem>
                         ))}
                       </TextField>
                     </Grid>
@@ -142,7 +145,9 @@ class Constraints4 extends React.Component<Props, State> {
                         fullWidth={true}
                       >
                         {this.props.kinmus.map(kinmu => (
-                          <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                          <MenuItem key={kinmu.id} value={kinmu.id}>{
+                            <span className={classnames({ [this.props.classes.lineThrough]: !kinmu.is_enabled })}>{kinmu.name}</span>
+                          }</MenuItem>
                         ))}
                       </TextField>
                     </Grid>
@@ -183,6 +188,12 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
 const styles = createStyles({
   gridFrame: {
     padding: 8,
+  },
+  lineThrough: {
+    '&::-webkit-datetime-edit-fields-wrapper': {
+      textDecoration: 'line-through',
+    },
+    textDecoration: 'line-through',
   },
   toolbarTitle: {
     flex: 1,

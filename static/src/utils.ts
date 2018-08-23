@@ -16,3 +16,7 @@ export function dateToString(date: Date): string {
   const day = `${date.getDate()}`.padStart(2, '0')
   return `${year}-${month}-${day}`
 }
+
+export function intersperse<T, U>(array: T[], separator: U): Array<T | U> {
+  return array.reduce((accumulator, current) => [...accumulator, separator, current], []).slice(1)
+}

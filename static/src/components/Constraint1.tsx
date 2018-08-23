@@ -83,12 +83,17 @@ class Constraint1 extends React.Component<Props, State> {
   }
   public render() {
     const constraint1StartDate = utils.stringToDate(this.props.constraint1.start_date_name)
+    const constraint1StartDateIsEnabled = this.props.terms.every(({ start_date_name }) => utils.stringToDate(start_date_name) <= constraint1StartDate)
     const constraint1StopDate = utils.stringToDate(this.props.constraint1.stop_date_name)
-    const constraint1TermIsIncluded = this.props.terms.every(({ start_date_name, stop_date_name }) => utils.stringToDate(start_date_name) <= constraint1StartDate && constraint1StopDate <= utils.stringToDate(stop_date_name))
+    const constraint1StopDateIsEnabled = this.props.terms.every(({ stop_date_name }) => utils.stringToDate(stop_date_name) >= constraint1StopDate)
     const constraint1Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint1.kinmu_id)!
     const constraint1Group = this.props.groups.find(({ id }) => id === this.props.constraint1.group_id)!
-    const relativesAreEnabled = constraint1TermIsIncluded && constraint1Kinmu.is_enabled && constraint1Group.is_enabled
-    const title = `${this.props.constraint1.start_date_name}から${this.props.constraint1.stop_date_name}までの${constraint1Kinmu.name}に${constraint1Group.name}から${this.props.constraint1.min_number_of_assignments}人以上の職員を割り当てる`
+    const relativesAreEnabled = constraint1StartDateIsEnabled && constraint1StopDateIsEnabled && constraint1Kinmu.is_enabled && constraint1Group.is_enabled
+    const title = (
+      <>
+        <span className={classnames({ [this.props.classes.lineThrough]: !constraint1StartDateIsEnabled })}>{this.props.constraint1.start_date_name}</span>から<span className={classnames({ [this.props.classes.lineThrough]: !constraint1StopDateIsEnabled })}>{this.props.constraint1.stop_date_name}</span>までの<span className={classnames({ [this.props.classes.lineThrough]: !constraint1Kinmu.is_enabled })}>{constraint1Kinmu.is_enabled}</span>に<span className={classnames({ [this.props.classes.lineThrough]: !constraint1Group.is_enabled })}>{constraint1Group.name}</span>から{this.props.constraint1.min_number_of_assignments}人以上の職員を割り当てる
+      </>
+    )
     return (
       <>
         <Card>
@@ -130,6 +135,9 @@ class Constraint1 extends React.Component<Props, State> {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    inputProps={{
+                      className: classnames({ [this.props.classes.lineThrough]: !constraint1StartDateIsEnabled }),
+                    }}
                   />
                 </Grid>
                 <Grid item={true} xs={12}>
@@ -142,6 +150,9 @@ class Constraint1 extends React.Component<Props, State> {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    inputProps={{
+                      className: classnames({ [this.props.classes.lineThrough]: !constraint1StopDateIsEnabled })
+                    }}
                   />
                 </Grid>
                 <Grid item={true} xs={12}>
@@ -153,7 +164,9 @@ class Constraint1 extends React.Component<Props, State> {
                     fullWidth={true}
                   >
                     {this.props.kinmus.map(kinmu => (
-                      <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                      <MenuItem key={kinmu.id} value={kinmu.id}>{
+                        <span className={classnames({ [this.props.classes.lineThrough]: !kinmu.is_enabled })}>{kinmu.name}</span>
+                      }</MenuItem>
                     ))}
                   </TextField>
                 </Grid>
@@ -166,7 +179,9 @@ class Constraint1 extends React.Component<Props, State> {
                     fullWidth={true}
                   >
                     {this.props.groups.map(group => (
-                      <MenuItem key={group.id} value={group.id}>{group.name}</MenuItem>
+                      <MenuItem key={group.id} value={group.id}>{
+                        <span className={classnames({ [this.props.classes.lineThrough]: !group.is_enabled })}>{group.name}</span>
+                      }</MenuItem>
                     ))}
                   </TextField>
                 </Grid>
@@ -223,6 +238,12 @@ const styles = (theme: Theme) => createStyles({
   },
   expandOpen: {
     transform: 'rotate(180deg)',
+  },
+  lineThrough: {
+    '&::-webkit-datetime-edit-fields-wrapper': {
+      textDecoration: 'line-through',
+    },
+    textDecoration: 'line-through',
   },
 })
 

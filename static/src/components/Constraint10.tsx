@@ -81,11 +81,16 @@ class Constraint10 extends React.Component<Props, State> {
   public render() {
     const constraint10Member = this.props.members.find(({ id }) => id === this.props.constraint10.member_id)!
     const constraint10StartDate = utils.stringToDate(this.props.constraint10.start_date_name)
+    const constraint10StartDateIsEnabled = this.props.terms.every(({ start_date_name }) => utils.stringToDate(start_date_name) <= constraint10StartDate)
     const constraint10StopDate = utils.stringToDate(this.props.constraint10.stop_date_name)
-    const constraint10TermIsIncluded = this.props.terms.every(({ start_date_name, stop_date_name }) => utils.stringToDate(start_date_name) <= constraint10StartDate && constraint10StopDate <= utils.stringToDate(stop_date_name))
+    const constraint10StopDateIsEnabled = this.props.terms.every(({ stop_date_name }) => utils.stringToDate(stop_date_name) >= constraint10StopDate)
     const constraint10Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint10.kinmu_id)!
-    const relativesAreEnabled = constraint10Member.is_enabled && constraint10TermIsIncluded && constraint10Kinmu.is_enabled
-    const title = `${constraint10Member.name}の${this.props.constraint10.start_date_name}から${this.props.constraint10.stop_date_name}までに${constraint10Kinmu.name}を割り当てない`
+    const relativesAreEnabled = constraint10Member.is_enabled && constraint10StartDateIsEnabled && constraint10StopDateIsEnabled && constraint10Kinmu.is_enabled
+    const title = (
+      <>
+        <span className={classnames({ [this.props.classes.lineThrough]: !constraint10Member.is_enabled })}>{constraint10Member.name}</span>の<span className={classnames({ [this.props.classes.lineThrough]: !constraint10StartDateIsEnabled })}>{this.props.constraint10.start_date_name}</span>から<span className={classnames({ [this.props.classes.lineThrough]: !constraint10StopDateIsEnabled })}>{this.props.constraint10.stop_date_name}</span>までに<span className={classnames({ [this.props.classes.lineThrough]: !constraint10Kinmu.is_enabled })}>{constraint10Kinmu.name}</span>を割り当てない
+      </>
+    )
     return (
       <>
         <Card>
@@ -126,7 +131,9 @@ class Constraint10 extends React.Component<Props, State> {
                     fullWidth={true}
                   >
                     {this.props.members.map(member => (
-                      <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
+                      <MenuItem key={member.id} value={member.id}>{
+                        <span className={classnames({ [this.props.classes.lineThrough]: !member.is_enabled })}>{member.name}</span>
+                      }</MenuItem>
                     ))}
                   </TextField>
                 </Grid>
@@ -140,6 +147,9 @@ class Constraint10 extends React.Component<Props, State> {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    inputProps={{
+                      className: classnames({ [this.props.classes.lineThrough]: !constraint10StartDateIsEnabled })
+                    }}
                   />
                 </Grid>
                 <Grid item={true} xs={12}>
@@ -152,6 +162,9 @@ class Constraint10 extends React.Component<Props, State> {
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    inputProps={{
+                      className: classnames({ [this.props.classes.lineThrough]: !constraint10StopDateIsEnabled })
+                    }}
                   />
                 </Grid>
                 <Grid item={true} xs={12}>
@@ -163,7 +176,9 @@ class Constraint10 extends React.Component<Props, State> {
                     fullWidth={true}
                   >
                     {this.props.kinmus.map(kinmu => (
-                      <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                      <MenuItem key={kinmu.id} value={kinmu.id}>{
+                        <span className={classnames({ [this.props.classes.lineThrough]: !kinmu.is_enabled })}>{kinmu.name}</span>
+                      }</MenuItem>
                     ))}
                   </TextField>
                 </Grid>
@@ -208,6 +223,12 @@ const styles = (theme: Theme) => createStyles({
   },
   expandOpen: {
     transform: 'rotate(180deg)',
+  },
+  lineThrough: {
+    '&::-webkit-datetime-edit-fields-wrapper': {
+      textDecoration: 'line-through',
+    },
+    textDecoration: 'line-through',
   },
 })
 

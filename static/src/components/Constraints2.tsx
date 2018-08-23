@@ -14,6 +14,7 @@ import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
+import classnames from 'classnames'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -117,11 +118,12 @@ class Constraints2 extends React.Component<Props, State> {
           </Dialog> :
           (() => {
             const newConstraint2StartDate = utils.stringToDate(this.state.newConstraint2StartDateName)
+            const newConstraint2StartDateIsEnabled = this.props.terms.every(({ start_date_name }) => utils.stringToDate(start_date_name) <= newConstraint2StartDate)
             const newConstraint2StopDate = utils.stringToDate(this.state.newConstraint2StopDateName)
-            const newConstraint2TermIsIncluded = this.props.terms.every(({ start_date_name, stop_date_name }) => utils.stringToDate(start_date_name) <= newConstraint2StartDate && newConstraint2StopDate <= utils.stringToDate(stop_date_name))
+            const newConstraint2StopDateIsEnabled = this.props.terms.every(({ stop_date_name }) => utils.stringToDate(stop_date_name) >= newConstraint2StopDate)
             const newConstraint2Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint2KinmuId)!
             const newConstraint2Group = this.props.groups.find(({ id }) => id === this.state.newConstraint2GroupId)!
-            const relativesAreEnabled = newConstraint2TermIsIncluded && newConstraint2Kinmu.is_enabled && newConstraint2Group.is_enabled
+            const relativesAreEnabled = newConstraint2StartDateIsEnabled && newConstraint2StopDateIsEnabled && newConstraint2Kinmu.is_enabled && newConstraint2Group.is_enabled
             return (
               <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
                 <DialogTitle>期間の勤務にグループから割り当てる職員数の上限の追加</DialogTitle>
@@ -150,6 +152,9 @@ class Constraints2 extends React.Component<Props, State> {
                         InputLabelProps={{
                           shrink: true,
                         }}
+                        inputProps={{
+                          className: classnames({ [this.props.classes.lineThrough]: !newConstraint2StartDateIsEnabled })
+                        }}
                       />
                     </Grid>
                     <Grid item={true} xs={12}>
@@ -162,6 +167,9 @@ class Constraints2 extends React.Component<Props, State> {
                         InputLabelProps={{
                           shrink: true,
                         }}
+                        inputProps={{
+                          className: classnames({ [this.props.classes.lineThrough]: !newConstraint2StopDateIsEnabled })
+                        }}
                       />
                     </Grid>
                     <Grid item={true} xs={12}>
@@ -173,7 +181,9 @@ class Constraints2 extends React.Component<Props, State> {
                         fullWidth={true}
                       >
                         {this.props.kinmus.map(kinmu => (
-                          <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                          <MenuItem key={kinmu.id} value={kinmu.id}>{
+                            <span className={classnames({ [this.props.classes.lineThrough]: !kinmu.is_enabled })}>{kinmu.name}</span>
+                          }</MenuItem>
                         ))}
                       </TextField>
                     </Grid>
@@ -186,7 +196,9 @@ class Constraints2 extends React.Component<Props, State> {
                         fullWidth={true}
                       >
                         {this.props.groups.map(group => (
-                          <MenuItem key={group.id} value={group.id}>{group.name}</MenuItem>
+                          <MenuItem key={group.id} value={group.id}>{
+                            <span className={classnames({ [this.props.classes.lineThrough]: !group.is_enabled })}>{group.name}</span>
+                          }</MenuItem>
                         ))}
                       </TextField>
                     </Grid>
@@ -228,6 +240,12 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
 const styles = createStyles({
   gridFrame: {
     padding: 8,
+  },
+  lineThrough: {
+    '&::-webkit-datetime-edit-fields-wrapper': {
+      textDecoration: 'line-through',
+    },
+    textDecoration: 'line-through',
   },
   toolbarTitle: {
     flex: 1,

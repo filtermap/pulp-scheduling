@@ -14,6 +14,7 @@ import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
+import classnames from 'classnames'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
@@ -113,10 +114,11 @@ class Constraints9 extends React.Component<Props, State> {
           (() => {
             const newConstraint9Member = this.props.members.find(({ id }) => id === this.state.newConstraint9MemberId)!
             const newConstraint9StartDate = utils.stringToDate(this.state.newConstraint9StartDateName)
+            const newConstraint9StartDateIsEnabled = this.props.terms.every(({ start_date_name }) => utils.stringToDate(start_date_name) <= newConstraint9StartDate)
             const newConstraint9StopDate = utils.stringToDate(this.state.newConstraint9StopDateName)
-            const newConstraint9TermIsIncluded = this.props.terms.every(({ start_date_name, stop_date_name }) => utils.stringToDate(start_date_name) <= newConstraint9StartDate && newConstraint9StopDate <= utils.stringToDate(stop_date_name))
+            const newConstraint9StopDateIsEnabled = this.props.terms.every(({ stop_date_name }) => utils.stringToDate(stop_date_name) >= newConstraint9StopDate)
             const newConstraint9Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint9KinmuId)!
-            const relativesAreEnabled = newConstraint9Member.is_enabled && newConstraint9TermIsIncluded && newConstraint9Kinmu.is_enabled
+            const relativesAreEnabled = newConstraint9Member.is_enabled && newConstraint9StartDateIsEnabled && newConstraint9StopDateIsEnabled && newConstraint9Kinmu.is_enabled
             return (
               <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
                 <DialogTitle>職員の機関に割り当てる勤務の追加</DialogTitle>
@@ -144,7 +146,9 @@ class Constraints9 extends React.Component<Props, State> {
                         fullWidth={true}
                       >
                         {this.props.members.map(member => (
-                          <MenuItem key={member.id} value={member.id}>{member.name}</MenuItem>
+                          <MenuItem key={member.id} value={member.id}>{
+                            <span className={classnames({ [this.props.classes.lineThrough]: !member.is_enabled })}>{member.name}</span>
+                          }</MenuItem>
                         ))}
                       </TextField>
                     </Grid>
@@ -158,6 +162,9 @@ class Constraints9 extends React.Component<Props, State> {
                         InputLabelProps={{
                           shrink: true,
                         }}
+                        inputProps={{
+                          className: classnames({ [this.props.classes.lineThrough]: !newConstraint9StartDateIsEnabled })
+                        }}
                       />
                     </Grid>
                     <Grid item={true} xs={12}>
@@ -170,6 +177,9 @@ class Constraints9 extends React.Component<Props, State> {
                         InputLabelProps={{
                           shrink: true,
                         }}
+                        inputProps={{
+                          className: classnames({ [this.props.classes.lineThrough]: !newConstraint9StopDateIsEnabled })
+                        }}
                       />
                     </Grid>
                     <Grid item={true} xs={12}>
@@ -181,7 +191,9 @@ class Constraints9 extends React.Component<Props, State> {
                         fullWidth={true}
                       >
                         {this.props.kinmus.map(kinmu => (
-                          <MenuItem key={kinmu.id} value={kinmu.id}>{kinmu.name}</MenuItem>
+                          <MenuItem key={kinmu.id} value={kinmu.id}>{
+                            <span className={classnames({ [this.props.classes.lineThrough]: !kinmu.is_enabled })}>{kinmu.name}</span>
+                          }</MenuItem>
                         ))}
                       </TextField>
                     </Grid>
@@ -211,6 +223,12 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
 const styles = createStyles({
   gridFrame: {
     padding: 8,
+  },
+  lineThrough: {
+    '&::-webkit-datetime-edit-fields-wrapper': {
+      textDecoration: 'line-through',
+    },
+    textDecoration: 'line-through',
   },
   toolbarTitle: {
     flex: 1,
