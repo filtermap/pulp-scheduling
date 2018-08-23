@@ -114,7 +114,7 @@ class Rosters extends React.Component<Props, State> {
               <DialogTitle>勤務表の追加</DialogTitle>
               <DialogContent>
                 <DialogContentText>勤務表を作成できませんでした</DialogContentText>
-                <Typography>エラーメッセージ：{this.state.errorMessage}</Typography>
+                <Typography>{this.state.errorMessage === 'Infeasible' ? '条件を満たす勤務表が存在しません' : 'pulp-schedulingの不具合や条件の誤りなどにより作成できない可能性があります'}（{this.state.errorMessage}）</Typography>
               </DialogContent>
               <DialogActions>
                 <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
