@@ -48,7 +48,7 @@ type State = {
 }
 
 function sortDateNames(dateNames: string[]): string[] {
-  return [...dateNames].sort((a, b) => utils.stringToDate(a).getTime() - utils.stringToDate(b).getTime())
+  return [...dateNames].sort((a, b) => utils.stringToDate(a)!.getTime() - utils.stringToDate(b)!.getTime())
 }
 
 class Roster extends React.Component<Props, State> {

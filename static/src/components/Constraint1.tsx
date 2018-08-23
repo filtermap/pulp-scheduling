@@ -83,9 +83,17 @@ class Constraint1 extends React.Component<Props, State> {
   }
   public render() {
     const constraint1StartDate = utils.stringToDate(this.props.constraint1.start_date_name)
-    const constraint1StartDateIsEnabled = this.props.terms.every(({ start_date_name }) => utils.stringToDate(start_date_name) <= constraint1StartDate)
+    const constraint1StartDateIsEnabled = constraint1StartDate ? this.props.terms.every(({ start_date_name }) => {
+      const startDate = utils.stringToDate(start_date_name)
+      if (!startDate) { return false }
+      return startDate <= constraint1StartDate
+    }) : false
     const constraint1StopDate = utils.stringToDate(this.props.constraint1.stop_date_name)
-    const constraint1StopDateIsEnabled = this.props.terms.every(({ stop_date_name }) => utils.stringToDate(stop_date_name) >= constraint1StopDate)
+    const constraint1StopDateIsEnabled = constraint1StopDate ? this.props.terms.every(({ stop_date_name }) => {
+      const stopDate = utils.stringToDate(stop_date_name)
+      if (!stopDate) { return false }
+      return stopDate >= constraint1StopDate
+    }) : false
     const constraint1Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint1.kinmu_id)!
     const constraint1Group = this.props.groups.find(({ id }) => id === this.props.constraint1.group_id)!
     const relativesAreEnabled = constraint1StartDateIsEnabled && constraint1StopDateIsEnabled && constraint1Kinmu.is_enabled && constraint1Group.is_enabled

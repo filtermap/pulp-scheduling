@@ -81,9 +81,17 @@ class Constraint9 extends React.Component<Props, State> {
   public render() {
     const constraint9Member = this.props.members.find(({ id }) => id === this.props.constraint9.member_id)!
     const constraint9StartDate = utils.stringToDate(this.props.constraint9.start_date_name)
-    const constraint9StartDateIsEnabled = this.props.terms.every(({ start_date_name }) => utils.stringToDate(start_date_name) <= constraint9StartDate)
+    const constraint9StartDateIsEnabled = constraint9StartDate ? this.props.terms.every(({ start_date_name }) => {
+      const startDate = utils.stringToDate(start_date_name)
+      if (!startDate) { return false }
+      return startDate <= constraint9StartDate
+    }) : false
     const constraint9StopDate = utils.stringToDate(this.props.constraint9.stop_date_name)
-    const constraint9StopDateIsEnabled = this.props.terms.every(({ stop_date_name }) => utils.stringToDate(stop_date_name) >= constraint9StopDate)
+    const constraint9StopDateIsEnabled = constraint9StopDate ? this.props.terms.every(({ stop_date_name }) => {
+      const stopDate = utils.stringToDate(stop_date_name)
+      if (!stopDate) { return false }
+      return stopDate >= constraint9StopDate
+    }) : false
     const constraint9Kinmu = this.props.kinmus.find(({ id }) => id === this.props.constraint9.kinmu_id)!
     const relativesAreEnabled = constraint9Member.is_enabled && constraint9StartDateIsEnabled && constraint9StopDateIsEnabled && constraint9Kinmu.is_enabled
     const title = (

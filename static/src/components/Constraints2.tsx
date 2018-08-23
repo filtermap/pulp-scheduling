@@ -118,9 +118,17 @@ class Constraints2 extends React.Component<Props, State> {
           </Dialog> :
           (() => {
             const newConstraint2StartDate = utils.stringToDate(this.state.newConstraint2StartDateName)
-            const newConstraint2StartDateIsEnabled = this.props.terms.every(({ start_date_name }) => utils.stringToDate(start_date_name) <= newConstraint2StartDate)
+            const newConstraint2StartDateIsEnabled = newConstraint2StartDate ? this.props.terms.every(({ start_date_name }) => {
+              const startDate = utils.stringToDate(start_date_name)
+              if (!startDate) { return false }
+              return startDate <= newConstraint2StartDate
+            }) : false
             const newConstraint2StopDate = utils.stringToDate(this.state.newConstraint2StopDateName)
-            const newConstraint2StopDateIsEnabled = this.props.terms.every(({ stop_date_name }) => utils.stringToDate(stop_date_name) >= newConstraint2StopDate)
+            const newConstraint2StopDateIsEnabled = newConstraint2StopDate ? this.props.terms.every(({ stop_date_name }) => {
+              const stopDate = utils.stringToDate(stop_date_name)
+              if (!stopDate) { return false }
+              return stopDate >= newConstraint2StopDate
+            }) : false
             const newConstraint2Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint2KinmuId)!
             const newConstraint2Group = this.props.groups.find(({ id }) => id === this.state.newConstraint2GroupId)!
             const relativesAreEnabled = newConstraint2StartDateIsEnabled && newConstraint2StopDateIsEnabled && newConstraint2Kinmu.is_enabled && newConstraint2Group.is_enabled
