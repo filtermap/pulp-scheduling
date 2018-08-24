@@ -83,68 +83,18 @@ type State = {
   mobileOpen: boolean,
 }
 
-function RostersLink(props: any) {
-  return <Link to="/rosters" {...props} />
+function LinkTo(to: string) {
+  return (props: any) => {
+    return <Link to={to} {...props} />
+  }
 }
 
-function TermsLink(props: any) {
-  return <Link to="/terms" {...props} />
-}
-
-function MembersLink(props: any) {
-  return <Link to="/members" {...props} />
-}
-
-function KinmusLink(props: any) {
-  return <Link to="/kinmus" {...props} />
-}
-
-function GroupsLink(props: any) {
-  return <Link to="/groups" {...props} />
-}
-
-function Constraints0Link(props: any) {
-  return <Link to="/constraints0" {...props} />
-}
-
-function Constraints1Link(props: any) {
-  return <Link to="/constraints1" {...props} />
-}
-
-function Constraints2Link(props: any) {
-  return <Link to="/constraints2" {...props} />
-}
-
-function Constraints3Link(props: any) {
-  return <Link to="/constraints3" {...props} />
-}
-
-function Constraints4Link(props: any) {
-  return <Link to="/constraints4" {...props} />
-}
-
-function Constraints5Link(props: any) {
-  return <Link to="/constraints5" {...props} />
-}
-
-function Constraints6Link(props: any) {
-  return <Link to="/constraints6" {...props} />
-}
-
-function Constraints7Link(props: any) {
-  return <Link to="/constraints7" {...props} />
-}
-
-function Constraints8Link(props: any) {
-  return <Link to="/constraints8" {...props} />
-}
-
-function Constraints9Link(props: any) {
-  return <Link to="/constraints9" {...props} />
-}
-
-function Constraints10Link(props: any) {
-  return <Link to="/constraints10" {...props} />
+function ListItemLink(props: any) {
+  return (
+    <ListItem button={true} component={LinkTo(props.to)}>
+      <ListItemText primary={props.text} />
+    </ListItem>
+  )
 }
 
 class ResponsiveDrawer extends React.Component<Props, State> {
@@ -170,60 +120,28 @@ class ResponsiveDrawer extends React.Component<Props, State> {
         <div className={classes.toolbar} />
         <Divider />
         <List>
-          <ListItem button={true} component={RostersLink}>
-            <ListItemText primary="勤務表" />
-          </ListItem>
+          <ListItemLink to="/rosters" text="勤務表" />
         </List>
         <Divider />
         <List>
-          <ListItem button={true} component={TermsLink}>
-            <ListItemText primary="期間" />
-          </ListItem>
-          <ListItem button={true} component={MembersLink}>
-            <ListItemText primary="職員" />
-          </ListItem>
-          <ListItem button={true} component={KinmusLink}>
-            <ListItemText primary="勤務" />
-          </ListItem>
-          <ListItem button={true} component={GroupsLink}>
-            <ListItemText primary="グループ" />
-          </ListItem>
+          <ListItemLink to="/terms" text="期間" />
+          <ListItemLink to="/members" text="職員" />
+          <ListItemLink to="/kinmus" text="勤務" />
+          <ListItemLink to="/groups" text="グループ" />
         </List>
         <Divider />
         <List>
-          <ListItem button={true} component={Constraints0Link}>
-            <ListItemText primary="連続禁止勤務並び" />
-          </ListItem>
-          <ListItem button={true} component={Constraints1Link}>
-            <ListItemText primary="期間の勤務にグループから割り当てる職員数の下限" />
-          </ListItem>
-          <ListItem button={true} component={Constraints2Link}>
-            <ListItemText primary="期間の勤務にグループから割り当てる職員数の上限" />
-          </ListItem>
-          <ListItem button={true} component={Constraints3Link}>
-            <ListItemText primary="職員の勤務の割り当て数の下限" />
-          </ListItem>
-          <ListItem button={true} component={Constraints4Link}>
-            <ListItemText primary="職員の勤務の割り当て数の上限" />
-          </ListItem>
-          <ListItem button={true} component={Constraints5Link}>
-            <ListItemText primary="勤務の連続日数の下限" />
-          </ListItem>
-          <ListItem button={true} component={Constraints6Link}>
-            <ListItemText primary="勤務の連続日数の上限" />
-          </ListItem>
-          <ListItem button={true} component={Constraints7Link}>
-            <ListItemText primary="勤務の間隔日数の下限" />
-          </ListItem>
-          <ListItem button={true} component={Constraints8Link}>
-            <ListItemText primary="勤務の間隔日数の上限" />
-          </ListItem>
-          <ListItem button={true} component={Constraints9Link}>
-            <ListItemText primary="職員の期間に割り当てる勤務" />
-          </ListItem>
-          <ListItem button={true} component={Constraints10Link}>
-            <ListItemText primary="職員の期間に割り当てない勤務" />
-          </ListItem>
+          <ListItemLink to="/constraints0" text="連続禁止勤務並び" />
+          <ListItemLink to="/constraints1" text="期間の勤務にグループから割り当てる職員数の下限" />
+          <ListItemLink to="/constraints2" text="期間の勤務にグループから割り当てる職員数の上限" />
+          <ListItemLink to="/constraints3" text="職員の勤務の割り当て数の下限" />
+          <ListItemLink to="/constraints4" text="職員の勤務の割り当て数の上限" />
+          <ListItemLink to="/constraints5" text="勤務の連続日数の下限" />
+          <ListItemLink to="/constraints6" text="勤務の連続日数の上限" />
+          <ListItemLink to="/constraints7" text="勤務の間隔日数の下限" />
+          <ListItemLink to="/constraints8" text="勤務の間隔日数の上限" />
+          <ListItemLink to="/constraints9" text="職員の期間に割り当てる勤務" />
+          <ListItemLink to="/constraints10" text="職員の期間に割り当てない勤務" />
         </List>
       </>
     )
