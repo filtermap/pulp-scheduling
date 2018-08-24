@@ -1,6 +1,6 @@
-# pulp-scheduling
+# 勤務表自動作成無料アプリ pulp-scheduling
 
-勤務表を自動で作成するアプリです。[PuLP](https://pythonhosted.org/PuLP/)を使用しています。 (This is an automatic scheduilng app using [PuLP](https://pythonhosted.org/PuLP/).)
+勤務表を自動で作成する無料アプリです。[PuLP](https://pythonhosted.org/PuLP/)を使用しています。 (This is an automatic scheduilng app using [PuLP](https://pythonhosted.org/PuLP/).)
 
 ## 使用方法 (Usage)
 
