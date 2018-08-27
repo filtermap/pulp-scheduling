@@ -63,6 +63,12 @@ def solve(all):
     except scheduling.UnsolvedException as e:
         raise jsonrpc.exceptions.JSONRPCDispatchException(code=0, message=e.args[0])
 
+@api.dispatcher.add_method
+def pursue(all):
+    try:
+        return scheduling.pursue(all)
+    except scheduling.UnpursuedException as e:
+        raise jsonrpc.exceptions.JSONRPCDispatchException(code=1, message=e.args[0])
 
 @api.dispatcher.add_method
 def download_csv(assignments, members, kinmus):
