@@ -1,13 +1,13 @@
 name: pulp-scheduling
 dependencies:
   - pip=10.0.1=py36_0
-  - python=3.6.5=h0c2934d_0
+  - python=3.6.6=hea74fb7_0
   - pip:
-    - black==18.6b2
+    - black==18.6b4
     - flask==1.0.2
-    - json-rpc==1.11.0
-    - mypy==0.610
-    - psutil==5.4.6
+    - json-rpc==1.11.1
+    - mypy==0.620
+    - psutil==5.4.7
     - pulp==1.6.8
     - pyinstaller==3.3.1
-    - tornado==5.0.2
+    - tornado==5.1
