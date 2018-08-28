@@ -8,8 +8,8 @@ const dateStringPattern = /^(\d{4})-(\d{1,2})-(\d{1,2})$/
 export function stringToDate(dateString: string): Date | null {
   const match = dateString.match(dateStringPattern)
   if (!match) { return null }
-  const [, year, month, day] = match
-  return new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10))
+  const [, year, monthIndex, day] = match
+  return new Date(parseInt(year, 10), parseInt(monthIndex, 10) - 1, parseInt(day, 10))
 }
 
 export function dateToString(date: Date): string {
