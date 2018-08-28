@@ -16,13 +16,6 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@babel/runtime@7.0.0-beta.42":
-  version "7.0.0-beta.42"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.0.0-beta.42.tgz#352e40c92e0460d3e82f49bd7e79f6cda76f919f"
-  dependencies:
-    core-js "^2.5.3"
-    regenerator-runtime "^0.11.1"
-
 "@babel/runtime@7.0.0-beta.56":
   version "7.0.0-beta.56"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.0.0-beta.56.tgz#cda612dffd5b1719a7b8e91e3040bd6ae64de8b0"
@@ -35,9 +28,9 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
-"@material-ui/core@^1.4.3":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-1.5.1.tgz#cb00cb934447ae688e08129f1dab55f54d29d87a"
+"@material-ui/core@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.0.0.tgz#877b08d4dda23b44ac67daf7e73d8b8e0a831e6a"
   dependencies:
     "@babel/runtime" "7.0.0-rc.1"
     "@types/jss" "^9.5.3"
@@ -64,15 +57,15 @@
     react-event-listener "^0.6.2"
     react-jss "^8.1.0"
     react-transition-group "^2.2.1"
-    recompose "^0.28.0"
+    recompose "^0.28.2"
     warning "^4.0.1"
 
-"@material-ui/icons@^1.1.0":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@material-ui/icons/-/icons-1.1.1.tgz#f104d6a1ac4d3ff34a2bed74b066986b2a7054a5"
+"@material-ui/icons@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/icons/-/icons-3.0.0.tgz#4a482f5c533b19d8ac7f7c5a645246dfb5b14d74"
   dependencies:
-    "@babel/runtime" "7.0.0-beta.42"
-    recompose "^0.26.0 || ^0.27.0"
+    "@babel/runtime" "7.0.0-rc.1"
+    recompose "^0.28.2"
 
 "@types/classnames@^2.2.6":
   version "2.2.6"
@@ -1773,7 +1766,7 @@ core-js@^1.0.0:
   version "1.2.7"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
 
-core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.3:
+core-js@^2.4.0, core-js@^2.5.0:
   version "2.5.7"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.7.tgz#f972608ff0cead68b841a16a932d0b183791814e"
 
@@ -5957,9 +5950,9 @@ react-router@^4.3.1:
     prop-types "^15.6.1"
     warning "^4.0.1"
 
-react-scripts-ts@2.16.0:
-  version "2.16.0"
-  resolved "https://registry.yarnpkg.com/react-scripts-ts/-/react-scripts-ts-2.16.0.tgz#45f831a12139c3b59d6bb729c1b6ef51e0f22908"
+react-scripts-ts@2.17.0:
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/react-scripts-ts/-/react-scripts-ts-2.17.0.tgz#398bae19a30c9b39b3dfe0720ebb40c60c2f6574"
   dependencies:
     autoprefixer "7.1.6"
     babel-jest "^22.1.0"
@@ -6085,18 +6078,7 @@ realpath-native@^1.0.0:
   dependencies:
     util.promisify "^1.0.0"
 
-"recompose@^0.26.0 || ^0.27.0":
-  version "0.27.1"
-  resolved "https://registry.yarnpkg.com/recompose/-/recompose-0.27.1.tgz#1a49e931f183634516633bbb4f4edbfd3f38a7ba"
-  dependencies:
-    babel-runtime "^6.26.0"
-    change-emitter "^0.1.2"
-    fbjs "^0.8.1"
-    hoist-non-react-statics "^2.3.1"
-    react-lifecycles-compat "^3.0.2"
-    symbol-observable "^1.0.4"
-
-recompose@^0.28.0:
+recompose@^0.28.2:
   version "0.28.2"
   resolved "https://registry.yarnpkg.com/recompose/-/recompose-0.28.2.tgz#19e679227bdf979e0d31b73ffe7ae38c9194f4a7"
   dependencies:
@@ -6134,9 +6116,9 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
-reduce-reducers@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/reduce-reducers/-/reduce-reducers-0.3.0.tgz#ed6122072676eb8d84d41d74bba31e5e3f7ce977"
+reduce-reducers@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/reduce-reducers/-/reduce-reducers-0.4.3.tgz#8e052618801cd8fc2714b4915adaa8937eb6d66c"
 
 redux-undo@^1.0.0-beta9-9-7:
   version "1.0.0-beta9-9-7"
@@ -6162,7 +6144,7 @@ regenerate@^1.2.1:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.0.tgz#4a856ec4b56e4077c557589cae85e7a4c8869a11"
 
-regenerator-runtime@^0.11.0, regenerator-runtime@^0.11.1:
+regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
 
@@ -7260,9 +7242,9 @@ typeface-roboto@^0.0.54:
   version "0.0.54"
   resolved "https://registry.yarnpkg.com/typeface-roboto/-/typeface-roboto-0.0.54.tgz#8f02c9a18d1cfa7f49381a6ff0d21ff061f38ad2"
 
-typescript@^2.9.2:
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
+typescript@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.0.1.tgz#43738f29585d3a87575520a4b93ab6026ef11fdb"
 
 ua-parser-js@^0.7.18:
   version "0.7.18"
