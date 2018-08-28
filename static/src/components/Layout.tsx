@@ -89,13 +89,11 @@ function LinkTo(to: string) {
   }
 }
 
-function ListItemLink(props: any) {
-  return (
-    <ListItem button={true} component={LinkTo(props.to)}>
-      <ListItemText primary={props.text} />
-    </ListItem>
-  )
-}
+const ListItemLink = withRouter((props: { to: string, text: string } & RouteComponentProps<{}>) => (
+  <ListItem button={true} selected={props.to === props.location.pathname} component={LinkTo(props.to)}>
+    <ListItemText primary={props.text} />
+  </ListItem>
+))
 
 class ResponsiveDrawer extends React.Component<Props, State> {
   public state: State = {
