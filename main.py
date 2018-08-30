@@ -21,13 +21,13 @@ def run_server():
         http_server.listen(settings.port, address=settings.host)
         tornado.ioloop.IOLoop.current().start()
     else:
-        subprocess.run(["python", "server.py"])
+        subprocess.run("python server.py", shell=True)
 
 
 def run_development_static():
     project_root_directory = os.path.dirname(os.path.abspath(__file__))
     os.chdir(os.path.join(project_root_directory, "static"))
-    subprocess.run(["npm", "start"])
+    subprocess.run("npm start", shell=True)
 
 
 def browser_opener(url):
