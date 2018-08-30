@@ -35,15 +35,34 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  constraint8MaxNumberOfDays: number
+}
+
+type ErrorMessages = {
+  constraint8MaxNumberOfDays: string[],
+}
+
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Constraint8 extends React.Component<Props, State> {
-  public state: State = {
-    deletionDialogIsOpen: false,
-    expanded: false,
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      deletionDialogIsOpen: false,
+      dirty: {
+        constraint8MaxNumberOfDays: props.constraint8.max_number_of_days,
+      },
+      errorMessages: {
+        constraint8MaxNumberOfDays: [],
+      },
+      expanded: false,
+    }
   }
   public handleClickExpand = () => {
     this.setState({ expanded: !this.state.expanded })
@@ -54,8 +73,20 @@ class Constraint8 extends React.Component<Props, State> {
   public handleChangeConstraint8KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.props.dispatch(constraints8.updateConstraint8KinmuId(this.props.constraint8.id, parseInt(event.target.value, 10)))
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMessages: ErrorMessages = {
+      constraint8MaxNumberOfDays: [],
+    }
+    if (isNaN(dirty.constraint8MaxNumberOfDays)) { errorMessages.constraint8MaxNumberOfDays.push('間隔日数上限の形式が正しくありません') }
+    return errorMessages
+  }
   public handleChangeConstraint8MaxNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.dispatch(constraints8.updateConstraint8MaxNumberOfDays(this.props.constraint8.id, parseInt(event.target.value, 10)))
+    const constraint8MaxNumberOfDays = parseInt(event.target.value, 10)
+    const dirty = { ...this.state.dirty, constraint8MaxNumberOfDays }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.constraint8MaxNumberOfDays.length > 0) { return }
+    this.props.dispatch(constraints8.updateConstraint8MaxNumberOfDays(this.props.constraint8.id, constraint8MaxNumberOfDays))
   }
   public handleClickOpenDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: true })
@@ -131,6 +162,13 @@ class Constraint8 extends React.Component<Props, State> {
                     inputProps={{
                       min: constraints8.minOfConstraint8MaxNumberOfDays,
                     }}
+                    error={this.state.errorMessages.constraint8MaxNumberOfDays.length > 0}
+                    FormHelperTextProps={{
+                      component: 'div',
+                    }}
+                    helperText={this.state.errorMessages.constraint8MaxNumberOfDays.map(message =>
+                      <div key={message}>{message}</div>
+                    )}
                   />
                 </Grid>
               </Grid>

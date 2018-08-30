@@ -33,16 +33,32 @@ type Props = {
   group_members: group_members.GroupMember[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  newMemberName: string
+}
+
+type ErrorMessages = {
+  newMemberName: string[]
+}
+
 type State = {
   creationDialogIsOpen: boolean
   newMemberIsEnabled: boolean
   newMemberName: string
   newMemberGroupIndices: number[]
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Members extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
+    dirty: {
+      newMemberName: '',
+    },
+    errorMessages: {
+      newMemberName: [],
+    },
     newMemberGroupIndices: [],
     newMemberIsEnabled: true,
     newMemberName: '',
@@ -56,8 +72,20 @@ class Members extends React.Component<Props, State> {
   public handleChangeNewMemberIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.setState({ newMemberIsEnabled: checked })
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMesages: ErrorMessages = {
+      newMemberName: [],
+    }
+    if (dirty.newMemberName === '') { errorMesages.newMemberName.push('職員名を入力してください') }
+    return errorMesages
+  }
   public handleChangeNewMemberName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newMemberName: event.target.value })
+    const newMemberName = event.target.value
+    const dirty = { ...this.state.dirty, newMemberName }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.newMemberName.length > 0) { return }
+    this.setState({ newMemberName })
   }
   public handleChangeNewGroupMember(groupId: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -112,6 +140,13 @@ class Members extends React.Component<Props, State> {
                   defaultValue={this.state.newMemberName}
                   onChange={this.handleChangeNewMemberName}
                   fullWidth={true}
+                  error={this.state.errorMessages.newMemberName.length > 0}
+                  FormHelperTextProps={{
+                    component: 'div',
+                  }}
+                  helperText={this.state.errorMessages.newMemberName.map(message =>
+                    <div key={message}>{message}</div>
+                  )}
                 />
               </Grid>
               <Grid item={true} xs={12}>

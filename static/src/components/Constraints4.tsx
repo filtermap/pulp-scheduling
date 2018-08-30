@@ -32,17 +32,33 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  newConstraint4MaxNumberOfAssignments: number
+}
+
+type ErrorMessages = {
+  newConstraint4MaxNumberOfAssignments: string[]
+}
+
 type State = {
   creationDialogIsOpen: boolean
   newConstraint4IsEnabled: boolean
   newConstraint4MemberId: number
   newConstraint4KinmuId: number
   newConstraint4MaxNumberOfAssignments: number
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Constraints4 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
+    dirty: {
+      newConstraint4MaxNumberOfAssignments: constraints4.minOfConstraint4MaxNumberOfAssignments,
+    },
+    errorMessages: {
+      newConstraint4MaxNumberOfAssignments: [],
+    },
     newConstraint4IsEnabled: true,
     newConstraint4KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newConstraint4MaxNumberOfAssignments: constraints4.minOfConstraint4MaxNumberOfAssignments,
@@ -63,8 +79,20 @@ class Constraints4 extends React.Component<Props, State> {
   public handleChangeNewConstraint4KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newConstraint4KinmuId: parseInt(event.target.value, 10) })
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMessages: ErrorMessages = {
+      newConstraint4MaxNumberOfAssignments: [],
+    }
+    if (isNaN(dirty.newConstraint4MaxNumberOfAssignments)) { errorMessages.newConstraint4MaxNumberOfAssignments.push('割り当て数上限の形式が正しくありません') }
+    return errorMessages
+  }
   public handleChangeNewConstraint4MaxNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newConstraint4MaxNumberOfAssignments: parseInt(event.target.value, 10) })
+    const newConstraint4MaxNumberOfAssignments = parseInt(event.target.value, 10)
+    const dirty = { ...this.state.dirty, newConstraint4MaxNumberOfAssignments }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.newConstraint4MaxNumberOfAssignments.length > 0) { return }
+    this.setState({ newConstraint4MaxNumberOfAssignments })
   }
   public handleClickCreateConstraint4 = () => {
     this.setState({ creationDialogIsOpen: false })
@@ -161,6 +189,13 @@ class Constraints4 extends React.Component<Props, State> {
                         inputProps={{
                           min: constraints4.minOfConstraint4MaxNumberOfAssignments,
                         }}
+                        error={this.state.errorMessages.newConstraint4MaxNumberOfAssignments.length > 0}
+                        FormHelperTextProps={{
+                          component: 'div',
+                        }}
+                        helperText={this.state.errorMessages.newConstraint4MaxNumberOfAssignments.map(message =>
+                          <div key={message}>{message}</div>
+                        )}
                       />
                     </Grid>
                   </Grid>

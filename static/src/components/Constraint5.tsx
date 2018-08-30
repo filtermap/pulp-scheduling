@@ -35,15 +35,34 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  constraint5MinNumberOfDays: number
+}
+
+type ErrorMessages = {
+  constraint5MinNumberOfDays: string[]
+}
+
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Constraint5 extends React.Component<Props, State> {
-  public state: State = {
-    deletionDialogIsOpen: false,
-    expanded: false,
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      deletionDialogIsOpen: false,
+      dirty: {
+        constraint5MinNumberOfDays: this.props.constraint5.min_number_of_days,
+      },
+      errorMessages: {
+        constraint5MinNumberOfDays: [],
+      },
+      expanded: false,
+    }
   }
   public handleClickExpand = () => {
     this.setState({ expanded: !this.state.expanded })
@@ -54,8 +73,20 @@ class Constraint5 extends React.Component<Props, State> {
   public handleChangeConstraint5KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.props.dispatch(constraints5.updateConstraint5KinmuId(this.props.constraint5.id, parseInt(event.target.value, 10)))
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMessages: ErrorMessages = {
+      constraint5MinNumberOfDays: [],
+    }
+    if (isNaN(dirty.constraint5MinNumberOfDays)) { errorMessages.constraint5MinNumberOfDays.push('連続日数下限の形式が正しくありません') }
+    return errorMessages
+  }
   public handleChangeConstraint5MinNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.dispatch(constraints5.updateConstraint5MinNumberOfDays(this.props.constraint5.id, parseInt(event.target.value, 10)))
+    const constraint5MinNumberOfDays = parseInt(event.target.value, 10)
+    const dirty = { ...this.state.dirty, constraint5MinNumberOfDays }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.constraint5MinNumberOfDays.length > 0) { return }
+    this.props.dispatch(constraints5.updateConstraint5MinNumberOfDays(this.props.constraint5.id, constraint5MinNumberOfDays))
   }
   public handleClickOpenDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: true })
@@ -131,6 +162,13 @@ class Constraint5 extends React.Component<Props, State> {
                     inputProps={{
                       min: constraints5.minOfConstraint5MinNumberOfDays,
                     }}
+                    error={this.state.errorMessages.constraint5MinNumberOfDays.length > 0}
+                    FormHelperTextProps={{
+                      component: 'div',
+                    }}
+                    helperText={this.state.errorMessages.constraint5MinNumberOfDays.map(message =>
+                      <div key={message}>{message}</div>
+                    )}
                   />
                 </Grid>
               </Grid>

@@ -40,15 +40,42 @@ type Props = {
   groups: groups.Group[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  constraint2StartDateName: string
+  constraint2StopDateName: string
+  constraint2MaxNumberOfAssignments: number
+}
+
+type ErrorMessages = {
+  constraint2StartDateName: string[]
+  constraint2StopDateName: string[]
+  constraint2MaxNumberOfAssignments: string[]
+}
+
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Constraint2 extends React.Component<Props, State> {
-  public state: State = {
-    deletionDialogIsOpen: false,
-    expanded: false,
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      deletionDialogIsOpen: false,
+      dirty: {
+        constraint2MaxNumberOfAssignments: props.constraint2.max_number_of_assignments,
+        constraint2StartDateName: props.constraint2.start_date_name,
+        constraint2StopDateName: props.constraint2.stop_date_name,
+      },
+      errorMessages: {
+        constraint2MaxNumberOfAssignments: [],
+        constraint2StartDateName: [],
+        constraint2StopDateName: [],
+      },
+      expanded: false,
+    }
   }
   public handleClickExpand = () => {
     this.setState({ expanded: !this.state.expanded })
@@ -56,11 +83,32 @@ class Constraint2 extends React.Component<Props, State> {
   public handleChangeConstraint2IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.props.dispatch(constraints2.updateConstraint2IsEnabled(this.props.constraint2.id, checked))
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMessages: ErrorMessages = {
+      constraint2MaxNumberOfAssignments: [],
+      constraint2StartDateName: [],
+      constraint2StopDateName: [],
+    }
+    if (!utils.stringToDate(dirty.constraint2StartDateName)) { errorMessages.constraint2StartDateName.push('開始日の形式が正しくありません') }
+    if (!utils.stringToDate(dirty.constraint2StopDateName)) { errorMessages.constraint2StopDateName.push('終了日の形式が正しくありません') }
+    if (isNaN(dirty.constraint2MaxNumberOfAssignments)) { errorMessages.constraint2MaxNumberOfAssignments.push('割り当て職員数上限の形式が正しくありません') }
+    return errorMessages
+  }
   public handleChangeConstraint2StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.dispatch(constraints2.updateConstraint2StartDateName(this.props.constraint2.id, event.target.value))
+    const constraint2StartDateName = event.target.value
+    const dirty = { ...this.state.dirty, constraint2StartDateName }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.constraint2StartDateName.length > 0) { return }
+    this.props.dispatch(constraints2.updateConstraint2StartDateName(this.props.constraint2.id, constraint2StartDateName))
   }
   public handleChangeConstraint2StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.dispatch(constraints2.updateConstraint2StopDateName(this.props.constraint2.id, event.target.value))
+    const constraint2StopDateName = event.target.value
+    const dirty = { ...this.state.dirty, constraint2StopDateName }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.constraint2StopDateName.length > 0) { return }
+    this.props.dispatch(constraints2.updateConstraint2StopDateName(this.props.constraint2.id, constraint2StopDateName))
   }
   public handleChangeConstraint2KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.props.dispatch(constraints2.updateConstraint2KinmuId(this.props.constraint2.id, parseInt(event.target.value, 10)))
@@ -69,7 +117,12 @@ class Constraint2 extends React.Component<Props, State> {
     this.props.dispatch(constraints2.updateConstraint2GroupId(this.props.constraint2.id, parseInt(event.target.value, 10)))
   }
   public handleChangeConstraint2MaxNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.dispatch(constraints2.updateConstraint2MaxNumberOfAssignments(this.props.constraint2.id, parseInt(event.target.value, 10)))
+    const constraint2MaxNumberOfAssignments = parseInt(event.target.value, 10)
+    const dirty = { ...this.state.dirty, constraint2MaxNumberOfAssignments }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.constraint2MaxNumberOfAssignments.length > 0) { return }
+    this.props.dispatch(constraints2.updateConstraint2MaxNumberOfAssignments(this.props.constraint2.id, constraint2MaxNumberOfAssignments))
   }
   public handleClickOpenDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: true })
@@ -146,6 +199,13 @@ class Constraint2 extends React.Component<Props, State> {
                     inputProps={{
                       className: classnames({ [this.props.classes.lineThrough]: !constraint2StartDateIsEnabled })
                     }}
+                    error={this.state.errorMessages.constraint2StartDateName.length > 0}
+                    FormHelperTextProps={{
+                      component: 'div',
+                    }}
+                    helperText={this.state.errorMessages.constraint2StartDateName.map(message =>
+                      <div key={message}>{message}</div>
+                    )}
                   />
                 </Grid>
                 <Grid item={true} xs={12}>
@@ -161,6 +221,13 @@ class Constraint2 extends React.Component<Props, State> {
                     inputProps={{
                       className: classnames({ [this.props.classes.lineThrough]: !constraint2StopDateIsEnabled })
                     }}
+                    error={this.state.errorMessages.constraint2StopDateName.length > 0}
+                    FormHelperTextProps={{
+                      component: 'div',
+                    }}
+                    helperText={this.state.errorMessages.constraint2StopDateName.map(message =>
+                      <div key={message}>{message}</div>
+                    )}
                   />
                 </Grid>
                 <Grid item={true} xs={12}>
@@ -203,6 +270,13 @@ class Constraint2 extends React.Component<Props, State> {
                     inputProps={{
                       min: constraints2.minOfConstraint2MaxNumberOfAssignments,
                     }}
+                    error={this.state.errorMessages.constraint2MaxNumberOfAssignments.length > 0}
+                    FormHelperTextProps={{
+                      component: 'div',
+                    }}
+                    helperText={this.state.errorMessages.constraint2MaxNumberOfAssignments.map(message =>
+                      <div key={message}>{message}</div>
+                    )}
                   />
                 </Grid>
               </Grid>

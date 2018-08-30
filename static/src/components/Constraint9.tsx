@@ -40,15 +40,38 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  constraint9StartDateName: string
+  constraint9StopDateName: string
+}
+
+type ErrorMessages = {
+  constraint9StartDateName: string[]
+  constraint9StopDateName: string[]
+}
+
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Constraint9 extends React.Component<Props, State> {
-  public state: State = {
-    deletionDialogIsOpen: false,
-    expanded: false,
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      deletionDialogIsOpen: false,
+      dirty: {
+        constraint9StartDateName: props.constraint9.start_date_name,
+        constraint9StopDateName: props.constraint9.stop_date_name,
+      },
+      errorMessages: {
+        constraint9StartDateName: [],
+        constraint9StopDateName: [],
+      },
+      expanded: false,
+    }
   }
   public handleClickExpand = () => {
     this.setState({ expanded: !this.state.expanded })
@@ -59,11 +82,30 @@ class Constraint9 extends React.Component<Props, State> {
   public handleChangeConstraint9MemberId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.props.dispatch(constraints9.updateConstraint9MemberId(this.props.constraint9.id, parseInt(event.target.value, 10)))
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMessages: ErrorMessages = {
+      constraint9StartDateName: [],
+      constraint9StopDateName: [],
+    }
+    if (!utils.stringToDate(dirty.constraint9StartDateName)) { errorMessages.constraint9StartDateName.push('開始日の形式が正しくありません') }
+    if (!utils.stringToDate(dirty.constraint9StopDateName)) { errorMessages.constraint9StopDateName.push('終了日の形式が正しくありません') }
+    return errorMessages
+  }
   public handleChangeConstraint9StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.dispatch(constraints9.updateConstraint9StartDateName(this.props.constraint9.id, event.target.value))
+    const constraint9StartDateName = event.target.value
+    const dirty = { ...this.state.dirty, constraint9StartDateName }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.constraint9StartDateName.length > 0) { return }
+    this.props.dispatch(constraints9.updateConstraint9StartDateName(this.props.constraint9.id, constraint9StartDateName))
   }
   public handleChangeConstraint9StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.dispatch(constraints9.updateConstraint9StopDateName(this.props.constraint9.id, event.target.value))
+    const constraint9StopDateName = event.target.value
+    const dirty = { ...this.state.dirty, constraint9StopDateName }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.constraint9StopDateName.length > 0) { return }
+    this.props.dispatch(constraints9.updateConstraint9StopDateName(this.props.constraint9.id, constraint9StopDateName))
   }
   public handleChangeConstraint9KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.props.dispatch(constraints9.updateConstraint9KinmuId(this.props.constraint9.id, parseInt(event.target.value, 10)))
@@ -158,6 +200,13 @@ class Constraint9 extends React.Component<Props, State> {
                     inputProps={{
                       className: classnames({ [this.props.classes.lineThrough]: !constraint9StartDateIsEnabled })
                     }}
+                    error={this.state.errorMessages.constraint9StartDateName.length > 0}
+                    FormHelperTextProps={{
+                      component: 'div',
+                    }}
+                    helperText={this.state.errorMessages.constraint9StartDateName.map(message =>
+                      <div key={message}>{message}</div>
+                    )}
                   />
                 </Grid>
                 <Grid item={true} xs={12}>
@@ -173,6 +222,13 @@ class Constraint9 extends React.Component<Props, State> {
                     inputProps={{
                       className: classnames({ [this.props.classes.lineThrough]: !constraint9StopDateIsEnabled })
                     }}
+                    error={this.state.errorMessages.constraint9StopDateName.length > 0}
+                    FormHelperTextProps={{
+                      component: 'div',
+                    }}
+                    helperText={this.state.errorMessages.constraint9StopDateName.map(message =>
+                      <div key={message}>{message}</div>
+                    )}
                   />
                 </Grid>
                 <Grid item={true} xs={12}>

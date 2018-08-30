@@ -33,16 +33,32 @@ type Props = {
   group_members: group_members.GroupMember[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  newGroupName: string
+}
+
+type ErrorMessages = {
+  newGroupName: string[]
+}
+
 type State = {
   creationDialogIsOpen: boolean
   newGroupIsEnabled: boolean
   newGroupName: string
   newGroupMemberIndices: number[]
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Groups extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
+    dirty: {
+      newGroupName: '',
+    },
+    errorMessages: {
+      newGroupName: [],
+    },
     newGroupIsEnabled: true,
     newGroupMemberIndices: [],
     newGroupName: '',
@@ -56,8 +72,20 @@ class Groups extends React.Component<Props, State> {
   public handleChangeNewGroupIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.setState({ newGroupIsEnabled: checked })
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMessages: ErrorMessages = {
+      newGroupName: [],
+    }
+    if (dirty.newGroupName === '') { errorMessages.newGroupName.push('グループ名を入力してください') }
+    return errorMessages
+  }
   public handleChangeNewGroupName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newGroupName: event.target.value })
+    const newGroupName = event.target.value
+    const dirty = { ...this.state.dirty, newGroupName }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.newGroupName.length > 0) { return }
+    this.setState({ newGroupName })
   }
   public handleChangeNewGroupMember(memberId: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -112,6 +140,13 @@ class Groups extends React.Component<Props, State> {
                   defaultValue={this.state.newGroupName}
                   onChange={this.handleChangeNewGroupName}
                   fullWidth={true}
+                  error={this.state.errorMessages.newGroupName.length > 0}
+                  FormHelperTextProps={{
+                    component: 'div',
+                  }}
+                  helperText={this.state.errorMessages.newGroupName.map(message =>
+                    <div key={message}>{message}</div>
+                  )}
                 />
               </Grid>
               <Grid item={true} xs={12}>

@@ -32,17 +32,33 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  newConstraint3MinNumberOfAssignments: number
+}
+
+type ErrorMessages = {
+  newConstraint3MinNumberOfAssignments: string[]
+}
+
 type State = {
   creationDialogIsOpen: boolean
   newConstraint3IsEnabled: boolean
   newConstraint3MemberId: number
   newConstraint3KinmuId: number
   newConstraint3MinNumberOfAssignments: number
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Constraints3 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
+    dirty: {
+      newConstraint3MinNumberOfAssignments: constraints3.minOfConstraint3MinNumberOfAssignments,
+    },
+    errorMessages: {
+      newConstraint3MinNumberOfAssignments: [],
+    },
     newConstraint3IsEnabled: true,
     newConstraint3KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newConstraint3MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
@@ -63,8 +79,20 @@ class Constraints3 extends React.Component<Props, State> {
   public handleChangeNewConstraint3KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newConstraint3KinmuId: parseInt(event.target.value, 10) })
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMessages: ErrorMessages = {
+      newConstraint3MinNumberOfAssignments: [],
+    }
+    if (isNaN(dirty.newConstraint3MinNumberOfAssignments)) { errorMessages.newConstraint3MinNumberOfAssignments.push('割り当て数下限の形式が正しくありません') }
+    return errorMessages
+  }
   public handleChangeNewConstraint3MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newConstraint3MinNumberOfAssignments: parseInt(event.target.value, 10) })
+    const newConstraint3MinNumberOfAssignments = parseInt(event.target.value, 10)
+    const dirty = { ...this.state.dirty, newConstraint3MinNumberOfAssignments }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.newConstraint3MinNumberOfAssignments.length > 0) { return }
+    this.setState({ newConstraint3MinNumberOfAssignments })
   }
   public handleClickCreateConstraint3 = () => {
     this.setState({ creationDialogIsOpen: false })
@@ -161,6 +189,13 @@ class Constraints3 extends React.Component<Props, State> {
                         inputProps={{
                           min: constraints3.minOfConstraint3MinNumberOfAssignments,
                         }}
+                        error={this.state.errorMessages.newConstraint3MinNumberOfAssignments.length > 0}
+                        FormHelperTextProps={{
+                          component: 'div',
+                        }}
+                        helperText={this.state.errorMessages.newConstraint3MinNumberOfAssignments.map(message =>
+                          <div key={message}>{message}</div>
+                        )}
                       />
                     </Grid>
                   </Grid>

@@ -37,15 +37,34 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  constraint3MinNumberOfAssignments: number
+}
+
+type ErrorMessages = {
+  constraint3MinNumberOfAssignments: string[]
+}
+
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Constraint3 extends React.Component<Props, State> {
-  public state: State = {
-    deletionDialogIsOpen: false,
-    expanded: false,
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      deletionDialogIsOpen: false,
+      dirty: {
+        constraint3MinNumberOfAssignments: props.constraint3.min_number_of_assignments,
+      },
+      errorMessages: {
+        constraint3MinNumberOfAssignments: [],
+      },
+      expanded: false,
+    }
   }
   public handleClickExpand = () => {
     this.setState({ expanded: !this.state.expanded })
@@ -59,8 +78,20 @@ class Constraint3 extends React.Component<Props, State> {
   public handleChangeConstraint3KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.props.dispatch(constraints3.updateConstraint3KinmuId(this.props.constraint3.id, parseInt(event.target.value, 10)))
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMessages: ErrorMessages = {
+      constraint3MinNumberOfAssignments: [],
+    }
+    if (isNaN(dirty.constraint3MinNumberOfAssignments)) { errorMessages.constraint3MinNumberOfAssignments.push('割り当て数下限の形式が正しくありません') }
+    return errorMessages
+  }
   public handleChangeConstraint3MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.dispatch(constraints3.updateConstraint3MinNumberOfAssignments(this.props.constraint3.id, parseInt(event.target.value, 10)))
+    const constraint3MinNumberOfAssignments = parseInt(event.target.value, 10)
+    const dirty = { ...this.state.dirty, constraint3MinNumberOfAssignments }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.constraint3MinNumberOfAssignments.length > 0) { return }
+    this.props.dispatch(constraints3.updateConstraint3MinNumberOfAssignments(this.props.constraint3.id, constraint3MinNumberOfAssignments))
   }
   public handleClickOpenDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: true })
@@ -152,6 +183,13 @@ class Constraint3 extends React.Component<Props, State> {
                     inputProps={{
                       min: constraints3.minOfConstraint3MinNumberOfAssignments,
                     }}
+                    error={this.state.errorMessages.constraint3MinNumberOfAssignments.length > 0}
+                    FormHelperTextProps={{
+                      component: 'div',
+                    }}
+                    helperText={this.state.errorMessages.constraint3MinNumberOfAssignments.map(message =>
+                      <div key={message}>{message}</div>
+                    )}
                   />
                 </Grid>
               </Grid>

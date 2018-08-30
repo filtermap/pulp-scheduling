@@ -25,15 +25,31 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  newKinmuName: string
+}
+
+type ErrorMessages = {
+  newKinmuName: string[]
+}
+
 type State = {
   creationDialogIsOpen: boolean
   newKinmuIsEnabled: boolean
   newKinmuName: string
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Kinmus extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
+    dirty: {
+      newKinmuName: '',
+    },
+    errorMessages: {
+      newKinmuName: [],
+    },
     newKinmuIsEnabled: true,
     newKinmuName: '',
   }
@@ -46,8 +62,20 @@ class Kinmus extends React.Component<Props, State> {
   public handleChangeNewKinmuIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.setState({ newKinmuIsEnabled: checked })
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMesages: ErrorMessages = {
+      newKinmuName: [],
+    }
+    if (dirty.newKinmuName === '') { errorMesages.newKinmuName.push('勤務名を入力してください') }
+    return errorMesages
+  }
   public handleChangeNewKinmuName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newKinmuName: event.target.value })
+    const newKinmuName = event.target.value
+    const dirty = { ...this.state.dirty, newKinmuName }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.newKinmuName.length > 0) { return }
+    this.setState({ newKinmuName })
   }
   public handleClickCreateKinmu = () => {
     this.setState({ creationDialogIsOpen: false })
@@ -93,6 +121,13 @@ class Kinmus extends React.Component<Props, State> {
                   defaultValue={this.state.newKinmuName}
                   onChange={this.handleChangeNewKinmuName}
                   fullWidth={true}
+                  error={this.state.errorMessages.newKinmuName.length > 0}
+                  FormHelperTextProps={{
+                    component: 'div',
+                  }}
+                  helperText={this.state.errorMessages.newKinmuName.map(message =>
+                    <div key={message}>{message}</div>
+                  )}
                 />
               </Grid>
             </Grid>

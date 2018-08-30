@@ -60,15 +60,34 @@ type Props = {
   groups: groups.Group[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  kinmuName: string
+}
+
+type ErrorMessages = {
+  kinmuName: string[]
+}
+
 type State = {
   deletionDialogIsOpen: boolean
   expanded: boolean
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Kinmu extends React.Component<Props, State> {
-  public state: State = {
-    deletionDialogIsOpen: false,
-    expanded: false,
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      deletionDialogIsOpen: false,
+      dirty: {
+        kinmuName: props.kinmu.name,
+      },
+      errorMessages: {
+        kinmuName: [],
+      },
+      expanded: false,
+    }
   }
   public handleClickExpand = () => {
     this.setState({ expanded: !this.state.expanded })
@@ -76,8 +95,20 @@ class Kinmu extends React.Component<Props, State> {
   public handleChangeKinmuIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.props.dispatch(kinmus.updateKinmuIsEnabled(this.props.kinmu.id, checked))
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMessages: ErrorMessages = {
+      kinmuName: [],
+    }
+    if (dirty.kinmuName === '') { errorMessages.kinmuName.push('勤務名を入力してください') }
+    return errorMessages
+  }
   public handleChangeKinmuName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.dispatch(kinmus.updateKinmuName(this.props.kinmu.id, event.target.value))
+    const kinmuName = event.target.value
+    const dirty = { ...this.state.dirty, kinmuName }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.kinmuName.length > 0) { return }
+    this.props.dispatch(kinmus.updateKinmuName(this.props.kinmu.id, kinmuName))
   }
   public handleClickOpenDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: true })
@@ -138,6 +169,13 @@ class Kinmu extends React.Component<Props, State> {
                     defaultValue={this.props.kinmu.name}
                     onChange={this.handleChangeKinmuName}
                     margin="normal"
+                    error={this.state.errorMessages.kinmuName.length > 0}
+                    FormHelperTextProps={{
+                      component: 'div',
+                    }}
+                    helperText={this.state.errorMessages.kinmuName.map(message =>
+                      <div key={message}>{message}</div>
+                    )}
                   />
                 </Grid>
               </Grid>

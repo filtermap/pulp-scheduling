@@ -30,16 +30,32 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  newConstraint6MaxNumberOfDays: number
+}
+
+type ErrorMessages = {
+  newConstraint6MaxNumberOfDays: string[]
+}
+
 type State = {
   creationDialogIsOpen: boolean
   newConstraint6IsEnabled: boolean
   newConstraint6KinmuId: number
   newConstraint6MaxNumberOfDays: number
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Constraints6 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
+    dirty: {
+      newConstraint6MaxNumberOfDays: constraints6.minOfConstraint6MaxNumberOfDays,
+    },
+    errorMessages: {
+      newConstraint6MaxNumberOfDays: [],
+    },
     newConstraint6IsEnabled: true,
     newConstraint6KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newConstraint6MaxNumberOfDays: constraints6.minOfConstraint6MaxNumberOfDays,
@@ -56,8 +72,20 @@ class Constraints6 extends React.Component<Props, State> {
   public handleChangeNewConstraint6KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newConstraint6KinmuId: parseInt(event.target.value, 10) })
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMessages: ErrorMessages = {
+      newConstraint6MaxNumberOfDays: [],
+    }
+    if (isNaN(dirty.newConstraint6MaxNumberOfDays)) { errorMessages.newConstraint6MaxNumberOfDays.push('連続日数上限の形式が正しくありません') }
+    return errorMessages
+  }
   public handleChangeNewConstraint6MaxNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newConstraint6MaxNumberOfDays: parseInt(event.target.value, 10) })
+    const newConstraint6MaxNumberOfDays = parseInt(event.target.value, 10)
+    const dirty = { ...this.state.dirty, newConstraint6MaxNumberOfDays }
+    const errorMessages = this.validate(dirty)
+    this.setState({ dirty, errorMessages })
+    if (errorMessages.newConstraint6MaxNumberOfDays.length > 0) { return }
+    this.setState({ newConstraint6MaxNumberOfDays })
   }
   public handleClickCreateConstraint6 = () => {
     this.setState({ creationDialogIsOpen: false })
@@ -137,6 +165,13 @@ class Constraints6 extends React.Component<Props, State> {
                         inputProps={{
                           min: constraints6.minOfConstraint6MaxNumberOfDays,
                         }}
+                        error={this.state.errorMessages.newConstraint6MaxNumberOfDays.length > 0}
+                        FormHelperTextProps={{
+                          component: 'div',
+                        }}
+                        helperText={this.state.errorMessages.newConstraint6MaxNumberOfDays.map(messages =>
+                          <div key={messages}>{messages}</div>
+                        )}
                       />
                     </Grid>
                   </Grid>

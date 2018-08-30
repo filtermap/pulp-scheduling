@@ -30,16 +30,32 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
+type Dirty = {
+  newConstraint7MinNumberOfDays: number
+}
+
+type ErrorMessages = {
+  newConstraint7MinNumberOfDays: string[]
+}
+
 type State = {
   creationDialogIsOpen: boolean
   newConstraint7IsEnabled: boolean
   newConstraint7KinmuId: number
   newConstraint7MinNumberOfDays: number
+  dirty: Dirty
+  errorMessages: ErrorMessages
 }
 
 class Constraints7 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
+    dirty: {
+      newConstraint7MinNumberOfDays: constraints7.minOfConstraint7MinNumberOfDays,
+    },
+    errorMessages: {
+      newConstraint7MinNumberOfDays: [],
+    },
     newConstraint7IsEnabled: true,
     newConstraint7KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newConstraint7MinNumberOfDays: constraints7.minOfConstraint7MinNumberOfDays,
@@ -56,8 +72,20 @@ class Constraints7 extends React.Component<Props, State> {
   public handleChangeNewConstraint7KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newConstraint7KinmuId: parseInt(event.target.value, 10) })
   }
+  public validate(dirty: Dirty): ErrorMessages {
+    const errorMessages: ErrorMessages = {
+      newConstraint7MinNumberOfDays: [],
+    }
+    if (isNaN(dirty.newConstraint7MinNumberOfDays)) { errorMessages.newConstraint7MinNumberOfDays.push('間隔日数下限の形式が正しくありません') }
+    return errorMessages
+  }
   public handleChangeNewConstraint7MinNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newConstraint7MinNumberOfDays: parseInt(event.target.value, 10) })
+    const newConstraint7MinNumberOfDays = parseInt(event.target.value, 10)
+    const dirty = { ...this.state.dirty, newConstraint7MinNumberOfDays }
+    const errorMessages = this.validate(dirty)
+    this.setState({ errorMessages })
+    if (errorMessages.newConstraint7MinNumberOfDays.length > 0) { return }
+    this.setState({ newConstraint7MinNumberOfDays })
   }
   public handleClickCreateConstraint7 = () => {
     this.setState({ creationDialogIsOpen: false })
@@ -137,6 +165,13 @@ class Constraints7 extends React.Component<Props, State> {
                         inputProps={{
                           min: constraints7.minOfConstraint7MinNumberOfDays,
                         }}
+                        error={this.state.errorMessages.newConstraint7MinNumberOfDays.length > 0}
+                        FormHelperTextProps={{
+                          component: 'div',
+                        }}
+                        helperText={this.state.errorMessages.newConstraint7MinNumberOfDays.map(message =>
+                          <div key={message}>{message}</div>
+                        )}
                       />
                     </Grid>
                   </Grid>
