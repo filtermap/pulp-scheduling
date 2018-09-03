@@ -47,10 +47,6 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  groupName: string
-}
-
 type ErrorMessages = {
   groupName: string[]
 }
@@ -58,7 +54,6 @@ type ErrorMessages = {
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
@@ -67,9 +62,6 @@ class Group extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      dirty: {
-        groupName: props.group.name,
-      },
       errorMessages: {
         groupName: [],
       },
@@ -82,19 +74,17 @@ class Group extends React.Component<Props, State> {
   public handleChangeGroupIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.props.dispatch(groups.updateGroupIsEnabled(this.props.group.id, checked))
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(groupName: string): ErrorMessages {
     const errorMessages: ErrorMessages = {
       groupName: [],
     }
-    if (dirty.groupName === '') { errorMessages.groupName.push('グループ名を入力してください') }
+    if (groupName === '') { errorMessages.groupName.push('グループ名を入力してください') }
     return errorMessages
   }
   public handleChangeGroupName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const groupName = event.target.value
-    const dirty = { ...this.state.dirty, groupName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.groupName.length > 0) { return }
+    const errorMessages = this.validate(groupName)
+    this.setState({ errorMessages })
     this.props.dispatch(groups.updateGroupName(this.props.group.id, groupName))
   }
   public handleChangeGroupMember(memberId: number) {

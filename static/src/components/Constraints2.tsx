@@ -35,12 +35,6 @@ type Props = {
   groups: groups.Group[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  newConstraint2StartDateName: string
-  newConstraint2StopDateName: string
-  newConstraint2MaxNumberOfAssignments: number
-}
-
 type ErrorMessages = {
   newConstraint2StartDateName: string[]
   newConstraint2StopDateName: string[]
@@ -55,7 +49,6 @@ type State = {
   newConstraint2KinmuId: number
   newConstraint2GroupId: number
   newConstraint2MaxNumberOfAssignments: number
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
@@ -65,11 +58,6 @@ class Constraints2 extends React.Component<Props, State> {
     const todayString = utils.dateToString(new Date())
     this.state = {
       creationDialogIsOpen: false,
-      dirty: {
-        newConstraint2MaxNumberOfAssignments: constraints2.minOfConstraint2MaxNumberOfAssignments,
-        newConstraint2StartDateName: todayString,
-        newConstraint2StopDateName: todayString,
-      },
       errorMessages: {
         newConstraint2MaxNumberOfAssignments: [],
         newConstraint2StartDateName: [],
@@ -89,15 +77,15 @@ class Constraints2 extends React.Component<Props, State> {
   public handleCloseCreationDialog = () => {
     this.setState({ creationDialogIsOpen: false })
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(newConstraint2StartDateName: string, newConstraint2StopDateName: string, newConstraint2MaxNumberOfAssignments: number): ErrorMessages {
     const errorMessages: ErrorMessages = {
       newConstraint2MaxNumberOfAssignments: [],
       newConstraint2StartDateName: [],
       newConstraint2StopDateName: [],
     }
-    if (!utils.stringToDate(dirty.newConstraint2StartDateName)) { errorMessages.newConstraint2StartDateName.push('開始日の形式が正しくありません') }
-    if (!utils.stringToDate(dirty.newConstraint2StopDateName)) { errorMessages.newConstraint2StopDateName.push('終了日の形式が正しくありません') }
-    if (isNaN(dirty.newConstraint2MaxNumberOfAssignments)) { errorMessages.newConstraint2MaxNumberOfAssignments.push('割り当て職員数上限の形式が正しくありません') }
+    if (!utils.stringToDate(newConstraint2StartDateName)) { errorMessages.newConstraint2StartDateName.push('開始日の形式が正しくありません') }
+    if (!utils.stringToDate(newConstraint2StopDateName)) { errorMessages.newConstraint2StopDateName.push('終了日の形式が正しくありません') }
+    if (isNaN(newConstraint2MaxNumberOfAssignments)) { errorMessages.newConstraint2MaxNumberOfAssignments.push('割り当て職員数上限の形式が正しくありません') }
     return errorMessages
   }
   public handleChangeNewConstraint2IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -105,19 +93,19 @@ class Constraints2 extends React.Component<Props, State> {
   }
   public handleChangeNewConstraint2StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newConstraint2StartDateName = event.target.value
-    const dirty = { ...this.state.dirty, newConstraint2StartDateName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.newConstraint2StartDateName.length > 0) { return }
-    this.setState({ newConstraint2StartDateName })
+    const errorMessages = this.validate(newConstraint2StartDateName, this.state.newConstraint2StopDateName, this.state.newConstraint2MaxNumberOfAssignments)
+    this.setState({
+      errorMessages,
+      newConstraint2StartDateName,
+    })
   }
   public handleChangeNewConstraint2StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newConstraint2StopDateName = event.target.value
-    const dirty = { ...this.state.dirty, newConstraint2StopDateName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.newConstraint2StopDateName.length > 0) { return }
-    this.setState({ newConstraint2StopDateName })
+    const errorMessages = this.validate(this.state.newConstraint2StartDateName, newConstraint2StopDateName, this.state.newConstraint2MaxNumberOfAssignments)
+    this.setState({
+      errorMessages,
+      newConstraint2StopDateName,
+    })
   }
   public handleChangeNewConstraint2KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newConstraint2KinmuId: parseInt(event.target.value, 10) })
@@ -127,11 +115,11 @@ class Constraints2 extends React.Component<Props, State> {
   }
   public handleChangeNewConstraint2MaxNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newConstraint2MaxNumberOfAssignments = parseInt(event.target.value, 10)
-    const dirty = { ...this.state.dirty, newConstraint2MaxNumberOfAssignments }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.newConstraint2MaxNumberOfAssignments.length > 0) { return }
-    this.setState({ newConstraint2MaxNumberOfAssignments })
+    const errorMessages = this.validate(this.state.newConstraint2StartDateName, this.state.newConstraint2StopDateName, newConstraint2MaxNumberOfAssignments)
+    this.setState({
+      errorMessages,
+      newConstraint2MaxNumberOfAssignments,
+    })
   }
   public handleClickCreateConstraint2 = () => {
     this.setState({ creationDialogIsOpen: false })

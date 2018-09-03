@@ -30,10 +30,6 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  newConstraint8MaxNumberOfDays: number
-}
-
 type ErrorMessages = {
   newConstraint8MaxNumberOfDays: string[]
 }
@@ -43,16 +39,12 @@ type State = {
   newConstraint8IsEnabled: boolean
   newConstraint8KinmuId: number
   newConstraint8MaxNumberOfDays: number
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
 class Constraints8 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    dirty: {
-      newConstraint8MaxNumberOfDays: constraints8.minOfConstraint8MaxNumberOfDays,
-    },
     errorMessages: {
       newConstraint8MaxNumberOfDays: [],
     },
@@ -72,20 +64,20 @@ class Constraints8 extends React.Component<Props, State> {
   public handleChangeNewConstraint8KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newConstraint8KinmuId: parseInt(event.target.value, 10) })
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(newConstraint8MaxNumberOfDays: number): ErrorMessages {
     const errorMessages: ErrorMessages = {
       newConstraint8MaxNumberOfDays: [],
     }
-    if (isNaN(dirty.newConstraint8MaxNumberOfDays)) { errorMessages.newConstraint8MaxNumberOfDays.push('間隔日数下限の形式が正しくありません') }
+    if (isNaN(newConstraint8MaxNumberOfDays)) { errorMessages.newConstraint8MaxNumberOfDays.push('間隔日数下限の形式が正しくありません') }
     return errorMessages
   }
   public handleChangeNewConstraint8MaxNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newConstraint8MaxNumberOfDays = parseInt(event.target.value, 10)
-    const dirty = { ...this.state.dirty, newConstraint8MaxNumberOfDays }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.newConstraint8MaxNumberOfDays.length > 0) { return }
-    this.setState({ newConstraint8MaxNumberOfDays })
+    const errorMessages = this.validate(newConstraint8MaxNumberOfDays)
+    this.setState({
+      errorMessages,
+      newConstraint8MaxNumberOfDays,
+    })
   }
   public handleClickCreateConstraint8 = () => {
     this.setState({ creationDialogIsOpen: false })

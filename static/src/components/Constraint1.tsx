@@ -40,12 +40,6 @@ type Props = {
   groups: groups.Group[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  constraint1StartDateName: string
-  constraint1StopDateName: string
-  constraint1MinNumberOfAssignments: number
-}
-
 type ErrorMessages = {
   constraint1StartDateName: string[]
   constraint1StopDateName: string[]
@@ -55,7 +49,6 @@ type ErrorMessages = {
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
@@ -64,11 +57,6 @@ class Constraint1 extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      dirty: {
-        constraint1MinNumberOfAssignments: props.constraint1.min_number_of_assignments,
-        constraint1StartDateName: props.constraint1.start_date_name,
-        constraint1StopDateName: props.constraint1.stop_date_name,
-      },
       errorMessages: {
         constraint1MinNumberOfAssignments: [],
         constraint1StartDateName: [],
@@ -83,31 +71,27 @@ class Constraint1 extends React.Component<Props, State> {
   public handleChangeConstraint1IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.props.dispatch(constraints1.updateConstraint1IsEnabled(this.props.constraint1.id, checked))
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(constraint1StartDateName: string, constraint1StopDateName: string, constraint1MinNumberOfAssignments: number): ErrorMessages {
     const errorMessages: ErrorMessages = {
       constraint1MinNumberOfAssignments: [],
       constraint1StartDateName: [],
       constraint1StopDateName: [],
     }
-    if (!utils.stringToDate(dirty.constraint1StartDateName)) { errorMessages.constraint1StartDateName.push('開始日の形式が正しくありません') }
-    if (!utils.stringToDate(dirty.constraint1StopDateName)) { errorMessages.constraint1StopDateName.push('終了日の形式が正しくありません') }
-    if (isNaN(dirty.constraint1MinNumberOfAssignments)) { errorMessages.constraint1MinNumberOfAssignments.push('割り当て職員数下限の形式が正しくありません') }
+    if (!utils.stringToDate(constraint1StartDateName)) { errorMessages.constraint1StartDateName.push('開始日の形式が正しくありません') }
+    if (!utils.stringToDate(constraint1StopDateName)) { errorMessages.constraint1StopDateName.push('終了日の形式が正しくありません') }
+    if (isNaN(constraint1MinNumberOfAssignments)) { errorMessages.constraint1MinNumberOfAssignments.push('割り当て職員数下限の形式が正しくありません') }
     return errorMessages
   }
   public handleChangeConstraint1StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const constraint1StartDateName = event.target.value
-    const dirty = { ...this.state.dirty, constraint1StartDateName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.constraint1StartDateName.length > 0) { return }
+    const errorMessages = this.validate(constraint1StartDateName, this.props.constraint1.stop_date_name, this.props.constraint1.min_number_of_assignments)
+    this.setState({ errorMessages })
     this.props.dispatch(constraints1.updateConstraint1StartDateName(this.props.constraint1.id, constraint1StartDateName))
   }
   public handleChangeConstraint1StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const constraint1StopDateName = event.target.value
-    const dirty = { ...this.state.dirty, constraint1StopDateName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.constraint1StopDateName.length > 0) { return }
+    const errorMessages = this.validate(this.props.constraint1.start_date_name, constraint1StopDateName, this.props.constraint1.min_number_of_assignments)
+    this.setState({ errorMessages })
     this.props.dispatch(constraints1.updateConstraint1StopDateName(this.props.constraint1.id, constraint1StopDateName))
   }
   public handleChangeConstraint1KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,10 +102,8 @@ class Constraint1 extends React.Component<Props, State> {
   }
   public handleChangeConstraint1MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
     const constraint1MinNumberOfAssignments = parseInt(event.target.value, 10)
-    const dirty = { ...this.state.dirty, constraint1MinNumberOfAssignments }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.constraint1MinNumberOfAssignments.length > 0) { return }
+    const errorMessages = this.validate(this.props.constraint1.start_date_name, this.props.constraint1.stop_date_name, constraint1MinNumberOfAssignments)
+    this.setState({ errorMessages })
     this.props.dispatch(constraints1.updateConstraint1MinNumberOfAssignments(this.props.constraint1.id, constraint1MinNumberOfAssignments))
   }
   public handleClickOpenDeletionDialog = () => {

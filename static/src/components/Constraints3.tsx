@@ -32,10 +32,6 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  newConstraint3MinNumberOfAssignments: number
-}
-
 type ErrorMessages = {
   newConstraint3MinNumberOfAssignments: string[]
 }
@@ -46,16 +42,12 @@ type State = {
   newConstraint3MemberId: number
   newConstraint3KinmuId: number
   newConstraint3MinNumberOfAssignments: number
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
 class Constraints3 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    dirty: {
-      newConstraint3MinNumberOfAssignments: constraints3.minOfConstraint3MinNumberOfAssignments,
-    },
     errorMessages: {
       newConstraint3MinNumberOfAssignments: [],
     },
@@ -79,20 +71,20 @@ class Constraints3 extends React.Component<Props, State> {
   public handleChangeNewConstraint3KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newConstraint3KinmuId: parseInt(event.target.value, 10) })
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(newConstraint3MinNumberOfAssignments: number): ErrorMessages {
     const errorMessages: ErrorMessages = {
       newConstraint3MinNumberOfAssignments: [],
     }
-    if (isNaN(dirty.newConstraint3MinNumberOfAssignments)) { errorMessages.newConstraint3MinNumberOfAssignments.push('割り当て数下限の形式が正しくありません') }
+    if (isNaN(newConstraint3MinNumberOfAssignments)) { errorMessages.newConstraint3MinNumberOfAssignments.push('割り当て数下限の形式が正しくありません') }
     return errorMessages
   }
   public handleChangeNewConstraint3MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newConstraint3MinNumberOfAssignments = parseInt(event.target.value, 10)
-    const dirty = { ...this.state.dirty, newConstraint3MinNumberOfAssignments }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.newConstraint3MinNumberOfAssignments.length > 0) { return }
-    this.setState({ newConstraint3MinNumberOfAssignments })
+    const errorMessages = this.validate(newConstraint3MinNumberOfAssignments)
+    this.setState({
+      errorMessages,
+      newConstraint3MinNumberOfAssignments,
+    })
   }
   public handleClickCreateConstraint3 = () => {
     this.setState({ creationDialogIsOpen: false })

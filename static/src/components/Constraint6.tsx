@@ -35,10 +35,6 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  constraint6MaxNumberOfDays: number
-}
-
 type ErrorMessages = {
   constraint6MaxNumberOfDays: string[]
 }
@@ -46,7 +42,6 @@ type ErrorMessages = {
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
@@ -55,9 +50,6 @@ class Constraint6 extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      dirty: {
-        constraint6MaxNumberOfDays: props.constraint6.max_number_of_days,
-      },
       errorMessages: {
         constraint6MaxNumberOfDays: [],
       },
@@ -73,19 +65,17 @@ class Constraint6 extends React.Component<Props, State> {
   public handleChangeConstraint6KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.props.dispatch(constraints6.updateConstraint6KinmuId(this.props.constraint6.id, parseInt(event.target.value, 10)))
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(constraint6MaxNumberOfDays: number): ErrorMessages {
     const errorMessages: ErrorMessages = {
       constraint6MaxNumberOfDays: [],
     }
-    if (isNaN(dirty.constraint6MaxNumberOfDays)) { errorMessages.constraint6MaxNumberOfDays.push('連続日数上限の形式が正しくありません') }
+    if (isNaN(constraint6MaxNumberOfDays)) { errorMessages.constraint6MaxNumberOfDays.push('連続日数上限の形式が正しくありません') }
     return errorMessages
   }
   public handleChangeConstraint6MaxNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
     const constraint6MaxNumberOfDays = parseInt(event.target.value, 10)
-    const dirty = { ...this.state.dirty, constraint6MaxNumberOfDays }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.constraint6MaxNumberOfDays.length > 0) { return }
+    const errorMessages = this.validate(constraint6MaxNumberOfDays)
+    this.setState({ errorMessages })
     this.props.dispatch(constraints6.updateConstraint6MaxNumberOfDays(this.props.constraint6.id, constraint6MaxNumberOfDays))
   }
   public handleClickOpenDeletionDialog = () => {

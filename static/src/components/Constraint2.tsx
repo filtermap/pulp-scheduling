@@ -40,12 +40,6 @@ type Props = {
   groups: groups.Group[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  constraint2StartDateName: string
-  constraint2StopDateName: string
-  constraint2MaxNumberOfAssignments: number
-}
-
 type ErrorMessages = {
   constraint2StartDateName: string[]
   constraint2StopDateName: string[]
@@ -55,7 +49,6 @@ type ErrorMessages = {
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
@@ -64,11 +57,6 @@ class Constraint2 extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      dirty: {
-        constraint2MaxNumberOfAssignments: props.constraint2.max_number_of_assignments,
-        constraint2StartDateName: props.constraint2.start_date_name,
-        constraint2StopDateName: props.constraint2.stop_date_name,
-      },
       errorMessages: {
         constraint2MaxNumberOfAssignments: [],
         constraint2StartDateName: [],
@@ -83,31 +71,27 @@ class Constraint2 extends React.Component<Props, State> {
   public handleChangeConstraint2IsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.props.dispatch(constraints2.updateConstraint2IsEnabled(this.props.constraint2.id, checked))
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(constraint2StartDateName: string, constraint2StopDateName: string, constraint2MaxNumberOfAssignments: number): ErrorMessages {
     const errorMessages: ErrorMessages = {
       constraint2MaxNumberOfAssignments: [],
       constraint2StartDateName: [],
       constraint2StopDateName: [],
     }
-    if (!utils.stringToDate(dirty.constraint2StartDateName)) { errorMessages.constraint2StartDateName.push('開始日の形式が正しくありません') }
-    if (!utils.stringToDate(dirty.constraint2StopDateName)) { errorMessages.constraint2StopDateName.push('終了日の形式が正しくありません') }
-    if (isNaN(dirty.constraint2MaxNumberOfAssignments)) { errorMessages.constraint2MaxNumberOfAssignments.push('割り当て職員数上限の形式が正しくありません') }
+    if (!utils.stringToDate(constraint2StartDateName)) { errorMessages.constraint2StartDateName.push('開始日の形式が正しくありません') }
+    if (!utils.stringToDate(constraint2StopDateName)) { errorMessages.constraint2StopDateName.push('終了日の形式が正しくありません') }
+    if (isNaN(constraint2MaxNumberOfAssignments)) { errorMessages.constraint2MaxNumberOfAssignments.push('割り当て職員数上限の形式が正しくありません') }
     return errorMessages
   }
   public handleChangeConstraint2StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const constraint2StartDateName = event.target.value
-    const dirty = { ...this.state.dirty, constraint2StartDateName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.constraint2StartDateName.length > 0) { return }
+    const errorMessages = this.validate(constraint2StartDateName, this.props.constraint2.stop_date_name, this.props.constraint2.max_number_of_assignments)
+    this.setState({ errorMessages })
     this.props.dispatch(constraints2.updateConstraint2StartDateName(this.props.constraint2.id, constraint2StartDateName))
   }
   public handleChangeConstraint2StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const constraint2StopDateName = event.target.value
-    const dirty = { ...this.state.dirty, constraint2StopDateName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.constraint2StopDateName.length > 0) { return }
+    const errorMessages = this.validate(this.props.constraint2.start_date_name, constraint2StopDateName, this.props.constraint2.max_number_of_assignments)
+    this.setState({ errorMessages })
     this.props.dispatch(constraints2.updateConstraint2StopDateName(this.props.constraint2.id, constraint2StopDateName))
   }
   public handleChangeConstraint2KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,10 +102,8 @@ class Constraint2 extends React.Component<Props, State> {
   }
   public handleChangeConstraint2MaxNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
     const constraint2MaxNumberOfAssignments = parseInt(event.target.value, 10)
-    const dirty = { ...this.state.dirty, constraint2MaxNumberOfAssignments }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.constraint2MaxNumberOfAssignments.length > 0) { return }
+    const errorMessages = this.validate(this.props.constraint2.start_date_name, this.props.constraint2.stop_date_name, constraint2MaxNumberOfAssignments)
+    this.setState({ errorMessages })
     this.props.dispatch(constraints2.updateConstraint2MaxNumberOfAssignments(this.props.constraint2.id, constraint2MaxNumberOfAssignments))
   }
   public handleClickOpenDeletionDialog = () => {

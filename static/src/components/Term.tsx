@@ -21,11 +21,6 @@ type Props = {
   term: terms.Term
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  termStartDateName: string
-  termStopDateName: string
-}
-
 type ErrorMessages = {
   termStartDateName: string[]
   termStopDateName: string[]
@@ -33,7 +28,6 @@ type ErrorMessages = {
 
 type State = {
   expanded: boolean
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
@@ -41,10 +35,6 @@ class Term extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      dirty: {
-        termStartDateName: props.term.start_date_name,
-        termStopDateName: props.term.stop_date_name,
-      },
       errorMessages: {
         termStartDateName: [],
         termStopDateName: []
@@ -55,29 +45,25 @@ class Term extends React.Component<Props, State> {
   public handleClickExpand = () => {
     this.setState({ expanded: !this.state.expanded })
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(termStartDateName: string, termStopDateName: string): ErrorMessages {
     const errorMessages: ErrorMessages = {
       termStartDateName: [],
       termStopDateName: [],
     }
-    if (!utils.stringToDate(dirty.termStartDateName)) { errorMessages.termStartDateName.push('開始日の形式が正しくありません') }
-    if (!utils.stringToDate(dirty.termStopDateName)) { errorMessages.termStopDateName.push('終了日の形式が正しくありません') }
+    if (!utils.stringToDate(termStartDateName)) { errorMessages.termStartDateName.push('開始日の形式が正しくありません') }
+    if (!utils.stringToDate(termStopDateName)) { errorMessages.termStopDateName.push('終了日の形式が正しくありません') }
     return errorMessages
   }
   public handleChangeTermStartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const termStartDateName = event.target.value
-    const dirty = { ...this.state.dirty, termStartDateName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.termStartDateName.length > 0) { return }
+    const errorMessages = this.validate(termStartDateName, this.props.term.stop_date_name)
+    this.setState({ errorMessages })
     this.props.dispatch(terms.updateTermStartDateName(this.props.term.id, termStartDateName))
   }
   public handleChangeTermStopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const termStopDateName = event.target.value
-    const dirty = { ...this.state.dirty, termStopDateName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.termStopDateName.length > 0) { return }
+    const errorMessages = this.validate(this.props.term.start_date_name, termStopDateName)
+    this.setState({ errorMessages })
     this.props.dispatch(terms.updateTermStopDateName(this.props.term.id, termStopDateName))
   }
   public render() {

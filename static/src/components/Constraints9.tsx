@@ -35,11 +35,6 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  newConstraint9StartDateName: string
-  newConstraint9StopDateName: string
-}
-
 type ErrorMessages = {
   newConstraint9StartDateName: string[]
   newConstraint9StopDateName: string[]
@@ -47,7 +42,6 @@ type ErrorMessages = {
 
 type State = {
   creationDialogIsOpen: boolean
-  dirty: Dirty
   errorMessages: ErrorMessages
   newConstraint9IsEnabled: boolean
   newConstraint9MemberId: number
@@ -62,10 +56,6 @@ class Constraints9 extends React.Component<Props, State> {
     const todayString = utils.dateToString(new Date())
     this.state = {
       creationDialogIsOpen: false,
-      dirty: {
-        newConstraint9StartDateName: todayString,
-        newConstraint9StopDateName: todayString,
-      },
       errorMessages: {
         newConstraint9StartDateName: [],
         newConstraint9StopDateName: [],
@@ -89,30 +79,30 @@ class Constraints9 extends React.Component<Props, State> {
   public handleChangeNewConstraint9MemberId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newConstraint9MemberId: parseInt(event.target.value, 10) })
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(newConstraint9StartDateName: string, newConstraint9StopDateName: string): ErrorMessages {
     const errorMessages: ErrorMessages = {
       newConstraint9StartDateName: [],
       newConstraint9StopDateName: [],
     }
-    if (!utils.stringToDate(dirty.newConstraint9StartDateName)) { errorMessages.newConstraint9StartDateName.push('開始日の形式が正しくありません') }
-    if (!utils.stringToDate(dirty.newConstraint9StopDateName)) { errorMessages.newConstraint9StopDateName.push('終了日の形式が正しくありません') }
+    if (!utils.stringToDate(newConstraint9StartDateName)) { errorMessages.newConstraint9StartDateName.push('開始日の形式が正しくありません') }
+    if (!utils.stringToDate(newConstraint9StopDateName)) { errorMessages.newConstraint9StopDateName.push('終了日の形式が正しくありません') }
     return errorMessages
   }
   public handleChangeNewConstraint9StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newConstraint9StartDateName = event.target.value
-    const dirty = { ...this.state.dirty, newConstraint9StartDateName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.newConstraint9StartDateName.length > 0) { return }
-    this.setState({ newConstraint9StartDateName })
+    const errorMessages = this.validate(newConstraint9StartDateName, this.state.newConstraint9StopDateName)
+    this.setState({
+      errorMessages,
+      newConstraint9StartDateName,
+    })
   }
   public handleChangeNewConstraint9StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newConstraint9StopDateName = event.target.value
-    const dirty = { ...this.state.dirty, newConstraint9StopDateName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.newConstraint9StopDateName.length > 0) { return }
-    this.setState({ newConstraint9StopDateName: event.target.value })
+    const errorMessages = this.validate(this.state.newConstraint9StartDateName, newConstraint9StopDateName)
+    this.setState({
+      errorMessages,
+      newConstraint9StopDateName,
+    })
   }
   public handleChangeNewConstraint9KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newConstraint9KinmuId: parseInt(event.target.value, 10) })

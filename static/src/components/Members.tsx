@@ -33,10 +33,6 @@ type Props = {
   group_members: group_members.GroupMember[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  newMemberName: string
-}
-
 type ErrorMessages = {
   newMemberName: string[]
 }
@@ -46,16 +42,12 @@ type State = {
   newMemberIsEnabled: boolean
   newMemberName: string
   newMemberGroupIndices: number[]
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
 class Members extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    dirty: {
-      newMemberName: '',
-    },
     errorMessages: {
       newMemberName: [],
     },
@@ -72,20 +64,20 @@ class Members extends React.Component<Props, State> {
   public handleChangeNewMemberIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.setState({ newMemberIsEnabled: checked })
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(newMemberName: string): ErrorMessages {
     const errorMesages: ErrorMessages = {
       newMemberName: [],
     }
-    if (dirty.newMemberName === '') { errorMesages.newMemberName.push('職員名を入力してください') }
+    if (newMemberName === '') { errorMesages.newMemberName.push('職員名を入力してください') }
     return errorMesages
   }
   public handleChangeNewMemberName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newMemberName = event.target.value
-    const dirty = { ...this.state.dirty, newMemberName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.newMemberName.length > 0) { return }
-    this.setState({ newMemberName })
+    const errorMessages = this.validate(newMemberName)
+    this.setState({
+      errorMessages,
+      newMemberName,
+    })
   }
   public handleChangeNewGroupMember(groupId: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {

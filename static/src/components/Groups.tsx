@@ -33,10 +33,6 @@ type Props = {
   group_members: group_members.GroupMember[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  newGroupName: string
-}
-
 type ErrorMessages = {
   newGroupName: string[]
 }
@@ -46,16 +42,12 @@ type State = {
   newGroupIsEnabled: boolean
   newGroupName: string
   newGroupMemberIndices: number[]
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
 class Groups extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    dirty: {
-      newGroupName: '',
-    },
     errorMessages: {
       newGroupName: [],
     },
@@ -72,20 +64,20 @@ class Groups extends React.Component<Props, State> {
   public handleChangeNewGroupIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.setState({ newGroupIsEnabled: checked })
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(newGroupName: string): ErrorMessages {
     const errorMessages: ErrorMessages = {
       newGroupName: [],
     }
-    if (dirty.newGroupName === '') { errorMessages.newGroupName.push('グループ名を入力してください') }
+    if (newGroupName === '') { errorMessages.newGroupName.push('グループ名を入力してください') }
     return errorMessages
   }
   public handleChangeNewGroupName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newGroupName = event.target.value
-    const dirty = { ...this.state.dirty, newGroupName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.newGroupName.length > 0) { return }
-    this.setState({ newGroupName })
+    const errorMessages = this.validate(newGroupName)
+    this.setState({
+      errorMessages,
+      newGroupName,
+    })
   }
   public handleChangeNewGroupMember(memberId: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {

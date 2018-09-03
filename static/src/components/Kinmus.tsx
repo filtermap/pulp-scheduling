@@ -25,10 +25,6 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  newKinmuName: string
-}
-
 type ErrorMessages = {
   newKinmuName: string[]
 }
@@ -37,16 +33,12 @@ type State = {
   creationDialogIsOpen: boolean
   newKinmuIsEnabled: boolean
   newKinmuName: string
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
 class Kinmus extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    dirty: {
-      newKinmuName: '',
-    },
     errorMessages: {
       newKinmuName: [],
     },
@@ -62,20 +54,20 @@ class Kinmus extends React.Component<Props, State> {
   public handleChangeNewKinmuIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.setState({ newKinmuIsEnabled: checked })
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(newKinmuName: string): ErrorMessages {
     const errorMesages: ErrorMessages = {
       newKinmuName: [],
     }
-    if (dirty.newKinmuName === '') { errorMesages.newKinmuName.push('勤務名を入力してください') }
+    if (newKinmuName === '') { errorMesages.newKinmuName.push('勤務名を入力してください') }
     return errorMesages
   }
   public handleChangeNewKinmuName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newKinmuName = event.target.value
-    const dirty = { ...this.state.dirty, newKinmuName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.newKinmuName.length > 0) { return }
-    this.setState({ newKinmuName })
+    const errorMessages = this.validate(newKinmuName)
+    this.setState({
+      errorMessages,
+      newKinmuName,
+    })
   }
   public handleClickCreateKinmu = () => {
     this.setState({ creationDialogIsOpen: false })

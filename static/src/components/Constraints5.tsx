@@ -30,10 +30,6 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  newConstraint5MinNumberOfDays: number
-}
-
 type ErrorMessages = {
   newConstraint5MinNumberOfDays: string[]
 }
@@ -43,16 +39,12 @@ type State = {
   newConstraint5IsEnabled: boolean
   newConstraint5KinmuId: number
   newConstraint5MinNumberOfDays: number
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
 class Constraints5 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    dirty: {
-      newConstraint5MinNumberOfDays: constraints5.minOfConstraint5MinNumberOfDays,
-    },
     errorMessages: {
       newConstraint5MinNumberOfDays: [],
     },
@@ -72,20 +64,20 @@ class Constraints5 extends React.Component<Props, State> {
   public handleChangeNewConstraint5KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newConstraint5KinmuId: parseInt(event.target.value, 10) })
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(newConstraint5MinNumberOfDays: number): ErrorMessages {
     const errorMessages: ErrorMessages = {
       newConstraint5MinNumberOfDays: [],
     }
-    if (isNaN(dirty.newConstraint5MinNumberOfDays)) { errorMessages.newConstraint5MinNumberOfDays.push('連続日数下限の形式が正しくありません') }
+    if (isNaN(newConstraint5MinNumberOfDays)) { errorMessages.newConstraint5MinNumberOfDays.push('連続日数下限の形式が正しくありません') }
     return errorMessages
   }
   public handleChangeNewConstraint5MinNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newConstraint5MinNumberOfDays = parseInt(event.target.value, 10)
-    const dirty = { ...this.state.dirty, newConstraint5MinNumberOfDays }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.newConstraint5MinNumberOfDays.length > 0) { return }
-    this.setState({ newConstraint5MinNumberOfDays })
+    const errorMessages = this.validate(newConstraint5MinNumberOfDays)
+    this.setState({
+      errorMessages,
+      newConstraint5MinNumberOfDays,
+    })
   }
   public handleClickCreateConstraint5 = () => {
     this.setState({ creationDialogIsOpen: false })

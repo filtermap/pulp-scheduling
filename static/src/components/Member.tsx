@@ -52,10 +52,6 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type Dirty = {
-  memberName: string
-}
-
 type ErrorMessages = {
   memberName: string[]
 }
@@ -63,7 +59,6 @@ type ErrorMessages = {
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
-  dirty: Dirty
   errorMessages: ErrorMessages
 }
 
@@ -72,9 +67,6 @@ class Member extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      dirty: {
-        memberName: props.member.name,
-      },
       errorMessages: {
         memberName: [],
       },
@@ -87,19 +79,17 @@ class Member extends React.Component<Props, State> {
   public handleChangeMemberIsEnabled = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
     this.props.dispatch(members.updateMemberIsEnabled(this.props.member.id, checked))
   }
-  public validate(dirty: Dirty): ErrorMessages {
+  public validate(memberName: string): ErrorMessages {
     const errorMessages: ErrorMessages = {
       memberName: [],
     }
-    if (dirty.memberName === '') { errorMessages.memberName.push('職員名を入力してください') }
+    if (memberName === '') { errorMessages.memberName.push('職員名を入力してください') }
     return errorMessages
   }
   public handleChangeMemberName = (event: React.ChangeEvent<HTMLInputElement>) => {
     const memberName = event.target.value
-    const dirty = { ...this.state.dirty, memberName }
-    const errorMessages = this.validate(dirty)
-    this.setState({ dirty, errorMessages })
-    if (errorMessages.memberName.length > 0) { return }
+    const errorMessages = this.validate(memberName)
+    this.setState({ errorMessages })
     this.props.dispatch(members.updateMemberName(this.props.member.id, memberName))
   }
   public handleChangeGroupMember(groupId: number) {
