@@ -35,12 +35,6 @@ type Props = {
   groups: groups.Group[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  newConstraint1StartDateName: string[]
-  newConstraint1StopDateName: string[]
-  newConstraint1MinNumberOfAssignments: string[]
-}
-
 type State = {
   creationDialogIsOpen: boolean
   newConstraint1IsEnabled: boolean
@@ -49,7 +43,12 @@ type State = {
   newConstraint1KinmuId: number
   newConstraint1GroupId: number
   newConstraint1MinNumberOfAssignments: number
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  newConstraint1StartDateName: string[]
+  newConstraint1StopDateName: string[]
+  newConstraint1MinNumberOfAssignments: string[]
 }
 
 class Constraints1 extends React.Component<Props, State> {
@@ -58,11 +57,6 @@ class Constraints1 extends React.Component<Props, State> {
     const todayString = utils.dateToString(new Date())
     this.state = {
       creationDialogIsOpen: false,
-      errorMessages: {
-        newConstraint1MinNumberOfAssignments: [],
-        newConstraint1StartDateName: [],
-        newConstraint1StopDateName: [],
-      },
       newConstraint1GroupId: this.props.groups.length > 0 ? this.props.groups[0].id : 0,
       newConstraint1IsEnabled: true,
       newConstraint1KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
@@ -92,20 +86,10 @@ class Constraints1 extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeNewConstraint1StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newConstraint1StartDateName = event.target.value
-    const errorMessages = this.validate(newConstraint1StartDateName, this.state.newConstraint1StopDateName, this.state.newConstraint1MinNumberOfAssignments)
-    this.setState({
-      errorMessages,
-      newConstraint1StartDateName,
-    })
+    this.setState({ newConstraint1StartDateName: event.target.value })
   }
   public handleChangeNewConstraint1StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newConstraint1StopDateName = event.target.value
-    const errorMessages = this.validate(this.state.newConstraint1StartDateName, newConstraint1StopDateName, this.state.newConstraint1MinNumberOfAssignments)
-    this.setState({
-      errorMessages,
-      newConstraint1StopDateName,
-    })
+    this.setState({ newConstraint1StopDateName: event.target.value })
   }
   public handleChangeNewConstraint1KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newConstraint1KinmuId: parseInt(event.target.value, 10) })
@@ -114,12 +98,7 @@ class Constraints1 extends React.Component<Props, State> {
     this.setState({ newConstraint1GroupId: parseInt(event.target.value, 10) })
   }
   public handleChangeNewConstraint1MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newConstraint1MinNumberOfAssignments = parseInt(event.target.value, 10)
-    const errorMessages = this.validate(this.state.newConstraint1StartDateName, this.state.newConstraint1StopDateName, newConstraint1MinNumberOfAssignments)
-    this.setState({
-      errorMessages,
-      newConstraint1MinNumberOfAssignments,
-    })
+    this.setState({ newConstraint1MinNumberOfAssignments: parseInt(event.target.value, 10) })
   }
   public handleClickCreateConstraint1 = () => {
     this.setState({ creationDialogIsOpen: false })
@@ -170,6 +149,7 @@ class Constraints1 extends React.Component<Props, State> {
             const newConstraint1Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint1KinmuId)!
             const newConstraint1Group = this.props.groups.find(({ id }) => id === this.state.newConstraint1GroupId)!
             const relativesAreEnabled = newConstraint1StartDateIsEnabled && newConstraint1StopDateIsEnabled && newConstraint1Kinmu.is_enabled && newConstraint1Group.is_enabled
+            const errorMessages = this.validate(this.state.newConstraint1StartDateName, this.state.newConstraint1StopDateName, this.state.newConstraint1MinNumberOfAssignments)
             return (
               <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
                 <DialogTitle>期間の勤務にグループから割り当てる職員数の下限の追加</DialogTitle>
@@ -201,11 +181,11 @@ class Constraints1 extends React.Component<Props, State> {
                         inputProps={{
                           className: classnames({ [this.props.classes.lineThrough]: !newConstraint1StartDateIsEnabled })
                         }}
-                        error={this.state.errorMessages.newConstraint1StartDateName.length > 0}
+                        error={errorMessages.newConstraint1StartDateName.length > 0}
                         FormHelperTextProps={{
                           component: 'div',
                         }}
-                        helperText={this.state.errorMessages.newConstraint1StartDateName.map(message =>
+                        helperText={errorMessages.newConstraint1StartDateName.map(message =>
                           <div key={message}>{message}</div>
                         )}
                       />
@@ -223,11 +203,11 @@ class Constraints1 extends React.Component<Props, State> {
                         inputProps={{
                           className: classnames({ [this.props.classes.lineThrough]: !newConstraint1StopDateIsEnabled })
                         }}
-                        error={this.state.errorMessages.newConstraint1StopDateName.length > 0}
+                        error={errorMessages.newConstraint1StopDateName.length > 0}
                         FormHelperTextProps={{
                           component: 'div',
                         }}
-                        helperText={this.state.errorMessages.newConstraint1StopDateName.map(message =>
+                        helperText={errorMessages.newConstraint1StopDateName.map(message =>
                           <div key={message}>{message}</div>
                         )}
                       />
@@ -272,11 +252,11 @@ class Constraints1 extends React.Component<Props, State> {
                         inputProps={{
                           min: constraints1.minOfConstraint1MinNumberOfAssignments,
                         }}
-                        error={this.state.errorMessages.newConstraint1MinNumberOfAssignments.length > 0}
+                        error={errorMessages.newConstraint1MinNumberOfAssignments.length > 0}
                         FormHelperTextProps={{
                           component: 'div',
                         }}
-                        helperText={this.state.errorMessages.newConstraint1MinNumberOfAssignments.map(message =>
+                        helperText={errorMessages.newConstraint1MinNumberOfAssignments.map(message =>
                           <div key={message}>{message}</div>
                         )}
                       />

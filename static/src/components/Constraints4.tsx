@@ -32,25 +32,21 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  newConstraint4MaxNumberOfAssignments: string[]
-}
-
 type State = {
   creationDialogIsOpen: boolean
   newConstraint4IsEnabled: boolean
   newConstraint4MemberId: number
   newConstraint4KinmuId: number
   newConstraint4MaxNumberOfAssignments: number
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  newConstraint4MaxNumberOfAssignments: string[]
 }
 
 class Constraints4 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    errorMessages: {
-      newConstraint4MaxNumberOfAssignments: [],
-    },
     newConstraint4IsEnabled: true,
     newConstraint4KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newConstraint4MaxNumberOfAssignments: constraints4.minOfConstraint4MaxNumberOfAssignments,
@@ -79,12 +75,7 @@ class Constraints4 extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeNewConstraint4MaxNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newConstraint4MaxNumberOfAssignments = parseInt(event.target.value, 10)
-    const errorMessages = this.validate(newConstraint4MaxNumberOfAssignments)
-    this.setState({
-      errorMessages,
-      newConstraint4MaxNumberOfAssignments,
-    })
+    this.setState({ newConstraint4MaxNumberOfAssignments: parseInt(event.target.value, 10) })
   }
   public handleClickCreateConstraint4 = () => {
     this.setState({ creationDialogIsOpen: false })
@@ -123,6 +114,7 @@ class Constraints4 extends React.Component<Props, State> {
             const newConstraint4Member = this.props.members.find(({ id }) => id === this.state.newConstraint4MemberId)!
             const newConstraint4Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint4KinmuId)!
             const relativesAreEnabled = newConstraint4Member.is_enabled && newConstraint4Kinmu.is_enabled
+            const errorMessages = this.validate(this.state.newConstraint4MaxNumberOfAssignments)
             return (
               <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
                 <DialogTitle>職員の勤務の割り当て数の上限の追加</DialogTitle>
@@ -181,11 +173,11 @@ class Constraints4 extends React.Component<Props, State> {
                         inputProps={{
                           min: constraints4.minOfConstraint4MaxNumberOfAssignments,
                         }}
-                        error={this.state.errorMessages.newConstraint4MaxNumberOfAssignments.length > 0}
+                        error={errorMessages.newConstraint4MaxNumberOfAssignments.length > 0}
                         FormHelperTextProps={{
                           component: 'div',
                         }}
-                        helperText={this.state.errorMessages.newConstraint4MaxNumberOfAssignments.map(message =>
+                        helperText={errorMessages.newConstraint4MaxNumberOfAssignments.map(message =>
                           <div key={message}>{message}</div>
                         )}
                       />

@@ -33,24 +33,20 @@ type Props = {
   group_members: group_members.GroupMember[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  newMemberName: string[]
-}
-
 type State = {
   creationDialogIsOpen: boolean
   newMemberIsEnabled: boolean
   newMemberName: string
   newMemberGroupIndices: number[]
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  newMemberName: string[]
 }
 
 class Members extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    errorMessages: {
-      newMemberName: [],
-    },
     newMemberGroupIndices: [],
     newMemberIsEnabled: true,
     newMemberName: '',
@@ -65,19 +61,14 @@ class Members extends React.Component<Props, State> {
     this.setState({ newMemberIsEnabled: checked })
   }
   public validate(newMemberName: string): ErrorMessages {
-    const errorMesages: ErrorMessages = {
+    const errorMessages: ErrorMessages = {
       newMemberName: [],
     }
-    if (newMemberName === '') { errorMesages.newMemberName.push('職員名を入力してください') }
-    return errorMesages
+    if (newMemberName === '') { errorMessages.newMemberName.push('職員名を入力してください') }
+    return errorMessages
   }
   public handleChangeNewMemberName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newMemberName = event.target.value
-    const errorMessages = this.validate(newMemberName)
-    this.setState({
-      errorMessages,
-      newMemberName,
-    })
+    this.setState({ newMemberName: event.target.value })
   }
   public handleChangeNewGroupMember(groupId: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -93,6 +84,7 @@ class Members extends React.Component<Props, State> {
     this.props.dispatch(all.createMember(this.state.newMemberIsEnabled, this.state.newMemberName, this.state.newMemberGroupIndices))
   }
   public render() {
+    const errorMessages = this.validate(this.state.newMemberName)
     return (
       <>
         <div className={this.props.classes.gridFrame}>
@@ -132,11 +124,11 @@ class Members extends React.Component<Props, State> {
                   defaultValue={this.state.newMemberName}
                   onChange={this.handleChangeNewMemberName}
                   fullWidth={true}
-                  error={this.state.errorMessages.newMemberName.length > 0}
+                  error={errorMessages.newMemberName.length > 0}
                   FormHelperTextProps={{
                     component: 'div',
                   }}
-                  helperText={this.state.errorMessages.newMemberName.map(message =>
+                  helperText={errorMessages.newMemberName.map(message =>
                     <div key={message}>{message}</div>
                   )}
                 />

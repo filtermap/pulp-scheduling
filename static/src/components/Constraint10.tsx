@@ -40,15 +40,14 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  constraint10StartDateName: string[]
-  constraint10StopDateName: string[]
-}
-
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  constraint10StartDateName: string[]
+  constraint10StopDateName: string[]
 }
 
 class Constraint10 extends React.Component<Props, State> {
@@ -56,10 +55,6 @@ class Constraint10 extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      errorMessages: {
-        constraint10StartDateName: [],
-        constraint10StopDateName: [],
-      },
       expanded: false,
     }
   }
@@ -82,16 +77,10 @@ class Constraint10 extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeConstraint10StartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const constraint10StartDateName = event.target.value
-    const errorMessages = this.validate(constraint10StartDateName, this.props.constraint10.stop_date_name)
-    this.setState({ errorMessages })
-    this.props.dispatch(constraints10.updateConstraint10StartDateName(this.props.constraint10.id, constraint10StartDateName))
+    this.props.dispatch(constraints10.updateConstraint10StartDateName(this.props.constraint10.id, event.target.value))
   }
   public handleChangeConstraint10StopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const constraint10StopDateName = event.target.value
-    const errorMessages = this.validate(this.props.constraint10.start_date_name, constraint10StopDateName)
-    this.setState({ errorMessages })
-    this.props.dispatch(constraints10.updateConstraint10StopDateName(this.props.constraint10.id, constraint10StopDateName))
+    this.props.dispatch(constraints10.updateConstraint10StopDateName(this.props.constraint10.id, event.target.value))
   }
   public handleChangeConstraint10KinmuId = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.props.dispatch(constraints10.updateConstraint10KinmuId(this.props.constraint10.id, parseInt(event.target.value, 10)))
@@ -127,6 +116,7 @@ class Constraint10 extends React.Component<Props, State> {
         <span className={classnames({ [this.props.classes.lineThrough]: !constraint10Member.is_enabled })}>{constraint10Member.name}</span>の<span className={classnames({ [this.props.classes.lineThrough]: !constraint10StartDateIsEnabled })}>{this.props.constraint10.start_date_name}</span>から<span className={classnames({ [this.props.classes.lineThrough]: !constraint10StopDateIsEnabled })}>{this.props.constraint10.stop_date_name}</span>までに<span className={classnames({ [this.props.classes.lineThrough]: !constraint10Kinmu.is_enabled })}>{constraint10Kinmu.name}</span>を割り当てない
       </>
     )
+    const errorMessages = this.validate(this.props.constraint10.start_date_name, this.props.constraint10.stop_date_name)
     return (
       <>
         <Card>
@@ -186,11 +176,11 @@ class Constraint10 extends React.Component<Props, State> {
                     inputProps={{
                       className: classnames({ [this.props.classes.lineThrough]: !constraint10StartDateIsEnabled })
                     }}
-                    error={this.state.errorMessages.constraint10StartDateName.length > 0}
+                    error={errorMessages.constraint10StartDateName.length > 0}
                     FormHelperTextProps={{
                       component: 'div',
                     }}
-                    helperText={this.state.errorMessages.constraint10StartDateName.map(message =>
+                    helperText={errorMessages.constraint10StartDateName.map(message =>
                       <div key={message}>{message}</div>
                     )}
                   />
@@ -208,11 +198,11 @@ class Constraint10 extends React.Component<Props, State> {
                     inputProps={{
                       className: classnames({ [this.props.classes.lineThrough]: !constraint10StopDateIsEnabled })
                     }}
-                    error={this.state.errorMessages.constraint10StopDateName.length > 0}
+                    error={errorMessages.constraint10StopDateName.length > 0}
                     FormHelperTextProps={{
                       component: 'div',
                     }}
-                    helperText={this.state.errorMessages.constraint10StopDateName.map(message =>
+                    helperText={errorMessages.constraint10StopDateName.map(message =>
                       <div key={message}>{message}</div>
                     )}
                   />

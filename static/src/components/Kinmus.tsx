@@ -25,23 +25,19 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  newKinmuName: string[]
-}
-
 type State = {
   creationDialogIsOpen: boolean
   newKinmuIsEnabled: boolean
   newKinmuName: string
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  newKinmuName: string[]
 }
 
 class Kinmus extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    errorMessages: {
-      newKinmuName: [],
-    },
     newKinmuIsEnabled: true,
     newKinmuName: '',
   }
@@ -55,25 +51,21 @@ class Kinmus extends React.Component<Props, State> {
     this.setState({ newKinmuIsEnabled: checked })
   }
   public validate(newKinmuName: string): ErrorMessages {
-    const errorMesages: ErrorMessages = {
+    const errorMessages: ErrorMessages = {
       newKinmuName: [],
     }
-    if (newKinmuName === '') { errorMesages.newKinmuName.push('勤務名を入力してください') }
-    return errorMesages
+    if (newKinmuName === '') { errorMessages.newKinmuName.push('勤務名を入力してください') }
+    return errorMessages
   }
   public handleChangeNewKinmuName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newKinmuName = event.target.value
-    const errorMessages = this.validate(newKinmuName)
-    this.setState({
-      errorMessages,
-      newKinmuName,
-    })
+    this.setState({ newKinmuName: event.target.value })
   }
   public handleClickCreateKinmu = () => {
     this.setState({ creationDialogIsOpen: false })
     this.props.dispatch(kinmus.createKinmu(this.state.newKinmuIsEnabled, this.state.newKinmuName))
   }
   public render() {
+    const errorMessages = this.validate(this.state.newKinmuName)
     return (
       <>
         <div className={this.props.classes.gridFrame}>
@@ -113,11 +105,11 @@ class Kinmus extends React.Component<Props, State> {
                   defaultValue={this.state.newKinmuName}
                   onChange={this.handleChangeNewKinmuName}
                   fullWidth={true}
-                  error={this.state.errorMessages.newKinmuName.length > 0}
+                  error={errorMessages.newKinmuName.length > 0}
                   FormHelperTextProps={{
                     component: 'div',
                   }}
-                  helperText={this.state.errorMessages.newKinmuName.map(message =>
+                  helperText={errorMessages.newKinmuName.map(message =>
                     <div key={message}>{message}</div>
                   )}
                 />

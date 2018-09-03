@@ -35,14 +35,13 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  constraint5MinNumberOfDays: string[]
-}
-
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  constraint5MinNumberOfDays: string[]
 }
 
 class Constraint5 extends React.Component<Props, State> {
@@ -50,9 +49,6 @@ class Constraint5 extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      errorMessages: {
-        constraint5MinNumberOfDays: [],
-      },
       expanded: false,
     }
   }
@@ -73,10 +69,7 @@ class Constraint5 extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeConstraint5MinNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const constraint5MinNumberOfDays = parseInt(event.target.value, 10)
-    const errorMessages = this.validate(constraint5MinNumberOfDays)
-    this.setState({ errorMessages })
-    this.props.dispatch(constraints5.updateConstraint5MinNumberOfDays(this.props.constraint5.id, constraint5MinNumberOfDays))
+    this.props.dispatch(constraints5.updateConstraint5MinNumberOfDays(this.props.constraint5.id, parseInt(event.target.value, 10)))
   }
   public handleClickOpenDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: true })
@@ -96,6 +89,7 @@ class Constraint5 extends React.Component<Props, State> {
         <span className={classnames({ [this.props.classes.lineThrough]: !constraint5Kinmu.is_enabled })}>{constraint5Kinmu.name}</span>の連続日数を{this.props.constraint5.min_number_of_days}日以上にする
       </>
     )
+    const errorMessages = this.validate(this.props.constraint5.min_number_of_days)
     return (
       <>
         <Card>
@@ -152,11 +146,11 @@ class Constraint5 extends React.Component<Props, State> {
                     inputProps={{
                       min: constraints5.minOfConstraint5MinNumberOfDays,
                     }}
-                    error={this.state.errorMessages.constraint5MinNumberOfDays.length > 0}
+                    error={errorMessages.constraint5MinNumberOfDays.length > 0}
                     FormHelperTextProps={{
                       component: 'div',
                     }}
-                    helperText={this.state.errorMessages.constraint5MinNumberOfDays.map(message =>
+                    helperText={errorMessages.constraint5MinNumberOfDays.map(message =>
                       <div key={message}>{message}</div>
                     )}
                   />

@@ -37,14 +37,13 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  constraint3MinNumberOfAssignments: string[]
-}
-
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  constraint3MinNumberOfAssignments: string[]
 }
 
 class Constraint3 extends React.Component<Props, State> {
@@ -52,9 +51,6 @@ class Constraint3 extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      errorMessages: {
-        constraint3MinNumberOfAssignments: [],
-      },
       expanded: false,
     }
   }
@@ -78,10 +74,7 @@ class Constraint3 extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeConstraint3MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const constraint3MinNumberOfAssignments = parseInt(event.target.value, 10)
-    const errorMessages = this.validate(constraint3MinNumberOfAssignments)
-    this.setState({ errorMessages })
-    this.props.dispatch(constraints3.updateConstraint3MinNumberOfAssignments(this.props.constraint3.id, constraint3MinNumberOfAssignments))
+    this.props.dispatch(constraints3.updateConstraint3MinNumberOfAssignments(this.props.constraint3.id, parseInt(event.target.value, 10)))
   }
   public handleClickOpenDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: true })
@@ -102,6 +95,7 @@ class Constraint3 extends React.Component<Props, State> {
         <span className={classnames({ [this.props.classes.lineThrough]: !constraint3Member.is_enabled })}>{constraint3Member.name}</span>に<span className={classnames({ [this.props.classes.lineThrough]: !constraint3Kinmu.is_enabled })}>{constraint3Kinmu.name}</span>を{this.props.constraint3.min_number_of_assignments}回以上割り当てる
       </>
     )
+    const errorMessages = this.validate(this.props.constraint3.min_number_of_assignments)
     return (
       <>
         <Card>
@@ -173,11 +167,11 @@ class Constraint3 extends React.Component<Props, State> {
                     inputProps={{
                       min: constraints3.minOfConstraint3MinNumberOfAssignments,
                     }}
-                    error={this.state.errorMessages.constraint3MinNumberOfAssignments.length > 0}
+                    error={errorMessages.constraint3MinNumberOfAssignments.length > 0}
                     FormHelperTextProps={{
                       component: 'div',
                     }}
-                    helperText={this.state.errorMessages.constraint3MinNumberOfAssignments.map(message =>
+                    helperText={errorMessages.constraint3MinNumberOfAssignments.map(message =>
                       <div key={message}>{message}</div>
                     )}
                   />

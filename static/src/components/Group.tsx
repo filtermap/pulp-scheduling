@@ -47,14 +47,13 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  groupName: string[]
-}
-
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  groupName: string[]
 }
 
 class Group extends React.Component<Props, State> {
@@ -62,9 +61,6 @@ class Group extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      errorMessages: {
-        groupName: [],
-      },
       expanded: false,
     }
   }
@@ -82,10 +78,7 @@ class Group extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeGroupName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const groupName = event.target.value
-    const errorMessages = this.validate(groupName)
-    this.setState({ errorMessages })
-    this.props.dispatch(groups.updateGroupName(this.props.group.id, groupName))
+    this.props.dispatch(groups.updateGroupName(this.props.group.id, event.target.value))
   }
   public handleChangeGroupMember(memberId: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -109,6 +102,7 @@ class Group extends React.Component<Props, State> {
   public render() {
     const groupConstraints1 = this.props.constraints1.filter(c => c.group_id === this.props.group.id)
     const groupConstraints2 = this.props.constraints2.filter(c => c.group_id === this.props.group.id)
+    const errorMessages = this.validate(this.props.group.name)
     return (
       <>
         <Card>
@@ -149,11 +143,11 @@ class Group extends React.Component<Props, State> {
                     defaultValue={this.props.group.name}
                     onChange={this.handleChangeGroupName}
                     fullWidth={true}
-                    error={this.state.errorMessages.groupName.length > 0}
+                    error={errorMessages.groupName.length > 0}
                     FormHelperTextProps={{
                       component: 'div',
                     }}
-                    helperText={this.state.errorMessages.groupName.map(message =>
+                    helperText={errorMessages.groupName.map(message =>
                       <div key={message}>{message}</div>
                     )}
                   />

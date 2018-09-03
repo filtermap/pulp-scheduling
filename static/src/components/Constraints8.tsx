@@ -30,24 +30,20 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  newConstraint8MaxNumberOfDays: string[]
-}
-
 type State = {
   creationDialogIsOpen: boolean
   newConstraint8IsEnabled: boolean
   newConstraint8KinmuId: number
   newConstraint8MaxNumberOfDays: number
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  newConstraint8MaxNumberOfDays: string[]
 }
 
 class Constraints8 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    errorMessages: {
-      newConstraint8MaxNumberOfDays: [],
-    },
     newConstraint8IsEnabled: true,
     newConstraint8KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newConstraint8MaxNumberOfDays: constraints8.minOfConstraint8MaxNumberOfDays,
@@ -72,12 +68,7 @@ class Constraints8 extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeNewConstraint8MaxNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newConstraint8MaxNumberOfDays = parseInt(event.target.value, 10)
-    const errorMessages = this.validate(newConstraint8MaxNumberOfDays)
-    this.setState({
-      errorMessages,
-      newConstraint8MaxNumberOfDays,
-    })
+    this.setState({ newConstraint8MaxNumberOfDays: parseInt(event.target.value, 10) })
   }
   public handleClickCreateConstraint8 = () => {
     this.setState({ creationDialogIsOpen: false })
@@ -114,6 +105,7 @@ class Constraints8 extends React.Component<Props, State> {
           (() => {
             const newConstraint8Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint8KinmuId)!
             const relativesAreEnabled = newConstraint8Kinmu.is_enabled
+            const errorMessages = this.validate(this.state.newConstraint8MaxNumberOfDays)
             return (
               <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
                 <DialogTitle>勤務の間隔日数の下限の追加</DialogTitle>
@@ -157,11 +149,11 @@ class Constraints8 extends React.Component<Props, State> {
                         inputProps={{
                           min: constraints8.minOfConstraint8MaxNumberOfDays,
                         }}
-                        error={this.state.errorMessages.newConstraint8MaxNumberOfDays.length > 0}
+                        error={errorMessages.newConstraint8MaxNumberOfDays.length > 0}
                         FormHelperTextProps={{
                           component: 'div',
                         }}
-                        helperText={this.state.errorMessages.newConstraint8MaxNumberOfDays.map(message =>
+                        helperText={errorMessages.newConstraint8MaxNumberOfDays.map(message =>
                           <div key={message}>{message}</div>
                         )}
                       />

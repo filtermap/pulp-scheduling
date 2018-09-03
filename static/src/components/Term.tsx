@@ -21,24 +21,19 @@ type Props = {
   term: terms.Term
 } & WithStyles<typeof styles>
 
+type State = {
+  expanded: boolean
+}
+
 type ErrorMessages = {
   termStartDateName: string[]
   termStopDateName: string[]
-}
-
-type State = {
-  expanded: boolean
-  errorMessages: ErrorMessages
 }
 
 class Term extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      errorMessages: {
-        termStartDateName: [],
-        termStopDateName: []
-      },
       expanded: false,
     }
   }
@@ -55,18 +50,13 @@ class Term extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeTermStartDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const termStartDateName = event.target.value
-    const errorMessages = this.validate(termStartDateName, this.props.term.stop_date_name)
-    this.setState({ errorMessages })
-    this.props.dispatch(terms.updateTermStartDateName(this.props.term.id, termStartDateName))
+    this.props.dispatch(terms.updateTermStartDateName(this.props.term.id, event.target.value))
   }
   public handleChangeTermStopDateName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const termStopDateName = event.target.value
-    const errorMessages = this.validate(this.props.term.start_date_name, termStopDateName)
-    this.setState({ errorMessages })
-    this.props.dispatch(terms.updateTermStopDateName(this.props.term.id, termStopDateName))
+    this.props.dispatch(terms.updateTermStopDateName(this.props.term.id, event.target.value))
   }
   public render() {
+    const errorMessages = this.validate(this.props.term.start_date_name, this.props.term.stop_date_name)
     return (
       <Card>
         <CardHeader
@@ -96,11 +86,11 @@ class Term extends React.Component<Props, State> {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  error={this.state.errorMessages.termStartDateName.length > 0}
+                  error={errorMessages.termStartDateName.length > 0}
                   FormHelperTextProps={{
                     component: 'div',
                   }}
-                  helperText={this.state.errorMessages.termStartDateName.map(message =>
+                  helperText={errorMessages.termStartDateName.map(message =>
                     <div key={message}>{message}</div>
                   )}
                 />
@@ -115,11 +105,11 @@ class Term extends React.Component<Props, State> {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  error={this.state.errorMessages.termStopDateName.length > 0}
+                  error={errorMessages.termStopDateName.length > 0}
                   FormHelperTextProps={{
                     component: 'div',
                   }}
-                  helperText={this.state.errorMessages.termStopDateName.map(message =>
+                  helperText={errorMessages.termStopDateName.map(message =>
                     <div key={message}>{message}</div>
                   )}
                 />

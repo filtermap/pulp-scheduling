@@ -30,24 +30,20 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  newConstraint6MaxNumberOfDays: string[]
-}
-
 type State = {
   creationDialogIsOpen: boolean
   newConstraint6IsEnabled: boolean
   newConstraint6KinmuId: number
   newConstraint6MaxNumberOfDays: number
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  newConstraint6MaxNumberOfDays: string[]
 }
 
 class Constraints6 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    errorMessages: {
-      newConstraint6MaxNumberOfDays: [],
-    },
     newConstraint6IsEnabled: true,
     newConstraint6KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newConstraint6MaxNumberOfDays: constraints6.minOfConstraint6MaxNumberOfDays,
@@ -72,12 +68,7 @@ class Constraints6 extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeNewConstraint6MaxNumberOfDays = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newConstraint6MaxNumberOfDays = parseInt(event.target.value, 10)
-    const errorMessages = this.validate(newConstraint6MaxNumberOfDays)
-    this.setState({
-      errorMessages,
-      newConstraint6MaxNumberOfDays,
-    })
+    this.setState({ newConstraint6MaxNumberOfDays: parseInt(event.target.value, 10) })
   }
   public handleClickCreateConstraint6 = () => {
     this.setState({ creationDialogIsOpen: false })
@@ -114,6 +105,7 @@ class Constraints6 extends React.Component<Props, State> {
           (() => {
             const newConstraint6Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint6KinmuId)!
             const relativesAreEnabled = newConstraint6Kinmu.is_enabled
+            const errorMessages = this.validate(this.state.newConstraint6MaxNumberOfDays)
             return (
               <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
                 <DialogTitle>勤務の連続日数の上限の追加</DialogTitle>
@@ -157,11 +149,11 @@ class Constraints6 extends React.Component<Props, State> {
                         inputProps={{
                           min: constraints6.minOfConstraint6MaxNumberOfDays,
                         }}
-                        error={this.state.errorMessages.newConstraint6MaxNumberOfDays.length > 0}
+                        error={errorMessages.newConstraint6MaxNumberOfDays.length > 0}
                         FormHelperTextProps={{
                           component: 'div',
                         }}
-                        helperText={this.state.errorMessages.newConstraint6MaxNumberOfDays.map(messages =>
+                        helperText={errorMessages.newConstraint6MaxNumberOfDays.map(messages =>
                           <div key={messages}>{messages}</div>
                         )}
                       />

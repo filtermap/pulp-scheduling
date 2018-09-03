@@ -60,14 +60,13 @@ type Props = {
   groups: groups.Group[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  kinmuName: string[]
-}
-
 type State = {
   deletionDialogIsOpen: boolean
   expanded: boolean
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  kinmuName: string[]
 }
 
 class Kinmu extends React.Component<Props, State> {
@@ -75,9 +74,6 @@ class Kinmu extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      errorMessages: {
-        kinmuName: [],
-      },
       expanded: false,
     }
   }
@@ -95,10 +91,7 @@ class Kinmu extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeKinmuName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const kinmuName = event.target.value
-    const errorMessages = this.validate(kinmuName)
-    this.setState({ errorMessages })
-    this.props.dispatch(kinmus.updateKinmuName(this.props.kinmu.id, kinmuName))
+    this.props.dispatch(kinmus.updateKinmuName(this.props.kinmu.id, event.target.value))
   }
   public handleClickOpenDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: true })
@@ -123,6 +116,7 @@ class Kinmu extends React.Component<Props, State> {
     const kinmuConstraints8 = this.props.constraints8.filter(c => c.kinmu_id === this.props.kinmu.id)
     const kinmuConstraints9 = this.props.constraints9.filter(c => c.kinmu_id === this.props.kinmu.id)
     const kinmuConstraints10 = this.props.constraints10.filter(c => c.kinmu_id === this.props.kinmu.id)
+    const errorMessages = this.validate(this.props.kinmu.name)
     return (
       <>
         <Card>
@@ -159,11 +153,11 @@ class Kinmu extends React.Component<Props, State> {
                     defaultValue={this.props.kinmu.name}
                     onChange={this.handleChangeKinmuName}
                     margin="normal"
-                    error={this.state.errorMessages.kinmuName.length > 0}
+                    error={errorMessages.kinmuName.length > 0}
                     FormHelperTextProps={{
                       component: 'div',
                     }}
-                    helperText={this.state.errorMessages.kinmuName.map(message =>
+                    helperText={errorMessages.kinmuName.map(message =>
                       <div key={message}>{message}</div>
                     )}
                   />

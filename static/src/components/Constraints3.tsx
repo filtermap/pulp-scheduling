@@ -32,25 +32,21 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  newConstraint3MinNumberOfAssignments: string[]
-}
-
 type State = {
   creationDialogIsOpen: boolean
   newConstraint3IsEnabled: boolean
   newConstraint3MemberId: number
   newConstraint3KinmuId: number
   newConstraint3MinNumberOfAssignments: number
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  newConstraint3MinNumberOfAssignments: string[]
 }
 
 class Constraints3 extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
-    errorMessages: {
-      newConstraint3MinNumberOfAssignments: [],
-    },
     newConstraint3IsEnabled: true,
     newConstraint3KinmuId: this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
     newConstraint3MemberId: this.props.members.length > 0 ? this.props.members[0].id : 0,
@@ -79,12 +75,7 @@ class Constraints3 extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeNewConstraint3MinNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newConstraint3MinNumberOfAssignments = parseInt(event.target.value, 10)
-    const errorMessages = this.validate(newConstraint3MinNumberOfAssignments)
-    this.setState({
-      errorMessages,
-      newConstraint3MinNumberOfAssignments,
-    })
+    this.setState({ newConstraint3MinNumberOfAssignments: parseInt(event.target.value, 10) })
   }
   public handleClickCreateConstraint3 = () => {
     this.setState({ creationDialogIsOpen: false })
@@ -123,6 +114,7 @@ class Constraints3 extends React.Component<Props, State> {
             const newConstraint3Member = this.props.members.find(({ id }) => id === this.state.newConstraint3MemberId)!
             const newConstraint3Kinmu = this.props.kinmus.find(({ id }) => id === this.state.newConstraint3KinmuId)!
             const relativesAreEnabled = newConstraint3Member.is_enabled && newConstraint3Kinmu.is_enabled
+            const errorMessages = this.validate(this.state.newConstraint3MinNumberOfAssignments)
             return (
               <Dialog onClose={this.handleCloseCreationDialog} open={this.state.creationDialogIsOpen} fullWidth={true} maxWidth="md">
                 <DialogTitle>職員の勤務の割り当て数の下限の追加</DialogTitle>
@@ -181,11 +173,11 @@ class Constraints3 extends React.Component<Props, State> {
                         inputProps={{
                           min: constraints3.minOfConstraint3MinNumberOfAssignments,
                         }}
-                        error={this.state.errorMessages.newConstraint3MinNumberOfAssignments.length > 0}
+                        error={errorMessages.newConstraint3MinNumberOfAssignments.length > 0}
                         FormHelperTextProps={{
                           component: 'div',
                         }}
-                        helperText={this.state.errorMessages.newConstraint3MinNumberOfAssignments.map(message =>
+                        helperText={errorMessages.newConstraint3MinNumberOfAssignments.map(message =>
                           <div key={message}>{message}</div>
                         )}
                       />

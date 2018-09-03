@@ -52,14 +52,13 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  memberName: string[]
-}
-
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  memberName: string[]
 }
 
 class Member extends React.Component<Props, State> {
@@ -67,9 +66,6 @@ class Member extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      errorMessages: {
-        memberName: [],
-      },
       expanded: false,
     }
   }
@@ -87,10 +83,7 @@ class Member extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeMemberName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const memberName = event.target.value
-    const errorMessages = this.validate(memberName)
-    this.setState({ errorMessages })
-    this.props.dispatch(members.updateMemberName(this.props.member.id, memberName))
+    this.props.dispatch(members.updateMemberName(this.props.member.id, event.target.value))
   }
   public handleChangeGroupMember(groupId: number) {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -117,6 +110,7 @@ class Member extends React.Component<Props, State> {
     const memberConstraints4 = this.props.constraints4.filter(c => c.member_id === this.props.member.id)
     const memberConstraints9 = this.props.constraints9.filter(c => c.member_id === this.props.member.id)
     const memberConstraints10 = this.props.constraints10.filter(c => c.member_id === this.props.member.id)
+    const errorMessages = this.validate(this.props.member.name)
     return (
       <>
         <Card>
@@ -157,11 +151,11 @@ class Member extends React.Component<Props, State> {
                     defaultValue={this.props.member.name}
                     onChange={this.handleChangeMemberName}
                     fullWidth={true}
-                    error={this.state.errorMessages.memberName.length > 0}
+                    error={errorMessages.memberName.length > 0}
                     FormHelperTextProps={{
                       component: 'div',
                     }}
-                    helperText={this.state.errorMessages.memberName.map(message =>
+                    helperText={errorMessages.memberName.map(message =>
                       <div key={message}>{message}</div>
                     )}
                   />

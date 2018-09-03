@@ -37,14 +37,13 @@ type Props = {
   kinmus: kinmus.Kinmu[]
 } & WithStyles<typeof styles>
 
-type ErrorMessages = {
-  constraint4MaxNumberOfAssignments: string[]
-}
-
 type State = {
   expanded: boolean
   deletionDialogIsOpen: boolean
-  errorMessages: ErrorMessages
+}
+
+type ErrorMessages = {
+  constraint4MaxNumberOfAssignments: string[]
 }
 
 class Constraint4 extends React.Component<Props, State> {
@@ -52,9 +51,6 @@ class Constraint4 extends React.Component<Props, State> {
     super(props)
     this.state = {
       deletionDialogIsOpen: false,
-      errorMessages: {
-        constraint4MaxNumberOfAssignments: [],
-      },
       expanded: false,
     }
   }
@@ -78,10 +74,7 @@ class Constraint4 extends React.Component<Props, State> {
     return errorMessages
   }
   public handleChangeConstraint4MaxNumberOfAssignments = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const constraint4MaxNumberOfAssignments = parseInt(event.target.value, 10)
-    const errorMessages = this.validate(constraint4MaxNumberOfAssignments)
-    this.setState({ errorMessages })
-    this.props.dispatch(constraints4.updateConstraint4MaxNumberOfAssignments(this.props.constraint4.id, constraint4MaxNumberOfAssignments))
+    this.props.dispatch(constraints4.updateConstraint4MaxNumberOfAssignments(this.props.constraint4.id, parseInt(event.target.value, 10)))
   }
   public handleClickOpenDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: true })
@@ -102,6 +95,7 @@ class Constraint4 extends React.Component<Props, State> {
         <span className={classnames({ [this.props.classes.lineThrough]: !constraint4Member.is_enabled })}>{constraint4Member.name}</span>に<span className={classnames({ [this.props.classes.lineThrough]: !constraint4Kinmu.is_enabled })}>{constraint4Kinmu.name}</span>を{this.props.constraint4.max_number_of_assignments}回以下割り当てる
       </>
     )
+    const errorMessages = this.validate(this.props.constraint4.max_number_of_assignments)
     return (
       <>
         <Card>
@@ -173,11 +167,11 @@ class Constraint4 extends React.Component<Props, State> {
                     inputProps={{
                       min: constraints4.minOfConstraint4MaxNumberOfAssignments,
                     }}
-                    error={this.state.errorMessages.constraint4MaxNumberOfAssignments.length > 0}
+                    error={errorMessages.constraint4MaxNumberOfAssignments.length > 0}
                     FormHelperTextProps={{
                       component: 'div',
                     }}
-                    helperText={this.state.errorMessages.constraint4MaxNumberOfAssignments.map(message =>
+                    helperText={errorMessages.constraint4MaxNumberOfAssignments.map(message =>
                       <div key={message}>{message}</div>
                     )}
                   />
