@@ -237,7 +237,11 @@ class Constraints9 extends React.Component<Props, State> {
                   </Grid>
                 </DialogContent>
                 <DialogActions>
-                  <Button color="primary" onClick={this.handleClickCreateConstraint9}>追加</Button>
+                  <Button
+                    color="primary"
+                    disabled={Object.values(errorMessages).some(messages => messages.length > 0)}
+                    onClick={this.handleClickCreateConstraint9}
+                  >追加</Button>
                   <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
                 </DialogActions>
               </Dialog>

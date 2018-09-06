@@ -117,7 +117,11 @@ class Kinmus extends React.Component<Props, State> {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button color="primary" onClick={this.handleClickCreateKinmu}>追加</Button>
+            <Button
+              color="primary"
+              disabled={Object.values(errorMessages).some(messages => messages.length > 0)}
+              onClick={this.handleClickCreateKinmu}
+            >追加</Button>
             <Button color="primary" onClick={this.handleCloseCreationDialog}>閉じる</Button>
           </DialogActions>
         </Dialog>
