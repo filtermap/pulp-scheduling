@@ -61,3 +61,8 @@ python main.py
 ```sh
 python build.py
 ```
+
+## お問い合わせ (Contact)
+
+- [Twitter: @filtermap](https://twitter.com/filtermap)
+- [Email: reducefiltermap@gmail.com](mailto:reducefiltermap@gmail.com)
