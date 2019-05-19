@@ -8,7 +8,7 @@
 
 下記のリンクからzipファイルをダウンロードしてください。 (Download the zipped file from the link below.)
 
-[https://github.com/filtermap/pulp-scheduling/releases](https://github.com/filtermap/pulp-scheduling/releases)
+[https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.6/dist.zip](https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.6/dist.zip)
 
 zipファイルを解凍してください。 (Unzip the file.)
 
