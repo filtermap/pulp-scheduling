@@ -3,11 +3,11 @@ dependencies:
   - pip=19.1.1=py36_0
   - python=3.6.8=h9f7ef89_7
   - pip:
-    - black==18.6b4
-    - flask==1.0.2
-    - json-rpc==1.11.1
-    - mypy==0.620
-    - psutil==5.4.7
-    - pulp==1.6.8
-    - pyinstaller==3.3.1
+    - black==19.3b0
+    - flask==1.0.3
+    - json-rpc==1.12.1
+    - mypy==0.701
+    - psutil==5.6.2
+    - pulp==1.6.10
+    - pyinstaller==3.4
     - tornado==5.1
