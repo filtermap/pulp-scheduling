@@ -1,7 +1,7 @@
 name: pulp-scheduling
 dependencies:
-  - pip=10.0.1=py36_0
-  - python=3.6.6=hea74fb7_0
+  - pip=19.1.1=py36_0
+  - python=3.6.8=h9f7ef89_7
   - pip:
     - black==18.6b4
     - flask==1.0.2
