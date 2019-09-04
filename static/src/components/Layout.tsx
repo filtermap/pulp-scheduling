@@ -189,7 +189,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
             {drawer}
           </Drawer>
         </Hidden>
-        <main className={classes.content}>
+        <div className={classes.content}>
           <div className={classes.toolbar} />
           <Route path="/rosters" component={Rosters} />
           <Route path="/terms" component={Terms} />
@@ -207,7 +207,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
           <Route path="/constraints8" component={Constraints8} />
           <Route path="/constraints9" component={Constraints9} />
           <Route path="/constraints10" component={Constraints10} />
-        </main>
+        </div>
       </div>
     )
   }
