@@ -2,7 +2,7 @@
 
 勤務表を自動で作成する無料アプリです。[PuLP](https://pythonhosted.org/PuLP/)を使用しています。 (This is an automatic scheduling app using [PuLP](https://pythonhosted.org/PuLP/).)
 
-![Screen shot](screenshot.png?raw=true)
+![Demo video](demo.gif?raw=true)
 
 ## 使用方法 (Usage)
 
