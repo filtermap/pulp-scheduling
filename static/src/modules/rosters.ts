@@ -1,11 +1,11 @@
 export type Roster = {
-  id: number
-}
+  id: number;
+};
 
-export type State = Roster[]
+export type State = Roster[];
 
-const initialState: State = []
+const initialState: State = [];
 
 export function reducer(state: State = initialState): State {
-  return state
+  return state;
 }
