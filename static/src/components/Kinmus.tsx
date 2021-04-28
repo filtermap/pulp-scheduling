@@ -131,6 +131,7 @@ class Kinmus extends React.Component<Props, State> {
                   fullWidth={true}
                   error={errorMessages.newKinmuName.length > 0}
                   FormHelperTextProps={{
+                    // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
                   helperText={errorMessages.newKinmuName.map((message) => (

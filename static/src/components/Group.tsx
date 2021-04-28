@@ -178,6 +178,7 @@ class Group extends React.Component<Props, State> {
                     fullWidth={true}
                     error={errorMessages.groupName.length > 0}
                     FormHelperTextProps={{
+                      // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                       component: "div",
                     }}
                     helperText={errorMessages.groupName.map((message) => (

@@ -290,6 +290,7 @@ class Constraints1 extends React.Component<Props, State> {
                           errorMessages.newConstraint1StartDateName.length > 0
                         }
                         FormHelperTextProps={{
+                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                           component: "div",
                         }}
                         helperText={errorMessages.newConstraint1StartDateName.map(
@@ -319,6 +320,7 @@ class Constraints1 extends React.Component<Props, State> {
                           errorMessages.newConstraint1StopDateName.length > 0
                         }
                         FormHelperTextProps={{
+                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                           component: "div",
                         }}
                         helperText={errorMessages.newConstraint1StopDateName.map(
@@ -396,6 +398,7 @@ class Constraints1 extends React.Component<Props, State> {
                             .length > 0
                         }
                         FormHelperTextProps={{
+                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                           component: "div",
                         }}
                         helperText={errorMessages.newConstraint1MinNumberOfAssignments.map(

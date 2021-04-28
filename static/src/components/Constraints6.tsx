@@ -216,6 +216,7 @@ class Constraints6 extends React.Component<Props, State> {
                           errorMessages.newConstraint6MaxNumberOfDays.length > 0
                         }
                         FormHelperTextProps={{
+                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                           component: "div",
                         }}
                         helperText={errorMessages.newConstraint6MaxNumberOfDays.map(

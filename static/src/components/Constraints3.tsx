@@ -265,6 +265,7 @@ class Constraints3 extends React.Component<Props, State> {
                             .length > 0
                         }
                         FormHelperTextProps={{
+                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                           component: "div",
                         }}
                         helperText={errorMessages.newConstraint3MinNumberOfAssignments.map(

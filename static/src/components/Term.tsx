@@ -106,6 +106,7 @@ class Term extends React.Component<Props, State> {
                   }}
                   error={errorMessages.termStartDateName.length > 0}
                   FormHelperTextProps={{
+                    // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
                   helperText={errorMessages.termStartDateName.map((message) => (
@@ -125,6 +126,7 @@ class Term extends React.Component<Props, State> {
                   }}
                   error={errorMessages.termStopDateName.length > 0}
                   FormHelperTextProps={{
+                    // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
                   helperText={errorMessages.termStopDateName.map((message) => (

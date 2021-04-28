@@ -299,6 +299,7 @@ class Constraint9 extends React.Component<Props, State> {
                     }}
                     error={errorMessages.constraint9StartDateName.length > 0}
                     FormHelperTextProps={{
+                      // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                       component: "div",
                     }}
                     helperText={errorMessages.constraint9StartDateName.map(
@@ -326,6 +327,7 @@ class Constraint9 extends React.Component<Props, State> {
                     }}
                     error={errorMessages.constraint9StopDateName.length > 0}
                     FormHelperTextProps={{
+                      // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                       component: "div",
                     }}
                     helperText={errorMessages.constraint9StopDateName.map(

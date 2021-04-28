@@ -216,6 +216,7 @@ class Constraints7 extends React.Component<Props, State> {
                           errorMessages.newConstraint7MinNumberOfDays.length > 0
                         }
                         FormHelperTextProps={{
+                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                           component: "div",
                         }}
                         helperText={errorMessages.newConstraint7MinNumberOfDays.map(
