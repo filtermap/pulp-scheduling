@@ -114,7 +114,7 @@ class Constraints3 extends React.Component<Props, State> {
             <Grid item={true} xs={12}>
               <Toolbar>
                 <Typography
-                  variant="subheading"
+                  variant="subtitle1"
                   className={this.props.classes.toolbarTitle}
                 >
                   職員の勤務の割り当て数の下限

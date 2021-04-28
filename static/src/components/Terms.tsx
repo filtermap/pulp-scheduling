@@ -23,7 +23,7 @@ function Terms(props: Props) {
       <Grid container={true} spacing={8}>
         <Grid item={true} xs={12}>
           <Toolbar>
-            <Typography variant="subheading">期間</Typography>
+            <Typography variant="subtitle1">期間</Typography>
           </Toolbar>
         </Grid>
         {props.terms.map((term) => (

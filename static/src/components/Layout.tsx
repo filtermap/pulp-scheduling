@@ -186,7 +186,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
               <MenuIcon />
             </IconButton>
             <Typography
-              variant="title"
+              variant="h6"
               color="inherit"
               noWrap={true}
               className={classes.title}
@@ -272,6 +272,6 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
   };
 }
 
-export default withTheme()(
+export default withTheme(
   withStyles(styles)(withRouter(connect(mapStateToProps)(ResponsiveDrawer)))
 );

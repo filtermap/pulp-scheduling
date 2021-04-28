@@ -102,7 +102,7 @@ class Constraints6 extends React.Component<Props, State> {
             <Grid item={true} xs={12}>
               <Toolbar>
                 <Typography
-                  variant="subheading"
+                  variant="subtitle1"
                   className={this.props.classes.toolbarTitle}
                 >
                   勤務の連続日数の上限

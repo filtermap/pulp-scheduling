@@ -156,7 +156,7 @@ class Constraint7 extends React.Component<Props, State> {
             }
             title={title}
             titleTypographyProps={{
-              variant: "headline",
+              variant: "h5",
             }}
           />
           <Collapse

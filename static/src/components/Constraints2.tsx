@@ -155,7 +155,7 @@ class Constraints2 extends React.Component<Props, State> {
             <Grid item={true} xs={12}>
               <Toolbar>
                 <Typography
-                  variant="subheading"
+                  variant="subtitle1"
                   className={this.props.classes.toolbarTitle}
                 >
                   期間の勤務にグループから割り当てる職員数の上限

@@ -164,7 +164,7 @@ class Member extends React.Component<Props, State> {
             }
             title={this.props.member.name}
             titleTypographyProps={{
-              variant: "headline",
+              variant: "h5",
             }}
             subheader={this.props.group_members
               .filter(
@@ -179,7 +179,7 @@ class Member extends React.Component<Props, State> {
               )
               .join(", ")}
             subheaderTypographyProps={{
-              variant: "body1",
+              variant: "body2",
             }}
           />
           <Collapse

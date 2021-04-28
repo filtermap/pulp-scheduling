@@ -184,7 +184,7 @@ class Kinmu extends React.Component<Props, State> {
             }
             title={this.props.kinmu.name}
             titleTypographyProps={{
-              variant: "headline",
+              variant: "h5",
             }}
           />
           <Collapse

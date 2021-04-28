@@ -155,7 +155,7 @@ class Constraints1 extends React.Component<Props, State> {
             <Grid item={true} xs={12}>
               <Toolbar>
                 <Typography
-                  variant="subheading"
+                  variant="subtitle1"
                   className={this.props.classes.toolbarTitle}
                 >
                   {" "}
