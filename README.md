@@ -4,6 +4,10 @@
 
 ![Demo video](demo.gif?raw=true)
 
+このアプリは開発中です。 (This is still in development.)
+
+改良等のご要望がありましたら是非[メール](mailto:reducefiltermap@gmail.com)や[Twitter](https://twitter.com/filtermap)で[お問い合わせ](https://github.com/filtermap/pulp-scheduling#%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B-contact)ください。
+
 ## 使用方法 (Usage)
 
 下記のリンクからzipファイルをダウンロードしてください。 (Download the zipped file from the link below.)
@@ -39,6 +43,12 @@ zipファイルを解凍してください。 (Unzip the file.)
 11. 職員の期間に割り当てない勤務<br>あらかじめ割り当ててはいけない勤務や休みを設定できます。
 
 ## 開発者向け説明 (For developers)
+
+### 必要なもの (System requirements)
+
+- [Miniconda https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
+- [Node.js, npm https://nodejs.org/en/download/](https://nodejs.org/en/download/)
+- Windows 10 Pro or Home
 
 ### インストール (Install)
 
