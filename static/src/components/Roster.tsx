@@ -138,7 +138,7 @@ class Roster extends React.Component<Props, State> {
                       <TableHead>
                         <TableRow>
                           <TableCell
-                            padding="dense"
+                            size="small"
                             className={this.props.classes.leftTopHeaderCell}
                           >
                             \
@@ -146,7 +146,7 @@ class Roster extends React.Component<Props, State> {
                           {roster_date_names.map((date_name) => (
                             <TableCell
                               key={date_name}
-                              padding="dense"
+                              size="small"
                               className={this.props.classes.topHeaderCell}
                             >
                               {date_name}
@@ -162,13 +162,13 @@ class Roster extends React.Component<Props, State> {
                           return (
                             <TableRow key={member.id}>
                               <TableCell
-                                padding="dense"
+                                size="small"
                                 className={this.props.classes.leftHeaderCell}
                               >
                                 {member.name}
                               </TableCell>
                               {roster_date_names.map((date_name) => (
-                                <TableCell padding="dense" key={date_name}>
+                                <TableCell size="small" key={date_name}>
                                   {
                                     this.props.kinmus.find(
                                       (kinmu) =>
@@ -190,7 +190,7 @@ class Roster extends React.Component<Props, State> {
                 </Grid>
               </Grid>
             </CardContent>
-            <CardActions disableActionSpacing={true}>
+            <CardActions disableSpacing={true}>
               <Button size="small" onClick={this.handleClickOpenDeletionDialog}>
                 削除
               </Button>

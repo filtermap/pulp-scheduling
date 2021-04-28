@@ -408,7 +408,7 @@ class Constraint1 extends React.Component<Props, State> {
                 </Grid>
               </Grid>
             </CardContent>
-            <CardActions disableActionSpacing={true}>
+            <CardActions disableSpacing={true}>
               <Button size="small" onClick={this.handleClickOpenDeletionDialog}>
                 削除
               </Button>

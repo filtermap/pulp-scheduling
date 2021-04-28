@@ -228,7 +228,7 @@ class Rosters extends React.Component<Props, State> {
                   <TableHead>
                     <TableRow>
                       <TableCell
-                        padding="dense"
+                        size="small"
                         className={this.props.classes.leftTopHeaderCell}
                       >
                         \
@@ -236,7 +236,7 @@ class Rosters extends React.Component<Props, State> {
                       {newRosterDateNames.map((date_name) => (
                         <TableCell
                           key={date_name}
-                          padding="dense"
+                          size="small"
                           className={this.props.classes.topHeaderCell}
                         >
                           {date_name}
@@ -252,13 +252,13 @@ class Rosters extends React.Component<Props, State> {
                       return (
                         <TableRow key={member.id}>
                           <TableCell
-                            padding="dense"
+                            size="small"
                             className={this.props.classes.leftHeaderCell}
                           >
                             {member.name}
                           </TableCell>
                           {newRosterDateNames.map((date_name) => (
-                            <TableCell padding="dense" key={date_name}>
+                            <TableCell size="small" key={date_name}>
                               {
                                 this.props.all.kinmus.find(
                                   (kinmu) =>

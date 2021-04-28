@@ -2,7 +2,7 @@ import blue from "@material-ui/core/colors/blue";
 import teal from "@material-ui/core/colors/teal";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
