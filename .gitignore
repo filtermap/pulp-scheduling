@@ -2,4 +2,4 @@ __pycache__
 .mypy_cache
 .vscode
 build
-dist
+pulp-scheduling-*

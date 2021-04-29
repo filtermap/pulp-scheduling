@@ -12,7 +12,7 @@
 
 下記のリンクからzipファイルをダウンロードしてください。 (Download the zipped file from the link below.)
 
-[https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.7/dist.zip](https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.7/dist.zip)
+[https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.8/pulp-scheduling-v0.1.8.zip](https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.8/pulp-scheduling-v0.1.8.zip)
 
 zipファイルを解凍してください。 (Unzip the file.)
 
@@ -50,13 +50,13 @@ zipファイルを解凍してください。 (Unzip the file.)
 - [Node.js, npm https://nodejs.org/en/download/](https://nodejs.org/en/download/)
 - Windows 10 Pro or Home
 
-### インストール (Install)
+### パッケージなどのインストール (Install dependencies)
 
 ```sh
 conda env create
 conda activate pulp-scheduling
 cd static
-yarn
+yarn install --frozen-lockfile
 cd ..
 ```
 
@@ -75,6 +75,10 @@ python build.py
 ## リポジトリ（Repository）
 
 [https://github.com/filtermap/pulp-scheduling](https://github.com/filtermap/pulp-scheduling)
+
+## バージョン (Version)
+
+0.1.8
 
 ## お問い合わせ (Contact)
 

@@ -77,6 +77,10 @@ const styles = (theme: Theme) =>
       flex: 1,
     },
     toolbar: theme.mixins.toolbar,
+    version: {
+      ...theme.typography.subtitle2,
+      marginLeft: theme.spacing(3),
+    },
   });
 
 type Props = {
@@ -191,7 +195,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
               noWrap={true}
               className={classes.title}
             >
-              pulp-scheduling
+              pulp-scheduling<span className={classes.version}>v0.1.8</span>
             </Typography>
             <Button
               color="inherit"

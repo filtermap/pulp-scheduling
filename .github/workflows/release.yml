@@ -1,0 +1,49 @@
+name: release
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+jobs:
+  release:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "15"
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment.yml
+      - name: yarn install --frozen-lockfile
+        run: |
+          cd static
+          yarn install --frozen-lockfile
+          cd ..
+      - name: Build
+        run: python build.py
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
+        shell: bash
+      - name: Create the zip archive
+        run: Compress-Archive -Path pulp-scheduling-${{ steps.get_version.outputs.version }} -DestinationPath pulp-scheduling-${{ steps.get_version.outputs.version }}.zip -CompressionLevel Optimal
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          release_name: ${{ steps.get_version.outputs.version }}
+          draft: false
+          prerelease: true
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./pulp-scheduling-${{ steps.get_version.outputs.version }}.zip
+          asset_name: pulp-scheduling-${{ steps.get_version.outputs.version }}.zip
+          asset_content_type: application/zip
