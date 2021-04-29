@@ -193,7 +193,7 @@ class Kinmu extends React.Component<Props, State> {
             unmountOnExit={true}
           >
             <CardContent>
-              <Grid container={true} spacing={8}>
+              <Grid container={true} spacing={1}>
                 <Grid item={true} xs={12}>
                   <TextField
                     label="勤務名"
@@ -227,7 +227,7 @@ class Kinmu extends React.Component<Props, State> {
         >
           <DialogTitle>勤務の削除</DialogTitle>
           <DialogContent>
-            <Grid container={true} spacing={8}>
+            <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
                 <DialogContentText>この勤務を削除します</DialogContentText>
                 <Typography>{this.props.kinmu.name}</Typography>

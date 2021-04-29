@@ -188,7 +188,7 @@ class Member extends React.Component<Props, State> {
             unmountOnExit={true}
           >
             <CardContent>
-              <Grid container={true} spacing={8}>
+              <Grid container={true} spacing={1}>
                 <Grid item={true} xs={12}>
                   <TextField
                     label="職員名"
@@ -247,7 +247,7 @@ class Member extends React.Component<Props, State> {
         >
           <DialogTitle>職員の削除</DialogTitle>
           <DialogContent>
-            <Grid container={true} spacing={8}>
+            <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
                 <DialogContentText>この職員を削除します</DialogContentText>
                 <Typography>{this.props.member.name}</Typography>

@@ -98,7 +98,7 @@ class Constraints8 extends React.Component<Props, State> {
     return (
       <>
         <div className={this.props.classes.gridFrame}>
-          <Grid container={true} spacing={8}>
+          <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
               <Toolbar>
                 <Typography
@@ -159,7 +159,7 @@ class Constraints8 extends React.Component<Props, State> {
               >
                 <DialogTitle>勤務の間隔日数の下限の追加</DialogTitle>
                 <DialogContent>
-                  <Grid container={true} spacing={8}>
+                  <Grid container={true} spacing={1}>
                     <Grid item={true} xs={12}>
                       <FormControlLabel
                         control={

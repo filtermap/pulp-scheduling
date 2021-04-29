@@ -93,7 +93,7 @@ class Term extends React.Component<Props, State> {
         />
         <Collapse in={this.state.expanded} timeout="auto" unmountOnExit={true}>
           <CardContent>
-            <Grid container={true} spacing={8}>
+            <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
                 <TextField
                   label="開始日"

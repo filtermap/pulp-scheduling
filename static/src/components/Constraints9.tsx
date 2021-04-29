@@ -132,7 +132,7 @@ class Constraints9 extends React.Component<Props, State> {
     return (
       <>
         <div className={this.props.classes.gridFrame}>
-          <Grid container={true} spacing={8}>
+          <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
               <Toolbar>
                 <Typography
@@ -230,7 +230,7 @@ class Constraints9 extends React.Component<Props, State> {
               >
                 <DialogTitle>職員の機関に割り当てる勤務の追加</DialogTitle>
                 <DialogContent>
-                  <Grid container={true} spacing={8}>
+                  <Grid container={true} spacing={1}>
                     <Grid item={true} xs={12}>
                       <FormControlLabel
                         control={

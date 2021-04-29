@@ -151,7 +151,7 @@ class Constraints2 extends React.Component<Props, State> {
     return (
       <>
         <div className={this.props.classes.gridFrame}>
-          <Grid container={true} spacing={8}>
+          <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
               <Toolbar>
                 <Typography
@@ -252,7 +252,7 @@ class Constraints2 extends React.Component<Props, State> {
                   期間の勤務にグループから割り当てる職員数の上限の追加
                 </DialogTitle>
                 <DialogContent>
-                  <Grid container={true} spacing={8}>
+                  <Grid container={true} spacing={1}>
                     <Grid item={true} xs={12}>
                       <FormControlLabel
                         control={

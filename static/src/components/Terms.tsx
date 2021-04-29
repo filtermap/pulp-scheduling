@@ -20,7 +20,7 @@ type Props = {
 function Terms(props: Props) {
   return (
     <div className={props.classes.gridFrame}>
-      <Grid container={true} spacing={8}>
+      <Grid container={true} spacing={1}>
         <Grid item={true} xs={12}>
           <Toolbar>
             <Typography variant="subtitle1">期間</Typography>

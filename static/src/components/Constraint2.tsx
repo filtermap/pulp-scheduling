@@ -276,7 +276,7 @@ class Constraint2 extends React.Component<Props, State> {
             unmountOnExit={true}
           >
             <CardContent>
-              <Grid container={true} spacing={8}>
+              <Grid container={true} spacing={1}>
                 <Grid item={true} xs={12}>
                   <TextField
                     label="開始日"

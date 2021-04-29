@@ -169,7 +169,7 @@ class Group extends React.Component<Props, State> {
             unmountOnExit={true}
           >
             <CardContent>
-              <Grid container={true} spacing={8}>
+              <Grid container={true} spacing={1}>
                 <Grid item={true} xs={12}>
                   <TextField
                     label="グループ名"
@@ -228,7 +228,7 @@ class Group extends React.Component<Props, State> {
         >
           <DialogTitle>グループの削除</DialogTitle>
           <DialogContent>
-            <Grid container={true} spacing={8}>
+            <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
                 <DialogContentText>このグループを削除します</DialogContentText>
                 <Typography>{this.props.group.name}</Typography>
