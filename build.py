@@ -12,3 +12,4 @@ if os.path.exists("dist"):
     shutil.rmtree("dist")
 subprocess.run("pyinstaller main.spec --clean", shell=True)
 shutil.copytree("data", os.path.join("dist", "data"))
+shutil.copy2("README.md", "dist")
