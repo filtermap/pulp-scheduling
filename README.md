@@ -46,13 +46,20 @@ zipファイルを解凍してください。 (Unzip the file.)
 
 ### 必要なもの (System requirements)
 
+- [Git for Windows](https://gitforwindows.org/)
 - [Miniconda https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
 - [Node.js, npm https://nodejs.org/en/download/](https://nodejs.org/en/download/)
+- [Installation | Yarn](https://classic.yarnpkg.com/en/docs/install#windows-stable)
 - Windows 10 Pro or Home
+- プログラミングと Python と TypeScript と上記ツールの使い方に関する知識 (Knowledge to use tools above and skills for programming)
 
 ### パッケージなどのインストール (Install dependencies)
 
+Miniconda に同梱されている Anaconda Prompt を起動して以下のコマンドを実行します。 (Execute commands below with Anaconda Prompt.)
+
 ```sh
+git clone https://github.com/filtermap/pulp-scheduling.git
+cd pulp-scheduling
 conda env create
 conda activate pulp-scheduling
 cd static
@@ -63,12 +70,14 @@ cd ..
 ### 実行 (Run)
 
 ```sh
+# at the root directory of pulp-scheduling
 python main.py
 ```
 
 ### ビルド (Build)
 
 ```sh
+# at the root directory of pulp-scheduling
 python build.py
 ```
 
