@@ -23,7 +23,7 @@
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject",
-    "readme": "marked ../README.md --gfm -o ../pulp-scheduling-v0.1.8/README.html"
+    "readme": "marked ../README.md --gfm -o ../pulp-scheduling-v0.1.9/README.html"
   },
   "devDependencies": {
     "@types/classnames": "^2.3.1",
