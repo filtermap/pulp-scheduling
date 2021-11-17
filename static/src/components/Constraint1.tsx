@@ -221,7 +221,7 @@ class Constraint1 extends React.Component<Props, State> {
             [this.props.classes.lineThrough]: !constraint1Kinmu.is_enabled,
           })}
         >
-          {constraint1Kinmu.is_enabled}
+          {constraint1Kinmu.name}
         </span>
         に
         <span
