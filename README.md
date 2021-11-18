@@ -44,7 +44,7 @@ zipファイルを解凍してください。 (Unzip the file.)
 
 ## 開発者向け説明 (For developers)
 
-### 必要なもの (System requirements)
+### 必要なもの (Requirements)
 
 - [Git for Windows](https://gitforwindows.org/)
 - [Miniconda https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
