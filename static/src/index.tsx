@@ -2,7 +2,7 @@ import blue from "@material-ui/core/colors/blue";
 import teal from "@material-ui/core/colors/teal";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import { createTheme } from "@material-ui/core/styles";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -22,7 +22,7 @@ import * as utils from "./utils";
 async function main() {
   const initialState = (await utils.sendJSONRPCRequest("read_all")).result;
   const store = createStore(undoable(all.reducer), initialState);
-  const theme = createMuiTheme({
+  const theme = createTheme({
     palette: {
       primary: blue,
       secondary: teal,
