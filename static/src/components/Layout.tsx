@@ -20,7 +20,7 @@ import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
 import * as React from "react";
 import { connect } from "react-redux";
-import { Link, Route, RouteComponentProps, withRouter } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { Dispatch } from "redux";
 import { ActionCreators, StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
@@ -89,8 +89,7 @@ type Props = {
   all: all.All;
   futureExists: boolean;
 } & WithTheme &
-  WithStyles<typeof styles> &
-  RouteComponentProps<{}>;
+  WithStyles<typeof styles>;
 
 type State = {
   mobileOpen: boolean;
@@ -102,17 +101,18 @@ function LinkTo(to: string) {
   };
 }
 
-const ListItemLink = withRouter(
-  (props: { to: string; text: string } & RouteComponentProps<{}>) => (
+function ListItemLink(props: { to: string; text: string }) {
+  const location = useLocation();
+  return (
     <ListItem
       button={true}
-      selected={props.to === props.location.pathname}
+      selected={props.to === location.pathname}
       component={LinkTo(props.to)}
     >
       <ListItemText primary={props.text} />
     </ListItem>
-  )
-);
+  );
+}
 
 class ResponsiveDrawer extends React.Component<Props, State> {
   public state: State = {
@@ -246,22 +246,24 @@ class ResponsiveDrawer extends React.Component<Props, State> {
         </Hidden>
         <div className={classes.content}>
           <div className={classes.toolbar} />
-          <Route path="/rosters" component={Rosters} />
-          <Route path="/terms" component={Terms} />
-          <Route path="/members" component={Members} />
-          <Route path="/kinmus" component={Kinmus} />
-          <Route path="/groups" component={Groups} />
-          <Route path="/constraints0" component={Constraints0} />
-          <Route path="/constraints1" component={Constraints1} />
-          <Route path="/constraints2" component={Constraints2} />
-          <Route path="/constraints3" component={Constraints3} />
-          <Route path="/constraints4" component={Constraints4} />
-          <Route path="/constraints5" component={Constraints5} />
-          <Route path="/constraints6" component={Constraints6} />
-          <Route path="/constraints7" component={Constraints7} />
-          <Route path="/constraints8" component={Constraints8} />
-          <Route path="/constraints9" component={Constraints9} />
-          <Route path="/constraints10" component={Constraints10} />
+          <Routes>
+            <Route path="/rosters" element={<Rosters />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/members" element={<Members />} />
+            <Route path="/kinmus" element={<Kinmus />} />
+            <Route path="/groups" element={<Groups />} />
+            <Route path="/constraints0" element={<Constraints0 />} />
+            <Route path="/constraints1" element={<Constraints1 />} />
+            <Route path="/constraints2" element={<Constraints2 />} />
+            <Route path="/constraints3" element={<Constraints3 />} />
+            <Route path="/constraints4" element={<Constraints4 />} />
+            <Route path="/constraints5" element={<Constraints5 />} />
+            <Route path="/constraints6" element={<Constraints6 />} />
+            <Route path="/constraints7" element={<Constraints7 />} />
+            <Route path="/constraints8" element={<Constraints8 />} />
+            <Route path="/constraints9" element={<Constraints9 />} />
+            <Route path="/constraints10" element={<Constraints10 />} />
+          </Routes>
         </div>
       </div>
     );
@@ -277,5 +279,5 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
 }
 
 export default withTheme(
-  withStyles(styles)(withRouter(connect(mapStateToProps)(ResponsiveDrawer)))
+  withStyles(styles)(connect(mapStateToProps)(ResponsiveDrawer))
 );
