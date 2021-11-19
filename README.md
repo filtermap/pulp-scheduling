@@ -18,7 +18,7 @@ zip ファイルを解凍してください。 (Unzip the file.)
 
 解凍後のフォルダの中にある scheduling.exe を実行してください。 (Execute scheduling.exe in the unzipped folder.)
 
-## 設定可能な勤務条件 (Available conditions)
+## 設定可能な勤務条件 (Available constraints)
 
 1. 連続禁止勤務並び<br>連続してはいけない勤務や休みを設定できます。<br>例：夜勤の次の日は日勤を割り当てない。
 
