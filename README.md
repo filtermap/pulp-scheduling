@@ -47,11 +47,10 @@ zip ファイルを解凍してください。 (Unzip the file.)
 ### 必要なもの (Requirements)
 
 - [Git for Windows](https://gitforwindows.org/)
-- [Miniconda https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
-- [Node.js, npm https://nodejs.org/en/download/](https://nodejs.org/en/download/)
-- [Installation | Yarn](https://classic.yarnpkg.com/en/docs/install#windows-stable)
-- Windows 10 Pro or Home
-- プログラミングと Python と TypeScript と上記ツールの使い方に関する知識 (Knowledge to use tools above and skills for programming)
+- [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
+- [Node.js, npm](https://nodejs.org/en/download/)
+- [Yarn](https://classic.yarnpkg.com/en/docs/install#windows-stable)
+- Windows 10 or later
 
 ### パッケージなどのインストール (Install dependencies)
 
