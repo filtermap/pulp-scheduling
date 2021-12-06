@@ -100,6 +100,7 @@ class Term extends React.Component<Props, State> {
                   type="date"
                   defaultValue={this.props.term.start_date_name}
                   onChange={this.handleChangeTermStartDateName}
+                  fullWidth={true}
                   margin="normal"
                   InputLabelProps={{
                     shrink: true,
@@ -120,6 +121,7 @@ class Term extends React.Component<Props, State> {
                   type="date"
                   defaultValue={this.props.term.stop_date_name}
                   onChange={this.handleChangeTermStopDateName}
+                  fullWidth={true}
                   margin="normal"
                   InputLabelProps={{
                     shrink: true,
