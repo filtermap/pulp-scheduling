@@ -228,7 +228,7 @@ class Constraints9 extends React.Component<Props, State> {
                 fullWidth={true}
                 maxWidth="md"
               >
-                <DialogTitle>職員の機関に割り当てる勤務の追加</DialogTitle>
+                <DialogTitle>職員の期間に割り当てる勤務の追加</DialogTitle>
                 <DialogContent>
                   <Grid container={true} spacing={1}>
                     <Grid item={true} xs={12}>
