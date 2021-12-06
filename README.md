@@ -6,7 +6,7 @@
 
 このアプリは開発中です。 (This is still in development.)
 
-改良等のご要望がありましたら是非[メール](mailto:reducefiltermap@gmail.com)や[Twitter](https://twitter.com/filtermap)で[お問い合わせ](https://github.com/filtermap/pulp-scheduling#%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B-contact)ください。
+改良等のご要望がありましたら是非[メール](mailto:reducefiltermap@gmail.com)や[Twitter](https://twitter.com/filtermap)でお問い合わせください。
 
 ## 使用方法 (Usage)
 
