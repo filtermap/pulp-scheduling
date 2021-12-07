@@ -195,7 +195,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
               noWrap={true}
               className={classes.title}
             >
-              pulp-scheduling<span className={classes.version}>v0.1.12</span>
+              pulp-scheduling<span className={classes.version}>v0.1.13</span>
             </Typography>
             <Button
               color="inherit"

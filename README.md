@@ -12,7 +12,7 @@
 
 下記のリンクから zip ファイルをダウンロードしてください。 (Download the zipped file from the link below.)
 
-[https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.12/pulp-scheduling-v0.1.12.zip](https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.12/pulp-scheduling-v0.1.12.zip)
+[https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.13/pulp-scheduling-v0.1.13.zip](https://github.com/filtermap/pulp-scheduling/releases/download/v0.1.13/pulp-scheduling-v0.1.13.zip)
 
 zip ファイルを解凍してください。 (Unzip the file.)
 
@@ -86,7 +86,7 @@ python build.py
 
 ## バージョン (Version)
 
-0.1.12
+0.1.13
 
 ## お問い合わせ (Contact)
 

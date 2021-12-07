@@ -2,7 +2,7 @@ import os
 import shutil
 import subprocess
 
-version = "v0.1.12"
+version = "v0.1.13"
 
 project_root_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -14,9 +14,13 @@ distribution_directory = f"pulp-scheduling-{version}"
 
 if os.path.exists(distribution_directory):
     shutil.rmtree(distribution_directory)
-subprocess.run(f"pyinstaller main.spec --clean --distpath {distribution_directory}", shell=True)
+subprocess.run(
+    f"pyinstaller main.spec --clean --distpath {distribution_directory}", shell=True
+)
 
-shutil.copytree("data", os.path.join(distribution_directory, "data"), copy_function=shutil.copy)
+shutil.copytree(
+    "data", os.path.join(distribution_directory, "data"), copy_function=shutil.copy
+)
 
 os.chdir(os.path.join(project_root_directory, "static"))
 subprocess.run("npm run readme", shell=True)
