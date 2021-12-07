@@ -608,7 +608,7 @@ def select_enabled(all_):
         and all(
             utils.str_to_date(term["start_date_name"])
             <= utils.str_to_date(constraint["start_date_name"])
-            and utils.str_to_date(term["stop_date_name"])
+            and utils.str_to_date(constraint["stop_date_name"])
             <= utils.str_to_date(term["stop_date_name"])
             for term in terms
         )
@@ -656,7 +656,7 @@ def select_enabled(all_):
         and all(
             utils.str_to_date(term["start_date_name"])
             <= utils.str_to_date(constraint["start_date_name"])
-            and utils.str_to_date(term["stop_date_name"])
+            and utils.str_to_date(constraint["stop_date_name"])
             <= utils.str_to_date(term["stop_date_name"])
             for term in terms
         )
@@ -670,7 +670,7 @@ def select_enabled(all_):
         and all(
             utils.str_to_date(term["start_date_name"])
             <= utils.str_to_date(constraint["start_date_name"])
-            and utils.str_to_date(term["stop_date_name"])
+            and utils.str_to_date(constraint["stop_date_name"])
             <= utils.str_to_date(term["stop_date_name"])
             for term in terms
         )
