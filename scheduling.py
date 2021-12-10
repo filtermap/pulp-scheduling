@@ -478,7 +478,7 @@ schedule_attribute_names = ["id"]
 
 
 def read_schedules():
-    with open(in_data_directory("schedules.csv")) as f:
+    with open(in_data_directory(schedules_filename)) as f:
         next(f)
         schedules = [
             {**r, "id": int(r["id"])}
