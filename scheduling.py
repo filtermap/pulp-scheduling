@@ -23,14 +23,19 @@ def write_rows(rows, filename, fieldnames):
 
 
 members_filename = "members.csv"
-member_attribute_names = ["id", "is_enabled", "name"]
+member_attribute_names = ["id", "term_id", "is_enabled", "name"]
 
 
 def read_members():
     with open(in_data_directory(members_filename)) as f:
         next(f)
         members = [
-            {**r, "id": int(r["id"]), "is_enabled": int(r["is_enabled"]) != 0}
+            {
+                **r,
+                "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
+            }
             for r in csv.DictReader(f, member_attribute_names)
         ]
     return members
@@ -61,14 +66,19 @@ def write_terms(terms):
 
 
 kinmus_filename = "kinmus.csv"
-kinmu_attribute_names = ["id", "is_enabled", "name"]
+kinmu_attribute_names = ["id", "term_id", "is_enabled", "name"]
 
 
 def read_kinmus():
     with open(in_data_directory(kinmus_filename)) as f:
         next(f)
         kinmus = [
-            {**r, "id": int(r["id"]), "is_enabled": int(r["is_enabled"]) != 0}
+            {
+                **r,
+                "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
+            }
             for r in csv.DictReader(f, kinmu_attribute_names)
         ]
     return kinmus
@@ -82,14 +92,19 @@ def write_kinmus(kinmus):
 
 
 groups_filename = "groups.csv"
-group_attribute_names = ["id", "is_enabled", "name"]
+group_attribute_names = ["id", "term_id", "is_enabled", "name"]
 
 
 def read_groups():
     with open(in_data_directory(groups_filename)) as f:
         next(f)
         groups = [
-            {**r, "id": int(r["id"]), "is_enabled": int(r["is_enabled"]) != 0}
+            {
+                **r,
+                "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
+            }
             for r in csv.DictReader(f, group_attribute_names)
         ]
     return groups
@@ -126,14 +141,19 @@ def write_group_members(group_members):
 
 
 constraints0_filename = "constraints0.csv"
-constraint0_attribute_names = ["id", "is_enabled"]
+constraint0_attribute_names = ["id", "term_id", "is_enabled"]
 
 
 def read_constraints0():
     with open(in_data_directory(constraints0_filename)) as f:
         next(f)
         constraints0 = [
-            {**r, "id": int(r["id"]), "is_enabled": int(r["is_enabled"]) != 0}
+            {
+                **r,
+                "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
+            }
             for r in csv.DictReader(f, constraint0_attribute_names)
         ]
     return constraints0
@@ -180,6 +200,7 @@ def write_constraint0_kinmus(constraint0_kinmus):
 constraints1_filename = "constraints1.csv"
 constraint1_attribute_names = [
     "id",
+    "term_id",
     "is_enabled",
     "start_date_name",
     "stop_date_name",
@@ -196,6 +217,7 @@ def read_constraints1():
             {
                 **r,
                 "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
                 "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "group_id": int(r["group_id"]),
@@ -214,6 +236,7 @@ def write_constraints1(constraints1):
 constraints2_filename = "constraints2.csv"
 constraint2_attribute_names = [
     "id",
+    "term_id",
     "is_enabled",
     "start_date_name",
     "stop_date_name",
@@ -230,6 +253,7 @@ def read_constraints2():
             {
                 **r,
                 "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
                 "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "group_id": int(r["group_id"]),
@@ -248,6 +272,7 @@ def write_constraints2(constraints2):
 constraints3_filename = "constraints3.csv"
 constraint3_attribute_names = [
     "id",
+    "term_id",
     "is_enabled",
     "member_id",
     "kinmu_id",
@@ -262,6 +287,7 @@ def read_constraints3():
             {
                 **r,
                 "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
                 "is_enabled": int(r["is_enabled"]) != 0,
                 "member_id": int(r["member_id"]),
                 "kinmu_id": int(r["kinmu_id"]),
@@ -280,6 +306,7 @@ def write_constraints3(constraints3):
 constraints4_filename = "constraints4.csv"
 constraint4_attribute_names = [
     "id",
+    "term_id",
     "is_enabled",
     "member_id",
     "kinmu_id",
@@ -294,6 +321,7 @@ def read_constraints4():
             {
                 **r,
                 "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
                 "is_enabled": int(r["is_enabled"]) != 0,
                 "member_id": int(r["member_id"]),
                 "kinmu_id": int(r["kinmu_id"]),
@@ -310,7 +338,13 @@ def write_constraints4(constraints4):
 
 
 constraints5_filename = "constraints5.csv"
-constraint5_attribute_names = ["id", "is_enabled", "kinmu_id", "min_number_of_days"]
+constraint5_attribute_names = [
+    "id",
+    "term_id",
+    "is_enabled",
+    "kinmu_id",
+    "min_number_of_days",
+]
 
 
 def read_constraints5():
@@ -320,6 +354,7 @@ def read_constraints5():
             {
                 **r,
                 "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
                 "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "min_number_of_days": int(r["min_number_of_days"]),
@@ -335,7 +370,13 @@ def write_constraints5(constraints5):
 
 
 constraints6_filename = "constraints6.csv"
-constraint6_attribute_names = ["id", "is_enabled", "kinmu_id", "max_number_of_days"]
+constraint6_attribute_names = [
+    "id",
+    "term_id",
+    "is_enabled",
+    "kinmu_id",
+    "max_number_of_days",
+]
 
 
 def read_constraints6():
@@ -345,6 +386,7 @@ def read_constraints6():
             {
                 **r,
                 "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
                 "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "max_number_of_days": int(r["max_number_of_days"]),
@@ -360,7 +402,13 @@ def write_constraints6(constraints6):
 
 
 constraints7_filename = "constraints7.csv"
-constraint7_attribute_names = ["id", "is_enabled", "kinmu_id", "min_number_of_days"]
+constraint7_attribute_names = [
+    "id",
+    "term_id",
+    "is_enabled",
+    "kinmu_id",
+    "min_number_of_days",
+]
 
 
 def read_constraints7():
@@ -370,6 +418,7 @@ def read_constraints7():
             {
                 **r,
                 "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
                 "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "min_number_of_days": int(r["min_number_of_days"]),
@@ -385,7 +434,13 @@ def write_constraints7(constraints7):
 
 
 constraints8_filename = "constraints8.csv"
-constraint8_attribute_names = ["id", "is_enabled", "kinmu_id", "max_number_of_days"]
+constraint8_attribute_names = [
+    "id",
+    "term_id",
+    "is_enabled",
+    "kinmu_id",
+    "max_number_of_days",
+]
 
 
 def read_constraints8():
@@ -395,6 +450,7 @@ def read_constraints8():
             {
                 **r,
                 "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
                 "is_enabled": int(r["is_enabled"]) != 0,
                 "kinmu_id": int(r["kinmu_id"]),
                 "max_number_of_days": int(r["max_number_of_days"]),
@@ -412,6 +468,7 @@ def write_constraints8(constraints8):
 constraints9_filename = "constraints9.csv"
 constraint9_attribute_names = [
     "id",
+    "term_id",
     "is_enabled",
     "member_id",
     "start_date_name",
@@ -427,6 +484,7 @@ def read_constraints9():
             {
                 **r,
                 "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
                 "is_enabled": int(r["is_enabled"]) != 0,
                 "member_id": int(r["member_id"]),
                 "kinmu_id": int(r["kinmu_id"]),
@@ -444,6 +502,7 @@ def write_constraints9(constraints9):
 constraints10_filename = "constraints10.csv"
 constraint10_attribute_names = [
     "id",
+    "term_id",
     "is_enabled",
     "member_id",
     "start_date_name",
@@ -459,6 +518,7 @@ def read_constraints10():
             {
                 **r,
                 "id": int(r["id"]),
+                "term_id": int(r["term_id"]),
                 "is_enabled": int(r["is_enabled"]) != 0,
                 "member_id": int(r["member_id"]),
                 "kinmu_id": int(r["kinmu_id"]),
@@ -474,14 +534,14 @@ def write_constraints10(constraints10):
 
 
 schedules_filename = "schedules.csv"
-schedule_attribute_names = ["id"]
+schedule_attribute_names = ["id", "term_id"]
 
 
 def read_schedules():
     with open(in_data_directory(schedules_filename)) as f:
         next(f)
         schedules = [
-            {**r, "id": int(r["id"])}
+            {**r, "id": int(r["id"]), "term_id": int(r["term_id"])}
             for r in csv.DictReader(f, schedule_attribute_names)
         ]
     return schedules
