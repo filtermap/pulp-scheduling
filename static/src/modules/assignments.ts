@@ -1,6 +1,6 @@
 export type Assignment = {
   id: number;
-  roster_id: number;
+  schedule_id: number;
   date_name: string;
   member_id: number;
   kinmu_id: number;

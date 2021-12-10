@@ -473,25 +473,26 @@ def write_constraints10(constraints10):
     write_rows(rows, constraints10_filename, constraint10_attribute_names)
 
 
-rosters_filename = "rosters.csv"
-roster_attribute_names = ["id"]
+schedules_filename = "schedules.csv"
+schedule_attribute_names = ["id"]
 
 
-def read_rosters():
-    with open(in_data_directory("rosters.csv")) as f:
+def read_schedules():
+    with open(in_data_directory("schedules.csv")) as f:
         next(f)
-        rosters = [
-            {**r, "id": int(r["id"])} for r in csv.DictReader(f, roster_attribute_names)
+        schedules = [
+            {**r, "id": int(r["id"])}
+            for r in csv.DictReader(f, schedule_attribute_names)
         ]
-    return rosters
+    return schedules
 
 
-def write_rosters(rosters):
-    write_rows(rosters, rosters_filename, roster_attribute_names)
+def write_schedules(schedules):
+    write_rows(schedules, schedules_filename, schedule_attribute_names)
 
 
 assignments_filename = "assignments.csv"
-assignment_attribute_names = ["id", "roster_id", "date_name", "member_id", "kinmu_id"]
+assignment_attribute_names = ["id", "schedule_id", "date_name", "member_id", "kinmu_id"]
 
 
 def read_assignments():
@@ -501,7 +502,7 @@ def read_assignments():
             {
                 **r,
                 "id": int(r["id"]),
-                "roster_id": int(r["roster_id"]),
+                "schedule_id": int(r["schedule_id"]),
                 "member_id": int(r["member_id"]),
                 "kinmu_id": int(r["kinmu_id"]),
             }
@@ -532,7 +533,7 @@ def read_all():
     constraints8 = read_constraints8()
     constraints9 = read_constraints9()
     constraints10 = read_constraints10()
-    rosters = read_rosters()
+    schedules = read_schedules()
     assignments = read_assignments()
     return {
         "members": members,
@@ -552,7 +553,7 @@ def read_all():
         "constraints8": constraints8,
         "constraints9": constraints9,
         "constraints10": constraints10,
-        "rosters": rosters,
+        "schedules": schedules,
         "assignments": assignments,
     }
 

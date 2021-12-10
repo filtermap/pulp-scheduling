@@ -23,7 +23,7 @@ import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
 import * as utils from "../utils";
-import Roster from "./Roster";
+import Schedule from "./Schedule";
 
 type Props = {
   dispatch: Dispatch;
@@ -48,7 +48,7 @@ type SolveInProgress = {
 
 type Solved = {
   type: typeof SOLVED;
-  newRosterAssignments: assignments.Assignment[];
+  newScheduleAssignments: assignments.Assignment[];
 };
 
 type Unsolved = {
@@ -94,7 +94,7 @@ function sortDateNames(dateNames: string[]): string[] {
   );
 }
 
-class Rosters extends React.Component<Props, State> {
+class Schedules extends React.Component<Props, State> {
   public state: State = {
     creationDialogIsOpen: false,
     dialogState: {
@@ -125,7 +125,7 @@ class Rosters extends React.Component<Props, State> {
     }
     this.setState({
       dialogState: {
-        newRosterAssignments: response.result,
+        newScheduleAssignments: response.result,
         type: SOLVED,
       },
     });
@@ -156,11 +156,11 @@ class Rosters extends React.Component<Props, State> {
       },
     });
   };
-  public handleClickCreateRoster = () => {
+  public handleClickCreateSchedule = () => {
     this.setState({ creationDialogIsOpen: false });
     if (this.state.dialogState.type === SOLVED) {
       this.props.dispatch(
-        all.createRoster(this.state.dialogState.newRosterAssignments)
+        all.createSchedule(this.state.dialogState.newScheduleAssignments)
       );
     }
   };
@@ -202,17 +202,17 @@ class Rosters extends React.Component<Props, State> {
           </Dialog>
         );
       case SOLVED: {
-        const { newRosterAssignments } = this.state.dialogState;
-        const newRosterDateNames = sortDateNames(
+        const { newScheduleAssignments } = this.state.dialogState;
+        const newScheduleDateNames = sortDateNames(
           Array.from(
-            new Set(newRosterAssignments.map(({ date_name }) => date_name))
+            new Set(newScheduleAssignments.map(({ date_name }) => date_name))
           )
         );
-        const newRosterMemberIds = Array.from(
-          new Set(newRosterAssignments.map(({ member_id }) => member_id))
+        const newScheduleMemberIds = Array.from(
+          new Set(newScheduleAssignments.map(({ member_id }) => member_id))
         );
-        const newRosterMembers = this.props.all.members.filter(({ id }) =>
-          newRosterMemberIds.includes(id)
+        const newScheduleMembers = this.props.all.members.filter(({ id }) =>
+          newScheduleMemberIds.includes(id)
         );
         return (
           <Dialog
@@ -233,7 +233,7 @@ class Rosters extends React.Component<Props, State> {
                       >
                         \
                       </TableCell>
-                      {newRosterDateNames.map((date_name) => (
+                      {newScheduleDateNames.map((date_name) => (
                         <TableCell
                           key={date_name}
                           size="small"
@@ -245,10 +245,11 @@ class Rosters extends React.Component<Props, State> {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {newRosterMembers.map((member) => {
-                      const newRosterMemberAssignments = newRosterAssignments.filter(
-                        (assignment) => assignment.member_id === member.id
-                      );
+                    {newScheduleMembers.map((member) => {
+                      const newScheduleMemberAssignments =
+                        newScheduleAssignments.filter(
+                          (assignment) => assignment.member_id === member.id
+                        );
                       return (
                         <TableRow key={member.id}>
                           <TableCell
@@ -257,13 +258,13 @@ class Rosters extends React.Component<Props, State> {
                           >
                             {member.name}
                           </TableCell>
-                          {newRosterDateNames.map((date_name) => (
+                          {newScheduleDateNames.map((date_name) => (
                             <TableCell size="small" key={date_name}>
                               {
                                 this.props.all.kinmus.find(
                                   (kinmu) =>
                                     kinmu.id ===
-                                    newRosterMemberAssignments.find(
+                                    newScheduleMemberAssignments.find(
                                       (assignment) =>
                                         assignment.date_name === date_name
                                     )!.kinmu_id
@@ -279,7 +280,7 @@ class Rosters extends React.Component<Props, State> {
               </div>
             </DialogContent>
             <DialogActions>
-              <Button color="primary" onClick={this.handleClickCreateRoster}>
+              <Button color="primary" onClick={this.handleClickCreateSchedule}>
                 追加
               </Button>
               <Button color="primary" onClick={this.handleCloseCreationDialog}>
@@ -347,15 +348,19 @@ class Rosters extends React.Component<Props, State> {
               const constraint0 = this.props.all.constraints0.find(
                 ({ id }) => id === constraint.id
               )!;
-              const constraint0Constraint0Kinmus = this.props.all.constraint0_kinmus
-                .filter(
-                  ({ constraint0_id }) => constraint0_id === constraint0.id
-                )
-                .sort((a, b) => a.sequence_number - b.sequence_number);
-              const constraint0Constraint0KinmuKinmus = constraint0Constraint0Kinmus.map(
-                ({ kinmu_id }) =>
-                  this.props.all.kinmus.find((kinmu) => kinmu.id === kinmu_id)!
-              );
+              const constraint0Constraint0Kinmus =
+                this.props.all.constraint0_kinmus
+                  .filter(
+                    ({ constraint0_id }) => constraint0_id === constraint0.id
+                  )
+                  .sort((a, b) => a.sequence_number - b.sequence_number);
+              const constraint0Constraint0KinmuKinmus =
+                constraint0Constraint0Kinmus.map(
+                  ({ kinmu_id }) =>
+                    this.props.all.kinmus.find(
+                      (kinmu) => kinmu.id === kinmu_id
+                    )!
+                );
               return constraint0Constraint0KinmuKinmus
                 .map((kinmu) => kinmu.name)
                 .join(", ");
@@ -542,9 +547,9 @@ class Rosters extends React.Component<Props, State> {
                 </Button>
               </Toolbar>
             </Grid>
-            {this.props.all.rosters.map((roster) => (
-              <Grid key={roster.id} item={true} xs={12}>
-                <Roster roster={roster} />
+            {this.props.all.schedules.map((schedule) => (
+              <Grid key={schedule.id} item={true} xs={12}>
+                <Schedule schedule={schedule} />
               </Grid>
             ))}
           </Grid>
@@ -594,4 +599,4 @@ const styles = createStyles({
   },
 });
 
-export default withStyles(styles)(connect(mapStateToProps)(Rosters));
+export default withStyles(styles)(connect(mapStateToProps)(Schedules));

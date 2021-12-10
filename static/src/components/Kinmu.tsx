@@ -115,11 +115,11 @@ class Kinmu extends React.Component<Props, State> {
     this.props.dispatch(all.deleteKinmu(this.props.kinmu.id));
   };
   public render() {
-    const kinmuRosterIds = Array.from(
+    const kinmuScheduleIds = Array.from(
       new Set(
         this.props.assignments
           .filter(({ kinmu_id }) => kinmu_id === this.props.kinmu.id)
-          .map(({ roster_id }) => roster_id)
+          .map(({ schedule_id }) => schedule_id)
       )
     );
     const kinmuConstraint0Ids = Array.from(
@@ -233,15 +233,15 @@ class Kinmu extends React.Component<Props, State> {
                 <Typography>{this.props.kinmu.name}</Typography>
               </Grid>
               <Grid item={true} xs={12}>
-                {kinmuRosterIds.length > 0 && (
+                {kinmuScheduleIds.length > 0 && (
                   <DialogContentText>
                     以下の勤務表も削除されます
                   </DialogContentText>
                 )}
-                {kinmuRosterIds.map((roster_id) => (
+                {kinmuScheduleIds.map((schedule_id) => (
                   <Typography
-                    key={roster_id}
-                  >{`勤務表${roster_id}`}</Typography>
+                    key={schedule_id}
+                  >{`勤務表${schedule_id}`}</Typography>
                 ))}
               </Grid>
               <Grid item={true} xs={12}>

@@ -39,7 +39,7 @@ import Constraints9 from "./Constraints9";
 import Groups from "./Groups";
 import Kinmus from "./Kinmus";
 import Members from "./Members";
-import Rosters from "./Rosters";
+import Schedules from "./Schedules";
 import Terms from "./Terms";
 
 const drawerWidth = 240;
@@ -137,7 +137,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
         <div className={classes.toolbar} />
         <Divider />
         <List>
-          <ListItemLink to="/rosters" text="勤務表" />
+          <ListItemLink to="/schedules" text="勤務表" />
         </List>
         <Divider />
         <List>
@@ -247,7 +247,7 @@ class ResponsiveDrawer extends React.Component<Props, State> {
         <div className={classes.content}>
           <div className={classes.toolbar} />
           <Routes>
-            <Route path="/rosters" element={<Rosters />} />
+            <Route path="/schedules" element={<Schedules />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/members" element={<Members />} />
             <Route path="/kinmus" element={<Kinmus />} />

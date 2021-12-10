@@ -120,11 +120,11 @@ class Member extends React.Component<Props, State> {
     this.props.dispatch(all.deleteMember(this.props.member.id));
   };
   public render() {
-    const memberRosterIds = Array.from(
+    const memberScheduleIds = Array.from(
       new Set(
         this.props.assignments
           .filter(({ member_id }) => member_id === this.props.member.id)
-          .map(({ roster_id }) => roster_id)
+          .map(({ schedule_id }) => schedule_id)
       )
     );
     const memberConstraints3 = this.props.constraints3.filter(
@@ -267,15 +267,15 @@ class Member extends React.Component<Props, State> {
                 </Typography>
               </Grid>
               <Grid item={true} xs={12}>
-                {memberRosterIds.length > 0 && (
+                {memberScheduleIds.length > 0 && (
                   <DialogContentText>
                     以下の勤務表の割り当ても削除されます
                   </DialogContentText>
                 )}
-                {memberRosterIds.map((roster_id) => (
+                {memberScheduleIds.map((schedule_id) => (
                   <Typography
-                    key={roster_id}
-                  >{`勤務表${roster_id}`}</Typography>
+                    key={schedule_id}
+                  >{`勤務表${schedule_id}`}</Typography>
                 ))}
               </Grid>
               <Grid item={true} xs={12}>

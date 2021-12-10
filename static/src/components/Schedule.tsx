@@ -31,12 +31,12 @@ import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
-import * as rosters from "../modules/rosters";
+import * as schedules from "../modules/schedules";
 import * as utils from "../utils";
 
 type Props = {
   dispatch: Dispatch;
-  roster: rosters.Roster;
+  schedule: schedules.Schedule;
   assignments: assignments.Assignment[];
   members: members.Member[];
   kinmus: kinmus.Kinmu[];
@@ -54,7 +54,7 @@ function sortDateNames(dateNames: string[]): string[] {
   );
 }
 
-class Roster extends React.Component<Props, State> {
+class Schedule extends React.Component<Props, State> {
   public state: State = {
     deletionDialogIsOpen: false,
     expanded: false,
@@ -68,18 +68,18 @@ class Roster extends React.Component<Props, State> {
   public handleCloseDeletionDialog = () => {
     this.setState({ deletionDialogIsOpen: false });
   };
-  public handleClickDeleteRoster = () => {
+  public handleClickDeleteSchedule = () => {
     this.setState({ deletionDialogIsOpen: false });
-    this.props.dispatch(all.deleteRoster(this.props.roster.id));
+    this.props.dispatch(all.deleteSchedule(this.props.schedule.id));
   };
   public handleClickExportToCSV = async () => {
-    const assignments_by_roster_id = this.props.assignments.filter(
-      (assignment) => assignment.roster_id === this.props.roster.id
+    const assignments_by_schedule_id = this.props.assignments.filter(
+      (assignment) => assignment.schedule_id === this.props.schedule.id
     );
     const csv = iconv.encode(
       (
         await utils.sendJSONRPCRequest("download_csv", [
-          assignments_by_roster_id,
+          assignments_by_schedule_id,
           this.props.members,
           this.props.kinmus,
         ])
@@ -87,24 +87,24 @@ class Roster extends React.Component<Props, State> {
       "Shift_JIS"
     );
     const a = document.createElement("a");
-    a.download = `勤務表${this.props.roster.id}.csv`;
+    a.download = `勤務表${this.props.schedule.id}.csv`;
     a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
     a.click();
   };
   public render() {
-    const roster_assignments = this.props.assignments.filter(
-      (assignment) => assignment.roster_id === this.props.roster.id
+    const schedule_assignments = this.props.assignments.filter(
+      (assignment) => assignment.schedule_id === this.props.schedule.id
     );
-    const roster_date_names = sortDateNames(
+    const schedule_date_names = sortDateNames(
       Array.from(
         new Set(this.props.assignments.map(({ date_name }) => date_name))
       )
     );
-    const roster_member_ids = Array.from(
-      new Set(roster_assignments.map(({ member_id }) => member_id))
+    const schedule_member_ids = Array.from(
+      new Set(schedule_assignments.map(({ member_id }) => member_id))
     );
-    const roster_members = this.props.members.filter(({ id }) =>
-      roster_member_ids.includes(id)
+    const schedule_members = this.props.members.filter(({ id }) =>
+      schedule_member_ids.includes(id)
     );
     return (
       <>
@@ -123,7 +123,7 @@ class Roster extends React.Component<Props, State> {
                 </IconButton>
               </>
             }
-            title={`勤務表${this.props.roster.id}`}
+            title={`勤務表${this.props.schedule.id}`}
           />
           <Collapse
             in={this.state.expanded}
@@ -143,7 +143,7 @@ class Roster extends React.Component<Props, State> {
                           >
                             \
                           </TableCell>
-                          {roster_date_names.map((date_name) => (
+                          {schedule_date_names.map((date_name) => (
                             <TableCell
                               key={date_name}
                               size="small"
@@ -155,10 +155,11 @@ class Roster extends React.Component<Props, State> {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {roster_members.map((member) => {
-                          const roster_member_assignments = roster_assignments.filter(
-                            (assignment) => assignment.member_id === member.id
-                          );
+                        {schedule_members.map((member) => {
+                          const schedule_member_assignments =
+                            schedule_assignments.filter(
+                              (assignment) => assignment.member_id === member.id
+                            );
                           return (
                             <TableRow key={member.id}>
                               <TableCell
@@ -167,13 +168,13 @@ class Roster extends React.Component<Props, State> {
                               >
                                 {member.name}
                               </TableCell>
-                              {roster_date_names.map((date_name) => (
+                              {schedule_date_names.map((date_name) => (
                                 <TableCell size="small" key={date_name}>
                                   {
                                     this.props.kinmus.find(
                                       (kinmu) =>
                                         kinmu.id ===
-                                        roster_member_assignments.find(
+                                        schedule_member_assignments.find(
                                           (assignment) =>
                                             assignment.date_name === date_name
                                         )!.kinmu_id
@@ -209,10 +210,10 @@ class Roster extends React.Component<Props, State> {
           <DialogTitle>勤務表の削除</DialogTitle>
           <DialogContent>
             <DialogContentText>この勤務表を削除します</DialogContentText>
-            <Typography>{`勤務表${this.props.roster.id}`}</Typography>
+            <Typography>{`勤務表${this.props.schedule.id}`}</Typography>
           </DialogContent>
           <DialogActions>
-            <Button color="primary" onClick={this.handleClickDeleteRoster}>
+            <Button color="primary" onClick={this.handleClickDeleteSchedule}>
               削除
             </Button>
             <Button color="primary" onClick={this.handleCloseDeletionDialog}>
@@ -268,4 +269,4 @@ const styles = (theme: Theme) =>
     },
   });
 
-export default withStyles(styles)(connect(mapStateToProps)(Roster));
+export default withStyles(styles)(connect(mapStateToProps)(Schedule));

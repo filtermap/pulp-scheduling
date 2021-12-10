@@ -17,20 +17,20 @@ import * as group_members from "./group_members";
 import * as groups from "./groups";
 import * as kinmus from "./kinmus";
 import * as members from "./members";
-import * as rosters from "./rosters";
+import * as schedules from "./schedules";
 import * as terms from "./terms";
 
 const REPLACE_ALL = "REPLACE_ALL";
 const CREATE_MEMBER = "CREATE_MEMBER";
 const CREATE_GROUP = "CREATE_GROUP";
 const CREATE_CONSTRAINT0 = "CREATE_CONSTRAINT0";
-const CREATE_ROSTER = "CREATE_ROSTER";
+const CREATE_SCHEDULE = "CREATE_SCHEDULE";
 const DELETE_MEMBER = "DELETE_MEMBER";
 const DELETE_GROUP = "DELETE_GROUP";
 const DELETE_KINMU = "DELETE_KINMU";
 const DELETE_CONSTRAINT0 = "DELETE_CONSTRAINT0";
 const DELETE_CONSTRAINT0_KINMU = "DELETE_CONSTRAINT0_KINMU";
-const DELETE_ROSTER = "DELETE_ROSTER";
+const DELETE_SCHEDULE = "DELETE_SCHEDULE";
 
 export type All = {
   members: members.Member[];
@@ -50,7 +50,7 @@ export type All = {
   constraints8: constraints8.Constraint8[];
   constraints9: constraints9.Constraint9[];
   constraints10: constraints10.Constraint10[];
-  rosters: rosters.Roster[];
+  schedules: schedules.Schedule[];
   assignments: assignments.Assignment[];
 };
 
@@ -79,8 +79,8 @@ type CreateConstraint0 = {
   kinmu_ids: number[];
 };
 
-type CreateRoster = {
-  type: typeof CREATE_ROSTER;
+type CreateSchedule = {
+  type: typeof CREATE_SCHEDULE;
   new_assignments: assignments.Assignment[];
 };
 
@@ -109,8 +109,8 @@ type DeleteConstraint0Kinmu = {
   id: number;
 };
 
-type DeleteRoster = {
-  type: typeof DELETE_ROSTER;
+type DeleteSchedule = {
+  type: typeof DELETE_SCHEDULE;
   id: number;
 };
 
@@ -119,13 +119,13 @@ type Action =
   | CreateMember
   | CreateGroup
   | CreateConstraint0
-  | CreateRoster
+  | CreateSchedule
   | DeleteMember
   | DeleteGroup
   | DeleteKinmu
   | DeleteConstraint0
   | DeleteConstraint0Kinmu
-  | DeleteRoster;
+  | DeleteSchedule;
 
 export function replaceAll(all: All): ReplaceAll {
   return {
@@ -171,12 +171,12 @@ export function createConstraint0(
   };
 }
 
-export function createRoster(
+export function createSchedule(
   new_assignments: assignments.Assignment[]
-): CreateRoster {
+): CreateSchedule {
   return {
     new_assignments,
-    type: CREATE_ROSTER,
+    type: CREATE_SCHEDULE,
   };
 }
 
@@ -215,39 +215,37 @@ export function deleteConstraint0Kinmu(id: number): DeleteConstraint0Kinmu {
   };
 }
 
-export function deleteRoster(id: number): DeleteRoster {
+export function deleteSchedule(id: number): DeleteSchedule {
   return {
     id,
-    type: DELETE_ROSTER,
+    type: DELETE_SCHEDULE,
   };
 }
 
 export type State = All;
 
-const combinedReducer: (
-  state: State,
-  action: Action
-) => State = combineReducers({
-  assignments: assignments.reducer,
-  constraint0_kinmus: constraint0_kinmus.reducer,
-  constraints0: constraints0.reducer,
-  constraints1: constraints1.reducer,
-  constraints10: constraints10.reducer,
-  constraints2: constraints2.reducer,
-  constraints3: constraints3.reducer,
-  constraints4: constraints4.reducer,
-  constraints5: constraints5.reducer,
-  constraints6: constraints6.reducer,
-  constraints7: constraints7.reducer,
-  constraints8: constraints8.reducer,
-  constraints9: constraints9.reducer,
-  group_members: group_members.reducer,
-  groups: groups.reducer,
-  kinmus: kinmus.reducer,
-  members: members.reducer,
-  rosters: rosters.reducer,
-  terms: terms.reducer,
-});
+const combinedReducer: (state: State, action: Action) => State =
+  combineReducers({
+    assignments: assignments.reducer,
+    constraint0_kinmus: constraint0_kinmus.reducer,
+    constraints0: constraints0.reducer,
+    constraints1: constraints1.reducer,
+    constraints10: constraints10.reducer,
+    constraints2: constraints2.reducer,
+    constraints3: constraints3.reducer,
+    constraints4: constraints4.reducer,
+    constraints5: constraints5.reducer,
+    constraints6: constraints6.reducer,
+    constraints7: constraints7.reducer,
+    constraints8: constraints8.reducer,
+    constraints9: constraints9.reducer,
+    group_members: group_members.reducer,
+    groups: groups.reducer,
+    kinmus: kinmus.reducer,
+    members: members.reducer,
+    schedules: schedules.reducer,
+    terms: terms.reducer,
+  });
 
 function crossSliceReducer(state: State, action: Action): State {
   switch (action.type) {
@@ -314,8 +312,9 @@ function crossSliceReducer(state: State, action: Action): State {
         }),
       };
     }
-    case CREATE_ROSTER: {
-      const roster_id = Math.max(0, ...state.rosters.map(({ id }) => id)) + 1;
+    case CREATE_SCHEDULE: {
+      const schedule_id =
+        Math.max(0, ...state.schedules.map(({ id }) => id)) + 1;
       const assignment_id =
         Math.max(0, ...state.assignments.map(({ id }) => id)) + 1;
       return {
@@ -324,18 +323,18 @@ function crossSliceReducer(state: State, action: Action): State {
           action.new_assignments.map((new_assignment, index) => ({
             ...new_assignment,
             id: assignment_id + index,
-            roster_id,
+            schedule_id,
           }))
         ),
-        rosters: state.rosters.concat({ id: roster_id }),
+        schedules: state.schedules.concat({ id: schedule_id }),
       };
     }
     case DELETE_MEMBER: {
       const filtered_assignments = state.assignments.filter(
         ({ member_id }) => member_id !== action.id
       );
-      const filtered_assignment_roster_ids = Array.from(
-        new Set(filtered_assignments.map(({ roster_id }) => roster_id))
+      const filtered_assignment_schedule_ids = Array.from(
+        new Set(filtered_assignments.map(({ schedule_id }) => schedule_id))
       );
       return {
         ...state,
@@ -356,8 +355,8 @@ function crossSliceReducer(state: State, action: Action): State {
           ({ member_id }) => member_id !== action.id
         ),
         members: state.members.filter(({ id }) => id !== action.id),
-        rosters: state.rosters.filter(({ id }) =>
-          filtered_assignment_roster_ids.includes(id)
+        schedules: state.schedules.filter(({ id }) =>
+          filtered_assignment_schedule_ids.includes(id)
         ),
       };
     }
@@ -383,17 +382,17 @@ function crossSliceReducer(state: State, action: Action): State {
             .map(({ constraint0_id }) => constraint0_id)
         )
       );
-      const deleted_roster_ids = Array.from(
+      const deleted_schedule_ids = Array.from(
         new Set(
           state.assignments
             .filter(({ kinmu_id }) => kinmu_id === action.id)
-            .map(({ roster_id }) => roster_id)
+            .map(({ schedule_id }) => schedule_id)
         )
       );
       return {
         ...state,
         assignments: state.assignments.filter(
-          (assignment) => !deleted_roster_ids.includes(assignment.roster_id)
+          (assignment) => !deleted_schedule_ids.includes(assignment.schedule_id)
         ),
         constraint0_kinmus: state.constraint0_kinmus.filter(
           ({ kinmu_id }) => kinmu_id !== action.id
@@ -432,8 +431,8 @@ function crossSliceReducer(state: State, action: Action): State {
           (c) => c.kinmu_id !== action.id
         ),
         kinmus: state.kinmus.filter(({ id }) => id !== action.id),
-        rosters: state.rosters.filter(
-          ({ id }) => !deleted_roster_ids.includes(id)
+        schedules: state.schedules.filter(
+          ({ id }) => !deleted_schedule_ids.includes(id)
         ),
       };
     }
@@ -478,13 +477,13 @@ function crossSliceReducer(state: State, action: Action): State {
         ),
       };
     }
-    case DELETE_ROSTER:
+    case DELETE_SCHEDULE:
       return {
         ...state,
         assignments: state.assignments.filter(
-          ({ roster_id }) => roster_id !== action.id
+          ({ schedule_id }) => schedule_id !== action.id
         ),
-        rosters: state.rosters.filter(({ id }) => id !== action.id),
+        schedules: state.schedules.filter(({ id }) => id !== action.id),
       };
   }
   return state;

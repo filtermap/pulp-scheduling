@@ -1,8 +1,8 @@
-export type Roster = {
+export type Schedule = {
   id: number;
 };
 
-export type State = Roster[];
+export type State = Schedule[];
 
 const initialState: State = [];
 

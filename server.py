@@ -51,7 +51,7 @@ def write_all(all):
     scheduling.write_constraints8(all["constraints8"])
     scheduling.write_constraints9(all["constraints9"])
     scheduling.write_constraints10(all["constraints10"])
-    scheduling.write_rosters(all["rosters"])
+    scheduling.write_schedules(all["schedules"])
     scheduling.write_assignments(all["assignments"])
     return True
 
@@ -63,12 +63,14 @@ def solve(all):
     except scheduling.UnsolvedException as e:
         raise jsonrpc.exceptions.JSONRPCDispatchException(code=0, message=e.args[0])
 
+
 @api.dispatcher.add_method
 def pursue(all):
     try:
         return scheduling.pursue(all)
     except scheduling.UnpursuedException as e:
         raise jsonrpc.exceptions.JSONRPCDispatchException(code=1, message=e.args[0])
+
 
 @api.dispatcher.add_method
 def download_csv(assignments, members, kinmus):
