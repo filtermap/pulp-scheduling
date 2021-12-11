@@ -1,41 +1,15 @@
-import CssBaseline from "@mui/material/CssBaseline";
-import {
-  ThemeProvider,
-  StyledEngineProvider,
-  createTheme,
-} from "@mui/material/styles";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-import { BrowserRouter as Router } from "react-router-dom";
 import "ts-polyfill/lib/es2015-core";
 import "ts-polyfill/lib/es2016-array-include";
 import "ts-polyfill/lib/es2017-object";
 import "ts-polyfill/lib/es2017-string";
-import "typeface-roboto";
-import { blue, teal } from "@mui/material/colors";
-import Layout from "./components/Layout";
-import * as store from "./modules/store";
+import App from "./App";
 
 async function main() {
-  const theme = createTheme({
-    palette: {
-      primary: blue,
-      secondary: teal,
-    },
-  });
   ReactDOM.render(
     <React.StrictMode>
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Provider store={store.store}>
-            <Router>
-              <Layout />
-            </Router>
-          </Provider>
-        </ThemeProvider>
-      </StyledEngineProvider>
+      <App />
     </React.StrictMode>,
     document.getElementById("root") as HTMLElement
   );

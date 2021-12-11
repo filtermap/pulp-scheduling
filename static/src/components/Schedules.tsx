@@ -53,7 +53,7 @@ const classes = {
 };
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")({
+const Root = styled("div")(({ theme }) => ({
   [`& .${classes.dialogTableContent}`]: {
     display: "flex",
   },
@@ -64,12 +64,12 @@ const Root = styled("div")({
     padding: 8,
   },
   [`& .${classes.leftHeaderCell}`]: {
-    background: "white",
+    background: theme.palette.background.default,
     left: 0,
     position: "sticky",
   },
   [`& .${classes.leftTopHeaderCell}`]: {
-    background: "white",
+    background: theme.palette.background.default,
     left: 0,
     position: "sticky",
     top: 0,
@@ -79,12 +79,12 @@ const Root = styled("div")({
     flex: 1,
   },
   [`& .${classes.topHeaderCell}`]: {
-    background: "white",
+    background: theme.palette.background.default,
     position: "sticky",
     top: 0,
     zIndex: 1,
   },
-});
+}));
 
 const FIRST = "FIRST";
 const SOLVE_IN_PROGRESS = "SOLVE_IN_PROGRESS";

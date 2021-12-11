@@ -53,12 +53,12 @@ const Root = styled("div")(({ theme }) => ({
     transform: "rotate(180deg)",
   },
   [`& .${classes.leftHeaderCell}`]: {
-    background: "white",
+    background: theme.palette.background.default,
     left: 0,
     position: "sticky",
   },
   [`& .${classes.leftTopHeaderCell}`]: {
-    background: "white",
+    background: theme.palette.background.default,
     left: 0,
     position: "sticky",
     top: 0,
@@ -69,7 +69,7 @@ const Root = styled("div")(({ theme }) => ({
     overflow: "auto",
   },
   [`& .${classes.topHeaderCell}`]: {
-    background: "white",
+    background: theme.palette.background.default,
     position: "sticky",
     top: 0,
     zIndex: 1,
