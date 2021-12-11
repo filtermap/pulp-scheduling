@@ -116,11 +116,13 @@ function Kinmu(props: Props) {
     setState((state) => ({ ...state, expanded: !state.expanded }));
   };
   const handleChangeKinmuIsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      kinmus.updateKinmuIsEnabled({ id: props.kinmu.id, is_enabled: checked })
+      kinmus.updateKinmuIsEnabled({
+        id: props.kinmu.id,
+        is_enabled: event.target.checked,
+      })
     );
   };
   const validate = (kinmuName: string): ErrorMessages => {

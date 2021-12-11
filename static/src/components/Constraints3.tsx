@@ -77,10 +77,12 @@ function Constraints3(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
   const handleChangeNewConstraint3IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newConstraint3IsEnabled: checked }));
+    setState((state) => ({
+      ...state,
+      newConstraint3IsEnabled: event.target.checked,
+    }));
   };
   const handleChangeNewConstraint3MemberId = (
     event: React.ChangeEvent<HTMLInputElement>

@@ -70,10 +70,12 @@ function Constraints8(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
   const handleChangeNewConstraint8IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newConstraint8IsEnabled: checked }));
+    setState((state) => ({
+      ...state,
+      newConstraint8IsEnabled: event.target.checked,
+    }));
   };
   const handleChangeNewConstraint8KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>

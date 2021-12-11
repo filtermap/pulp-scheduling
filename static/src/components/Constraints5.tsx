@@ -71,10 +71,12 @@ function Constraints5(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
   const handleChangeNewConstraint5IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newConstraint5IsEnabled: checked }));
+    setState((state) => ({
+      ...state,
+      newConstraint5IsEnabled: event.target.checked,
+    }));
   };
   const handleChangeNewConstraint5KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>

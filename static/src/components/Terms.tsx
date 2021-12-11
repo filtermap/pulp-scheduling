@@ -56,10 +56,9 @@ function Terms(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
   const handleChangeNewTerm1IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newTermIsEnabled: checked }));
+    setState((state) => ({ ...state, newTermIsEnabled: event.target.checked }));
   };
   const validate = (
     newTermStartDateName: string,

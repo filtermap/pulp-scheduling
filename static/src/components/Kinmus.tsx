@@ -61,10 +61,12 @@ function Kinmus(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
   const handleChangeNewKinmuIsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newKinmuIsEnabled: checked }));
+    setState((state) => ({
+      ...state,
+      newKinmuIsEnabled: event.target.checked,
+    }));
   };
   const validate = (newKinmuName: string): ErrorMessages => {
     const errorMessages: ErrorMessages = {

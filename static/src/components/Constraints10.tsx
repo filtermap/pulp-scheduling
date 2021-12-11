@@ -83,10 +83,12 @@ function Constraints10(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
   const handleChangeNewConstraint10IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newConstraint10IsEnabled: checked }));
+    setState((state) => ({
+      ...state,
+      newConstraint10IsEnabled: event.target.checked,
+    }));
   };
   const handleChangeNewConstraint10MemberId = (
     event: React.ChangeEvent<HTMLInputElement>

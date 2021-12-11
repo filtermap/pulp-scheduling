@@ -65,10 +65,12 @@ function Constraints0(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
   const handleChangeNewConstraint0IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newConstraint0IsEnabled: checked }));
+    setState((state) => ({
+      ...state,
+      newConstraint0IsEnabled: event.target.checked,
+    }));
   };
   const handleClickCreateNewConstraint0Constraint0Kinmu = (id: number) => {
     return () => {

@@ -82,11 +82,13 @@ function Group(props: Props) {
     setState((state) => ({ ...state, expanded: !state.expanded }));
   };
   const handleChangeGroupIsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      groups.updateGroupIsEnabled({ id: props.group.id, is_enabled: checked })
+      groups.updateGroupIsEnabled({
+        id: props.group.id,
+        is_enabled: event.target.checked,
+      })
     );
   };
   const validate = (groupName: string): ErrorMessages => {
@@ -106,8 +108,8 @@ function Group(props: Props) {
     );
   };
   const handleChangeGroupMember = (memberId: number) => {
-    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      if (checked) {
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.checked) {
         dispatch(
           group_members.createGroupMember({
             group_id: props.group.id,

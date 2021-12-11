@@ -59,13 +59,12 @@ function Constraint5(props: Props) {
     setState((state) => ({ ...state, expanded: !state.expanded }));
   };
   const handleChangeConstraint5IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
       constraints5.updateConstraint5IsEnabled({
         id: props.constraint5.id,
-        is_enabled: checked,
+        is_enabled: event.target.checked,
       })
     );
   };

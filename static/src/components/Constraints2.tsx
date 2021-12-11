@@ -114,10 +114,12 @@ function Constraints2(props: Props) {
     return errorMessages;
   };
   const handleChangeNewConstraint2IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newConstraint2IsEnabled: checked }));
+    setState((state) => ({
+      ...state,
+      newConstraint2IsEnabled: event.target.checked,
+    }));
   };
   const handleChangeNewConstraint2StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>

@@ -76,11 +76,13 @@ function Term(props: Props) {
     setState((state) => ({ ...state, expanded: !state.expanded }));
   };
   const handleChangeTermIsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      terms.updateTermIsEnabled({ id: props.term.id, is_enabled: checked })
+      terms.updateTermIsEnabled({
+        id: props.term.id,
+        is_enabled: event.target.checked,
+      })
     );
   };
   const validate = (

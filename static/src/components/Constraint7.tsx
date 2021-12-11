@@ -59,13 +59,12 @@ function Constraint7(props: Props) {
     setState((state) => ({ ...state, expanded: !state.expanded }));
   };
   const handleChangeConstraint7IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
       constraints7.updateConstraint7IsEnabled({
         id: props.constraint7.id,
-        is_enabled: checked,
+        is_enabled: event.target.checked,
       })
     );
   };

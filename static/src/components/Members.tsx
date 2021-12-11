@@ -71,10 +71,12 @@ function Members(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
   const handleChangeNewMemberIsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newMemberIsEnabled: checked }));
+    setState((state) => ({
+      ...state,
+      newMemberIsEnabled: event.target.checked,
+    }));
   };
   const validate = (newMemberName: string): ErrorMessages => {
     const errorMessages: ErrorMessages = {
@@ -91,8 +93,8 @@ function Members(props: Props) {
     setState((state) => ({ ...state, newMemberName: event.target.value }));
   };
   const handleChangeNewGroupMember = (groupId: number) => {
-    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      if (checked) {
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.checked) {
         setState((state) => ({
           ...state,
           newMemberGroupIds: state.newMemberGroupIds.concat(groupId),

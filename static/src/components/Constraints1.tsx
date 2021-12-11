@@ -87,10 +87,12 @@ function Constraints1(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
   const handleChangeNewConstraint1IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newConstraint1IsEnabled: checked }));
+    setState((state) => ({
+      ...state,
+      newConstraint1IsEnabled: event.target.checked,
+    }));
   };
   const validate = (
     newConstraint1StartDateName: string,

@@ -77,10 +77,12 @@ function Constraints4(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
   const handleChangeNewConstraint4IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newConstraint4IsEnabled: checked }));
+    setState((state) => ({
+      ...state,
+      newConstraint4IsEnabled: event.target.checked,
+    }));
   };
   const handleChangeNewConstraint4MemberId = (
     event: React.ChangeEvent<HTMLInputElement>

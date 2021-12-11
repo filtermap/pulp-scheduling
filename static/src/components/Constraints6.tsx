@@ -70,10 +70,12 @@ function Constraints6(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
   const handleChangeNewConstraint6IsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newConstraint6IsEnabled: checked }));
+    setState((state) => ({
+      ...state,
+      newConstraint6IsEnabled: event.target.checked,
+    }));
   };
   const handleChangeNewConstraint6KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>

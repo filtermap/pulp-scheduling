@@ -94,13 +94,12 @@ function Member(props: Props) {
     setState((state) => ({ ...state, expanded: !state.expanded }));
   };
   const handleChangeMemberIsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
       members.updateMemberIsEnabled({
         id: props.member.id,
-        is_enabled: checked,
+        is_enabled: event.target.checked,
       })
     );
   };
@@ -124,8 +123,8 @@ function Member(props: Props) {
     );
   };
   const handleChangeGroupMember = (groupId: number) => {
-    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      if (checked) {
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.checked) {
         dispatch(
           group_members.createGroupMember({
             group_id: groupId,
