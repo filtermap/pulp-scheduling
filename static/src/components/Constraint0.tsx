@@ -107,6 +107,7 @@ class Constraint0 extends React.Component<Props, State> {
       .sort((a, b) => a.sequence_number - b.sequence_number);
     const constraint0Constraint0KinmuKinmus = constraint0Constraint0Kinmus.map(
       ({ kinmu_id }) =>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.props.kinmus.find((kinmu) => kinmu.id === kinmu_id)!
     );
     const relativesAreEnabled = constraint0Constraint0KinmuKinmus.every(

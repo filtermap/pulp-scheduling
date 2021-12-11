@@ -50,6 +50,7 @@ type State = {
 function sortDateNames(dateNames: string[]): string[] {
   return [...dateNames].sort(
     (a, b) =>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       utils.stringToDate(a)!.getTime() - utils.stringToDate(b)!.getTime()
   );
 }
@@ -171,9 +172,11 @@ class Schedule extends React.Component<Props, State> {
                               {schedule_date_names.map((date_name) => (
                                 <TableCell size="small" key={date_name}>
                                   {
+                                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                     this.props.kinmus.find(
                                       (kinmu) =>
                                         kinmu.id ===
+                                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                         schedule_member_assignments.find(
                                           (assignment) =>
                                             assignment.date_name === date_name

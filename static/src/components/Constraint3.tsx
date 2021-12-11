@@ -122,9 +122,11 @@ class Constraint3 extends React.Component<Props, State> {
     );
   };
   public render() {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const constraint3Member = this.props.members.find(
       ({ id }) => id === this.props.constraint3.member_id
     )!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const constraint3Kinmu = this.props.kinmus.find(
       ({ id }) => id === this.props.constraint3.kinmu_id
     )!;

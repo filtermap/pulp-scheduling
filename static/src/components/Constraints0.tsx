@@ -101,9 +101,7 @@ class Constraints0 extends React.Component<Props, State> {
       });
     };
   }
-  public handleClickCreateConstraint0 = (
-    _: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  public handleClickCreateConstraint0 = () => {
     this.setState({ creationDialogIsOpen: false });
     this.props.dispatch(
       all.createConstraint0(
@@ -164,6 +162,7 @@ class Constraints0 extends React.Component<Props, State> {
             const newConstraint0Constraint0KinmuKinmus =
               this.state.newConstraint0Constraint0KinmuKinmuIds.map(
                 (kinmu_id) =>
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   this.props.kinmus.find(({ id }) => id === kinmu_id)!
               );
             const relativesAreEnabled =

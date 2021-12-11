@@ -145,6 +145,7 @@ class Constraint9 extends React.Component<Props, State> {
     );
   };
   public render() {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const constraint9Member = this.props.members.find(
       ({ id }) => id === this.props.constraint9.member_id
     )!;
@@ -172,6 +173,7 @@ class Constraint9 extends React.Component<Props, State> {
           return stopDate >= constraint9StopDate;
         })
       : false;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const constraint9Kinmu = this.props.kinmus.find(
       ({ id }) => id === this.props.constraint9.kinmu_id
     )!;

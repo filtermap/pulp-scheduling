@@ -182,6 +182,7 @@ class Constraints9 extends React.Component<Props, State> {
           </Dialog>
         ) : (
           (() => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const newConstraint9Member = this.props.members.find(
               ({ id }) => id === this.state.newConstraint9MemberId
             )!;
@@ -209,6 +210,7 @@ class Constraints9 extends React.Component<Props, State> {
                   return stopDate >= newConstraint9StopDate;
                 })
               : false;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const newConstraint9Kinmu = this.props.kinmus.find(
               ({ id }) => id === this.state.newConstraint9KinmuId
             )!;

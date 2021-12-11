@@ -110,6 +110,7 @@ class Constraint8 extends React.Component<Props, State> {
     );
   };
   public render() {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const constraint8Kinmu = this.props.kinmus.find(
       ({ id }) => id === this.props.constraint8.kinmu_id
     )!;

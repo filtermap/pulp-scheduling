@@ -143,6 +143,7 @@ class Constraints8 extends React.Component<Props, State> {
           </Dialog>
         ) : (
           (() => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const newConstraint8Kinmu = this.props.kinmus.find(
               ({ id }) => id === this.state.newConstraint8KinmuId
             )!;

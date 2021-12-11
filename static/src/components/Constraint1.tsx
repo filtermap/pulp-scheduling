@@ -187,9 +187,11 @@ class Constraint1 extends React.Component<Props, State> {
           return stopDate >= constraint1StopDate;
         })
       : false;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const constraint1Kinmu = this.props.kinmus.find(
       ({ id }) => id === this.props.constraint1.kinmu_id
     )!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const constraint1Group = this.props.groups.find(
       ({ id }) => id === this.props.constraint1.group_id
     )!;

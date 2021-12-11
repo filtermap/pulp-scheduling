@@ -160,9 +160,11 @@ class Constraints3 extends React.Component<Props, State> {
           </Dialog>
         ) : (
           (() => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const newConstraint3Member = this.props.members.find(
               ({ id }) => id === this.state.newConstraint3MemberId
             )!;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const newConstraint3Kinmu = this.props.kinmus.find(
               ({ id }) => id === this.state.newConstraint3KinmuId
             )!;

@@ -154,6 +154,7 @@ class Group extends React.Component<Props, State> {
               )
               .map(
                 (group_member) =>
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   this.props.members.find(
                     (member) => member.id === group_member.member_id
                   )!.name
@@ -240,6 +241,7 @@ class Group extends React.Component<Props, State> {
                     )
                     .map(
                       (group_member) =>
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         this.props.members.find(
                           (member) => member.id === group_member.member_id
                         )!.name
@@ -258,6 +260,7 @@ class Group extends React.Component<Props, State> {
                   <Typography key={c.id}>{`${c.start_date_name}から${
                     c.stop_date_name
                   }までの${
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     this.props.kinmus.find(({ id }) => id === c.kinmu_id)!.name
                   }に${this.props.group.name}から${
                     c.min_number_of_assignments
@@ -267,6 +270,7 @@ class Group extends React.Component<Props, State> {
                   <Typography key={c.id}>{`${c.start_date_name}から${
                     c.stop_date_name
                   }までの${
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     this.props.kinmus.find(({ id }) => id === c.kinmu_id)!.name
                   }に${this.props.group.name}から${
                     c.max_number_of_assignments

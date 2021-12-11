@@ -110,6 +110,7 @@ class Constraint5 extends React.Component<Props, State> {
     );
   };
   public render() {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const constraint5Kinmu = this.props.kinmus.find(
       ({ id }) => id === this.props.constraint5.kinmu_id
     )!;
