@@ -2,6 +2,7 @@ const UPDATE_CONSTRAINT0_IS_ENABLED = "UPDATE_CONSTRAINT0_IS_ENABLED";
 
 export type Constraint0 = {
   id: number;
+  term_id: number;
   is_enabled: boolean;
 };
 

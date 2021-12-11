@@ -3,6 +3,7 @@ const UPDATE_MEMBER_NAME = "UPDATE_MEMBER_NAME";
 
 export type Member = {
   id: number;
+  term_id: number;
   is_enabled: boolean;
   name: string;
 };

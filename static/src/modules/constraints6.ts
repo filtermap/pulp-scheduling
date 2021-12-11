@@ -7,6 +7,7 @@ const DELETE_CONSTRAINT6 = "DELETE_CONSTRAINT6";
 
 export type Constraint6 = {
   id: number;
+  term_id: number;
   is_enabled: boolean;
   kinmu_id: number;
   max_number_of_days: number;

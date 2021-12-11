@@ -1,5 +1,6 @@
 export type Schedule = {
   id: number;
+  term_id: number;
 };
 
 export type State = Schedule[];

@@ -8,6 +8,7 @@ const DELETE_CONSTRAINT3 = "DELETE_CONSTRAINT3";
 
 export type Constraint3 = {
   id: number;
+  term_id: number;
   is_enabled: boolean;
   member_id: number;
   kinmu_id: number;

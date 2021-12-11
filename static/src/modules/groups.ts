@@ -3,6 +3,7 @@ const UPDATE_GROUP_NAME = "UPDATE_GROUP_NAME";
 
 export type Group = {
   id: number;
+  term_id: number;
   is_enabled: boolean;
   name: string;
 };

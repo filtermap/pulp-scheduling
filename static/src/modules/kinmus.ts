@@ -4,6 +4,7 @@ const UPDATE_KINMU_NAME = "UPDATE_KINMU_NAME";
 
 export type Kinmu = {
   id: number;
+  term_id: number;
   is_enabled: boolean;
   name: string;
 };

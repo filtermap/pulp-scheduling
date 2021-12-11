@@ -9,6 +9,7 @@ const DELETE_CONSTRAINT10 = "DELETE_CONSTRAINT10";
 
 export type Constraint10 = {
   id: number;
+  term_id: number;
   is_enabled: boolean;
   member_id: number;
   start_date_name: string;
