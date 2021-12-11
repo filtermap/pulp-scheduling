@@ -270,8 +270,8 @@ class Constraint9 extends React.Component<Props, State> {
                         {
                           <span
                             className={classnames({
-                              [this.props.classes
-                                .lineThrough]: !member.is_enabled,
+                              [this.props.classes.lineThrough]:
+                                !member.is_enabled,
                             })}
                           >
                             {member.name}
@@ -293,8 +293,8 @@ class Constraint9 extends React.Component<Props, State> {
                     }}
                     inputProps={{
                       className: classnames({
-                        [this.props.classes
-                          .lineThrough]: !constraint9StartDateIsEnabled,
+                        [this.props.classes.lineThrough]:
+                          !constraint9StartDateIsEnabled,
                       }),
                     }}
                     error={errorMessages.constraint9StartDateName.length > 0}
@@ -321,8 +321,8 @@ class Constraint9 extends React.Component<Props, State> {
                     }}
                     inputProps={{
                       className: classnames({
-                        [this.props.classes
-                          .lineThrough]: !constraint9StopDateIsEnabled,
+                        [this.props.classes.lineThrough]:
+                          !constraint9StopDateIsEnabled,
                       }),
                     }}
                     error={errorMessages.constraint9StopDateName.length > 0}
@@ -350,8 +350,8 @@ class Constraint9 extends React.Component<Props, State> {
                         {
                           <span
                             className={classnames({
-                              [this.props.classes
-                                .lineThrough]: !kinmu.is_enabled,
+                              [this.props.classes.lineThrough]:
+                                !kinmu.is_enabled,
                             })}
                           >
                             {kinmu.name}

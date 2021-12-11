@@ -77,14 +77,15 @@ class Constraints0 extends React.Component<Props, State> {
   ) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       this.setState({
-        newConstraint0Constraint0KinmuKinmuIds: this.state.newConstraint0Constraint0KinmuKinmuIds.map(
-          (kinmuId, index) => {
-            if (index !== newConstraint0Constraint0KinmuKinmuIdsIndex) {
-              return kinmuId;
+        newConstraint0Constraint0KinmuKinmuIds:
+          this.state.newConstraint0Constraint0KinmuKinmuIds.map(
+            (kinmuId, index) => {
+              if (index !== newConstraint0Constraint0KinmuKinmuIdsIndex) {
+                return kinmuId;
+              }
+              return parseInt(event.target.value, 10);
             }
-            return parseInt(event.target.value, 10);
-          }
-        ),
+          ),
       });
     };
   }
@@ -93,9 +94,10 @@ class Constraints0 extends React.Component<Props, State> {
   ) {
     return () => {
       this.setState({
-        newConstraint0Constraint0KinmuKinmuIds: this.state.newConstraint0Constraint0KinmuKinmuIds.filter(
-          (_, id) => id !== newConstraint0Constraint0KinmuKinmuIdsId
-        ),
+        newConstraint0Constraint0KinmuKinmuIds:
+          this.state.newConstraint0Constraint0KinmuKinmuIds.filter(
+            (_, id) => id !== newConstraint0Constraint0KinmuKinmuIdsId
+          ),
       });
     };
   }
@@ -159,12 +161,15 @@ class Constraints0 extends React.Component<Props, State> {
           </Dialog>
         ) : (
           (() => {
-            const newConstraint0Constraint0KinmuKinmus = this.state.newConstraint0Constraint0KinmuKinmuIds.map(
-              (kinmu_id) => this.props.kinmus.find(({ id }) => id === kinmu_id)!
-            );
-            const relativesAreEnabled = newConstraint0Constraint0KinmuKinmus.every(
-              ({ is_enabled }) => is_enabled
-            );
+            const newConstraint0Constraint0KinmuKinmus =
+              this.state.newConstraint0Constraint0KinmuKinmuIds.map(
+                (kinmu_id) =>
+                  this.props.kinmus.find(({ id }) => id === kinmu_id)!
+              );
+            const relativesAreEnabled =
+              newConstraint0Constraint0KinmuKinmus.every(
+                ({ is_enabled }) => is_enabled
+              );
             return (
               <Dialog
                 onClose={this.handleCloseCreationDialog}
@@ -219,8 +224,8 @@ class Constraints0 extends React.Component<Props, State> {
                                   {
                                     <span
                                       className={classnames({
-                                        [this.props.classes
-                                          .lineThrough]: !kinmu.is_enabled,
+                                        [this.props.classes.lineThrough]:
+                                          !kinmu.is_enabled,
                                       })}
                                     >
                                       {kinmu.name}

@@ -1,0 +1,7 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+cd static
+yarn run format
+yarn run lint
+yarn run test --watchAll=false

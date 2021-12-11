@@ -262,8 +262,8 @@ class Constraints10 extends React.Component<Props, State> {
                             {
                               <span
                                 className={classnames({
-                                  [this.props.classes
-                                    .lineThrough]: !member.is_enabled,
+                                  [this.props.classes.lineThrough]:
+                                    !member.is_enabled,
                                 })}
                               >
                                 {member.name}
@@ -285,8 +285,8 @@ class Constraints10 extends React.Component<Props, State> {
                         }}
                         inputProps={{
                           className: classnames({
-                            [this.props.classes
-                              .lineThrough]: !newConstraint10StartDateIsEnabled,
+                            [this.props.classes.lineThrough]:
+                              !newConstraint10StartDateIsEnabled,
                           }),
                         }}
                         error={
@@ -315,8 +315,8 @@ class Constraints10 extends React.Component<Props, State> {
                         }}
                         inputProps={{
                           className: classnames({
-                            [this.props.classes
-                              .lineThrough]: !newConstraint10StopDateIsEnabled,
+                            [this.props.classes.lineThrough]:
+                              !newConstraint10StopDateIsEnabled,
                           }),
                         }}
                         error={
@@ -346,8 +346,8 @@ class Constraints10 extends React.Component<Props, State> {
                             {
                               <span
                                 className={classnames({
-                                  [this.props.classes
-                                    .lineThrough]: !kinmu.is_enabled,
+                                  [this.props.classes.lineThrough]:
+                                    !kinmu.is_enabled,
                                 })}
                               >
                                 {kinmu.name}

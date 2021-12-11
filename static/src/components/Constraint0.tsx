@@ -188,8 +188,8 @@ class Constraint0 extends React.Component<Props, State> {
                               {
                                 <span
                                   className={classnames({
-                                    [this.props.classes
-                                      .lineThrough]: !kinmu.is_enabled,
+                                    [this.props.classes.lineThrough]:
+                                      !kinmu.is_enabled,
                                   })}
                                 >
                                   {kinmu.name}

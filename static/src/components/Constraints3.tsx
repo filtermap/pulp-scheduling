@@ -210,8 +210,8 @@ class Constraints3 extends React.Component<Props, State> {
                             {
                               <span
                                 className={classnames({
-                                  [this.props.classes
-                                    .lineThrough]: !member.is_enabled,
+                                  [this.props.classes.lineThrough]:
+                                    !member.is_enabled,
                                 })}
                               >
                                 {member.name}
@@ -234,8 +234,8 @@ class Constraints3 extends React.Component<Props, State> {
                             {
                               <span
                                 className={classnames({
-                                  [this.props.classes
-                                    .lineThrough]: !kinmu.is_enabled,
+                                  [this.props.classes.lineThrough]:
+                                    !kinmu.is_enabled,
                                 })}
                               >
                                 {kinmu.name}
@@ -257,8 +257,7 @@ class Constraints3 extends React.Component<Props, State> {
                         }
                         fullWidth={true}
                         inputProps={{
-                          min:
-                            constraints3.minOfConstraint3MinNumberOfAssignments,
+                          min: constraints3.minOfConstraint3MinNumberOfAssignments,
                         }}
                         error={
                           errorMessages.newConstraint3MinNumberOfAssignments

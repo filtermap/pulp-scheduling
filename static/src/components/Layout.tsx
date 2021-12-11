@@ -1,3 +1,4 @@
+import { LinkProps } from "@material-ui/core/Link";
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
@@ -96,7 +97,9 @@ type State = {
 };
 
 function LinkTo(to: string) {
-  return (props: any) => {
+  return function LinkTo(
+    props: LinkProps & React.RefAttributes<HTMLAnchorElement>
+  ) {
     return <Link to={to} {...props} />;
   };
 }
@@ -279,5 +282,8 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
 }
 
 export default withTheme(
-  withStyles(styles)(connect(mapStateToProps)(ResponsiveDrawer))
+  // @ts-ignore: TODO: replace with hooks to avoid type errors
+  withStyles(styles, { withTheme: true })(
+    connect(mapStateToProps)(ResponsiveDrawer)
+  )
 );

@@ -281,8 +281,8 @@ class Constraints2 extends React.Component<Props, State> {
                         }}
                         inputProps={{
                           className: classnames({
-                            [this.props.classes
-                              .lineThrough]: !newConstraint2StartDateIsEnabled,
+                            [this.props.classes.lineThrough]:
+                              !newConstraint2StartDateIsEnabled,
                           }),
                         }}
                         error={
@@ -311,8 +311,8 @@ class Constraints2 extends React.Component<Props, State> {
                         }}
                         inputProps={{
                           className: classnames({
-                            [this.props.classes
-                              .lineThrough]: !newConstraint2StopDateIsEnabled,
+                            [this.props.classes.lineThrough]:
+                              !newConstraint2StopDateIsEnabled,
                           }),
                         }}
                         error={
@@ -342,8 +342,8 @@ class Constraints2 extends React.Component<Props, State> {
                             {
                               <span
                                 className={classnames({
-                                  [this.props.classes
-                                    .lineThrough]: !kinmu.is_enabled,
+                                  [this.props.classes.lineThrough]:
+                                    !kinmu.is_enabled,
                                 })}
                               >
                                 {kinmu.name}
@@ -366,8 +366,8 @@ class Constraints2 extends React.Component<Props, State> {
                             {
                               <span
                                 className={classnames({
-                                  [this.props.classes
-                                    .lineThrough]: !group.is_enabled,
+                                  [this.props.classes.lineThrough]:
+                                    !group.is_enabled,
                                 })}
                               >
                                 {group.name}
@@ -389,8 +389,7 @@ class Constraints2 extends React.Component<Props, State> {
                         }
                         fullWidth={true}
                         inputProps={{
-                          min:
-                            constraints2.minOfConstraint2MaxNumberOfAssignments,
+                          min: constraints2.minOfConstraint2MaxNumberOfAssignments,
                         }}
                         error={
                           errorMessages.newConstraint2MaxNumberOfAssignments

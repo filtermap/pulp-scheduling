@@ -114,7 +114,7 @@ class Schedules extends React.Component<Props, State> {
       },
     });
     const response = await utils.sendJSONRPCRequest("solve", [this.props.all]);
-    if (response.hasOwnProperty("error")) {
+    if (Object.prototype.hasOwnProperty.call(response, "error")) {
       this.setState({
         dialogState: {
           errorMessage: response.error.message,
@@ -137,7 +137,7 @@ class Schedules extends React.Component<Props, State> {
       },
     });
     const response = await utils.sendJSONRPCRequest("pursue", [this.props.all]);
-    if (response.hasOwnProperty("error")) {
+    if (Object.prototype.hasOwnProperty.call(response, "error")) {
       this.setState({
         dialogState: {
           errorMessage: response.error.message,

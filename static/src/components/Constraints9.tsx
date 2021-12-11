@@ -260,8 +260,8 @@ class Constraints9 extends React.Component<Props, State> {
                             {
                               <span
                                 className={classnames({
-                                  [this.props.classes
-                                    .lineThrough]: !member.is_enabled,
+                                  [this.props.classes.lineThrough]:
+                                    !member.is_enabled,
                                 })}
                               >
                                 {member.name}
@@ -283,8 +283,8 @@ class Constraints9 extends React.Component<Props, State> {
                         }}
                         inputProps={{
                           className: classnames({
-                            [this.props.classes
-                              .lineThrough]: !newConstraint9StartDateIsEnabled,
+                            [this.props.classes.lineThrough]:
+                              !newConstraint9StartDateIsEnabled,
                           }),
                         }}
                         error={
@@ -313,8 +313,8 @@ class Constraints9 extends React.Component<Props, State> {
                         }}
                         inputProps={{
                           className: classnames({
-                            [this.props.classes
-                              .lineThrough]: !newConstraint9StopDateIsEnabled,
+                            [this.props.classes.lineThrough]:
+                              !newConstraint9StopDateIsEnabled,
                           }),
                         }}
                         error={
@@ -344,8 +344,8 @@ class Constraints9 extends React.Component<Props, State> {
                             {
                               <span
                                 className={classnames({
-                                  [this.props.classes
-                                    .lineThrough]: !kinmu.is_enabled,
+                                  [this.props.classes.lineThrough]:
+                                    !kinmu.is_enabled,
                                 })}
                               >
                                 {kinmu.name}

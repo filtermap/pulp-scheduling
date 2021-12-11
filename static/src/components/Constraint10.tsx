@@ -270,8 +270,8 @@ class Constraint10 extends React.Component<Props, State> {
                         {
                           <span
                             className={classnames({
-                              [this.props.classes
-                                .lineThrough]: !member.is_enabled,
+                              [this.props.classes.lineThrough]:
+                                !member.is_enabled,
                             })}
                           >
                             {member.name}
@@ -293,8 +293,8 @@ class Constraint10 extends React.Component<Props, State> {
                     }}
                     inputProps={{
                       className: classnames({
-                        [this.props.classes
-                          .lineThrough]: !constraint10StartDateIsEnabled,
+                        [this.props.classes.lineThrough]:
+                          !constraint10StartDateIsEnabled,
                       }),
                     }}
                     error={errorMessages.constraint10StartDateName.length > 0}
@@ -321,8 +321,8 @@ class Constraint10 extends React.Component<Props, State> {
                     }}
                     inputProps={{
                       className: classnames({
-                        [this.props.classes
-                          .lineThrough]: !constraint10StopDateIsEnabled,
+                        [this.props.classes.lineThrough]:
+                          !constraint10StopDateIsEnabled,
                       }),
                     }}
                     error={errorMessages.constraint10StopDateName.length > 0}
@@ -350,8 +350,8 @@ class Constraint10 extends React.Component<Props, State> {
                         {
                           <span
                             className={classnames({
-                              [this.props.classes
-                                .lineThrough]: !kinmu.is_enabled,
+                              [this.props.classes.lineThrough]:
+                                !kinmu.is_enabled,
                             })}
                           >
                             {kinmu.name}

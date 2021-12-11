@@ -1,6 +1,6 @@
 export async function sendJSONRPCRequest<T>(
   method: string,
-  params: T[] | object = []
+  params: T[] | Record<string, unknown> = []
 ) {
   const response = await fetch("/api", {
     method: "post",
@@ -31,8 +31,11 @@ export function dateToString(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-export function intersperse<T, U>(array: T[], separator: U): Array<T | U> {
+export function intersperse<T, U>(array: T[], separator: U): (T | U)[] {
   return array
-    .reduce((accumulator, current) => [...accumulator, separator, current], [])
+    .reduce<(T | U)[]>(
+      (accumulator, current) => [...accumulator, separator, current],
+      []
+    )
     .slice(1);
 }

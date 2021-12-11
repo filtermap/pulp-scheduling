@@ -81,9 +81,8 @@ class Members extends React.Component<Props, State> {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
       if (checked) {
         this.setState({
-          newMemberGroupIndices: this.state.newMemberGroupIndices.concat(
-            groupId
-          ),
+          newMemberGroupIndices:
+            this.state.newMemberGroupIndices.concat(groupId),
         });
         return;
       }

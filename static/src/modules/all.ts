@@ -1,5 +1,4 @@
-import reduceReducer from "reduce-reducers";
-import { combineReducers } from "redux";
+import { combineReducers, Reducer } from "redux";
 import * as assignments from "./assignments";
 import * as constraint0_kinmus from "./constraint0_kinmus";
 import * as constraints0 from "./constraints0";
@@ -224,28 +223,27 @@ export function deleteSchedule(id: number): DeleteSchedule {
 
 export type State = All;
 
-const combinedReducer: (state: State, action: Action) => State =
-  combineReducers({
-    assignments: assignments.reducer,
-    constraint0_kinmus: constraint0_kinmus.reducer,
-    constraints0: constraints0.reducer,
-    constraints1: constraints1.reducer,
-    constraints10: constraints10.reducer,
-    constraints2: constraints2.reducer,
-    constraints3: constraints3.reducer,
-    constraints4: constraints4.reducer,
-    constraints5: constraints5.reducer,
-    constraints6: constraints6.reducer,
-    constraints7: constraints7.reducer,
-    constraints8: constraints8.reducer,
-    constraints9: constraints9.reducer,
-    group_members: group_members.reducer,
-    groups: groups.reducer,
-    kinmus: kinmus.reducer,
-    members: members.reducer,
-    schedules: schedules.reducer,
-    terms: terms.reducer,
-  });
+const combinedReducer = combineReducers({
+  assignments: assignments.reducer,
+  constraint0_kinmus: constraint0_kinmus.reducer,
+  constraints0: constraints0.reducer,
+  constraints1: constraints1.reducer,
+  constraints10: constraints10.reducer,
+  constraints2: constraints2.reducer,
+  constraints3: constraints3.reducer,
+  constraints4: constraints4.reducer,
+  constraints5: constraints5.reducer,
+  constraints6: constraints6.reducer,
+  constraints7: constraints7.reducer,
+  constraints8: constraints8.reducer,
+  constraints9: constraints9.reducer,
+  group_members: group_members.reducer,
+  groups: groups.reducer,
+  kinmus: kinmus.reducer,
+  members: members.reducer,
+  schedules: schedules.reducer,
+  terms: terms.reducer,
+});
 
 function crossSliceReducer(state: State, action: Action): State {
   switch (action.type) {
@@ -445,6 +443,7 @@ function crossSliceReducer(state: State, action: Action): State {
         constraints0: state.constraints0.filter((c) => c.id !== action.id),
       };
     case DELETE_CONSTRAINT0_KINMU: {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const deleted_constraint0_kinmu = state.constraint0_kinmus.find(
         ({ id }) => id === action.id
       )!;
@@ -489,4 +488,5 @@ function crossSliceReducer(state: State, action: Action): State {
   return state;
 }
 
-export const reducer = reduceReducer(combinedReducer, crossSliceReducer);
+export const reducer: Reducer<State, Action> = (state, action) =>
+  crossSliceReducer(combinedReducer(state, action), action);

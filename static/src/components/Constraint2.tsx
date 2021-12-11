@@ -289,8 +289,8 @@ class Constraint2 extends React.Component<Props, State> {
                     }}
                     inputProps={{
                       className: classnames({
-                        [this.props.classes
-                          .lineThrough]: !constraint2StartDateIsEnabled,
+                        [this.props.classes.lineThrough]:
+                          !constraint2StartDateIsEnabled,
                       }),
                     }}
                     error={errorMessages.constraint2StartDateName.length > 0}
@@ -317,8 +317,8 @@ class Constraint2 extends React.Component<Props, State> {
                     }}
                     inputProps={{
                       className: classnames({
-                        [this.props.classes
-                          .lineThrough]: !constraint2StopDateIsEnabled,
+                        [this.props.classes.lineThrough]:
+                          !constraint2StopDateIsEnabled,
                       }),
                     }}
                     error={errorMessages.constraint2StopDateName.length > 0}
@@ -346,8 +346,8 @@ class Constraint2 extends React.Component<Props, State> {
                         {
                           <span
                             className={classnames({
-                              [this.props.classes
-                                .lineThrough]: !kinmu.is_enabled,
+                              [this.props.classes.lineThrough]:
+                                !kinmu.is_enabled,
                             })}
                           >
                             {kinmu.name}
@@ -370,8 +370,8 @@ class Constraint2 extends React.Component<Props, State> {
                         {
                           <span
                             className={classnames({
-                              [this.props.classes
-                                .lineThrough]: !group.is_enabled,
+                              [this.props.classes.lineThrough]:
+                                !group.is_enabled,
                             })}
                           >
                             {group.name}
