@@ -1,7 +1,7 @@
 import blue from "@material-ui/core/colors/blue";
 import teal from "@material-ui/core/colors/teal";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { MuiThemeProvider, createTheme } from "@material-ui/core/styles";
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -25,14 +25,14 @@ async function main() {
   });
   ReactDOM.render(
     <React.StrictMode>
-      <MuiThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
         <CssBaseline />
         <Provider store={store.createStore(initialState)}>
           <Router>
             <Layout />
           </Router>
         </Provider>
-      </MuiThemeProvider>
+      </ThemeProvider>
     </React.StrictMode>,
     document.getElementById("root") as HTMLElement
   );
