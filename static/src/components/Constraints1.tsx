@@ -158,7 +158,6 @@ class Constraints1 extends React.Component<Props, State> {
                   variant="subtitle1"
                   className={this.props.classes.toolbarTitle}
                 >
-                  {" "}
                   期間の勤務にグループから割り当てる職員数の下限
                 </Typography>
                 <Button
