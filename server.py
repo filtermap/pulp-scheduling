@@ -34,25 +34,7 @@ def read_all():
 
 @api.dispatcher.add_method
 def write_all(all):
-    scheduling.write_members(all["members"])
-    scheduling.write_terms(all["terms"])
-    scheduling.write_kinmus(all["kinmus"])
-    scheduling.write_groups(all["groups"])
-    scheduling.write_group_members(all["group_members"])
-    scheduling.write_constraints0(all["constraints0"])
-    scheduling.write_constraint0_kinmus(all["constraint0_kinmus"])
-    scheduling.write_constraints1(all["constraints1"])
-    scheduling.write_constraints2(all["constraints2"])
-    scheduling.write_constraints3(all["constraints3"])
-    scheduling.write_constraints4(all["constraints4"])
-    scheduling.write_constraints5(all["constraints5"])
-    scheduling.write_constraints6(all["constraints6"])
-    scheduling.write_constraints7(all["constraints7"])
-    scheduling.write_constraints8(all["constraints8"])
-    scheduling.write_constraints9(all["constraints9"])
-    scheduling.write_constraints10(all["constraints10"])
-    scheduling.write_schedules(all["schedules"])
-    scheduling.write_assignments(all["assignments"])
+    scheduling.write_all(all)
     return True
 
 

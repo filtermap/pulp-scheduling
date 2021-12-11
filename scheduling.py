@@ -576,46 +576,49 @@ def write_assignments(assignments):
 
 
 def read_all():
-    members = read_members()
-    terms = read_terms()
-    kinmus = read_kinmus()
-    groups = read_groups()
-    group_members = read_group_members()
-    constraints0 = read_constraints0()
-    constraint0_kinmus = read_constraint0_kinmus()
-    constraints1 = read_constraints1()
-    constraints2 = read_constraints2()
-    constraints3 = read_constraints3()
-    constraints4 = read_constraints4()
-    constraints5 = read_constraints5()
-    constraints6 = read_constraints6()
-    constraints7 = read_constraints7()
-    constraints8 = read_constraints8()
-    constraints9 = read_constraints9()
-    constraints10 = read_constraints10()
-    schedules = read_schedules()
-    assignments = read_assignments()
     return {
-        "members": members,
-        "terms": terms,
-        "kinmus": kinmus,
-        "groups": groups,
-        "group_members": group_members,
-        "constraints0": constraints0,
-        "constraint0_kinmus": constraint0_kinmus,
-        "constraints1": constraints1,
-        "constraints2": constraints2,
-        "constraints3": constraints3,
-        "constraints4": constraints4,
-        "constraints5": constraints5,
-        "constraints6": constraints6,
-        "constraints7": constraints7,
-        "constraints8": constraints8,
-        "constraints9": constraints9,
-        "constraints10": constraints10,
-        "schedules": schedules,
-        "assignments": assignments,
+        "members": read_members(),
+        "terms": read_terms(),
+        "kinmus": read_kinmus(),
+        "groups": read_groups(),
+        "group_members": read_group_members(),
+        "constraints0": read_constraints0(),
+        "constraint0_kinmus": read_constraint0_kinmus(),
+        "constraints1": read_constraints1(),
+        "constraints2": read_constraints2(),
+        "constraints3": read_constraints3(),
+        "constraints4": read_constraints4(),
+        "constraints5": read_constraints5(),
+        "constraints6": read_constraints6(),
+        "constraints7": read_constraints7(),
+        "constraints8": read_constraints8(),
+        "constraints9": read_constraints9(),
+        "constraints10": read_constraints10(),
+        "schedules": read_schedules(),
+        "assignments": read_assignments(),
     }
+
+
+def write_all(all):
+    write_members(all["members"])
+    write_terms(all["terms"])
+    write_kinmus(all["kinmus"])
+    write_groups(all["groups"])
+    write_group_members(all["group_members"])
+    write_constraints0(all["constraints0"])
+    write_constraint0_kinmus(all["constraint0_kinmus"])
+    write_constraints1(all["constraints1"])
+    write_constraints2(all["constraints2"])
+    write_constraints3(all["constraints3"])
+    write_constraints4(all["constraints4"])
+    write_constraints5(all["constraints5"])
+    write_constraints6(all["constraints6"])
+    write_constraints7(all["constraints7"])
+    write_constraints8(all["constraints8"])
+    write_constraints9(all["constraints9"])
+    write_constraints10(all["constraints10"])
+    write_schedules(all["schedules"])
+    write_assignments(all["assignments"])
 
 
 def select_enabled(all_):
