@@ -11,6 +11,7 @@ export type Kinmu = {
 
 type CreateKinmu = {
   type: typeof CREATE_KINMU;
+  term_id: number;
   is_enabled: boolean;
   name: string;
 };
@@ -29,8 +30,13 @@ type UpdateKinmuName = {
 
 type Action = CreateKinmu | UpdateKinmuIsEnabled | UpdateKinmuName;
 
-export function createKinmu(is_enabled: boolean, name: string): CreateKinmu {
+export function createKinmu(
+  term_id: number,
+  is_enabled: boolean,
+  name: string
+): CreateKinmu {
   return {
+    term_id,
     is_enabled,
     name,
     type: CREATE_KINMU,
@@ -65,6 +71,7 @@ export function reducer(state: State = initialState, action: Action): State {
     case CREATE_KINMU:
       return state.concat({
         id: Math.max(0, ...state.map((kinmu) => kinmu.id)) + 1,
+        term_id: action.term_id,
         is_enabled: action.is_enabled,
         name: action.name,
       });

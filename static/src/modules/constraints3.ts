@@ -19,6 +19,7 @@ export const minOfConstraint3MinNumberOfAssignments = 1;
 
 type CreateConstraint3 = {
   type: typeof CREATE_CONSTRAINT3;
+  term_id: number;
   is_enabled: boolean;
   member_id: number;
   kinmu_id: number;
@@ -63,12 +64,14 @@ type Action =
   | DeleteConstraint3;
 
 export function createConstraint3(
+  term_id: number,
   is_enabled: boolean,
   member_id: number,
   kinmu_id: number,
   min_number_of_assignments: number
 ): CreateConstraint3 {
   return {
+    term_id,
     is_enabled,
     kinmu_id,
     member_id,
@@ -137,6 +140,7 @@ export function reducer(state: State = initialState, action: Action): State {
     case CREATE_CONSTRAINT3:
       return state.concat({
         id: Math.max(0, ...state.map((c) => c.id)) + 1,
+        term_id: action.term_id,
         is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         member_id: action.member_id,

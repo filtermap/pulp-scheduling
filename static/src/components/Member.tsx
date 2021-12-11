@@ -25,31 +25,14 @@ import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
-import * as assignments from "../modules/assignments";
-import * as constraints10 from "../modules/constraints10";
-import * as constraints3 from "../modules/constraints3";
-import * as constraints4 from "../modules/constraints4";
-import * as constraints9 from "../modules/constraints9";
 import * as group_members from "../modules/group_members";
-import * as groups from "../modules/groups";
-import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
 
 type Props = {
-  dispatch: Dispatch;
   member: members.Member;
-  group_members: group_members.GroupMember[];
-  groups: groups.Group[];
-  assignments: assignments.Assignment[];
-  constraints3: constraints3.Constraint3[];
-  constraints4: constraints4.Constraint4[];
-  constraints9: constraints9.Constraint9[];
-  constraints10: constraints10.Constraint10[];
-  kinmus: kinmus.Kinmu[];
 } & WithStyles<typeof styles>;
 
 type State = {
@@ -61,288 +44,7 @@ type ErrorMessages = {
   memberName: string[];
 };
 
-class Member extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      deletionDialogIsOpen: false,
-      expanded: false,
-    };
-  }
-  public handleClickExpand = () => {
-    this.setState({ expanded: !this.state.expanded });
-  };
-  public handleChangeMemberIsEnabled = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
-  ) => {
-    this.props.dispatch(
-      members.updateMemberIsEnabled(this.props.member.id, checked)
-    );
-  };
-  public validate(memberName: string): ErrorMessages {
-    const errorMessages: ErrorMessages = {
-      memberName: [],
-    };
-    if (memberName === "") {
-      errorMessages.memberName.push("職員名を入力してください");
-    }
-    return errorMessages;
-  }
-  public handleChangeMemberName = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    this.props.dispatch(
-      members.updateMemberName(this.props.member.id, event.target.value)
-    );
-  };
-  public handleChangeGroupMember(groupId: number) {
-    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      if (checked) {
-        this.props.dispatch(
-          group_members.createGroupMember(groupId, this.props.member.id)
-        );
-        return;
-      }
-      this.props.dispatch(
-        group_members.deleteGroupMember(groupId, this.props.member.id)
-      );
-    };
-  }
-  public handleClickOpenDeletionDialog = () => {
-    this.setState({ deletionDialogIsOpen: true });
-  };
-  public handleCloseDeletionDialog = () => {
-    this.setState({ deletionDialogIsOpen: false });
-  };
-  public handleClickDeleteMember = () => {
-    this.setState({ deletionDialogIsOpen: false });
-    this.props.dispatch(all.deleteMember(this.props.member.id));
-  };
-  public render() {
-    const memberScheduleIds = Array.from(
-      new Set(
-        this.props.assignments
-          .filter(({ member_id }) => member_id === this.props.member.id)
-          .map(({ schedule_id }) => schedule_id)
-      )
-    );
-    const memberConstraints3 = this.props.constraints3.filter(
-      (c) => c.member_id === this.props.member.id
-    );
-    const memberConstraints4 = this.props.constraints4.filter(
-      (c) => c.member_id === this.props.member.id
-    );
-    const memberConstraints9 = this.props.constraints9.filter(
-      (c) => c.member_id === this.props.member.id
-    );
-    const memberConstraints10 = this.props.constraints10.filter(
-      (c) => c.member_id === this.props.member.id
-    );
-    const errorMessages = this.validate(this.props.member.name);
-    return (
-      <>
-        <Card>
-          <CardHeader
-            avatar={
-              <Switch
-                checked={this.props.member.is_enabled}
-                onChange={this.handleChangeMemberIsEnabled}
-                color="primary"
-              />
-            }
-            action={
-              <IconButton
-                className={classnames(this.props.classes.expand, {
-                  [this.props.classes.expandOpen]: this.state.expanded,
-                })}
-                onClick={this.handleClickExpand}
-                aria-expanded={this.state.expanded}
-              >
-                <ExpandMoreIcon />
-              </IconButton>
-            }
-            title={this.props.member.name}
-            titleTypographyProps={{
-              variant: "h5",
-            }}
-            subheader={this.props.group_members
-              .filter(
-                (group_member) =>
-                  group_member.member_id === this.props.member.id
-              )
-              .map(
-                (group_member) =>
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  this.props.groups.find(
-                    (group) => group.id === group_member.group_id
-                  )!.name
-              )
-              .join(", ")}
-            subheaderTypographyProps={{
-              variant: "body2",
-            }}
-          />
-          <Collapse
-            in={this.state.expanded}
-            timeout="auto"
-            unmountOnExit={true}
-          >
-            <CardContent>
-              <Grid container={true} spacing={1}>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    label="職員名"
-                    defaultValue={this.props.member.name}
-                    onChange={this.handleChangeMemberName}
-                    fullWidth={true}
-                    error={errorMessages.memberName.length > 0}
-                    FormHelperTextProps={{
-                      // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                      component: "div",
-                    }}
-                    helperText={errorMessages.memberName.map((message) => (
-                      <div key={message}>{message}</div>
-                    ))}
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <FormControl fullWidth={true}>
-                    <FormLabel>職員が所属するグループ</FormLabel>
-                    <FormGroup>
-                      {this.props.groups.map((group) => (
-                        <FormControlLabel
-                          key={group.id}
-                          label={group.name}
-                          control={
-                            <Checkbox
-                              checked={this.props.group_members.some(
-                                (group_member) =>
-                                  group_member.group_id === group.id &&
-                                  group_member.member_id ===
-                                    this.props.member.id
-                              )}
-                              onChange={this.handleChangeGroupMember(group.id)}
-                              color="primary"
-                            />
-                          }
-                        />
-                      ))}
-                    </FormGroup>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </CardContent>
-            <CardActions disableSpacing={true}>
-              <Button size="small" onClick={this.handleClickOpenDeletionDialog}>
-                削除
-              </Button>
-            </CardActions>
-          </Collapse>
-        </Card>
-        <Dialog
-          onClose={this.handleCloseDeletionDialog}
-          open={this.state.deletionDialogIsOpen}
-          fullWidth={true}
-          maxWidth="md"
-        >
-          <DialogTitle>職員の削除</DialogTitle>
-          <DialogContent>
-            <Grid container={true} spacing={1}>
-              <Grid item={true} xs={12}>
-                <DialogContentText>この職員を削除します</DialogContentText>
-                <Typography>{this.props.member.name}</Typography>
-                <Typography variant="caption">
-                  {this.props.group_members
-                    .filter(
-                      (group_member) =>
-                        group_member.member_id === this.props.member.id
-                    )
-                    .map(
-                      (group_member) =>
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        this.props.groups.find(
-                          (group) => group.id === group_member.group_id
-                        )!.name
-                    )
-                    .join(", ")}
-                </Typography>
-              </Grid>
-              <Grid item={true} xs={12}>
-                {memberScheduleIds.length > 0 && (
-                  <DialogContentText>
-                    以下の勤務表の割り当ても削除されます
-                  </DialogContentText>
-                )}
-                {memberScheduleIds.map((schedule_id) => (
-                  <Typography
-                    key={schedule_id}
-                  >{`勤務表${schedule_id}`}</Typography>
-                ))}
-              </Grid>
-              <Grid item={true} xs={12}>
-                {(memberConstraints3.length > 0 ||
-                  memberConstraints4.length > 0 ||
-                  memberConstraints9.length > 0 ||
-                  memberConstraints10.length > 0) && (
-                  <DialogContentText>
-                    以下の条件も削除されます
-                  </DialogContentText>
-                )}
-                {memberConstraints3.map((c) => (
-                  <Typography key={c.id}>{`${this.props.member.name}に${
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    this.props.kinmus.find((kinmu) => kinmu.id === c.kinmu_id)!
-                      .name
-                  }を${
-                    c.min_number_of_assignments
-                  }回以上割り当てる`}</Typography>
-                ))}
-                {memberConstraints4.map((c) => (
-                  <Typography key={c.id}>{`${this.props.member.name}に${
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    this.props.kinmus.find((kinmu) => kinmu.id === c.kinmu_id)!
-                      .name
-                  }を${
-                    c.max_number_of_assignments
-                  }回以下割り当てる`}</Typography>
-                ))}
-                {memberConstraints9.map((c) => (
-                  <Typography key={c.id}>{`${this.props.member.name}の${
-                    c.start_date_name
-                  }から${c.stop_date_name}までに${
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    this.props.kinmus.find((kinmu) => kinmu.id === c.kinmu_id)!
-                      .name
-                  }を割り当てる`}</Typography>
-                ))}
-                {memberConstraints10.map((c) => (
-                  <Typography key={c.id}>{`${this.props.member.name}の${
-                    c.start_date_name
-                  }から${c.stop_date_name}までに${
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    this.props.kinmus.find((kinmu) => kinmu.id === c.kinmu_id)!
-                      .name
-                  }を割り当てない`}</Typography>
-                ))}
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button color="primary" onClick={this.handleClickDeleteMember}>
-              削除
-            </Button>
-            <Button color="primary" onClick={this.handleCloseDeletionDialog}>
-              閉じる
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    );
-  }
-}
-
-function mapStateToProps(state: StateWithHistory<all.State>) {
+function selector(state: StateWithHistory<all.State>) {
   return {
     assignments: state.present.assignments,
     constraints10: state.present.constraints10,
@@ -354,6 +56,287 @@ function mapStateToProps(state: StateWithHistory<all.State>) {
     kinmus: state.present.kinmus,
     members: state.present.members,
   };
+}
+
+function Member(props: Props) {
+  const dispatch = useDispatch();
+  const selected = useSelector(selector, shallowEqual);
+  const [state, setState] = React.useState<State>({
+    deletionDialogIsOpen: false,
+    expanded: false,
+  });
+  const groupMembersInTerm = selected.group_members.filter(
+    ({ member_id }) => member_id === props.member.id
+  );
+  const groupsInTerm = selected.groups.filter(
+    ({ term_id }) => term_id === props.member.term_id
+  );
+  const assignmentsInTerm = selected.assignments.filter(
+    ({ member_id }) => member_id === props.member.id
+  );
+  const constraints3InTerm = selected.constraints3.filter(
+    ({ term_id }) => term_id === props.member.term_id
+  );
+  const constraints4InTerm = selected.constraints4.filter(
+    ({ term_id }) => term_id === props.member.term_id
+  );
+  const constraints9InTerm = selected.constraints9.filter(
+    ({ term_id }) => term_id === props.member.term_id
+  );
+  const constraints10InTerm = selected.constraints10.filter(
+    ({ term_id }) => term_id === props.member.term_id
+  );
+  const kinmusInTerm = selected.kinmus.filter(
+    ({ term_id }) => term_id === props.member.term_id
+  );
+  const handleClickExpand = () => {
+    setState((state) => ({ ...state, expanded: !state.expanded }));
+  };
+  const handleChangeMemberIsEnabled = (
+    _: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean
+  ) => {
+    dispatch(members.updateMemberIsEnabled(props.member.id, checked));
+  };
+  const validate = (memberName: string): ErrorMessages => {
+    const errorMessages: ErrorMessages = {
+      memberName: [],
+    };
+    if (memberName === "") {
+      errorMessages.memberName.push("職員名を入力してください");
+    }
+    return errorMessages;
+  };
+  const handleChangeMemberName = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    dispatch(members.updateMemberName(props.member.id, event.target.value));
+  };
+  const handleChangeGroupMember = (groupId: number) => {
+    return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      if (checked) {
+        dispatch(group_members.createGroupMember(groupId, props.member.id));
+        return;
+      }
+      dispatch(group_members.deleteGroupMember(groupId, props.member.id));
+    };
+  };
+  const handleClickOpenDeletionDialog = () => {
+    setState((state) => ({ ...state, deletionDialogIsOpen: true }));
+  };
+  const handleCloseDeletionDialog = () => {
+    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+  };
+  const handleClickDeleteMember = () => {
+    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    dispatch(all.deleteMember(props.member.id));
+  };
+  const memberScheduleIds = Array.from(
+    new Set(
+      assignmentsInTerm
+        .filter(({ member_id }) => member_id === props.member.id)
+        .map(({ schedule_id }) => schedule_id)
+    )
+  );
+  const memberConstraints3 = constraints3InTerm.filter(
+    (c) => c.member_id === props.member.id
+  );
+  const memberConstraints4 = constraints4InTerm.filter(
+    (c) => c.member_id === props.member.id
+  );
+  const memberConstraints9 = constraints9InTerm.filter(
+    (c) => c.member_id === props.member.id
+  );
+  const memberConstraints10 = constraints10InTerm.filter(
+    (c) => c.member_id === props.member.id
+  );
+  const errorMessages = validate(props.member.name);
+  return (
+    <>
+      <Card>
+        <CardHeader
+          avatar={
+            <Switch
+              checked={props.member.is_enabled}
+              onChange={handleChangeMemberIsEnabled}
+              color="primary"
+            />
+          }
+          action={
+            <IconButton
+              className={classnames(props.classes.expand, {
+                [props.classes.expandOpen]: state.expanded,
+              })}
+              onClick={handleClickExpand}
+              aria-expanded={state.expanded}
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+          }
+          title={props.member.name}
+          titleTypographyProps={{
+            variant: "h5",
+          }}
+          subheader={groupMembersInTerm
+            .filter(
+              (group_member) => group_member.member_id === props.member.id
+            )
+            .map(
+              (group_member) =>
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                groupsInTerm.find(
+                  (group) => group.id === group_member.group_id
+                )!.name
+            )
+            .join(", ")}
+          subheaderTypographyProps={{
+            variant: "body2",
+          }}
+        />
+        <Collapse in={state.expanded} timeout="auto" unmountOnExit={true}>
+          <CardContent>
+            <Grid container={true} spacing={1}>
+              <Grid item={true} xs={12}>
+                <TextField
+                  label="職員名"
+                  defaultValue={props.member.name}
+                  onChange={handleChangeMemberName}
+                  fullWidth={true}
+                  error={errorMessages.memberName.length > 0}
+                  FormHelperTextProps={{
+                    // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                    component: "div",
+                  }}
+                  helperText={errorMessages.memberName.map((message) => (
+                    <div key={message}>{message}</div>
+                  ))}
+                />
+              </Grid>
+              <Grid item={true} xs={12}>
+                <FormControl fullWidth={true}>
+                  <FormLabel>職員が所属するグループ</FormLabel>
+                  <FormGroup>
+                    {groupsInTerm.map((group) => (
+                      <FormControlLabel
+                        key={group.id}
+                        label={group.name}
+                        control={
+                          <Checkbox
+                            checked={groupMembersInTerm.some(
+                              (group_member) =>
+                                group_member.group_id === group.id &&
+                                group_member.member_id === props.member.id
+                            )}
+                            onChange={handleChangeGroupMember(group.id)}
+                            color="primary"
+                          />
+                        }
+                      />
+                    ))}
+                  </FormGroup>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </CardContent>
+          <CardActions disableSpacing={true}>
+            <Button size="small" onClick={handleClickOpenDeletionDialog}>
+              削除
+            </Button>
+          </CardActions>
+        </Collapse>
+      </Card>
+      <Dialog
+        onClose={handleCloseDeletionDialog}
+        open={state.deletionDialogIsOpen}
+        fullWidth={true}
+        maxWidth="md"
+      >
+        <DialogTitle>職員の削除</DialogTitle>
+        <DialogContent>
+          <Grid container={true} spacing={1}>
+            <Grid item={true} xs={12}>
+              <DialogContentText>この職員を削除します</DialogContentText>
+              <Typography>{props.member.name}</Typography>
+              <Typography variant="caption">
+                {groupMembersInTerm
+                  .filter(
+                    (group_member) => group_member.member_id === props.member.id
+                  )
+                  .map(
+                    (group_member) =>
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      groupsInTerm.find(
+                        (group) => group.id === group_member.group_id
+                      )!.name
+                  )
+                  .join(", ")}
+              </Typography>
+            </Grid>
+            <Grid item={true} xs={12}>
+              {memberScheduleIds.length > 0 && (
+                <DialogContentText>
+                  以下の勤務表の割り当ても削除されます
+                </DialogContentText>
+              )}
+              {memberScheduleIds.map((schedule_id) => (
+                <Typography
+                  key={schedule_id}
+                >{`勤務表${schedule_id}`}</Typography>
+              ))}
+            </Grid>
+            <Grid item={true} xs={12}>
+              {(memberConstraints3.length > 0 ||
+                memberConstraints4.length > 0 ||
+                memberConstraints9.length > 0 ||
+                memberConstraints10.length > 0) && (
+                <DialogContentText>以下の条件も削除されます</DialogContentText>
+              )}
+              {memberConstraints3.map((c) => (
+                <Typography key={`constraint3_${c.id}`}>{`${
+                  props.member.name
+                }に${
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  kinmusInTerm.find((kinmu) => kinmu.id === c.kinmu_id)!.name
+                }を${c.min_number_of_assignments}回以上割り当てる`}</Typography>
+              ))}
+              {memberConstraints4.map((c) => (
+                <Typography key={`constraint4_${c.id}`}>{`${
+                  props.member.name
+                }に${
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  kinmusInTerm.find((kinmu) => kinmu.id === c.kinmu_id)!.name
+                }を${c.max_number_of_assignments}回以下割り当てる`}</Typography>
+              ))}
+              {memberConstraints9.map((c) => (
+                <Typography key={`constraint9_${c.id}`}>{`${
+                  props.member.name
+                }の${c.start_date_name}から${c.stop_date_name}までに${
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  kinmusInTerm.find((kinmu) => kinmu.id === c.kinmu_id)!.name
+                }を割り当てる`}</Typography>
+              ))}
+              {memberConstraints10.map((c) => (
+                <Typography key={`constraint10_${c.id}`}>{`${
+                  props.member.name
+                }の${c.start_date_name}から${c.stop_date_name}までに${
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  kinmusInTerm.find((kinmu) => kinmu.id === c.kinmu_id)!.name
+                }を割り当てない`}</Typography>
+              ))}
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={handleClickDeleteMember}>
+            削除
+          </Button>
+          <Button color="primary" onClick={handleCloseDeletionDialog}>
+            閉じる
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
 }
 
 const styles = (theme: Theme) =>
@@ -369,4 +352,4 @@ const styles = (theme: Theme) =>
     },
   });
 
-export default withStyles(styles)(connect(mapStateToProps)(Member));
+export default withStyles(styles)(Member);

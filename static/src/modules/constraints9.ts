@@ -18,6 +18,7 @@ export type Constraint9 = {
 
 type CreateConstraint9 = {
   type: typeof CREATE_CONSTRAINT9;
+  term_id: number;
   is_enabled: boolean;
   member_id: number;
   start_date_name: string;
@@ -70,6 +71,7 @@ type Action =
   | DeleteConstraint9;
 
 export function createConstraint9(
+  term_id: number,
   is_enabled: boolean,
   member_id: number,
   start_date_name: string,
@@ -77,6 +79,7 @@ export function createConstraint9(
   kinmu_id: number
 ): CreateConstraint9 {
   return {
+    term_id,
     is_enabled,
     kinmu_id,
     member_id,
@@ -157,6 +160,7 @@ export function reducer(state: State = initialState, action: Action): State {
     case CREATE_CONSTRAINT9:
       return state.concat({
         id: Math.max(0, ...state.map((c) => c.id)) + 1,
+        term_id: action.term_id,
         is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         member_id: action.member_id,

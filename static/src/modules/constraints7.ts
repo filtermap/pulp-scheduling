@@ -17,6 +17,7 @@ export const minOfConstraint7MinNumberOfDays = 2;
 
 type CreateConstraint7 = {
   type: typeof CREATE_CONSTRAINT7;
+  term_id: number;
   is_enabled: boolean;
   kinmu_id: number;
   min_number_of_days: number;
@@ -53,11 +54,13 @@ type Action =
   | DeleteConstraint7;
 
 export function createConstraint7(
+  term_id: number,
   is_enabled: boolean,
   kinmu_id: number,
   min_number_of_days: number
 ): CreateConstraint7 {
   return {
+    term_id,
     is_enabled,
     kinmu_id,
     min_number_of_days,
@@ -114,6 +117,7 @@ export function reducer(state: State = initialState, action: Action): State {
     case CREATE_CONSTRAINT7:
       return state.concat({
         id: Math.max(0, ...state.map((c) => c.id)) + 1,
+        term_id: action.term_id,
         is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         min_number_of_days: action.min_number_of_days,

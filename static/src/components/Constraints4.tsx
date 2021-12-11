@@ -16,21 +16,14 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import classnames from "classnames";
 import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
 import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as constraints4 from "../modules/constraints4";
-import * as kinmus from "../modules/kinmus";
-import * as members from "../modules/members";
 import Constraint4 from "./Constraint4";
 
-type Props = {
-  dispatch: Dispatch;
-  constraints4: constraints4.Constraint4[];
-  members: members.Member[];
-  kinmus: kinmus.Kinmu[];
-} & WithStyles<typeof styles>;
+type Props = WithStyles<typeof styles>;
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -44,40 +37,71 @@ type ErrorMessages = {
   newConstraint4MaxNumberOfAssignments: string[];
 };
 
-class Constraints4 extends React.Component<Props, State> {
-  public state: State = {
+function selector(state: StateWithHistory<all.State>) {
+  return {
+    constraints4: state.present.constraints4,
+    kinmus: state.present.kinmus,
+    members: state.present.members,
+  };
+}
+
+function Constraints4(props: Props) {
+  const dispatch = useDispatch();
+  const selected = useSelector(selector, shallowEqual);
+  const { termIdName } = useParams();
+  if (!termIdName) throw new Error("!termIdName");
+  const termId = parseInt(termIdName, 10);
+  const constraints4InTerm = selected.constraints4.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const membersInTerm = selected.members.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const kinmusInTerm = selected.kinmus.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const initialState = {
     creationDialogIsOpen: false,
     newConstraint4IsEnabled: true,
-    newConstraint4KinmuId:
-      this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
+    newConstraint4KinmuId: kinmusInTerm.length > 0 ? kinmusInTerm[0].id : 0,
     newConstraint4MaxNumberOfAssignments:
       constraints4.minOfConstraint4MaxNumberOfAssignments,
-    newConstraint4MemberId:
-      this.props.members.length > 0 ? this.props.members[0].id : 0,
+    newConstraint4MemberId: membersInTerm.length > 0 ? membersInTerm[0].id : 0,
   };
-  public handleClickOpenCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: true });
+  const [state, setState] = React.useState<State>(initialState);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => setState(initialState), [termId]);
+  const handleClickOpenCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
-  public handleCloseCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: false });
+  const handleCloseCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
-  public handleChangeNewConstraint4IsEnabled = (
+  const handleChangeNewConstraint4IsEnabled = (
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    this.setState({ newConstraint4IsEnabled: checked });
+    setState((state) => ({ ...state, newConstraint4IsEnabled: checked }));
   };
-  public handleChangeNewConstraint4MemberId = (
+  const handleChangeNewConstraint4MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newConstraint4MemberId: parseInt(event.target.value, 10) });
+    setState((state) => ({
+      ...state,
+      newConstraint4MemberId: parseInt(event.target.value, 10),
+    }));
   };
-  public handleChangeNewConstraint4KinmuId = (
+  const handleChangeNewConstraint4KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newConstraint4KinmuId: parseInt(event.target.value, 10) });
+    setState((state) => ({
+      ...state,
+      newConstraint4KinmuId: parseInt(event.target.value, 10),
+    }));
   };
-  public validate(newConstraint4MaxNumberOfAssignments: number): ErrorMessages {
+  const validate = (
+    newConstraint4MaxNumberOfAssignments: number
+  ): ErrorMessages => {
     const errorMessages: ErrorMessages = {
       newConstraint4MaxNumberOfAssignments: [],
     };
@@ -87,229 +111,210 @@ class Constraints4 extends React.Component<Props, State> {
       );
     }
     return errorMessages;
-  }
-  public handleChangeNewConstraint4MaxNumberOfAssignments = (
+  };
+  const handleChangeNewConstraint4MaxNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({
+    setState((state) => ({
+      ...state,
       newConstraint4MaxNumberOfAssignments: parseInt(event.target.value, 10),
-    });
+    }));
   };
-  public handleClickCreateConstraint4 = () => {
-    this.setState({ creationDialogIsOpen: false });
-    this.props.dispatch(
+  const handleClickCreateConstraint4 = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    dispatch(
       constraints4.createConstraint4(
-        this.state.newConstraint4IsEnabled,
-        this.state.newConstraint4MemberId,
-        this.state.newConstraint4KinmuId,
-        this.state.newConstraint4MaxNumberOfAssignments
+        termId,
+        state.newConstraint4IsEnabled,
+        state.newConstraint4MemberId,
+        state.newConstraint4KinmuId,
+        state.newConstraint4MaxNumberOfAssignments
       )
     );
   };
-  public render() {
-    return (
-      <>
-        <div className={this.props.classes.gridFrame}>
-          <Grid container={true} spacing={1}>
-            <Grid item={true} xs={12}>
-              <Toolbar>
-                <Typography
-                  variant="subtitle1"
-                  className={this.props.classes.toolbarTitle}
-                >
-                  職員の勤務の割り当て数の上限
-                </Typography>
+  return (
+    <>
+      <div className={props.classes.gridFrame}>
+        <Grid container={true} spacing={1}>
+          <Grid item={true} xs={12}>
+            <Toolbar>
+              <Typography
+                variant="subtitle1"
+                className={props.classes.toolbarTitle}
+              >
+                職員の勤務の割り当て数の上限
+              </Typography>
+              <Button size="small" onClick={handleClickOpenCreationDialog}>
+                追加
+              </Button>
+            </Toolbar>
+          </Grid>
+          {constraints4InTerm.map((c) => (
+            <Grid key={c.id} item={true} xs={12}>
+              <Constraint4 constraint4={c} />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+      {membersInTerm.length === 0 || kinmusInTerm.length === 0 ? (
+        <Dialog
+          onClose={handleCloseCreationDialog}
+          open={state.creationDialogIsOpen}
+          fullWidth={true}
+          maxWidth="md"
+        >
+          <DialogTitle>
+            職員の勤務の割り当て数の上限を追加できません
+          </DialogTitle>
+          <DialogContent>
+            {membersInTerm.length === 0 ? (
+              <DialogContentText>職員がいません</DialogContentText>
+            ) : null}
+            {kinmusInTerm.length === 0 ? (
+              <DialogContentText>勤務がありません</DialogContentText>
+            ) : null}
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" onClick={handleCloseCreationDialog}>
+              閉じる
+            </Button>
+          </DialogActions>
+        </Dialog>
+      ) : (
+        (() => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const newConstraint4Member = membersInTerm.find(
+            ({ id }) => id === state.newConstraint4MemberId
+          )!;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const newConstraint4Kinmu = kinmusInTerm.find(
+            ({ id }) => id === state.newConstraint4KinmuId
+          )!;
+          const relativesAreEnabled =
+            newConstraint4Member.is_enabled && newConstraint4Kinmu.is_enabled;
+          const errorMessages = validate(
+            state.newConstraint4MaxNumberOfAssignments
+          );
+          return (
+            <Dialog
+              onClose={handleCloseCreationDialog}
+              open={state.creationDialogIsOpen}
+              fullWidth={true}
+              maxWidth="md"
+            >
+              <DialogTitle>職員の勤務の割り当て数の上限の追加</DialogTitle>
+              <DialogContent>
+                <Grid container={true} spacing={1}>
+                  <Grid item={true} xs={12}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={
+                            state.newConstraint4IsEnabled && relativesAreEnabled
+                          }
+                          disabled={!relativesAreEnabled}
+                          onChange={handleChangeNewConstraint4IsEnabled}
+                          color="primary"
+                        />
+                      }
+                      label="有効"
+                    />
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      select={true}
+                      label="職員"
+                      value={state.newConstraint4MemberId}
+                      onChange={handleChangeNewConstraint4MemberId}
+                      fullWidth={true}
+                    >
+                      {membersInTerm.map((member) => (
+                        <MenuItem key={member.id} value={member.id}>
+                          {
+                            <span
+                              className={classnames({
+                                [props.classes.lineThrough]: !member.is_enabled,
+                              })}
+                            >
+                              {member.name}
+                            </span>
+                          }
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      select={true}
+                      label="勤務"
+                      value={state.newConstraint4KinmuId}
+                      onChange={handleChangeNewConstraint4KinmuId}
+                      fullWidth={true}
+                    >
+                      {kinmusInTerm.map((kinmu) => (
+                        <MenuItem key={kinmu.id} value={kinmu.id}>
+                          {
+                            <span
+                              className={classnames({
+                                [props.classes.lineThrough]: !kinmu.is_enabled,
+                              })}
+                            >
+                              {kinmu.name}
+                            </span>
+                          }
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      label="割り当て数上限"
+                      type="number"
+                      defaultValue={state.newConstraint4MaxNumberOfAssignments}
+                      onChange={
+                        handleChangeNewConstraint4MaxNumberOfAssignments
+                      }
+                      fullWidth={true}
+                      inputProps={{
+                        min: constraints4.minOfConstraint4MaxNumberOfAssignments,
+                      }}
+                      error={
+                        errorMessages.newConstraint4MaxNumberOfAssignments
+                          .length > 0
+                      }
+                      FormHelperTextProps={{
+                        // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                        component: "div",
+                      }}
+                      helperText={errorMessages.newConstraint4MaxNumberOfAssignments.map(
+                        (message) => (
+                          <div key={message}>{message}</div>
+                        )
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </DialogContent>
+              <DialogActions>
                 <Button
-                  size="small"
-                  onClick={this.handleClickOpenCreationDialog}
+                  color="primary"
+                  disabled={Object.values(errorMessages).some(
+                    (messages) => messages.length > 0
+                  )}
+                  onClick={handleClickCreateConstraint4}
                 >
                   追加
                 </Button>
-              </Toolbar>
-            </Grid>
-            {this.props.constraints4.map((c) => (
-              <Grid key={c.id} item={true} xs={12}>
-                <Constraint4 constraint4={c} />
-              </Grid>
-            ))}
-          </Grid>
-        </div>
-        {this.props.members.length === 0 || this.props.kinmus.length === 0 ? (
-          <Dialog
-            onClose={this.handleCloseCreationDialog}
-            open={this.state.creationDialogIsOpen}
-            fullWidth={true}
-            maxWidth="md"
-          >
-            <DialogTitle>
-              職員の勤務の割り当て数の上限を追加できません
-            </DialogTitle>
-            <DialogContent>
-              {this.props.members.length === 0 ? (
-                <DialogContentText>職員がいません</DialogContentText>
-              ) : null}
-              {this.props.kinmus.length === 0 ? (
-                <DialogContentText>勤務がありません</DialogContentText>
-              ) : null}
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={this.handleCloseCreationDialog}>
-                閉じる
-              </Button>
-            </DialogActions>
-          </Dialog>
-        ) : (
-          (() => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const newConstraint4Member = this.props.members.find(
-              ({ id }) => id === this.state.newConstraint4MemberId
-            )!;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const newConstraint4Kinmu = this.props.kinmus.find(
-              ({ id }) => id === this.state.newConstraint4KinmuId
-            )!;
-            const relativesAreEnabled =
-              newConstraint4Member.is_enabled && newConstraint4Kinmu.is_enabled;
-            const errorMessages = this.validate(
-              this.state.newConstraint4MaxNumberOfAssignments
-            );
-            return (
-              <Dialog
-                onClose={this.handleCloseCreationDialog}
-                open={this.state.creationDialogIsOpen}
-                fullWidth={true}
-                maxWidth="md"
-              >
-                <DialogTitle>職員の勤務の割り当て数の上限の追加</DialogTitle>
-                <DialogContent>
-                  <Grid container={true} spacing={1}>
-                    <Grid item={true} xs={12}>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={
-                              this.state.newConstraint4IsEnabled &&
-                              relativesAreEnabled
-                            }
-                            disabled={!relativesAreEnabled}
-                            onChange={this.handleChangeNewConstraint4IsEnabled}
-                            color="primary"
-                          />
-                        }
-                        label="有効"
-                      />
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        select={true}
-                        label="職員"
-                        value={this.state.newConstraint4MemberId}
-                        onChange={this.handleChangeNewConstraint4MemberId}
-                        fullWidth={true}
-                      >
-                        {this.props.members.map((member) => (
-                          <MenuItem key={member.id} value={member.id}>
-                            {
-                              <span
-                                className={classnames({
-                                  [this.props.classes.lineThrough]:
-                                    !member.is_enabled,
-                                })}
-                              >
-                                {member.name}
-                              </span>
-                            }
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        select={true}
-                        label="勤務"
-                        value={this.state.newConstraint4KinmuId}
-                        onChange={this.handleChangeNewConstraint4KinmuId}
-                        fullWidth={true}
-                      >
-                        {this.props.kinmus.map((kinmu) => (
-                          <MenuItem key={kinmu.id} value={kinmu.id}>
-                            {
-                              <span
-                                className={classnames({
-                                  [this.props.classes.lineThrough]:
-                                    !kinmu.is_enabled,
-                                })}
-                              >
-                                {kinmu.name}
-                              </span>
-                            }
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        label="割り当て数上限"
-                        type="number"
-                        defaultValue={
-                          this.state.newConstraint4MaxNumberOfAssignments
-                        }
-                        onChange={
-                          this.handleChangeNewConstraint4MaxNumberOfAssignments
-                        }
-                        fullWidth={true}
-                        inputProps={{
-                          min: constraints4.minOfConstraint4MaxNumberOfAssignments,
-                        }}
-                        error={
-                          errorMessages.newConstraint4MaxNumberOfAssignments
-                            .length > 0
-                        }
-                        FormHelperTextProps={{
-                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                          component: "div",
-                        }}
-                        helperText={errorMessages.newConstraint4MaxNumberOfAssignments.map(
-                          (message) => (
-                            <div key={message}>{message}</div>
-                          )
-                        )}
-                      />
-                    </Grid>
-                  </Grid>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    color="primary"
-                    disabled={Object.values(errorMessages).some(
-                      (messages) => messages.length > 0
-                    )}
-                    onClick={this.handleClickCreateConstraint4}
-                  >
-                    追加
-                  </Button>
-                  <Button
-                    color="primary"
-                    onClick={this.handleCloseCreationDialog}
-                  >
-                    閉じる
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            );
-          })()
-        )}
-      </>
-    );
-  }
-}
-
-function mapStateToProps(state: StateWithHistory<all.State>) {
-  return {
-    constraints4: state.present.constraints4,
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-  };
+                <Button color="primary" onClick={handleCloseCreationDialog}>
+                  閉じる
+                </Button>
+              </DialogActions>
+            </Dialog>
+          );
+        })()
+      )}
+    </>
+  );
 }
 
 const styles = createStyles({
@@ -327,4 +332,4 @@ const styles = createStyles({
   },
 });
 
-export default withStyles(styles)(connect(mapStateToProps)(Constraints4));
+export default withStyles(styles)(Constraints4);

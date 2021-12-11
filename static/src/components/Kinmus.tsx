@@ -13,17 +13,14 @@ import TextField from "@material-ui/core/TextField";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
 import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as kinmus from "../modules/kinmus";
 import Kinmu from "./Kinmu";
 
-type Props = {
-  dispatch: Dispatch;
-  kinmus: kinmus.Kinmu[];
-} & WithStyles<typeof styles>;
+type Props = WithStyles<typeof styles>;
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -35,25 +32,42 @@ type ErrorMessages = {
   newKinmuName: string[];
 };
 
-class Kinmus extends React.Component<Props, State> {
-  public state: State = {
+function selector(state: StateWithHistory<all.State>) {
+  return {
+    kinmus: state.present.kinmus,
+  };
+}
+
+function Kinmus(props: Props) {
+  const dispatch = useDispatch();
+  const selected = useSelector(selector, shallowEqual);
+  const { termIdName } = useParams();
+  if (!termIdName) throw new Error("!termIdName");
+  const termId = parseInt(termIdName, 10);
+  const initialState = {
     creationDialogIsOpen: false,
     newKinmuIsEnabled: true,
     newKinmuName: "",
   };
-  public handleClickOpenCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: true });
+  const [state, setState] = React.useState<State>(initialState);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => setState(initialState), [termId]);
+  const kinmusInTerm = selected.kinmus.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const handleClickOpenCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
-  public handleCloseCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: false });
+  const handleCloseCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
-  public handleChangeNewKinmuIsEnabled = (
+  const handleChangeNewKinmuIsEnabled = (
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    this.setState({ newKinmuIsEnabled: checked });
+    setState((state) => ({ ...state, newKinmuIsEnabled: checked }));
   };
-  public validate(newKinmuName: string): ErrorMessages {
+  const validate = (newKinmuName: string): ErrorMessages => {
     const errorMessages: ErrorMessages = {
       newKinmuName: [],
     };
@@ -61,110 +75,99 @@ class Kinmus extends React.Component<Props, State> {
       errorMessages.newKinmuName.push("勤務名を入力してください");
     }
     return errorMessages;
-  }
-  public handleChangeNewKinmuName = (
+  };
+  const handleChangeNewKinmuName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newKinmuName: event.target.value });
+    setState((state) => ({ ...state, newKinmuName: event.target.value }));
   };
-  public handleClickCreateKinmu = () => {
-    this.setState({ creationDialogIsOpen: false });
-    this.props.dispatch(
-      kinmus.createKinmu(this.state.newKinmuIsEnabled, this.state.newKinmuName)
+  const handleClickCreateKinmu = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    dispatch(
+      kinmus.createKinmu(termId, state.newKinmuIsEnabled, state.newKinmuName)
     );
   };
-  public render() {
-    const errorMessages = this.validate(this.state.newKinmuName);
-    return (
-      <>
-        <div className={this.props.classes.gridFrame}>
+  const errorMessages = validate(state.newKinmuName);
+  return (
+    <>
+      <div className={props.classes.gridFrame}>
+        <Grid container={true} spacing={1}>
+          <Grid item={true} xs={12}>
+            <Toolbar>
+              <Typography
+                variant="subtitle1"
+                className={props.classes.toolbarTitle}
+              >
+                勤務
+              </Typography>
+              <Button size="small" onClick={handleClickOpenCreationDialog}>
+                追加
+              </Button>
+            </Toolbar>
+          </Grid>
+          {kinmusInTerm.map((kinmu) => (
+            <Grid key={kinmu.id} item={true} xs={12}>
+              <Kinmu kinmu={kinmu} />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+      <Dialog
+        onClose={handleCloseCreationDialog}
+        open={state.creationDialogIsOpen}
+        fullWidth={true}
+        maxWidth="md"
+      >
+        <DialogTitle>勤務の追加</DialogTitle>
+        <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
-              <Toolbar>
-                <Typography
-                  variant="subtitle1"
-                  className={this.props.classes.toolbarTitle}
-                >
-                  勤務
-                </Typography>
-                <Button
-                  size="small"
-                  onClick={this.handleClickOpenCreationDialog}
-                >
-                  追加
-                </Button>
-              </Toolbar>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={state.newKinmuIsEnabled}
+                    onChange={handleChangeNewKinmuIsEnabled}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
             </Grid>
-            {this.props.kinmus.map((kinmu) => (
-              <Grid key={kinmu.id} item={true} xs={12}>
-                <Kinmu kinmu={kinmu} />
-              </Grid>
-            ))}
+            <Grid item={true} xs={12}>
+              <TextField
+                label="勤務名"
+                defaultValue={state.newKinmuName}
+                onChange={handleChangeNewKinmuName}
+                fullWidth={true}
+                error={errorMessages.newKinmuName.length > 0}
+                FormHelperTextProps={{
+                  // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                  component: "div",
+                }}
+                helperText={errorMessages.newKinmuName.map((message) => (
+                  <div key={message}>{message}</div>
+                ))}
+              />
+            </Grid>
           </Grid>
-        </div>
-        <Dialog
-          onClose={this.handleCloseCreationDialog}
-          open={this.state.creationDialogIsOpen}
-          fullWidth={true}
-          maxWidth="md"
-        >
-          <DialogTitle>勤務の追加</DialogTitle>
-          <DialogContent>
-            <Grid container={true} spacing={1}>
-              <Grid item={true} xs={12}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={this.state.newKinmuIsEnabled}
-                      onChange={this.handleChangeNewKinmuIsEnabled}
-                      color="primary"
-                    />
-                  }
-                  label="有効"
-                />
-              </Grid>
-              <Grid item={true} xs={12}>
-                <TextField
-                  label="勤務名"
-                  defaultValue={this.state.newKinmuName}
-                  onChange={this.handleChangeNewKinmuName}
-                  fullWidth={true}
-                  error={errorMessages.newKinmuName.length > 0}
-                  FormHelperTextProps={{
-                    // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                    component: "div",
-                  }}
-                  helperText={errorMessages.newKinmuName.map((message) => (
-                    <div key={message}>{message}</div>
-                  ))}
-                />
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              color="primary"
-              disabled={Object.values(errorMessages).some(
-                (messages) => messages.length > 0
-              )}
-              onClick={this.handleClickCreateKinmu}
-            >
-              追加
-            </Button>
-            <Button color="primary" onClick={this.handleCloseCreationDialog}>
-              閉じる
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    );
-  }
-}
-
-function mapStateToProps(state: StateWithHistory<all.State>) {
-  return {
-    kinmus: state.present.kinmus,
-  };
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            disabled={Object.values(errorMessages).some(
+              (messages) => messages.length > 0
+            )}
+            onClick={handleClickCreateKinmu}
+          >
+            追加
+          </Button>
+          <Button color="primary" onClick={handleCloseCreationDialog}>
+            閉じる
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
 }
 
 const styles = createStyles({
@@ -176,4 +179,4 @@ const styles = createStyles({
   },
 });
 
-export default withStyles(styles)(connect(mapStateToProps)(Kinmus));
+export default withStyles(styles)(Kinmus);

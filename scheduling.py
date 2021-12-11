@@ -49,20 +49,26 @@ def write_members(members):
 
 
 terms_filename = "terms.csv"
-term_attribute_names = ["id", "start_date_name", "stop_date_name"]
+term_attribute_names = ["id", "is_enabled", "start_date_name", "stop_date_name"]
 
 
 def read_terms():
     with open(in_data_directory(terms_filename)) as f:
         next(f)
         terms = [
-            {**r, "id": int(r["id"])} for r in csv.DictReader(f, term_attribute_names)
+            {
+                **r,
+                "id": int(r["id"]),
+                "is_enabled": int(r["is_enabled"]) != 0,
+            }
+            for r in csv.DictReader(f, term_attribute_names)
         ]
     return terms
 
 
 def write_terms(terms):
-    write_rows(terms, terms_filename, term_attribute_names)
+    rows = [{**term, "is_enabled": 1 if term["is_enabled"] else 0} for term in terms]
+    write_rows(rows, terms_filename, term_attribute_names)
 
 
 kinmus_filename = "kinmus.csv"

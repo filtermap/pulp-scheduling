@@ -21,23 +21,14 @@ import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as constraints2 from "../modules/constraints2";
-import * as groups from "../modules/groups";
-import * as kinmus from "../modules/kinmus";
-import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
 type Props = {
-  dispatch: Dispatch;
   constraint2: constraints2.Constraint2;
-  constraints2: constraints2.Constraint2[];
-  terms: terms.Term[];
-  kinmus: kinmus.Kinmu[];
-  groups: groups.Group[];
 } & WithStyles<typeof styles>;
 
 type State = {
@@ -51,33 +42,46 @@ type ErrorMessages = {
   constraint2MaxNumberOfAssignments: string[];
 };
 
-class Constraint2 extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      deletionDialogIsOpen: false,
-      expanded: false,
-    };
-  }
-  public handleClickExpand = () => {
-    this.setState({ expanded: !this.state.expanded });
+function selector(state: StateWithHistory<all.State>) {
+  return {
+    groups: state.present.groups,
+    kinmus: state.present.kinmus,
+    terms: state.present.terms,
   };
-  public handleChangeConstraint2IsEnabled = (
+}
+
+function Constraint2(props: Props) {
+  const dispatch = useDispatch();
+  const selected = useSelector(selector, shallowEqual);
+  const [state, setState] = React.useState<State>({
+    deletionDialogIsOpen: false,
+    expanded: false,
+  });
+  const termsInTerm = selected.terms.filter(
+    ({ id }) => id === props.constraint2.term_id
+  );
+  const kinmusInTerm = selected.kinmus.filter(
+    ({ term_id }) => term_id === props.constraint2.term_id
+  );
+  const groupsInTerm = selected.groups.filter(
+    ({ term_id }) => term_id === props.constraint2.term_id
+  );
+  const handleClickExpand = () => {
+    setState((state) => ({ ...state, expanded: !state.expanded }));
+  };
+  const handleChangeConstraint2IsEnabled = (
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    this.props.dispatch(
-      constraints2.updateConstraint2IsEnabled(
-        this.props.constraint2.id,
-        checked
-      )
+    dispatch(
+      constraints2.updateConstraint2IsEnabled(props.constraint2.id, checked)
     );
   };
-  public validate(
+  const validate = (
     constraint2StartDateName: string,
     constraint2StopDateName: string,
     constraint2MaxNumberOfAssignments: number
-  ): ErrorMessages {
+  ): ErrorMessages => {
     const errorMessages: ErrorMessages = {
       constraint2MaxNumberOfAssignments: [],
       constraint2StartDateName: [],
@@ -99,363 +103,338 @@ class Constraint2 extends React.Component<Props, State> {
       );
     }
     return errorMessages;
-  }
-  public handleChangeConstraint2StartDateName = (
+  };
+  const handleChangeConstraint2StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.props.dispatch(
+    dispatch(
       constraints2.updateConstraint2StartDateName(
-        this.props.constraint2.id,
+        props.constraint2.id,
         event.target.value
       )
     );
   };
-  public handleChangeConstraint2StopDateName = (
+  const handleChangeConstraint2StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.props.dispatch(
+    dispatch(
       constraints2.updateConstraint2StopDateName(
-        this.props.constraint2.id,
+        props.constraint2.id,
         event.target.value
       )
     );
   };
-  public handleChangeConstraint2KinmuId = (
+  const handleChangeConstraint2KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.props.dispatch(
+    dispatch(
       constraints2.updateConstraint2KinmuId(
-        this.props.constraint2.id,
+        props.constraint2.id,
         parseInt(event.target.value, 10)
       )
     );
   };
-  public handleChangeConstraint2GroupId = (
+  const handleChangeConstraint2GroupId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.props.dispatch(
+    dispatch(
       constraints2.updateConstraint2GroupId(
-        this.props.constraint2.id,
+        props.constraint2.id,
         parseInt(event.target.value, 10)
       )
     );
   };
-  public handleChangeConstraint2MaxNumberOfAssignments = (
+  const handleChangeConstraint2MaxNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.props.dispatch(
+    dispatch(
       constraints2.updateConstraint2MaxNumberOfAssignments(
-        this.props.constraint2.id,
+        props.constraint2.id,
         parseInt(event.target.value, 10)
       )
     );
   };
-  public handleClickOpenDeletionDialog = () => {
-    this.setState({ deletionDialogIsOpen: true });
+  const handleClickOpenDeletionDialog = () => {
+    setState((state) => ({ ...state, deletionDialogIsOpen: true }));
   };
-  public handleCloseDeletionDialog = () => {
-    this.setState({ deletionDialogIsOpen: false });
+  const handleCloseDeletionDialog = () => {
+    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
   };
-  public handleClickDeleteConstraint2 = () => {
-    this.setState({ deletionDialogIsOpen: false });
-    this.props.dispatch(
-      constraints2.deleteConstraint2(this.props.constraint2.id)
-    );
+  const handleClickDeleteConstraint2 = () => {
+    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    dispatch(constraints2.deleteConstraint2(props.constraint2.id));
   };
-  public render() {
-    const constraint2StartDate = utils.stringToDate(
-      this.props.constraint2.start_date_name
-    );
-    const constraint2StartDateIsEnabled = constraint2StartDate
-      ? this.props.terms.every(({ start_date_name }) => {
-          const startDate = utils.stringToDate(start_date_name);
-          if (!startDate) {
-            return false;
+  const constraint2StartDate = utils.stringToDate(
+    props.constraint2.start_date_name
+  );
+  const constraint2StartDateIsEnabled = constraint2StartDate
+    ? termsInTerm.every(({ start_date_name }) => {
+        const startDate = utils.stringToDate(start_date_name);
+        if (!startDate) {
+          return false;
+        }
+        return startDate <= constraint2StartDate;
+      })
+    : false;
+  const constraint2StopDate = utils.stringToDate(
+    props.constraint2.stop_date_name
+  );
+  const constraint2StopDateIsEnabled = constraint2StopDate
+    ? termsInTerm.every(({ stop_date_name }) => {
+        const stopDate = utils.stringToDate(stop_date_name);
+        if (!stopDate) {
+          return false;
+        }
+        return stopDate >= constraint2StopDate;
+      })
+    : false;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const constraint2Kinmu = kinmusInTerm.find(
+    ({ id }) => id === props.constraint2.kinmu_id
+  )!;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const constraint2Group = groupsInTerm.find(
+    ({ id }) => id === props.constraint2.group_id
+  )!;
+  const relativesAreEnabled =
+    constraint2StartDateIsEnabled &&
+    constraint2StopDateIsEnabled &&
+    constraint2Kinmu.is_enabled &&
+    constraint2Group.is_enabled;
+  const title = (
+    <>
+      <span
+        className={classnames({
+          [props.classes.lineThrough]: !constraint2StartDateIsEnabled,
+        })}
+      >
+        {props.constraint2.start_date_name}
+      </span>
+      から
+      <span
+        className={classnames({
+          [props.classes.lineThrough]: !constraint2StopDateIsEnabled,
+        })}
+      >
+        {props.constraint2.stop_date_name}
+      </span>
+      までの
+      <span
+        className={classnames({
+          [props.classes.lineThrough]: !constraint2Kinmu.is_enabled,
+        })}
+      >
+        {constraint2Kinmu.name}
+      </span>
+      に
+      <span
+        className={classnames({
+          [props.classes.lineThrough]: !constraint2Group.is_enabled,
+        })}
+      >
+        {constraint2Group.name}
+      </span>
+      から{props.constraint2.max_number_of_assignments}
+      人以下の職員を割り当てる
+    </>
+  );
+  const errorMessages = validate(
+    props.constraint2.start_date_name,
+    props.constraint2.stop_date_name,
+    props.constraint2.max_number_of_assignments
+  );
+  return (
+    <>
+      <Card>
+        <CardHeader
+          avatar={
+            <Switch
+              checked={props.constraint2.is_enabled && relativesAreEnabled}
+              disabled={!relativesAreEnabled}
+              onChange={handleChangeConstraint2IsEnabled}
+              color="primary"
+            />
           }
-          return startDate <= constraint2StartDate;
-        })
-      : false;
-    const constraint2StopDate = utils.stringToDate(
-      this.props.constraint2.stop_date_name
-    );
-    const constraint2StopDateIsEnabled = constraint2StopDate
-      ? this.props.terms.every(({ stop_date_name }) => {
-          const stopDate = utils.stringToDate(stop_date_name);
-          if (!stopDate) {
-            return false;
+          action={
+            <IconButton
+              className={classnames(props.classes.expand, {
+                [props.classes.expandOpen]: state.expanded,
+              })}
+              onClick={handleClickExpand}
+              aria-expanded={state.expanded}
+            >
+              <ExpandMoreIcon />
+            </IconButton>
           }
-          return stopDate >= constraint2StopDate;
-        })
-      : false;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const constraint2Kinmu = this.props.kinmus.find(
-      ({ id }) => id === this.props.constraint2.kinmu_id
-    )!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const constraint2Group = this.props.groups.find(
-      ({ id }) => id === this.props.constraint2.group_id
-    )!;
-    const relativesAreEnabled =
-      constraint2StartDateIsEnabled &&
-      constraint2StopDateIsEnabled &&
-      constraint2Kinmu.is_enabled &&
-      constraint2Group.is_enabled;
-    const title = (
-      <>
-        <span
-          className={classnames({
-            [this.props.classes.lineThrough]: !constraint2StartDateIsEnabled,
-          })}
-        >
-          {this.props.constraint2.start_date_name}
-        </span>
-        から
-        <span
-          className={classnames({
-            [this.props.classes.lineThrough]: !constraint2StopDateIsEnabled,
-          })}
-        >
-          {this.props.constraint2.stop_date_name}
-        </span>
-        までの
-        <span
-          className={classnames({
-            [this.props.classes.lineThrough]: !constraint2Kinmu.is_enabled,
-          })}
-        >
-          {constraint2Kinmu.name}
-        </span>
-        に
-        <span
-          className={classnames({
-            [this.props.classes.lineThrough]: !constraint2Group.is_enabled,
-          })}
-        >
-          {constraint2Group.name}
-        </span>
-        から{this.props.constraint2.max_number_of_assignments}
-        人以下の職員を割り当てる
-      </>
-    );
-    const errorMessages = this.validate(
-      this.props.constraint2.start_date_name,
-      this.props.constraint2.stop_date_name,
-      this.props.constraint2.max_number_of_assignments
-    );
-    return (
-      <>
-        <Card>
-          <CardHeader
-            avatar={
-              <Switch
-                checked={
-                  this.props.constraint2.is_enabled && relativesAreEnabled
-                }
-                disabled={!relativesAreEnabled}
-                onChange={this.handleChangeConstraint2IsEnabled}
-                color="primary"
-              />
-            }
-            action={
-              <IconButton
-                className={classnames(this.props.classes.expand, {
-                  [this.props.classes.expandOpen]: this.state.expanded,
-                })}
-                onClick={this.handleClickExpand}
-                aria-expanded={this.state.expanded}
-              >
-                <ExpandMoreIcon />
-              </IconButton>
-            }
-            title={title}
-            titleTypographyProps={{
-              variant: "h5",
-            }}
-          />
-          <Collapse
-            in={this.state.expanded}
-            timeout="auto"
-            unmountOnExit={true}
-          >
-            <CardContent>
-              <Grid container={true} spacing={1}>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    label="開始日"
-                    type="date"
-                    defaultValue={this.props.constraint2.start_date_name}
-                    onChange={this.handleChangeConstraint2StartDateName}
-                    fullWidth={true}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    inputProps={{
-                      className: classnames({
-                        [this.props.classes.lineThrough]:
-                          !constraint2StartDateIsEnabled,
-                      }),
-                    }}
-                    error={errorMessages.constraint2StartDateName.length > 0}
-                    FormHelperTextProps={{
-                      // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                      component: "div",
-                    }}
-                    helperText={errorMessages.constraint2StartDateName.map(
-                      (message) => (
-                        <div key={message}>{message}</div>
-                      )
-                    )}
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    label="終了日"
-                    type="date"
-                    defaultValue={this.props.constraint2.stop_date_name}
-                    onChange={this.handleChangeConstraint2StopDateName}
-                    fullWidth={true}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    inputProps={{
-                      className: classnames({
-                        [this.props.classes.lineThrough]:
-                          !constraint2StopDateIsEnabled,
-                      }),
-                    }}
-                    error={errorMessages.constraint2StopDateName.length > 0}
-                    FormHelperTextProps={{
-                      // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                      component: "div",
-                    }}
-                    helperText={errorMessages.constraint2StopDateName.map(
-                      (message) => (
-                        <div key={message}>{message}</div>
-                      )
-                    )}
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    select={true}
-                    label="勤務"
-                    value={this.props.constraint2.kinmu_id}
-                    onChange={this.handleChangeConstraint2KinmuId}
-                    fullWidth={true}
-                  >
-                    {this.props.kinmus.map((kinmu) => (
-                      <MenuItem key={kinmu.id} value={kinmu.id}>
-                        {
-                          <span
-                            className={classnames({
-                              [this.props.classes.lineThrough]:
-                                !kinmu.is_enabled,
-                            })}
-                          >
-                            {kinmu.name}
-                          </span>
-                        }
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    select={true}
-                    label="グループ"
-                    value={this.props.constraint2.group_id}
-                    onChange={this.handleChangeConstraint2GroupId}
-                    fullWidth={true}
-                  >
-                    {this.props.groups.map((group) => (
-                      <MenuItem key={group.id} value={group.id}>
-                        {
-                          <span
-                            className={classnames({
-                              [this.props.classes.lineThrough]:
-                                !group.is_enabled,
-                            })}
-                          >
-                            {group.name}
-                          </span>
-                        }
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    label="割り当て職員数上限"
-                    type="number"
-                    defaultValue={
-                      this.props.constraint2.max_number_of_assignments
-                    }
-                    onChange={
-                      this.handleChangeConstraint2MaxNumberOfAssignments
-                    }
-                    fullWidth={true}
-                    inputProps={{
-                      min: constraints2.minOfConstraint2MaxNumberOfAssignments,
-                    }}
-                    error={
-                      errorMessages.constraint2MaxNumberOfAssignments.length > 0
-                    }
-                    FormHelperTextProps={{
-                      // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                      component: "div",
-                    }}
-                    helperText={errorMessages.constraint2MaxNumberOfAssignments.map(
-                      (message) => (
-                        <div key={message}>{message}</div>
-                      )
-                    )}
-                  />
-                </Grid>
+          title={title}
+          titleTypographyProps={{
+            variant: "h5",
+          }}
+        />
+        <Collapse in={state.expanded} timeout="auto" unmountOnExit={true}>
+          <CardContent>
+            <Grid container={true} spacing={1}>
+              <Grid item={true} xs={12}>
+                <TextField
+                  label="開始日"
+                  type="date"
+                  defaultValue={props.constraint2.start_date_name}
+                  onChange={handleChangeConstraint2StartDateName}
+                  fullWidth={true}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  inputProps={{
+                    className: classnames({
+                      [props.classes.lineThrough]:
+                        !constraint2StartDateIsEnabled,
+                    }),
+                  }}
+                  error={errorMessages.constraint2StartDateName.length > 0}
+                  FormHelperTextProps={{
+                    // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                    component: "div",
+                  }}
+                  helperText={errorMessages.constraint2StartDateName.map(
+                    (message) => (
+                      <div key={message}>{message}</div>
+                    )
+                  )}
+                />
               </Grid>
-            </CardContent>
-            <CardActions>
-              <Button size="small" onClick={this.handleClickOpenDeletionDialog}>
-                削除
-              </Button>
-            </CardActions>
-          </Collapse>
-        </Card>
-        <Dialog
-          onClose={this.handleCloseDeletionDialog}
-          open={this.state.deletionDialogIsOpen}
-          fullWidth={true}
-          maxWidth="md"
-        >
-          <DialogTitle>
-            期間の勤務にグループから割り当てる職員数の上限の削除
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              この期間の勤務にグループから割り当てる職員数の上限を削除します
-            </DialogContentText>
-            <Typography>{title}</Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button color="primary" onClick={this.handleClickDeleteConstraint2}>
+              <Grid item={true} xs={12}>
+                <TextField
+                  label="終了日"
+                  type="date"
+                  defaultValue={props.constraint2.stop_date_name}
+                  onChange={handleChangeConstraint2StopDateName}
+                  fullWidth={true}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  inputProps={{
+                    className: classnames({
+                      [props.classes.lineThrough]:
+                        !constraint2StopDateIsEnabled,
+                    }),
+                  }}
+                  error={errorMessages.constraint2StopDateName.length > 0}
+                  FormHelperTextProps={{
+                    // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                    component: "div",
+                  }}
+                  helperText={errorMessages.constraint2StopDateName.map(
+                    (message) => (
+                      <div key={message}>{message}</div>
+                    )
+                  )}
+                />
+              </Grid>
+              <Grid item={true} xs={12}>
+                <TextField
+                  select={true}
+                  label="勤務"
+                  value={props.constraint2.kinmu_id}
+                  onChange={handleChangeConstraint2KinmuId}
+                  fullWidth={true}
+                >
+                  {kinmusInTerm.map((kinmu) => (
+                    <MenuItem key={kinmu.id} value={kinmu.id}>
+                      {
+                        <span
+                          className={classnames({
+                            [props.classes.lineThrough]: !kinmu.is_enabled,
+                          })}
+                        >
+                          {kinmu.name}
+                        </span>
+                      }
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item={true} xs={12}>
+                <TextField
+                  select={true}
+                  label="グループ"
+                  value={props.constraint2.group_id}
+                  onChange={handleChangeConstraint2GroupId}
+                  fullWidth={true}
+                >
+                  {groupsInTerm.map((group) => (
+                    <MenuItem key={group.id} value={group.id}>
+                      {
+                        <span
+                          className={classnames({
+                            [props.classes.lineThrough]: !group.is_enabled,
+                          })}
+                        >
+                          {group.name}
+                        </span>
+                      }
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item={true} xs={12}>
+                <TextField
+                  label="割り当て職員数上限"
+                  type="number"
+                  defaultValue={props.constraint2.max_number_of_assignments}
+                  onChange={handleChangeConstraint2MaxNumberOfAssignments}
+                  fullWidth={true}
+                  inputProps={{
+                    min: constraints2.minOfConstraint2MaxNumberOfAssignments,
+                  }}
+                  error={
+                    errorMessages.constraint2MaxNumberOfAssignments.length > 0
+                  }
+                  FormHelperTextProps={{
+                    // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                    component: "div",
+                  }}
+                  helperText={errorMessages.constraint2MaxNumberOfAssignments.map(
+                    (message) => (
+                      <div key={message}>{message}</div>
+                    )
+                  )}
+                />
+              </Grid>
+            </Grid>
+          </CardContent>
+          <CardActions>
+            <Button size="small" onClick={handleClickOpenDeletionDialog}>
               削除
             </Button>
-            <Button color="primary" onClick={this.handleCloseDeletionDialog}>
-              閉じる
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    );
-  }
-}
-
-function mapStateToProps(state: StateWithHistory<all.State>) {
-  return {
-    constraints2: state.present.constraints2,
-    groups: state.present.groups,
-    kinmus: state.present.kinmus,
-    terms: state.present.terms,
-  };
+          </CardActions>
+        </Collapse>
+      </Card>
+      <Dialog
+        onClose={handleCloseDeletionDialog}
+        open={state.deletionDialogIsOpen}
+        fullWidth={true}
+        maxWidth="md"
+      >
+        <DialogTitle>
+          期間の勤務にグループから割り当てる職員数の上限の削除
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            この期間の勤務にグループから割り当てる職員数の上限を削除します
+          </DialogContentText>
+          <Typography>{title}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={handleClickDeleteConstraint2}>
+            削除
+          </Button>
+          <Button color="primary" onClick={handleCloseDeletionDialog}>
+            閉じる
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
 }
 
 const styles = (theme: Theme) =>
@@ -477,4 +456,4 @@ const styles = (theme: Theme) =>
     },
   });
 
-export default withStyles(styles)(connect(mapStateToProps)(Constraint2));
+export default withStyles(styles)(Constraint2);

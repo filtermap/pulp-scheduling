@@ -21,18 +21,13 @@ import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as constraints8 from "../modules/constraints8";
-import * as kinmus from "../modules/kinmus";
 
 type Props = {
-  dispatch: Dispatch;
   constraint8: constraints8.Constraint8;
-  constraints8: constraints8.Constraint8[];
-  kinmus: kinmus.Kinmu[];
 } & WithStyles<typeof styles>;
 
 type State = {
@@ -44,39 +39,44 @@ type ErrorMessages = {
   constraint8MaxNumberOfDays: string[];
 };
 
-class Constraint8 extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      deletionDialogIsOpen: false,
-      expanded: false,
-    };
-  }
-  public handleClickExpand = () => {
-    this.setState({ expanded: !this.state.expanded });
+function selector(state: StateWithHistory<all.State>) {
+  return {
+    kinmus: state.present.kinmus,
   };
-  public handleChangeConstraint8IsEnabled = (
+}
+
+function Constraint8(props: Props) {
+  const dispatch = useDispatch();
+  const selected = useSelector(selector, shallowEqual);
+  const [state, setState] = React.useState<State>({
+    deletionDialogIsOpen: false,
+    expanded: false,
+  });
+  const kinmusInTerm = selected.kinmus.filter(
+    ({ term_id }) => term_id === props.constraint8.term_id
+  );
+  const handleClickExpand = () => {
+    setState((state) => ({ ...state, expanded: !state.expanded }));
+  };
+  const handleChangeConstraint8IsEnabled = (
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    this.props.dispatch(
-      constraints8.updateConstraint8IsEnabled(
-        this.props.constraint8.id,
-        checked
-      )
+    dispatch(
+      constraints8.updateConstraint8IsEnabled(props.constraint8.id, checked)
     );
   };
-  public handleChangeConstraint8KinmuId = (
+  const handleChangeConstraint8KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.props.dispatch(
+    dispatch(
       constraints8.updateConstraint8KinmuId(
-        this.props.constraint8.id,
+        props.constraint8.id,
         parseInt(event.target.value, 10)
       )
     );
   };
-  public validate(constraint8MaxNumberOfDays: number): ErrorMessages {
+  const validate = (constraint8MaxNumberOfDays: number): ErrorMessages => {
     const errorMessages: ErrorMessages = {
       constraint8MaxNumberOfDays: [],
     };
@@ -86,174 +86,154 @@ class Constraint8 extends React.Component<Props, State> {
       );
     }
     return errorMessages;
-  }
-  public handleChangeConstraint8MaxNumberOfDays = (
+  };
+  const handleChangeConstraint8MaxNumberOfDays = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.props.dispatch(
+    dispatch(
       constraints8.updateConstraint8MaxNumberOfDays(
-        this.props.constraint8.id,
+        props.constraint8.id,
         parseInt(event.target.value, 10)
       )
     );
   };
-  public handleClickOpenDeletionDialog = () => {
-    this.setState({ deletionDialogIsOpen: true });
+  const handleClickOpenDeletionDialog = () => {
+    setState((state) => ({ ...state, deletionDialogIsOpen: true }));
   };
-  public handleCloseDeletionDialog = () => {
-    this.setState({ deletionDialogIsOpen: false });
+  const handleCloseDeletionDialog = () => {
+    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
   };
-  public handleClickDeleteConstraint8 = () => {
-    this.setState({ deletionDialogIsOpen: false });
-    this.props.dispatch(
-      constraints8.deleteConstraint8(this.props.constraint8.id)
-    );
+  const handleClickDeleteConstraint8 = () => {
+    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    dispatch(constraints8.deleteConstraint8(props.constraint8.id));
   };
-  public render() {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const constraint8Kinmu = this.props.kinmus.find(
-      ({ id }) => id === this.props.constraint8.kinmu_id
-    )!;
-    const relativesAreEnabled = constraint8Kinmu.is_enabled;
-    const title = (
-      <>
-        <span
-          className={classnames({
-            [this.props.classes.lineThrough]: !constraint8Kinmu.is_enabled,
-          })}
-        >
-          {constraint8Kinmu.name}
-        </span>
-        の間隔日数を{this.props.constraint8.max_number_of_days}日以下にする
-      </>
-    );
-    const errorMessages = this.validate(
-      this.props.constraint8.max_number_of_days
-    );
-    return (
-      <>
-        <Card>
-          <CardHeader
-            avatar={
-              <Switch
-                checked={
-                  this.props.constraint8.is_enabled && relativesAreEnabled
-                }
-                disabled={!relativesAreEnabled}
-                onChange={this.handleChangeConstraint8IsEnabled}
-                color="primary"
-              />
-            }
-            action={
-              <IconButton
-                className={classnames(this.props.classes.expand, {
-                  [this.props.classes.expandOpen]: this.state.expanded,
-                })}
-                onClick={this.handleClickExpand}
-                aria-expanded={this.state.expanded}
-              >
-                <ExpandMoreIcon />
-              </IconButton>
-            }
-            title={title}
-            titleTypographyProps={{
-              variant: "h5",
-            }}
-          />
-          <Collapse
-            in={this.state.expanded}
-            timeout="auto"
-            unmountOnExit={true}
-          >
-            <CardContent>
-              <Grid container={true} spacing={1}>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    select={true}
-                    label="勤務"
-                    value={this.props.constraint8.kinmu_id}
-                    onChange={this.handleChangeConstraint8KinmuId}
-                    fullWidth={true}
-                  >
-                    {this.props.kinmus.map((kinmu) => (
-                      <MenuItem key={kinmu.id} value={kinmu.id}>
-                        {
-                          <span
-                            className={classnames({
-                              [this.props.classes.lineThrough]:
-                                !kinmu.is_enabled,
-                            })}
-                          >
-                            {kinmu.name}
-                          </span>
-                        }
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    label="間隔日数上限"
-                    type="number"
-                    defaultValue={this.props.constraint8.max_number_of_days}
-                    onChange={this.handleChangeConstraint8MaxNumberOfDays}
-                    fullWidth={true}
-                    inputProps={{
-                      min: constraints8.minOfConstraint8MaxNumberOfDays,
-                    }}
-                    error={errorMessages.constraint8MaxNumberOfDays.length > 0}
-                    FormHelperTextProps={{
-                      // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                      component: "div",
-                    }}
-                    helperText={errorMessages.constraint8MaxNumberOfDays.map(
-                      (message) => (
-                        <div key={message}>{message}</div>
-                      )
-                    )}
-                  />
-                </Grid>
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const constraint8Kinmu = kinmusInTerm.find(
+    ({ id }) => id === props.constraint8.kinmu_id
+  )!;
+  const relativesAreEnabled = constraint8Kinmu.is_enabled;
+  const title = (
+    <>
+      <span
+        className={classnames({
+          [props.classes.lineThrough]: !constraint8Kinmu.is_enabled,
+        })}
+      >
+        {constraint8Kinmu.name}
+      </span>
+      の間隔日数を{props.constraint8.max_number_of_days}日以下にする
+    </>
+  );
+  const errorMessages = validate(props.constraint8.max_number_of_days);
+  return (
+    <>
+      <Card>
+        <CardHeader
+          avatar={
+            <Switch
+              checked={props.constraint8.is_enabled && relativesAreEnabled}
+              disabled={!relativesAreEnabled}
+              onChange={handleChangeConstraint8IsEnabled}
+              color="primary"
+            />
+          }
+          action={
+            <IconButton
+              className={classnames(props.classes.expand, {
+                [props.classes.expandOpen]: state.expanded,
+              })}
+              onClick={handleClickExpand}
+              aria-expanded={state.expanded}
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+          }
+          title={title}
+          titleTypographyProps={{
+            variant: "h5",
+          }}
+        />
+        <Collapse in={state.expanded} timeout="auto" unmountOnExit={true}>
+          <CardContent>
+            <Grid container={true} spacing={1}>
+              <Grid item={true} xs={12}>
+                <TextField
+                  select={true}
+                  label="勤務"
+                  value={props.constraint8.kinmu_id}
+                  onChange={handleChangeConstraint8KinmuId}
+                  fullWidth={true}
+                >
+                  {kinmusInTerm.map((kinmu) => (
+                    <MenuItem key={kinmu.id} value={kinmu.id}>
+                      {
+                        <span
+                          className={classnames({
+                            [props.classes.lineThrough]: !kinmu.is_enabled,
+                          })}
+                        >
+                          {kinmu.name}
+                        </span>
+                      }
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
-            </CardContent>
-            <CardActions>
-              <Button size="small" onClick={this.handleClickOpenDeletionDialog}>
-                削除
-              </Button>
-            </CardActions>
-          </Collapse>
-        </Card>
-        <Dialog
-          onClose={this.handleCloseDeletionDialog}
-          open={this.state.deletionDialogIsOpen}
-          fullWidth={true}
-          maxWidth="md"
-        >
-          <DialogTitle>勤務の間隔日数の上限の削除</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              この勤務の間隔日数の上限を削除します
-            </DialogContentText>
-            <Typography>{title}</Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button color="primary" onClick={this.handleClickDeleteConstraint8}>
+              <Grid item={true} xs={12}>
+                <TextField
+                  label="間隔日数上限"
+                  type="number"
+                  defaultValue={props.constraint8.max_number_of_days}
+                  onChange={handleChangeConstraint8MaxNumberOfDays}
+                  fullWidth={true}
+                  inputProps={{
+                    min: constraints8.minOfConstraint8MaxNumberOfDays,
+                  }}
+                  error={errorMessages.constraint8MaxNumberOfDays.length > 0}
+                  FormHelperTextProps={{
+                    // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                    component: "div",
+                  }}
+                  helperText={errorMessages.constraint8MaxNumberOfDays.map(
+                    (message) => (
+                      <div key={message}>{message}</div>
+                    )
+                  )}
+                />
+              </Grid>
+            </Grid>
+          </CardContent>
+          <CardActions>
+            <Button size="small" onClick={handleClickOpenDeletionDialog}>
               削除
             </Button>
-            <Button color="primary" onClick={this.handleCloseDeletionDialog}>
-              閉じる
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    );
-  }
-}
-
-function mapStateToProps(state: StateWithHistory<all.State>) {
-  return {
-    constraints8: state.present.constraints8,
-    kinmus: state.present.kinmus,
-  };
+          </CardActions>
+        </Collapse>
+      </Card>
+      <Dialog
+        onClose={handleCloseDeletionDialog}
+        open={state.deletionDialogIsOpen}
+        fullWidth={true}
+        maxWidth="md"
+      >
+        <DialogTitle>勤務の間隔日数の上限の削除</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            この勤務の間隔日数の上限を削除します
+          </DialogContentText>
+          <Typography>{title}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={handleClickDeleteConstraint8}>
+            削除
+          </Button>
+          <Button color="primary" onClick={handleCloseDeletionDialog}>
+            閉じる
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
 }
 
 const styles = (theme: Theme) =>
@@ -275,4 +255,4 @@ const styles = (theme: Theme) =>
     },
   });
 
-export default withStyles(styles)(connect(mapStateToProps)(Constraint8));
+export default withStyles(styles)(Constraint8);

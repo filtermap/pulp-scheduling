@@ -23,6 +23,7 @@ export const minOfConstraint2MaxNumberOfAssignments = 0;
 
 type CreateConstraint2 = {
   type: typeof CREATE_CONSTRAINT2;
+  term_id: number;
   is_enabled: boolean;
   start_date_name: string;
   stop_date_name: string;
@@ -83,6 +84,7 @@ type Action =
   | DeleteConstraint2;
 
 export function createConstraint2(
+  term_id: number,
   is_enabled: boolean,
   start_date_name: string,
   stop_date_name: string,
@@ -91,6 +93,7 @@ export function createConstraint2(
   max_number_of_assignments: number
 ): CreateConstraint2 {
   return {
+    term_id,
     group_id,
     is_enabled,
     kinmu_id,
@@ -184,6 +187,7 @@ export function reducer(state: State = initialState, action: Action): State {
       return state.concat({
         group_id: action.group_id,
         id: Math.max(0, ...state.map((c) => c.id)) + 1,
+        term_id: action.term_id,
         is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         max_number_of_assignments: action.max_number_of_assignments,

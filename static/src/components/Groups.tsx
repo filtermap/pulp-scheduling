@@ -17,21 +17,13 @@ import TextField from "@material-ui/core/TextField";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { StateWithHistory } from "redux-undo";
+import { useParams } from "react-router";
 import * as all from "../modules/all";
-import * as group_members from "../modules/group_members";
-import * as groups from "../modules/groups";
-import * as members from "../modules/members";
 import Group from "./Group";
 
-type Props = {
-  dispatch: Dispatch;
-  groups: groups.Group[];
-  members: members.Member[];
-  group_members: group_members.GroupMember[];
-} & WithStyles<typeof styles>;
+type Props = WithStyles<typeof styles>;
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -44,26 +36,47 @@ type ErrorMessages = {
   newGroupName: string[];
 };
 
-class Groups extends React.Component<Props, State> {
-  public state: State = {
+function selector(state: StateWithHistory<all.State>) {
+  return {
+    groups: state.present.groups,
+    members: state.present.members,
+  };
+}
+
+function Groups(props: Props) {
+  const dispatch = useDispatch();
+  const selected = useSelector(selector, shallowEqual);
+  const { termIdName } = useParams();
+  if (!termIdName) throw new Error("!termIdName");
+  const termId = parseInt(termIdName, 10);
+  const initialState = {
     creationDialogIsOpen: false,
     newGroupIsEnabled: true,
     newGroupMemberIndices: [],
     newGroupName: "",
   };
-  public handleClickOpenCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: true });
+  const [state, setState] = React.useState<State>(initialState);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => setState(initialState), [termId]);
+  const groupsInTerm = selected.groups.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const membersInTerm = selected.members.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const handleClickOpenCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
-  public handleCloseCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: false });
+  const handleCloseCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
-  public handleChangeNewGroupIsEnabled = (
+  const handleChangeNewGroupIsEnabled = (
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    this.setState({ newGroupIsEnabled: checked });
+    setState((state) => ({ ...state, newGroupIsEnabled: checked }));
   };
-  public validate(newGroupName: string): ErrorMessages {
+  const validate = (newGroupName: string): ErrorMessages => {
     const errorMessages: ErrorMessages = {
       newGroupName: [],
     };
@@ -71,156 +84,143 @@ class Groups extends React.Component<Props, State> {
       errorMessages.newGroupName.push("グループ名を入力してください");
     }
     return errorMessages;
-  }
-  public handleChangeNewGroupName = (
+  };
+  const handleChangeNewGroupName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newGroupName: event.target.value });
+    setState((state) => ({ ...state, newGroupName: event.target.value }));
   };
-  public handleChangeNewGroupMember(memberId: number) {
+  const handleChangeNewGroupMember = (memberId: number) => {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
       if (checked) {
-        this.setState({
-          newGroupMemberIndices:
-            this.state.newGroupMemberIndices.concat(memberId),
-        });
+        setState((state) => ({
+          ...state,
+          newGroupMemberIndices: state.newGroupMemberIndices.concat(memberId),
+        }));
         return;
       }
-      this.setState({
-        newGroupMemberIndices: this.state.newGroupMemberIndices.filter(
+      setState((state) => ({
+        ...state,
+        newGroupMemberIndices: state.newGroupMemberIndices.filter(
           (member_id) => member_id !== memberId
         ),
-      });
+      }));
     };
-  }
-  public handleClickCreateGroup = () => {
-    this.setState({ creationDialogIsOpen: false });
-    this.props.dispatch(
+  };
+  const handleClickCreateGroup = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    dispatch(
       all.createGroup(
-        this.state.newGroupIsEnabled,
-        this.state.newGroupName,
-        this.state.newGroupMemberIndices
+        termId,
+        state.newGroupIsEnabled,
+        state.newGroupName,
+        state.newGroupMemberIndices
       )
     );
   };
-  public render() {
-    const errorMessages = this.validate(this.state.newGroupName);
-    return (
-      <>
-        <div className={this.props.classes.gridFrame}>
+  const errorMessages = validate(state.newGroupName);
+  return (
+    <>
+      <div className={props.classes.gridFrame}>
+        <Grid container={true} spacing={1}>
+          <Grid item={true} xs={12}>
+            <Toolbar>
+              <Typography
+                variant="subtitle1"
+                className={props.classes.toolbarTitle}
+              >
+                グループ
+              </Typography>
+              <Button size="small" onClick={handleClickOpenCreationDialog}>
+                追加
+              </Button>
+            </Toolbar>
+          </Grid>
+          {groupsInTerm.map((group) => (
+            <Grid key={group.id} item={true} xs={12}>
+              <Group group={group} />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+      <Dialog
+        onClose={handleCloseCreationDialog}
+        open={state.creationDialogIsOpen}
+        fullWidth={true}
+        maxWidth="md"
+      >
+        <DialogTitle>グループの追加</DialogTitle>
+        <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
-              <Toolbar>
-                <Typography
-                  variant="subtitle1"
-                  className={this.props.classes.toolbarTitle}
-                >
-                  グループ
-                </Typography>
-                <Button
-                  size="small"
-                  onClick={this.handleClickOpenCreationDialog}
-                >
-                  追加
-                </Button>
-              </Toolbar>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={state.newGroupIsEnabled}
+                    onChange={handleChangeNewGroupIsEnabled}
+                    color="primary"
+                  />
+                }
+                label="有効"
+              />
             </Grid>
-            {this.props.groups.map((group) => (
-              <Grid key={group.id} item={true} xs={12}>
-                <Group group={group} />
-              </Grid>
-            ))}
-          </Grid>
-        </div>
-        <Dialog
-          onClose={this.handleCloseCreationDialog}
-          open={this.state.creationDialogIsOpen}
-          fullWidth={true}
-          maxWidth="md"
-        >
-          <DialogTitle>グループの追加</DialogTitle>
-          <DialogContent>
-            <Grid container={true} spacing={1}>
-              <Grid item={true} xs={12}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={this.state.newGroupIsEnabled}
-                      onChange={this.handleChangeNewGroupIsEnabled}
-                      color="primary"
+            <Grid item={true} xs={12}>
+              <TextField
+                label="グループ名"
+                defaultValue={state.newGroupName}
+                onChange={handleChangeNewGroupName}
+                fullWidth={true}
+                error={errorMessages.newGroupName.length > 0}
+                FormHelperTextProps={{
+                  // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                  component: "div",
+                }}
+                helperText={errorMessages.newGroupName.map((message) => (
+                  <div key={message}>{message}</div>
+                ))}
+              />
+            </Grid>
+            <Grid item={true} xs={12}>
+              <FormControl fullWidth={true}>
+                <FormLabel>グループに所属する職員</FormLabel>
+                <FormGroup>
+                  {membersInTerm.map((member) => (
+                    <FormControlLabel
+                      key={member.id}
+                      label={member.name}
+                      control={
+                        <Checkbox
+                          checked={state.newGroupMemberIndices.some(
+                            (member_id) => member_id === member.id
+                          )}
+                          onChange={handleChangeNewGroupMember(member.id)}
+                          color="primary"
+                        />
+                      }
                     />
-                  }
-                  label="有効"
-                />
-              </Grid>
-              <Grid item={true} xs={12}>
-                <TextField
-                  label="グループ名"
-                  defaultValue={this.state.newGroupName}
-                  onChange={this.handleChangeNewGroupName}
-                  fullWidth={true}
-                  error={errorMessages.newGroupName.length > 0}
-                  FormHelperTextProps={{
-                    // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                    component: "div",
-                  }}
-                  helperText={errorMessages.newGroupName.map((message) => (
-                    <div key={message}>{message}</div>
                   ))}
-                />
-              </Grid>
-              <Grid item={true} xs={12}>
-                <FormControl fullWidth={true}>
-                  <FormLabel>グループに所属する職員</FormLabel>
-                  <FormGroup>
-                    {this.props.members.map((member) => (
-                      <FormControlLabel
-                        key={member.id}
-                        label={member.name}
-                        control={
-                          <Checkbox
-                            checked={this.state.newGroupMemberIndices.some(
-                              (member_id) => member_id === member.id
-                            )}
-                            onChange={this.handleChangeNewGroupMember(
-                              member.id
-                            )}
-                            color="primary"
-                          />
-                        }
-                      />
-                    ))}
-                  </FormGroup>
-                </FormControl>
-              </Grid>
+                </FormGroup>
+              </FormControl>
             </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              color="primary"
-              disabled={Object.values(errorMessages).some(
-                (messages) => messages.length > 0
-              )}
-              onClick={this.handleClickCreateGroup}
-            >
-              追加
-            </Button>
-            <Button color="primary" onClick={this.handleCloseCreationDialog}>
-              閉じる
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    );
-  }
-}
-
-function mapStateToProps(state: StateWithHistory<all.State>) {
-  return {
-    group_members: state.present.group_members,
-    groups: state.present.groups,
-    members: state.present.members,
-  };
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            disabled={Object.values(errorMessages).some(
+              (messages) => messages.length > 0
+            )}
+            onClick={handleClickCreateGroup}
+          >
+            追加
+          </Button>
+          <Button color="primary" onClick={handleCloseCreationDialog}>
+            閉じる
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
 }
 
 const styles = createStyles({
@@ -232,4 +232,4 @@ const styles = createStyles({
   },
 });
 
-export default withStyles(styles)(connect(mapStateToProps)(Groups));
+export default withStyles(styles)(Groups);

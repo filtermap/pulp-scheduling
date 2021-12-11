@@ -20,10 +20,12 @@ import * as schedules from "./schedules";
 import * as terms from "./terms";
 
 const REPLACE_ALL = "REPLACE_ALL";
+const IMPORT_DATA = "IMPORT_DATA";
 const CREATE_MEMBER = "CREATE_MEMBER";
 const CREATE_GROUP = "CREATE_GROUP";
 const CREATE_CONSTRAINT0 = "CREATE_CONSTRAINT0";
 const CREATE_SCHEDULE = "CREATE_SCHEDULE";
+const DELETE_TERM = "DELETE_TERM";
 const DELETE_MEMBER = "DELETE_MEMBER";
 const DELETE_GROUP = "DELETE_GROUP";
 const DELETE_KINMU = "DELETE_KINMU";
@@ -58,8 +60,15 @@ type ReplaceAll = {
   all: All;
 };
 
+type ImportData = {
+  type: typeof IMPORT_DATA;
+  from_term_id: number;
+  into_term_id: number;
+};
+
 type CreateMember = {
   type: typeof CREATE_MEMBER;
+  term_id: number;
   is_enabled: boolean;
   name: string;
   group_ids: number[];
@@ -67,6 +76,7 @@ type CreateMember = {
 
 type CreateGroup = {
   type: typeof CREATE_GROUP;
+  term_id: number;
   is_enabled: boolean;
   name: string;
   member_ids: number[];
@@ -74,13 +84,20 @@ type CreateGroup = {
 
 type CreateConstraint0 = {
   type: typeof CREATE_CONSTRAINT0;
+  term_id: number;
   is_enabled: boolean;
   kinmu_ids: number[];
 };
 
 type CreateSchedule = {
   type: typeof CREATE_SCHEDULE;
+  term_id: number;
   new_assignments: assignments.Assignment[];
+};
+
+type DeleteTerm = {
+  type: typeof DELETE_TERM;
+  id: number;
 };
 
 type DeleteMember = {
@@ -115,10 +132,12 @@ type DeleteSchedule = {
 
 type Action =
   | ReplaceAll
+  | ImportData
   | CreateMember
   | CreateGroup
   | CreateConstraint0
   | CreateSchedule
+  | DeleteTerm
   | DeleteMember
   | DeleteGroup
   | DeleteKinmu
@@ -133,13 +152,26 @@ export function replaceAll(all: All): ReplaceAll {
   };
 }
 
+export function importData(
+  from_term_id: number,
+  into_term_id: number
+): ImportData {
+  return {
+    from_term_id,
+    into_term_id,
+    type: IMPORT_DATA,
+  };
+}
+
 export function createMember(
+  term_id: number,
   is_enabled: boolean,
   name: string,
   group_ids: number[]
 ): CreateMember {
   return {
     group_ids,
+    term_id,
     is_enabled,
     name,
     type: CREATE_MEMBER,
@@ -147,11 +179,13 @@ export function createMember(
 }
 
 export function createGroup(
+  term_id: number,
   is_enabled: boolean,
   name: string,
   member_ids: number[]
 ): CreateGroup {
   return {
+    term_id,
     is_enabled,
     member_ids,
     name,
@@ -160,10 +194,12 @@ export function createGroup(
 }
 
 export function createConstraint0(
+  term_id: number,
   is_enabled: boolean,
   kinmu_ids: number[]
 ): CreateConstraint0 {
   return {
+    term_id,
     is_enabled,
     kinmu_ids,
     type: CREATE_CONSTRAINT0,
@@ -171,11 +207,20 @@ export function createConstraint0(
 }
 
 export function createSchedule(
+  term_id: number,
   new_assignments: assignments.Assignment[]
 ): CreateSchedule {
   return {
+    term_id,
     new_assignments,
     type: CREATE_SCHEDULE,
+  };
+}
+
+export function deleteTerm(id: number): DeleteTerm {
+  return {
+    id,
+    type: DELETE_TERM,
   };
 }
 
@@ -245,10 +290,390 @@ const combinedReducer = combineReducers({
   terms: terms.reducer,
 });
 
+// TODO: think more semantic function name
+function doubleItems<
+  T extends {
+    id: number;
+  }
+>(
+  array: T[],
+  keyOfItem: keyof T,
+  fromValue: T[keyof T],
+  toValue: T[keyof T]
+): { copied: T[]; idMap: Map<number, number>; lastId: number } {
+  return array.reduce<{
+    copied: T[];
+    idMap: Map<number, number>;
+    lastId: number;
+  }>(
+    (acc, value) => {
+      acc.copied.push(value);
+      if (value[keyOfItem] === fromValue) {
+        acc.lastId++;
+        acc.copied.push({
+          ...value,
+          id: acc.lastId,
+          [keyOfItem]: toValue,
+        });
+        acc.idMap.set(value.id, acc.lastId);
+      }
+      return acc;
+    },
+    {
+      lastId: Math.max(0, ...array.map(({ id }) => id)),
+      copied: [],
+      idMap: new Map(),
+    }
+  );
+}
+
 function crossSliceReducer(state: State, action: Action): State {
   switch (action.type) {
     case REPLACE_ALL:
       return action.all;
+    case IMPORT_DATA: {
+      const { copied: copiedMembers, idMap: memberIdMap } =
+        doubleItems<members.Member>(
+          state.members,
+          "term_id",
+          action.from_term_id,
+          action.into_term_id
+        );
+      const { copied: copiedKinmus, idMap: kinmuIdMap } =
+        doubleItems<kinmus.Kinmu>(
+          state.kinmus,
+          "term_id",
+          action.from_term_id,
+          action.into_term_id
+        );
+      const { copied: copiedGroups, idMap: groupIdMap } =
+        doubleItems<groups.Group>(
+          state.groups,
+          "term_id",
+          action.from_term_id,
+          action.into_term_id
+        );
+      const { copied: copiedGroupMembers } = state.group_members.reduce<{
+        lastId: number;
+        copied: group_members.GroupMember[];
+      }>(
+        (acc, gm) => {
+          acc.copied.push(gm);
+          const group_id = groupIdMap.get(gm.group_id);
+          const member_id = memberIdMap.get(gm.member_id);
+          if (group_id && member_id) {
+            acc.lastId++;
+            acc.copied.push({
+              ...gm,
+              id: acc.lastId,
+              group_id,
+              member_id,
+            });
+          }
+          return acc;
+        },
+        {
+          lastId: Math.max(0, ...state.group_members.map(({ id }) => id)),
+          copied: [],
+        }
+      );
+      const { copied: copiedConstraints0, idMap: constraint0IdMap } =
+        doubleItems<constraints0.Constraint0>(
+          state.constraints0,
+          "term_id",
+          action.from_term_id,
+          action.into_term_id
+        );
+      const { copied: copiedConstraint0Kinmus } =
+        state.constraint0_kinmus.reduce<{
+          lastId: number;
+          copied: constraint0_kinmus.Constraint0Kinmu[];
+        }>(
+          (acc, ck) => {
+            acc.copied.push(ck);
+            const constraint0_id = constraint0IdMap.get(ck.constraint0_id);
+            const kinmu_id = kinmuIdMap.get(ck.kinmu_id);
+            if (constraint0_id && kinmu_id) {
+              acc.lastId++;
+              acc.copied.push({
+                ...ck,
+                id: acc.lastId,
+                constraint0_id,
+                kinmu_id,
+              });
+            }
+            return acc;
+          },
+          {
+            lastId: Math.max(
+              0,
+              ...state.constraint0_kinmus.map(({ id }) => id)
+            ),
+            copied: [],
+          }
+        );
+      const { copied: copiedConstraints1 } = state.constraints1.reduce<{
+        lastId: number;
+        copied: constraints1.Constraint1[];
+      }>(
+        (acc, c) => {
+          acc.copied.push(c);
+          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+          const group_id = groupIdMap.get(c.group_id);
+          if (kinmu_id && group_id) {
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.into_term_id,
+              kinmu_id,
+              group_id,
+            });
+          }
+          return acc;
+        },
+        {
+          lastId: Math.max(0, ...state.constraints1.map(({ id }) => id)),
+          copied: [],
+        }
+      );
+      const { copied: copiedConstraints2 } = state.constraints2.reduce<{
+        lastId: number;
+        copied: constraints2.Constraint2[];
+      }>(
+        (acc, c) => {
+          acc.copied.push(c);
+          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+          const group_id = groupIdMap.get(c.group_id);
+          if (kinmu_id && group_id) {
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.into_term_id,
+              kinmu_id,
+              group_id,
+            });
+          }
+          return acc;
+        },
+        {
+          lastId: Math.max(0, ...state.constraints2.map(({ id }) => id)),
+          copied: [],
+        }
+      );
+      const { copied: copiedConstraints3 } = state.constraints3.reduce<{
+        lastId: number;
+        copied: constraints3.Constraint3[];
+      }>(
+        (acc, c) => {
+          acc.copied.push(c);
+          const member_id = memberIdMap.get(c.member_id);
+          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+          if (member_id && kinmu_id) {
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.into_term_id,
+              member_id,
+              kinmu_id,
+            });
+          }
+          return acc;
+        },
+        {
+          lastId: Math.max(0, ...state.constraints3.map(({ id }) => id)),
+          copied: [],
+        }
+      );
+      const { copied: copiedConstraints4 } = state.constraints4.reduce<{
+        lastId: number;
+        copied: constraints4.Constraint4[];
+      }>(
+        (acc, c) => {
+          acc.copied.push(c);
+          const member_id = memberIdMap.get(c.member_id);
+          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+          if (member_id && kinmu_id) {
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.into_term_id,
+              member_id,
+              kinmu_id,
+            });
+          }
+          return acc;
+        },
+        {
+          lastId: Math.max(0, ...state.constraints4.map(({ id }) => id)),
+          copied: [],
+        }
+      );
+      const { copied: copiedConstraints5 } = state.constraints5.reduce<{
+        lastId: number;
+        copied: constraints5.Constraint5[];
+      }>(
+        (acc, c) => {
+          acc.copied.push(c);
+          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+          if (kinmu_id) {
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.into_term_id,
+              kinmu_id,
+            });
+          }
+          return acc;
+        },
+        {
+          lastId: Math.max(0, ...state.constraints5.map(({ id }) => id)),
+          copied: [],
+        }
+      );
+      const { copied: copiedConstraints6 } = state.constraints6.reduce<{
+        lastId: number;
+        copied: constraints6.Constraint6[];
+      }>(
+        (acc, c) => {
+          acc.copied.push(c);
+          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+          if (kinmu_id) {
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.into_term_id,
+              kinmu_id,
+            });
+          }
+          return acc;
+        },
+        {
+          lastId: Math.max(0, ...state.constraints6.map(({ id }) => id)),
+          copied: [],
+        }
+      );
+      const { copied: copiedConstraints7 } = state.constraints7.reduce<{
+        lastId: number;
+        copied: constraints7.Constraint7[];
+      }>(
+        (acc, c) => {
+          acc.copied.push(c);
+          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+          if (kinmu_id) {
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.into_term_id,
+              kinmu_id,
+            });
+          }
+          return acc;
+        },
+        {
+          lastId: Math.max(0, ...state.constraints7.map(({ id }) => id)),
+          copied: [],
+        }
+      );
+      const { copied: copiedConstraints8 } = state.constraints8.reduce<{
+        lastId: number;
+        copied: constraints8.Constraint8[];
+      }>(
+        (acc, c) => {
+          acc.copied.push(c);
+          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+          if (kinmu_id) {
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.into_term_id,
+              kinmu_id,
+            });
+          }
+          return acc;
+        },
+        {
+          lastId: Math.max(0, ...state.constraints8.map(({ id }) => id)),
+          copied: [],
+        }
+      );
+      const { copied: copiedConstraints9 } = state.constraints9.reduce<{
+        lastId: number;
+        copied: constraints9.Constraint9[];
+      }>(
+        (acc, c) => {
+          acc.copied.push(c);
+          const member_id = memberIdMap.get(c.member_id);
+          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+          if (member_id && kinmu_id) {
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.into_term_id,
+              member_id,
+              kinmu_id,
+            });
+          }
+          return acc;
+        },
+        {
+          lastId: Math.max(0, ...state.constraints9.map(({ id }) => id)),
+          copied: [],
+        }
+      );
+      const { copied: copiedConstraints10 } = state.constraints10.reduce<{
+        lastId: number;
+        copied: constraints10.Constraint10[];
+      }>(
+        (acc, c) => {
+          acc.copied.push(c);
+          const member_id = memberIdMap.get(c.member_id);
+          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+          if (member_id && kinmu_id) {
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.into_term_id,
+              member_id,
+              kinmu_id,
+            });
+          }
+          return acc;
+        },
+        {
+          lastId: Math.max(0, ...state.constraints10.map(({ id }) => id)),
+          copied: [],
+        }
+      );
+      return {
+        ...state,
+        members: copiedMembers,
+        kinmus: copiedKinmus,
+        groups: copiedGroups,
+        group_members: copiedGroupMembers,
+        constraints0: copiedConstraints0,
+        constraint0_kinmus: copiedConstraint0Kinmus,
+        constraints1: copiedConstraints1,
+        constraints2: copiedConstraints2,
+        constraints3: copiedConstraints3,
+        constraints4: copiedConstraints4,
+        constraints5: copiedConstraints5,
+        constraints6: copiedConstraints6,
+        constraints7: copiedConstraints7,
+        constraints8: copiedConstraints8,
+        constraints9: copiedConstraints9,
+        constraints10: copiedConstraints10,
+      };
+    }
     case CREATE_MEMBER: {
       const member_id = Math.max(0, ...state.members.map(({ id }) => id)) + 1;
       const group_member_id =
@@ -264,6 +689,7 @@ function crossSliceReducer(state: State, action: Action): State {
         ),
         members: state.members.concat({
           id: member_id,
+          term_id: action.term_id,
           is_enabled: action.is_enabled,
           name: action.name,
         }),
@@ -284,6 +710,7 @@ function crossSliceReducer(state: State, action: Action): State {
         ),
         groups: state.groups.concat({
           id: group_id,
+          term_id: action.term_id,
           is_enabled: action.is_enabled,
           name: action.name,
         }),
@@ -306,6 +733,7 @@ function crossSliceReducer(state: State, action: Action): State {
         ),
         constraints0: state.constraints0.concat({
           id: constraint0_id,
+          term_id: action.term_id,
           is_enabled: action.is_enabled,
         }),
       };
@@ -324,7 +752,79 @@ function crossSliceReducer(state: State, action: Action): State {
             schedule_id,
           }))
         ),
-        schedules: state.schedules.concat({ id: schedule_id }),
+        schedules: state.schedules.concat({
+          id: schedule_id,
+          term_id: action.term_id,
+        }),
+      };
+    }
+    case DELETE_TERM: {
+      const deleted_group_ids = new Set(
+        state.groups
+          .filter(({ term_id }) => term_id === action.id)
+          .map(({ id }) => id)
+      );
+      const deleted_constraint0_ids = new Set(
+        state.constraints0
+          .filter(({ term_id }) => term_id === action.id)
+          .map(({ id }) => id)
+      );
+      const deleted_schedule_ids = new Set(
+        state.schedules
+          .filter(({ term_id }) => term_id === action.id)
+          .map(({ id }) => id)
+      );
+      return {
+        ...state,
+        members: state.members.filter(({ term_id }) => term_id !== action.id),
+        terms: state.terms.filter(({ id }) => id !== action.id),
+        kinmus: state.kinmus.filter(({ term_id }) => term_id !== action.id),
+        groups: state.groups.filter(({ term_id }) => term_id !== action.id),
+        group_members: state.group_members.filter(
+          ({ group_id }) => !deleted_group_ids.has(group_id)
+        ),
+        constraints0: state.constraints0.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        constraint0_kinmus: state.constraint0_kinmus.filter(
+          ({ constraint0_id }) => !deleted_constraint0_ids.has(constraint0_id)
+        ),
+        constraints1: state.constraints1.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        constraints2: state.constraints2.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        constraints3: state.constraints3.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        constraints4: state.constraints4.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        constraints5: state.constraints5.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        constraints6: state.constraints6.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        constraints7: state.constraints7.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        constraints8: state.constraints8.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        constraints9: state.constraints9.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        constraints10: state.constraints10.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        schedules: state.schedules.filter(
+          ({ term_id }) => term_id !== action.id
+        ),
+        assignments: state.assignments.filter(
+          ({ schedule_id }) => !deleted_schedule_ids.has(schedule_id)
+        ),
       };
     }
     case DELETE_MEMBER: {

@@ -19,6 +19,7 @@ export const minOfConstraint4MaxNumberOfAssignments = 0;
 
 type CreateConstraint4 = {
   type: typeof CREATE_CONSTRAINT4;
+  term_id: number;
   is_enabled: boolean;
   member_id: number;
   kinmu_id: number;
@@ -63,12 +64,14 @@ type Action =
   | DeleteConstraint4;
 
 export function createConstraint4(
+  term_id: number,
   is_enabled: boolean,
   member_id: number,
   kinmu_id: number,
   max_number_of_assignments: number
 ): CreateConstraint4 {
   return {
+    term_id,
     is_enabled,
     kinmu_id,
     max_number_of_assignments,
@@ -137,6 +140,7 @@ export function reducer(state: State = initialState, action: Action): State {
     case CREATE_CONSTRAINT4:
       return state.concat({
         id: Math.max(0, ...state.map((c) => c.id)) + 1,
+        term_id: action.term_id,
         is_enabled: action.is_enabled,
         kinmu_id: action.kinmu_id,
         max_number_of_assignments: action.max_number_of_assignments,

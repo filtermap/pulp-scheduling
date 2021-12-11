@@ -16,21 +16,14 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import classnames from "classnames";
 import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
 import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as constraints3 from "../modules/constraints3";
-import * as kinmus from "../modules/kinmus";
-import * as members from "../modules/members";
 import Constraint3 from "./Constraint3";
 
-type Props = {
-  dispatch: Dispatch;
-  constraints3: constraints3.Constraint3[];
-  members: members.Member[];
-  kinmus: kinmus.Kinmu[];
-} & WithStyles<typeof styles>;
+type Props = WithStyles<typeof styles>;
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -44,40 +37,71 @@ type ErrorMessages = {
   newConstraint3MinNumberOfAssignments: string[];
 };
 
-class Constraints3 extends React.Component<Props, State> {
-  public state: State = {
+function selector(state: StateWithHistory<all.State>) {
+  return {
+    constraints3: state.present.constraints3,
+    kinmus: state.present.kinmus,
+    members: state.present.members,
+  };
+}
+
+function Constraints3(props: Props) {
+  const dispatch = useDispatch();
+  const selected = useSelector(selector, shallowEqual);
+  const { termIdName } = useParams();
+  if (!termIdName) throw new Error("!termIdName");
+  const termId = parseInt(termIdName, 10);
+  const constraints3InTerm = selected.constraints3.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const membersInTerm = selected.members.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const kinmusInTerm = selected.kinmus.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const initialState = {
     creationDialogIsOpen: false,
     newConstraint3IsEnabled: true,
-    newConstraint3KinmuId:
-      this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-    newConstraint3MemberId:
-      this.props.members.length > 0 ? this.props.members[0].id : 0,
+    newConstraint3KinmuId: kinmusInTerm.length > 0 ? kinmusInTerm[0].id : 0,
+    newConstraint3MemberId: membersInTerm.length > 0 ? membersInTerm[0].id : 0,
     newConstraint3MinNumberOfAssignments:
       constraints3.minOfConstraint3MinNumberOfAssignments,
   };
-  public handleClickOpenCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: true });
+  const [state, setState] = React.useState<State>(initialState);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => setState(initialState), [termId]);
+  const handleClickOpenCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
-  public handleCloseCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: false });
+  const handleCloseCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
   };
-  public handleChangeNewConstraint3IsEnabled = (
+  const handleChangeNewConstraint3IsEnabled = (
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    this.setState({ newConstraint3IsEnabled: checked });
+    setState((state) => ({ ...state, newConstraint3IsEnabled: checked }));
   };
-  public handleChangeNewConstraint3MemberId = (
+  const handleChangeNewConstraint3MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newConstraint3MemberId: parseInt(event.target.value, 10) });
+    setState((state) => ({
+      ...state,
+      newConstraint3MemberId: parseInt(event.target.value, 10),
+    }));
   };
-  public handleChangeNewConstraint3KinmuId = (
+  const handleChangeNewConstraint3KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newConstraint3KinmuId: parseInt(event.target.value, 10) });
+    setState((state) => ({
+      ...state,
+      newConstraint3KinmuId: parseInt(event.target.value, 10),
+    }));
   };
-  public validate(newConstraint3MinNumberOfAssignments: number): ErrorMessages {
+  const validate = (
+    newConstraint3MinNumberOfAssignments: number
+  ): ErrorMessages => {
     const errorMessages: ErrorMessages = {
       newConstraint3MinNumberOfAssignments: [],
     };
@@ -87,229 +111,210 @@ class Constraints3 extends React.Component<Props, State> {
       );
     }
     return errorMessages;
-  }
-  public handleChangeNewConstraint3MinNumberOfAssignments = (
+  };
+  const handleChangeNewConstraint3MinNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({
+    setState((state) => ({
+      ...state,
       newConstraint3MinNumberOfAssignments: parseInt(event.target.value, 10),
-    });
+    }));
   };
-  public handleClickCreateConstraint3 = () => {
-    this.setState({ creationDialogIsOpen: false });
-    this.props.dispatch(
+  const handleClickCreateConstraint3 = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    dispatch(
       constraints3.createConstraint3(
-        this.state.newConstraint3IsEnabled,
-        this.state.newConstraint3MemberId,
-        this.state.newConstraint3KinmuId,
-        this.state.newConstraint3MinNumberOfAssignments
+        termId,
+        state.newConstraint3IsEnabled,
+        state.newConstraint3MemberId,
+        state.newConstraint3KinmuId,
+        state.newConstraint3MinNumberOfAssignments
       )
     );
   };
-  public render() {
-    return (
-      <>
-        <div className={this.props.classes.gridFrame}>
-          <Grid container={true} spacing={1}>
-            <Grid item={true} xs={12}>
-              <Toolbar>
-                <Typography
-                  variant="subtitle1"
-                  className={this.props.classes.toolbarTitle}
-                >
-                  職員の勤務の割り当て数の下限
-                </Typography>
+  return (
+    <>
+      <div className={props.classes.gridFrame}>
+        <Grid container={true} spacing={1}>
+          <Grid item={true} xs={12}>
+            <Toolbar>
+              <Typography
+                variant="subtitle1"
+                className={props.classes.toolbarTitle}
+              >
+                職員の勤務の割り当て数の下限
+              </Typography>
+              <Button size="small" onClick={handleClickOpenCreationDialog}>
+                追加
+              </Button>
+            </Toolbar>
+          </Grid>
+          {constraints3InTerm.map((c) => (
+            <Grid key={c.id} item={true} xs={12}>
+              <Constraint3 constraint3={c} />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+      {membersInTerm.length === 0 || kinmusInTerm.length === 0 ? (
+        <Dialog
+          onClose={handleCloseCreationDialog}
+          open={state.creationDialogIsOpen}
+          fullWidth={true}
+          maxWidth="md"
+        >
+          <DialogTitle>
+            職員の勤務の割り当て数の下限を追加できません
+          </DialogTitle>
+          <DialogContent>
+            {membersInTerm.length === 0 ? (
+              <DialogContentText>職員がいません</DialogContentText>
+            ) : null}
+            {kinmusInTerm.length === 0 ? (
+              <DialogContentText>勤務がありません</DialogContentText>
+            ) : null}
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" onClick={handleCloseCreationDialog}>
+              閉じる
+            </Button>
+          </DialogActions>
+        </Dialog>
+      ) : (
+        (() => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const newConstraint3Member = membersInTerm.find(
+            ({ id }) => id === state.newConstraint3MemberId
+          )!;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const newConstraint3Kinmu = kinmusInTerm.find(
+            ({ id }) => id === state.newConstraint3KinmuId
+          )!;
+          const relativesAreEnabled =
+            newConstraint3Member.is_enabled && newConstraint3Kinmu.is_enabled;
+          const errorMessages = validate(
+            state.newConstraint3MinNumberOfAssignments
+          );
+          return (
+            <Dialog
+              onClose={handleCloseCreationDialog}
+              open={state.creationDialogIsOpen}
+              fullWidth={true}
+              maxWidth="md"
+            >
+              <DialogTitle>職員の勤務の割り当て数の下限の追加</DialogTitle>
+              <DialogContent>
+                <Grid container={true} spacing={1}>
+                  <Grid item={true} xs={12}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={
+                            state.newConstraint3IsEnabled && relativesAreEnabled
+                          }
+                          disabled={!relativesAreEnabled}
+                          onChange={handleChangeNewConstraint3IsEnabled}
+                          color="primary"
+                        />
+                      }
+                      label="有効"
+                    />
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      select={true}
+                      label="職員"
+                      value={state.newConstraint3MemberId}
+                      onChange={handleChangeNewConstraint3MemberId}
+                      fullWidth={true}
+                    >
+                      {membersInTerm.map((member) => (
+                        <MenuItem key={member.id} value={member.id}>
+                          {
+                            <span
+                              className={classnames({
+                                [props.classes.lineThrough]: !member.is_enabled,
+                              })}
+                            >
+                              {member.name}
+                            </span>
+                          }
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      select={true}
+                      label="勤務"
+                      value={state.newConstraint3KinmuId}
+                      onChange={handleChangeNewConstraint3KinmuId}
+                      fullWidth={true}
+                    >
+                      {kinmusInTerm.map((kinmu) => (
+                        <MenuItem key={kinmu.id} value={kinmu.id}>
+                          {
+                            <span
+                              className={classnames({
+                                [props.classes.lineThrough]: !kinmu.is_enabled,
+                              })}
+                            >
+                              {kinmu.name}
+                            </span>
+                          }
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      label="割り当て数下限"
+                      type="number"
+                      defaultValue={state.newConstraint3MinNumberOfAssignments}
+                      onChange={
+                        handleChangeNewConstraint3MinNumberOfAssignments
+                      }
+                      fullWidth={true}
+                      inputProps={{
+                        min: constraints3.minOfConstraint3MinNumberOfAssignments,
+                      }}
+                      error={
+                        errorMessages.newConstraint3MinNumberOfAssignments
+                          .length > 0
+                      }
+                      FormHelperTextProps={{
+                        // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                        component: "div",
+                      }}
+                      helperText={errorMessages.newConstraint3MinNumberOfAssignments.map(
+                        (message) => (
+                          <div key={message}>{message}</div>
+                        )
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </DialogContent>
+              <DialogActions>
                 <Button
-                  size="small"
-                  onClick={this.handleClickOpenCreationDialog}
+                  color="primary"
+                  disabled={Object.values(errorMessages).some(
+                    (messages) => messages.length > 0
+                  )}
+                  onClick={handleClickCreateConstraint3}
                 >
                   追加
                 </Button>
-              </Toolbar>
-            </Grid>
-            {this.props.constraints3.map((c) => (
-              <Grid key={c.id} item={true} xs={12}>
-                <Constraint3 constraint3={c} />
-              </Grid>
-            ))}
-          </Grid>
-        </div>
-        {this.props.members.length === 0 || this.props.kinmus.length === 0 ? (
-          <Dialog
-            onClose={this.handleCloseCreationDialog}
-            open={this.state.creationDialogIsOpen}
-            fullWidth={true}
-            maxWidth="md"
-          >
-            <DialogTitle>
-              職員の勤務の割り当て数の下限を追加できません
-            </DialogTitle>
-            <DialogContent>
-              {this.props.members.length === 0 ? (
-                <DialogContentText>職員がいません</DialogContentText>
-              ) : null}
-              {this.props.kinmus.length === 0 ? (
-                <DialogContentText>勤務がありません</DialogContentText>
-              ) : null}
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={this.handleCloseCreationDialog}>
-                閉じる
-              </Button>
-            </DialogActions>
-          </Dialog>
-        ) : (
-          (() => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const newConstraint3Member = this.props.members.find(
-              ({ id }) => id === this.state.newConstraint3MemberId
-            )!;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const newConstraint3Kinmu = this.props.kinmus.find(
-              ({ id }) => id === this.state.newConstraint3KinmuId
-            )!;
-            const relativesAreEnabled =
-              newConstraint3Member.is_enabled && newConstraint3Kinmu.is_enabled;
-            const errorMessages = this.validate(
-              this.state.newConstraint3MinNumberOfAssignments
-            );
-            return (
-              <Dialog
-                onClose={this.handleCloseCreationDialog}
-                open={this.state.creationDialogIsOpen}
-                fullWidth={true}
-                maxWidth="md"
-              >
-                <DialogTitle>職員の勤務の割り当て数の下限の追加</DialogTitle>
-                <DialogContent>
-                  <Grid container={true} spacing={1}>
-                    <Grid item={true} xs={12}>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={
-                              this.state.newConstraint3IsEnabled &&
-                              relativesAreEnabled
-                            }
-                            disabled={!relativesAreEnabled}
-                            onChange={this.handleChangeNewConstraint3IsEnabled}
-                            color="primary"
-                          />
-                        }
-                        label="有効"
-                      />
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        select={true}
-                        label="職員"
-                        value={this.state.newConstraint3MemberId}
-                        onChange={this.handleChangeNewConstraint3MemberId}
-                        fullWidth={true}
-                      >
-                        {this.props.members.map((member) => (
-                          <MenuItem key={member.id} value={member.id}>
-                            {
-                              <span
-                                className={classnames({
-                                  [this.props.classes.lineThrough]:
-                                    !member.is_enabled,
-                                })}
-                              >
-                                {member.name}
-                              </span>
-                            }
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        select={true}
-                        label="勤務"
-                        value={this.state.newConstraint3KinmuId}
-                        onChange={this.handleChangeNewConstraint3KinmuId}
-                        fullWidth={true}
-                      >
-                        {this.props.kinmus.map((kinmu) => (
-                          <MenuItem key={kinmu.id} value={kinmu.id}>
-                            {
-                              <span
-                                className={classnames({
-                                  [this.props.classes.lineThrough]:
-                                    !kinmu.is_enabled,
-                                })}
-                              >
-                                {kinmu.name}
-                              </span>
-                            }
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        label="割り当て数下限"
-                        type="number"
-                        defaultValue={
-                          this.state.newConstraint3MinNumberOfAssignments
-                        }
-                        onChange={
-                          this.handleChangeNewConstraint3MinNumberOfAssignments
-                        }
-                        fullWidth={true}
-                        inputProps={{
-                          min: constraints3.minOfConstraint3MinNumberOfAssignments,
-                        }}
-                        error={
-                          errorMessages.newConstraint3MinNumberOfAssignments
-                            .length > 0
-                        }
-                        FormHelperTextProps={{
-                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                          component: "div",
-                        }}
-                        helperText={errorMessages.newConstraint3MinNumberOfAssignments.map(
-                          (message) => (
-                            <div key={message}>{message}</div>
-                          )
-                        )}
-                      />
-                    </Grid>
-                  </Grid>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    color="primary"
-                    disabled={Object.values(errorMessages).some(
-                      (messages) => messages.length > 0
-                    )}
-                    onClick={this.handleClickCreateConstraint3}
-                  >
-                    追加
-                  </Button>
-                  <Button
-                    color="primary"
-                    onClick={this.handleCloseCreationDialog}
-                  >
-                    閉じる
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            );
-          })()
-        )}
-      </>
-    );
-  }
-}
-
-function mapStateToProps(state: StateWithHistory<all.State>) {
-  return {
-    constraints3: state.present.constraints3,
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-  };
+                <Button color="primary" onClick={handleCloseCreationDialog}>
+                  閉じる
+                </Button>
+              </DialogActions>
+            </Dialog>
+          );
+        })()
+      )}
+    </>
+  );
 }
 
 const styles = createStyles({
@@ -327,4 +332,4 @@ const styles = createStyles({
   },
 });
 
-export default withStyles(styles)(connect(mapStateToProps)(Constraints3));
+export default withStyles(styles)(Constraints3);

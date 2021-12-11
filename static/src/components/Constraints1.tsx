@@ -16,24 +16,15 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import classnames from "classnames";
 import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
 import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as constraints1 from "../modules/constraints1";
-import * as groups from "../modules/groups";
-import * as kinmus from "../modules/kinmus";
-import * as terms from "../modules/terms";
 import * as utils from "../utils";
 import Constraint1 from "./Constraint1";
 
-type Props = {
-  dispatch: Dispatch;
-  constraints1: constraints1.Constraint1[];
-  terms: terms.Term[];
-  kinmus: kinmus.Kinmu[];
-  groups: groups.Group[];
-} & WithStyles<typeof styles>;
+type Props = WithStyles<typeof styles>;
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -51,40 +42,62 @@ type ErrorMessages = {
   newConstraint1MinNumberOfAssignments: string[];
 };
 
-class Constraints1 extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    const todayString = utils.dateToString(new Date());
-    this.state = {
-      creationDialogIsOpen: false,
-      newConstraint1GroupId:
-        this.props.groups.length > 0 ? this.props.groups[0].id : 0,
-      newConstraint1IsEnabled: true,
-      newConstraint1KinmuId:
-        this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-      newConstraint1MinNumberOfAssignments:
-        constraints1.minOfConstraint1MinNumberOfAssignments,
-      newConstraint1StartDateName: todayString,
-      newConstraint1StopDateName: todayString,
-    };
-  }
-  public handleClickOpenCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: true });
+function selector(state: StateWithHistory<all.State>) {
+  return {
+    constraints1: state.present.constraints1,
+    groups: state.present.groups,
+    kinmus: state.present.kinmus,
+    terms: state.present.terms,
   };
-  public handleCloseCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: false });
+}
+
+function Constraints1(props: Props) {
+  const dispatch = useDispatch();
+  const selected = useSelector(selector, shallowEqual);
+  const { termIdName } = useParams();
+  if (!termIdName) throw new Error("!termIdName");
+  const termId = parseInt(termIdName, 10);
+  const termsInTerm = selected.terms.filter(({ id }) => id === termId);
+  const constraints1InTerm = selected.constraints1.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const kinmusInTerm = selected.kinmus.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const groupsInTerm = selected.groups.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const todayString = utils.dateToString(new Date());
+  const initialState = {
+    creationDialogIsOpen: false,
+    newConstraint1GroupId: groupsInTerm.length > 0 ? groupsInTerm[0].id : 0,
+    newConstraint1IsEnabled: true,
+    newConstraint1KinmuId: kinmusInTerm.length > 0 ? kinmusInTerm[0].id : 0,
+    newConstraint1MinNumberOfAssignments:
+      constraints1.minOfConstraint1MinNumberOfAssignments,
+    newConstraint1StartDateName: todayString,
+    newConstraint1StopDateName: todayString,
   };
-  public handleChangeNewConstraint1IsEnabled = (
+  const [state, setState] = React.useState<State>(initialState);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => setState(initialState), [termId]);
+  const handleClickOpenCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+  };
+  const handleCloseCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+  };
+  const handleChangeNewConstraint1IsEnabled = (
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    this.setState({ newConstraint1IsEnabled: checked });
+    setState((state) => ({ ...state, newConstraint1IsEnabled: checked }));
   };
-  public validate(
+  const validate = (
     newConstraint1StartDateName: string,
     newConstraint1StopDateName: string,
     newConstraint1MinNumberOfAssignments: number
-  ): ErrorMessages {
+  ): ErrorMessages => {
     const errorMessages: ErrorMessages = {
       newConstraint1MinNumberOfAssignments: [],
       newConstraint1StartDateName: [],
@@ -106,343 +119,335 @@ class Constraints1 extends React.Component<Props, State> {
       );
     }
     return errorMessages;
-  }
-  public handleChangeNewConstraint1StartDateName = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    this.setState({ newConstraint1StartDateName: event.target.value });
   };
-  public handleChangeNewConstraint1StopDateName = (
+  const handleChangeNewConstraint1StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newConstraint1StopDateName: event.target.value });
+    setState((state) => ({
+      ...state,
+      newConstraint1StartDateName: event.target.value,
+    }));
   };
-  public handleChangeNewConstraint1KinmuId = (
+  const handleChangeNewConstraint1StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newConstraint1KinmuId: parseInt(event.target.value, 10) });
+    setState((state) => ({
+      ...state,
+      newConstraint1StopDateName: event.target.value,
+    }));
   };
-  public handleChangeNewConstraint1GroupId = (
+  const handleChangeNewConstraint1KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newConstraint1GroupId: parseInt(event.target.value, 10) });
+    setState((state) => ({
+      ...state,
+      newConstraint1KinmuId: parseInt(event.target.value, 10),
+    }));
   };
-  public handleChangeNewConstraint1MinNumberOfAssignments = (
+  const handleChangeNewConstraint1GroupId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({
+    setState((state) => ({
+      ...state,
+      newConstraint1GroupId: parseInt(event.target.value, 10),
+    }));
+  };
+  const handleChangeNewConstraint1MinNumberOfAssignments = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setState((state) => ({
+      ...state,
       newConstraint1MinNumberOfAssignments: parseInt(event.target.value, 10),
-    });
+    }));
   };
-  public handleClickCreateConstraint1 = () => {
-    this.setState({ creationDialogIsOpen: false });
-    this.props.dispatch(
+  const handleClickCreateConstraint1 = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    dispatch(
       constraints1.createConstraint1(
-        this.state.newConstraint1IsEnabled,
-        this.state.newConstraint1StartDateName,
-        this.state.newConstraint1StopDateName,
-        this.state.newConstraint1KinmuId,
-        this.state.newConstraint1GroupId,
-        this.state.newConstraint1MinNumberOfAssignments
+        termId,
+        state.newConstraint1IsEnabled,
+        state.newConstraint1StartDateName,
+        state.newConstraint1StopDateName,
+        state.newConstraint1KinmuId,
+        state.newConstraint1GroupId,
+        state.newConstraint1MinNumberOfAssignments
       )
     );
   };
-  public render() {
-    return (
-      <>
-        <div className={this.props.classes.gridFrame}>
-          <Grid container={true} spacing={1}>
-            <Grid item={true} xs={12}>
-              <Toolbar>
-                <Typography
-                  variant="subtitle1"
-                  className={this.props.classes.toolbarTitle}
-                >
-                  期間の勤務にグループから割り当てる職員数の下限
-                </Typography>
+  return (
+    <>
+      <div className={props.classes.gridFrame}>
+        <Grid container={true} spacing={1}>
+          <Grid item={true} xs={12}>
+            <Toolbar>
+              <Typography
+                variant="subtitle1"
+                className={props.classes.toolbarTitle}
+              >
+                期間の勤務にグループから割り当てる職員数の下限
+              </Typography>
+              <Button size="small" onClick={handleClickOpenCreationDialog}>
+                追加
+              </Button>
+            </Toolbar>
+          </Grid>
+          {constraints1InTerm.map((c) => (
+            <Grid key={c.id} item={true} xs={12}>
+              <Constraint1 constraint1={c} />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+      {kinmusInTerm.length === 0 || groupsInTerm.length === 0 ? (
+        <Dialog
+          onClose={handleCloseCreationDialog}
+          open={state.creationDialogIsOpen}
+          fullWidth={true}
+          maxWidth="md"
+        >
+          <DialogTitle>
+            期間の勤務にグループから割り当てる職員数の下限を追加できません
+          </DialogTitle>
+          <DialogContent>
+            {kinmusInTerm.length === 0 ? (
+              <DialogContentText>勤務がありません</DialogContentText>
+            ) : null}
+            {groupsInTerm.length === 0 ? (
+              <DialogContentText>グループがありません</DialogContentText>
+            ) : null}
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" onClick={handleCloseCreationDialog}>
+              閉じる
+            </Button>
+          </DialogActions>
+        </Dialog>
+      ) : (
+        (() => {
+          const newConstraint1StartDate = utils.stringToDate(
+            state.newConstraint1StartDateName
+          );
+          const newConstraint1StartDateIsEnabled = newConstraint1StartDate
+            ? termsInTerm.every(({ start_date_name }) => {
+                const startDate = utils.stringToDate(start_date_name);
+                if (!startDate) {
+                  return false;
+                }
+                return startDate <= newConstraint1StartDate;
+              })
+            : false;
+          const newConstraint1StopDate = utils.stringToDate(
+            state.newConstraint1StopDateName
+          );
+          const newConstraint1StopDateIsEnabled = newConstraint1StopDate
+            ? termsInTerm.every(({ stop_date_name }) => {
+                const stopDate = utils.stringToDate(stop_date_name);
+                if (!stopDate) {
+                  return false;
+                }
+                return stopDate >= newConstraint1StopDate;
+              })
+            : false;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const newConstraint1Kinmu = kinmusInTerm.find(
+            ({ id }) => id === state.newConstraint1KinmuId
+          )!;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const newConstraint1Group = groupsInTerm.find(
+            ({ id }) => id === state.newConstraint1GroupId
+          )!;
+          const relativesAreEnabled =
+            newConstraint1StartDateIsEnabled &&
+            newConstraint1StopDateIsEnabled &&
+            newConstraint1Kinmu.is_enabled &&
+            newConstraint1Group.is_enabled;
+          const errorMessages = validate(
+            state.newConstraint1StartDateName,
+            state.newConstraint1StopDateName,
+            state.newConstraint1MinNumberOfAssignments
+          );
+          return (
+            <Dialog
+              onClose={handleCloseCreationDialog}
+              open={state.creationDialogIsOpen}
+              fullWidth={true}
+              maxWidth="md"
+            >
+              <DialogTitle>
+                期間の勤務にグループから割り当てる職員数の下限の追加
+              </DialogTitle>
+              <DialogContent>
+                <Grid container={true} spacing={1}>
+                  <Grid item={true} xs={12}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={
+                            state.newConstraint1IsEnabled && relativesAreEnabled
+                          }
+                          disabled={!relativesAreEnabled}
+                          onChange={handleChangeNewConstraint1IsEnabled}
+                          color="primary"
+                        />
+                      }
+                      label="有効"
+                    />
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      label="開始日"
+                      type="date"
+                      defaultValue={state.newConstraint1StartDateName}
+                      onChange={handleChangeNewConstraint1StartDateName}
+                      fullWidth={true}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      inputProps={{
+                        className: classnames({
+                          [props.classes.lineThrough]:
+                            !newConstraint1StartDateIsEnabled,
+                        }),
+                      }}
+                      error={
+                        errorMessages.newConstraint1StartDateName.length > 0
+                      }
+                      FormHelperTextProps={{
+                        // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                        component: "div",
+                      }}
+                      helperText={errorMessages.newConstraint1StartDateName.map(
+                        (message) => (
+                          <div key={message}>{message}</div>
+                        )
+                      )}
+                    />
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      label="終了日"
+                      type="date"
+                      defaultValue={state.newConstraint1StopDateName}
+                      onChange={handleChangeNewConstraint1StopDateName}
+                      fullWidth={true}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      inputProps={{
+                        className: classnames({
+                          [props.classes.lineThrough]:
+                            !newConstraint1StopDateIsEnabled,
+                        }),
+                      }}
+                      error={
+                        errorMessages.newConstraint1StopDateName.length > 0
+                      }
+                      FormHelperTextProps={{
+                        // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                        component: "div",
+                      }}
+                      helperText={errorMessages.newConstraint1StopDateName.map(
+                        (message) => (
+                          <div key={message}>{message}</div>
+                        )
+                      )}
+                    />
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      select={true}
+                      label="勤務"
+                      value={state.newConstraint1KinmuId}
+                      onChange={handleChangeNewConstraint1KinmuId}
+                      fullWidth={true}
+                    >
+                      {kinmusInTerm.map((kinmu) => (
+                        <MenuItem key={kinmu.id} value={kinmu.id}>
+                          {
+                            <span
+                              className={classnames({
+                                [props.classes.lineThrough]: !kinmu.is_enabled,
+                              })}
+                            >
+                              {kinmu.name}
+                            </span>
+                          }
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      select={true}
+                      label="グループ"
+                      value={state.newConstraint1GroupId}
+                      onChange={handleChangeNewConstraint1GroupId}
+                      fullWidth={true}
+                    >
+                      {groupsInTerm.map((group) => (
+                        <MenuItem key={group.id} value={group.id}>
+                          {
+                            <span
+                              className={classnames({
+                                [props.classes.lineThrough]: !group.is_enabled,
+                              })}
+                            >
+                              {group.name}
+                            </span>
+                          }
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      label="割り当て職員数下限"
+                      type="number"
+                      defaultValue={state.newConstraint1MinNumberOfAssignments}
+                      onChange={
+                        handleChangeNewConstraint1MinNumberOfAssignments
+                      }
+                      fullWidth={true}
+                      inputProps={{
+                        min: constraints1.minOfConstraint1MinNumberOfAssignments,
+                      }}
+                      error={
+                        errorMessages.newConstraint1MinNumberOfAssignments
+                          .length > 0
+                      }
+                      FormHelperTextProps={{
+                        // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                        component: "div",
+                      }}
+                      helperText={errorMessages.newConstraint1MinNumberOfAssignments.map(
+                        (message) => (
+                          <div key={message}>{message}</div>
+                        )
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </DialogContent>
+              <DialogActions>
                 <Button
-                  size="small"
-                  onClick={this.handleClickOpenCreationDialog}
+                  color="primary"
+                  disabled={Object.values(errorMessages).some(
+                    (messages) => messages.length > 0
+                  )}
+                  onClick={handleClickCreateConstraint1}
                 >
                   追加
                 </Button>
-              </Toolbar>
-            </Grid>
-            {this.props.constraints1.map((c) => (
-              <Grid key={c.id} item={true} xs={12}>
-                <Constraint1 constraint1={c} />
-              </Grid>
-            ))}
-          </Grid>
-        </div>
-        {this.props.kinmus.length === 0 || this.props.groups.length === 0 ? (
-          <Dialog
-            onClose={this.handleCloseCreationDialog}
-            open={this.state.creationDialogIsOpen}
-            fullWidth={true}
-            maxWidth="md"
-          >
-            <DialogTitle>
-              期間の勤務にグループから割り当てる職員数の下限を追加できません
-            </DialogTitle>
-            <DialogContent>
-              {this.props.kinmus.length === 0 ? (
-                <DialogContentText>勤務がありません</DialogContentText>
-              ) : null}
-              {this.props.groups.length === 0 ? (
-                <DialogContentText>グループがありません</DialogContentText>
-              ) : null}
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={this.handleCloseCreationDialog}>
-                閉じる
-              </Button>
-            </DialogActions>
-          </Dialog>
-        ) : (
-          (() => {
-            const newConstraint1StartDate = utils.stringToDate(
-              this.state.newConstraint1StartDateName
-            );
-            const newConstraint1StartDateIsEnabled = newConstraint1StartDate
-              ? this.props.terms.every(({ start_date_name }) => {
-                  const startDate = utils.stringToDate(start_date_name);
-                  if (!startDate) {
-                    return false;
-                  }
-                  return startDate <= newConstraint1StartDate;
-                })
-              : false;
-            const newConstraint1StopDate = utils.stringToDate(
-              this.state.newConstraint1StopDateName
-            );
-            const newConstraint1StopDateIsEnabled = newConstraint1StopDate
-              ? this.props.terms.every(({ stop_date_name }) => {
-                  const stopDate = utils.stringToDate(stop_date_name);
-                  if (!stopDate) {
-                    return false;
-                  }
-                  return stopDate >= newConstraint1StopDate;
-                })
-              : false;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const newConstraint1Kinmu = this.props.kinmus.find(
-              ({ id }) => id === this.state.newConstraint1KinmuId
-            )!;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const newConstraint1Group = this.props.groups.find(
-              ({ id }) => id === this.state.newConstraint1GroupId
-            )!;
-            const relativesAreEnabled =
-              newConstraint1StartDateIsEnabled &&
-              newConstraint1StopDateIsEnabled &&
-              newConstraint1Kinmu.is_enabled &&
-              newConstraint1Group.is_enabled;
-            const errorMessages = this.validate(
-              this.state.newConstraint1StartDateName,
-              this.state.newConstraint1StopDateName,
-              this.state.newConstraint1MinNumberOfAssignments
-            );
-            return (
-              <Dialog
-                onClose={this.handleCloseCreationDialog}
-                open={this.state.creationDialogIsOpen}
-                fullWidth={true}
-                maxWidth="md"
-              >
-                <DialogTitle>
-                  期間の勤務にグループから割り当てる職員数の下限の追加
-                </DialogTitle>
-                <DialogContent>
-                  <Grid container={true} spacing={1}>
-                    <Grid item={true} xs={12}>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={
-                              this.state.newConstraint1IsEnabled &&
-                              relativesAreEnabled
-                            }
-                            disabled={!relativesAreEnabled}
-                            onChange={this.handleChangeNewConstraint1IsEnabled}
-                            color="primary"
-                          />
-                        }
-                        label="有効"
-                      />
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        label="開始日"
-                        type="date"
-                        defaultValue={this.state.newConstraint1StartDateName}
-                        onChange={this.handleChangeNewConstraint1StartDateName}
-                        fullWidth={true}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{
-                          className: classnames({
-                            [this.props.classes.lineThrough]:
-                              !newConstraint1StartDateIsEnabled,
-                          }),
-                        }}
-                        error={
-                          errorMessages.newConstraint1StartDateName.length > 0
-                        }
-                        FormHelperTextProps={{
-                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                          component: "div",
-                        }}
-                        helperText={errorMessages.newConstraint1StartDateName.map(
-                          (message) => (
-                            <div key={message}>{message}</div>
-                          )
-                        )}
-                      />
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        label="終了日"
-                        type="date"
-                        defaultValue={this.state.newConstraint1StopDateName}
-                        onChange={this.handleChangeNewConstraint1StopDateName}
-                        fullWidth={true}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{
-                          className: classnames({
-                            [this.props.classes.lineThrough]:
-                              !newConstraint1StopDateIsEnabled,
-                          }),
-                        }}
-                        error={
-                          errorMessages.newConstraint1StopDateName.length > 0
-                        }
-                        FormHelperTextProps={{
-                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                          component: "div",
-                        }}
-                        helperText={errorMessages.newConstraint1StopDateName.map(
-                          (message) => (
-                            <div key={message}>{message}</div>
-                          )
-                        )}
-                      />
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        select={true}
-                        label="勤務"
-                        value={this.state.newConstraint1KinmuId}
-                        onChange={this.handleChangeNewConstraint1KinmuId}
-                        fullWidth={true}
-                      >
-                        {this.props.kinmus.map((kinmu) => (
-                          <MenuItem key={kinmu.id} value={kinmu.id}>
-                            {
-                              <span
-                                className={classnames({
-                                  [this.props.classes.lineThrough]:
-                                    !kinmu.is_enabled,
-                                })}
-                              >
-                                {kinmu.name}
-                              </span>
-                            }
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        select={true}
-                        label="グループ"
-                        value={this.state.newConstraint1GroupId}
-                        onChange={this.handleChangeNewConstraint1GroupId}
-                        fullWidth={true}
-                      >
-                        {this.props.groups.map((group) => (
-                          <MenuItem key={group.id} value={group.id}>
-                            {
-                              <span
-                                className={classnames({
-                                  [this.props.classes.lineThrough]:
-                                    !group.is_enabled,
-                                })}
-                              >
-                                {group.name}
-                              </span>
-                            }
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        label="割り当て職員数下限"
-                        type="number"
-                        defaultValue={
-                          this.state.newConstraint1MinNumberOfAssignments
-                        }
-                        onChange={
-                          this.handleChangeNewConstraint1MinNumberOfAssignments
-                        }
-                        fullWidth={true}
-                        inputProps={{
-                          min: constraints1.minOfConstraint1MinNumberOfAssignments,
-                        }}
-                        error={
-                          errorMessages.newConstraint1MinNumberOfAssignments
-                            .length > 0
-                        }
-                        FormHelperTextProps={{
-                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                          component: "div",
-                        }}
-                        helperText={errorMessages.newConstraint1MinNumberOfAssignments.map(
-                          (message) => (
-                            <div key={message}>{message}</div>
-                          )
-                        )}
-                      />
-                    </Grid>
-                  </Grid>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    color="primary"
-                    disabled={Object.values(errorMessages).some(
-                      (messages) => messages.length > 0
-                    )}
-                    onClick={this.handleClickCreateConstraint1}
-                  >
-                    追加
-                  </Button>
-                  <Button
-                    color="primary"
-                    onClick={this.handleCloseCreationDialog}
-                  >
-                    閉じる
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            );
-          })()
-        )}
-      </>
-    );
-  }
-}
-
-function mapStateToProps(state: StateWithHistory<all.State>) {
-  return {
-    constraints1: state.present.constraints1,
-    groups: state.present.groups,
-    kinmus: state.present.kinmus,
-    terms: state.present.terms,
-  };
+                <Button color="primary" onClick={handleCloseCreationDialog}>
+                  閉じる
+                </Button>
+              </DialogActions>
+            </Dialog>
+          );
+        })()
+      )}
+    </>
+  );
 }
 
 const styles = createStyles({
@@ -460,4 +465,4 @@ const styles = createStyles({
   },
 });
 
-export default withStyles(styles)(connect(mapStateToProps)(Constraints1));
+export default withStyles(styles)(Constraints1);

@@ -16,24 +16,15 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import classnames from "classnames";
 import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
 import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as constraints9 from "../modules/constraints9";
-import * as kinmus from "../modules/kinmus";
-import * as members from "../modules/members";
-import * as terms from "../modules/terms";
 import * as utils from "../utils";
 import Constraint9 from "./Constraint9";
 
-type Props = {
-  dispatch: Dispatch;
-  constraints9: constraints9.Constraint9[];
-  members: members.Member[];
-  terms: terms.Term[];
-  kinmus: kinmus.Kinmu[];
-} & WithStyles<typeof styles>;
+type Props = WithStyles<typeof styles>;
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -49,42 +40,67 @@ type ErrorMessages = {
   newConstraint9StopDateName: string[];
 };
 
-class Constraints9 extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    const todayString = utils.dateToString(new Date());
-    this.state = {
-      creationDialogIsOpen: false,
-      newConstraint9IsEnabled: true,
-      newConstraint9KinmuId:
-        this.props.kinmus.length > 0 ? this.props.kinmus[0].id : 0,
-      newConstraint9MemberId:
-        this.props.members.length > 0 ? this.props.members[0].id : 0,
-      newConstraint9StartDateName: todayString,
-      newConstraint9StopDateName: todayString,
-    };
-  }
-  public handleClickOpenCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: true });
+function selector(state: StateWithHistory<all.State>) {
+  return {
+    constraints9: state.present.constraints9,
+    kinmus: state.present.kinmus,
+    members: state.present.members,
+    terms: state.present.terms,
   };
-  public handleCloseCreationDialog = () => {
-    this.setState({ creationDialogIsOpen: false });
+}
+
+function Constraints9(props: Props) {
+  const dispatch = useDispatch();
+  const selected = useSelector(selector, shallowEqual);
+  const { termIdName } = useParams();
+  if (!termIdName) throw new Error("!termIdName");
+  const termId = parseInt(termIdName, 10);
+  const constraints9InTerm = selected.constraints9.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const membersInTerm = selected.members.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const termsInTerm = selected.terms.filter(({ id }) => id === termId);
+  const kinmusInTerm = selected.kinmus.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const todayString = utils.dateToString(new Date());
+  const initialState = {
+    creationDialogIsOpen: false,
+    newConstraint9IsEnabled: true,
+    newConstraint9KinmuId: kinmusInTerm.length > 0 ? kinmusInTerm[0].id : 0,
+    newConstraint9MemberId: membersInTerm.length > 0 ? membersInTerm[0].id : 0,
+    newConstraint9StartDateName: todayString,
+    newConstraint9StopDateName: todayString,
   };
-  public handleChangeNewConstraint9IsEnabled = (
+  const [state, setState] = React.useState<State>(initialState);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => setState(initialState), [termId]);
+  const handleClickOpenCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+  };
+  const handleCloseCreationDialog = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+  };
+  const handleChangeNewConstraint9IsEnabled = (
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    this.setState({ newConstraint9IsEnabled: checked });
+    setState((state) => ({ ...state, newConstraint9IsEnabled: checked }));
   };
-  public handleChangeNewConstraint9MemberId = (
+  const handleChangeNewConstraint9MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newConstraint9MemberId: parseInt(event.target.value, 10) });
+    setState((state) => ({
+      ...state,
+      newConstraint9MemberId: parseInt(event.target.value, 10),
+    }));
   };
-  public validate(
+  const validate = (
     newConstraint9StartDateName: string,
     newConstraint9StopDateName: string
-  ): ErrorMessages {
+  ): ErrorMessages => {
     const errorMessages: ErrorMessages = {
       newConstraint9StartDateName: [],
       newConstraint9StopDateName: [],
@@ -100,298 +116,286 @@ class Constraints9 extends React.Component<Props, State> {
       );
     }
     return errorMessages;
-  }
-  public handleChangeNewConstraint9StartDateName = (
+  };
+  const handleChangeNewConstraint9StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newConstraint9StartDateName: event.target.value });
+    setState((state) => ({
+      ...state,
+      newConstraint9StartDateName: event.target.value,
+    }));
   };
-  public handleChangeNewConstraint9StopDateName = (
+  const handleChangeNewConstraint9StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newConstraint9StopDateName: event.target.value });
+    setState((state) => ({
+      ...state,
+      newConstraint9StopDateName: event.target.value,
+    }));
   };
-  public handleChangeNewConstraint9KinmuId = (
+  const handleChangeNewConstraint9KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    this.setState({ newConstraint9KinmuId: parseInt(event.target.value, 10) });
+    setState((state) => ({
+      ...state,
+      newConstraint9KinmuId: parseInt(event.target.value, 10),
+    }));
   };
-  public handleClickCreateConstraint9 = () => {
-    this.setState({ creationDialogIsOpen: false });
-    this.props.dispatch(
+  const handleClickCreateConstraint9 = () => {
+    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    dispatch(
       constraints9.createConstraint9(
-        this.state.newConstraint9IsEnabled,
-        this.state.newConstraint9MemberId,
-        this.state.newConstraint9StartDateName,
-        this.state.newConstraint9StopDateName,
-        this.state.newConstraint9KinmuId
+        termId,
+        state.newConstraint9IsEnabled,
+        state.newConstraint9MemberId,
+        state.newConstraint9StartDateName,
+        state.newConstraint9StopDateName,
+        state.newConstraint9KinmuId
       )
     );
   };
-  public render() {
-    return (
-      <>
-        <div className={this.props.classes.gridFrame}>
-          <Grid container={true} spacing={1}>
-            <Grid item={true} xs={12}>
-              <Toolbar>
-                <Typography
-                  variant="subtitle1"
-                  className={this.props.classes.toolbarTitle}
-                >
-                  職員の期間に割り当てる勤務
-                </Typography>
+  return (
+    <>
+      <div className={props.classes.gridFrame}>
+        <Grid container={true} spacing={1}>
+          <Grid item={true} xs={12}>
+            <Toolbar>
+              <Typography
+                variant="subtitle1"
+                className={props.classes.toolbarTitle}
+              >
+                職員の期間に割り当てる勤務
+              </Typography>
+              <Button size="small" onClick={handleClickOpenCreationDialog}>
+                追加
+              </Button>
+            </Toolbar>
+          </Grid>
+          {constraints9InTerm.map((c) => (
+            <Grid key={c.id} item={true} xs={12}>
+              <Constraint9 constraint9={c} />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+      {membersInTerm.length === 0 || kinmusInTerm.length === 0 ? (
+        <Dialog
+          onClose={handleCloseCreationDialog}
+          open={state.creationDialogIsOpen}
+          fullWidth={true}
+          maxWidth="md"
+        >
+          <DialogTitle>職員の期間に割り当てる勤務を追加できません</DialogTitle>
+          <DialogContent>
+            {membersInTerm.length === 0 ? (
+              <DialogContentText>職員がいません</DialogContentText>
+            ) : null}
+            {kinmusInTerm.length === 0 ? (
+              <DialogContentText>勤務がありません</DialogContentText>
+            ) : null}
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" onClick={handleCloseCreationDialog}>
+              閉じる
+            </Button>
+          </DialogActions>
+        </Dialog>
+      ) : (
+        (() => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const newConstraint9Member = membersInTerm.find(
+            ({ id }) => id === state.newConstraint9MemberId
+          )!;
+          const newConstraint9StartDate = utils.stringToDate(
+            state.newConstraint9StartDateName
+          );
+          const newConstraint9StartDateIsEnabled = newConstraint9StartDate
+            ? termsInTerm.every(({ start_date_name }) => {
+                const startDate = utils.stringToDate(start_date_name);
+                if (!startDate) {
+                  return false;
+                }
+                return startDate <= newConstraint9StartDate;
+              })
+            : false;
+          const newConstraint9StopDate = utils.stringToDate(
+            state.newConstraint9StopDateName
+          );
+          const newConstraint9StopDateIsEnabled = newConstraint9StopDate
+            ? termsInTerm.every(({ stop_date_name }) => {
+                const stopDate = utils.stringToDate(stop_date_name);
+                if (!stopDate) {
+                  return false;
+                }
+                return stopDate >= newConstraint9StopDate;
+              })
+            : false;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const newConstraint9Kinmu = kinmusInTerm.find(
+            ({ id }) => id === state.newConstraint9KinmuId
+          )!;
+          const relativesAreEnabled =
+            newConstraint9Member.is_enabled &&
+            newConstraint9StartDateIsEnabled &&
+            newConstraint9StopDateIsEnabled &&
+            newConstraint9Kinmu.is_enabled;
+          const errorMessages = validate(
+            state.newConstraint9StartDateName,
+            state.newConstraint9StopDateName
+          );
+          return (
+            <Dialog
+              onClose={handleCloseCreationDialog}
+              open={state.creationDialogIsOpen}
+              fullWidth={true}
+              maxWidth="md"
+            >
+              <DialogTitle>職員の期間に割り当てる勤務の追加</DialogTitle>
+              <DialogContent>
+                <Grid container={true} spacing={1}>
+                  <Grid item={true} xs={12}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={
+                            state.newConstraint9IsEnabled && relativesAreEnabled
+                          }
+                          disabled={!relativesAreEnabled}
+                          onChange={handleChangeNewConstraint9IsEnabled}
+                          color="primary"
+                        />
+                      }
+                      label="有効"
+                    />
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      select={true}
+                      label="職員"
+                      value={state.newConstraint9MemberId}
+                      onChange={handleChangeNewConstraint9MemberId}
+                      fullWidth={true}
+                    >
+                      {membersInTerm.map((member) => (
+                        <MenuItem key={member.id} value={member.id}>
+                          {
+                            <span
+                              className={classnames({
+                                [props.classes.lineThrough]: !member.is_enabled,
+                              })}
+                            >
+                              {member.name}
+                            </span>
+                          }
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      label="開始日"
+                      type="date"
+                      defaultValue={state.newConstraint9StartDateName}
+                      onChange={handleChangeNewConstraint9StartDateName}
+                      fullWidth={true}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      inputProps={{
+                        className: classnames({
+                          [props.classes.lineThrough]:
+                            !newConstraint9StartDateIsEnabled,
+                        }),
+                      }}
+                      error={
+                        errorMessages.newConstraint9StartDateName.length > 0
+                      }
+                      FormHelperTextProps={{
+                        // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                        component: "div",
+                      }}
+                      helperText={errorMessages.newConstraint9StartDateName.map(
+                        (message) => (
+                          <div key={message}>{message}</div>
+                        )
+                      )}
+                    />
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      label="終了日"
+                      type="date"
+                      defaultValue={state.newConstraint9StopDateName}
+                      onChange={handleChangeNewConstraint9StopDateName}
+                      fullWidth={true}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      inputProps={{
+                        className: classnames({
+                          [props.classes.lineThrough]:
+                            !newConstraint9StopDateIsEnabled,
+                        }),
+                      }}
+                      error={
+                        errorMessages.newConstraint9StopDateName.length > 0
+                      }
+                      FormHelperTextProps={{
+                        // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
+                        component: "div",
+                      }}
+                      helperText={errorMessages.newConstraint9StopDateName.map(
+                        (message) => (
+                          <div key={message}>{message}</div>
+                        )
+                      )}
+                    />
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      select={true}
+                      label="勤務"
+                      value={state.newConstraint9KinmuId}
+                      onChange={handleChangeNewConstraint9KinmuId}
+                      fullWidth={true}
+                    >
+                      {kinmusInTerm.map((kinmu) => (
+                        <MenuItem key={kinmu.id} value={kinmu.id}>
+                          {
+                            <span
+                              className={classnames({
+                                [props.classes.lineThrough]: !kinmu.is_enabled,
+                              })}
+                            >
+                              {kinmu.name}
+                            </span>
+                          }
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                </Grid>
+              </DialogContent>
+              <DialogActions>
                 <Button
-                  size="small"
-                  onClick={this.handleClickOpenCreationDialog}
+                  color="primary"
+                  disabled={Object.values(errorMessages).some(
+                    (messages) => messages.length > 0
+                  )}
+                  onClick={handleClickCreateConstraint9}
                 >
                   追加
                 </Button>
-              </Toolbar>
-            </Grid>
-            {this.props.constraints9.map((c) => (
-              <Grid key={c.id} item={true} xs={12}>
-                <Constraint9 constraint9={c} />
-              </Grid>
-            ))}
-          </Grid>
-        </div>
-        {this.props.members.length === 0 && this.props.kinmus.length === 0 ? (
-          <Dialog
-            onClose={this.handleCloseCreationDialog}
-            open={this.state.creationDialogIsOpen}
-            fullWidth={true}
-            maxWidth="md"
-          >
-            <DialogTitle>
-              職員の期間に割り当てる勤務を追加できません
-            </DialogTitle>
-            <DialogContent>
-              {this.props.members.length === 0 ? (
-                <DialogContentText>職員がいません</DialogContentText>
-              ) : null}
-              {this.props.kinmus.length === 0 ? (
-                <DialogContentText>勤務がありません</DialogContentText>
-              ) : null}
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={this.handleCloseCreationDialog}>
-                閉じる
-              </Button>
-            </DialogActions>
-          </Dialog>
-        ) : (
-          (() => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const newConstraint9Member = this.props.members.find(
-              ({ id }) => id === this.state.newConstraint9MemberId
-            )!;
-            const newConstraint9StartDate = utils.stringToDate(
-              this.state.newConstraint9StartDateName
-            );
-            const newConstraint9StartDateIsEnabled = newConstraint9StartDate
-              ? this.props.terms.every(({ start_date_name }) => {
-                  const startDate = utils.stringToDate(start_date_name);
-                  if (!startDate) {
-                    return false;
-                  }
-                  return startDate <= newConstraint9StartDate;
-                })
-              : false;
-            const newConstraint9StopDate = utils.stringToDate(
-              this.state.newConstraint9StopDateName
-            );
-            const newConstraint9StopDateIsEnabled = newConstraint9StopDate
-              ? this.props.terms.every(({ stop_date_name }) => {
-                  const stopDate = utils.stringToDate(stop_date_name);
-                  if (!stopDate) {
-                    return false;
-                  }
-                  return stopDate >= newConstraint9StopDate;
-                })
-              : false;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const newConstraint9Kinmu = this.props.kinmus.find(
-              ({ id }) => id === this.state.newConstraint9KinmuId
-            )!;
-            const relativesAreEnabled =
-              newConstraint9Member.is_enabled &&
-              newConstraint9StartDateIsEnabled &&
-              newConstraint9StopDateIsEnabled &&
-              newConstraint9Kinmu.is_enabled;
-            const errorMessages = this.validate(
-              this.state.newConstraint9StartDateName,
-              this.state.newConstraint9StopDateName
-            );
-            return (
-              <Dialog
-                onClose={this.handleCloseCreationDialog}
-                open={this.state.creationDialogIsOpen}
-                fullWidth={true}
-                maxWidth="md"
-              >
-                <DialogTitle>職員の期間に割り当てる勤務の追加</DialogTitle>
-                <DialogContent>
-                  <Grid container={true} spacing={1}>
-                    <Grid item={true} xs={12}>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={
-                              this.state.newConstraint9IsEnabled &&
-                              relativesAreEnabled
-                            }
-                            disabled={!relativesAreEnabled}
-                            onChange={this.handleChangeNewConstraint9IsEnabled}
-                            color="primary"
-                          />
-                        }
-                        label="有効"
-                      />
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        select={true}
-                        label="職員"
-                        value={this.state.newConstraint9MemberId}
-                        onChange={this.handleChangeNewConstraint9MemberId}
-                        fullWidth={true}
-                      >
-                        {this.props.members.map((member) => (
-                          <MenuItem key={member.id} value={member.id}>
-                            {
-                              <span
-                                className={classnames({
-                                  [this.props.classes.lineThrough]:
-                                    !member.is_enabled,
-                                })}
-                              >
-                                {member.name}
-                              </span>
-                            }
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        label="開始日"
-                        type="date"
-                        defaultValue={this.state.newConstraint9StartDateName}
-                        onChange={this.handleChangeNewConstraint9StartDateName}
-                        fullWidth={true}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{
-                          className: classnames({
-                            [this.props.classes.lineThrough]:
-                              !newConstraint9StartDateIsEnabled,
-                          }),
-                        }}
-                        error={
-                          errorMessages.newConstraint9StartDateName.length > 0
-                        }
-                        FormHelperTextProps={{
-                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                          component: "div",
-                        }}
-                        helperText={errorMessages.newConstraint9StartDateName.map(
-                          (message) => (
-                            <div key={message}>{message}</div>
-                          )
-                        )}
-                      />
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        label="終了日"
-                        type="date"
-                        defaultValue={this.state.newConstraint9StopDateName}
-                        onChange={this.handleChangeNewConstraint9StopDateName}
-                        fullWidth={true}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{
-                          className: classnames({
-                            [this.props.classes.lineThrough]:
-                              !newConstraint9StopDateIsEnabled,
-                          }),
-                        }}
-                        error={
-                          errorMessages.newConstraint9StopDateName.length > 0
-                        }
-                        FormHelperTextProps={{
-                          // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
-                          component: "div",
-                        }}
-                        helperText={errorMessages.newConstraint9StopDateName.map(
-                          (message) => (
-                            <div key={message}>{message}</div>
-                          )
-                        )}
-                      />
-                    </Grid>
-                    <Grid item={true} xs={12}>
-                      <TextField
-                        select={true}
-                        label="勤務"
-                        value={this.state.newConstraint9KinmuId}
-                        onChange={this.handleChangeNewConstraint9KinmuId}
-                        fullWidth={true}
-                      >
-                        {this.props.kinmus.map((kinmu) => (
-                          <MenuItem key={kinmu.id} value={kinmu.id}>
-                            {
-                              <span
-                                className={classnames({
-                                  [this.props.classes.lineThrough]:
-                                    !kinmu.is_enabled,
-                                })}
-                              >
-                                {kinmu.name}
-                              </span>
-                            }
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </Grid>
-                  </Grid>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    color="primary"
-                    disabled={Object.values(errorMessages).some(
-                      (messages) => messages.length > 0
-                    )}
-                    onClick={this.handleClickCreateConstraint9}
-                  >
-                    追加
-                  </Button>
-                  <Button
-                    color="primary"
-                    onClick={this.handleCloseCreationDialog}
-                  >
-                    閉じる
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            );
-          })()
-        )}
-      </>
-    );
-  }
-}
-
-function mapStateToProps(state: StateWithHistory<all.State>) {
-  return {
-    constraints9: state.present.constraints9,
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-    terms: state.present.terms,
-  };
+                <Button color="primary" onClick={handleCloseCreationDialog}>
+                  閉じる
+                </Button>
+              </DialogActions>
+            </Dialog>
+          );
+        })()
+      )}
+    </>
+  );
 }
 
 const styles = createStyles({
@@ -409,4 +413,4 @@ const styles = createStyles({
   },
 });
 
-export default withStyles(styles)(connect(mapStateToProps)(Constraints9));
+export default withStyles(styles)(Constraints9);
