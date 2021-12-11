@@ -90,7 +90,7 @@ function maxId<T extends { id: number }>(array: T[]): number {
   return Math.max(0, ...array.map(({ id }) => id));
 }
 
-// TODO: think more semantic function name
+// TODO: think more meaningfull function name
 function doubleItemsByKey<T extends { id: number }>(
   array: T[],
   keyOfItem: keyof T,
