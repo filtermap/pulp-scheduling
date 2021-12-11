@@ -1,8 +1,6 @@
 import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
-import { WithStyles } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
@@ -19,7 +17,22 @@ import * as terms from "../modules/terms";
 import { RootState } from "../modules/store";
 import Term from "./Term";
 
-type Props = WithStyles<typeof styles>;
+const PREFIX = "Terms";
+
+const classes = {
+  gridFrame: `${PREFIX}-gridFrame`,
+  toolbarTitle: `${PREFIX}-toolbarTitle`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled("div")({
+  [`& .${classes.gridFrame}`]: {
+    padding: 8,
+  },
+  [`& .${classes.toolbarTitle}`]: {
+    flex: 1,
+  },
+});
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -39,7 +52,7 @@ function select(state: RootState) {
   };
 }
 
-function Terms(props: Props) {
+function Terms(): JSX.Element {
   const dispatch = useDispatch();
   const selected = useSelector(select, shallowEqual);
   const todayString = utils.dateToString(new Date());
@@ -107,15 +120,12 @@ function Terms(props: Props) {
     state.newTermStopDateName
   );
   return (
-    <>
-      <div className={props.classes.gridFrame}>
+    <Root>
+      <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
           <Grid item={true} xs={12}>
             <Toolbar>
-              <Typography
-                variant="subtitle1"
-                className={props.classes.toolbarTitle}
-              >
+              <Typography variant="subtitle1" className={classes.toolbarTitle}>
                 期間
               </Typography>
               <Button size="small" onClick={handleClickOpenCreationDialog}>
@@ -210,17 +220,8 @@ function Terms(props: Props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 
-const styles = createStyles({
-  gridFrame: {
-    padding: 8,
-  },
-  toolbarTitle: {
-    flex: 1,
-  },
-});
-
-export default withStyles(styles)(Terms);
+export default Terms;

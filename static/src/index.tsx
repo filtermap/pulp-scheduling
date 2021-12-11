@@ -1,7 +1,6 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import {
   ThemeProvider,
-  Theme,
   StyledEngineProvider,
   createTheme,
 } from "@mui/material/styles";
@@ -18,11 +17,6 @@ import { blue, teal } from "@mui/material/colors";
 import Layout from "./components/Layout";
 import * as store from "./modules/store";
 import * as utils from "./utils";
-
-declare module "@mui/styles/defaultTheme" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
 
 async function main() {
   const initialState = (await utils.sendJSONRPCRequest("read_all")).result;

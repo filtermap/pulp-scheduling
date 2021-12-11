@@ -1,4 +1,5 @@
 import AppBar from "@mui/material/AppBar";
+import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
@@ -7,11 +8,6 @@ import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { Theme } from "@mui/material/styles";
-import { WithStyles, WithTheme } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
-import withTheme from "@mui/styles/withTheme";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -48,48 +44,57 @@ import Members from "./Members";
 import Schedules from "./Schedules";
 import Terms from "./Terms";
 
+const PREFIX = "Layout";
+
+const classes = {
+  appBar: `${PREFIX}-appBar`,
+  content: `${PREFIX}-content`,
+  drawerDocked: `${PREFIX}-drawerDocked`,
+  drawerPaper: `${PREFIX}-drawerPaper`,
+  navIconHide: `${PREFIX}-navIconHide`,
+  root: `${PREFIX}-root`,
+  title: `${PREFIX}-title`,
+  version: `${PREFIX}-version`,
+};
+
+const Root = styled("div")(({ theme }) => ({
+  [`& .${classes.appBar}`]: {
+    [theme.breakpoints.up("md")]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+    },
+    position: "fixed",
+  },
+  [`& .${classes.content}`]: {
+    [theme.breakpoints.up("md")]: {
+      maxWidth: `calc(100% - ${drawerWidth}px)`,
+    },
+    flex: 1,
+    maxWidth: "100%",
+  },
+  [`& .${classes.drawerDocked}`]: {
+    width: drawerWidth,
+  },
+  [`& .${classes.drawerPaper}`]: {
+    width: drawerWidth,
+  },
+  [`& .${classes.navIconHide}`]: {
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
+  },
+  [`& .${classes.root}`]: {
+    display: "flex",
+  },
+  [`& .${classes.title}`]: {
+    flex: 1,
+  },
+  [`& .${classes.version}`]: {
+    ...theme.typography.subtitle2,
+    marginLeft: theme.spacing(3),
+  },
+}));
+
 const drawerWidth = 240;
-
-const styles = (theme: Theme) =>
-  createStyles({
-    appBar: {
-      [theme.breakpoints.up("md")]: {
-        width: `calc(100% - ${drawerWidth}px)`,
-      },
-      position: "fixed",
-    },
-    content: {
-      [theme.breakpoints.up("md")]: {
-        maxWidth: `calc(100% - ${drawerWidth}px)`,
-      },
-      flex: 1,
-      maxWidth: "100%",
-    },
-    drawerDocked: {
-      width: drawerWidth,
-    },
-    drawerPaper: {
-      width: drawerWidth,
-    },
-    navIconHide: {
-      [theme.breakpoints.up("md")]: {
-        display: "none",
-      },
-    },
-    root: {
-      display: "flex",
-    },
-    title: {
-      flex: 1,
-    },
-    toolbar: theme.mixins.toolbar,
-    version: {
-      ...theme.typography.subtitle2,
-      marginLeft: theme.spacing(3),
-    },
-  });
-
-type Props = WithTheme & WithStyles<typeof styles>;
 
 type State = {
   mobileOpen: boolean;
@@ -215,7 +220,7 @@ function select(state: RootState) {
   };
 }
 
-function ResponsiveDrawer(props: Props) {
+function ResponsiveDrawer(): JSX.Element {
   const dispatch = useDispatch();
   const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
@@ -233,10 +238,9 @@ function ResponsiveDrawer(props: Props) {
   const writeAll = () => {
     utils.sendJSONRPCRequest("write_all", [selected.all]);
   };
-  const { classes, theme } = props;
   const drawer = (
     <>
-      <div className={classes.toolbar} />
+      <Toolbar />
       <Divider />
       <List>
         <ListItemLink to="/terms" primary="期間" />
@@ -249,132 +253,134 @@ function ResponsiveDrawer(props: Props) {
     </>
   );
   return (
-    <div className={classes.root}>
-      <AppBar className={classes.appBar} position="sticky">
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerToggle}
-            className={classes.navIconHide}
-            size="large"
+    <Root>
+      <div className={classes.root}>
+        <AppBar className={classes.appBar} position="sticky">
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerToggle}
+              className={classes.navIconHide}
+              size="large"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              variant="h6"
+              color="inherit"
+              noWrap={true}
+              className={classes.title}
+            >
+              pulp-scheduling<span className={classes.version}>v0.1.13</span>
+            </Typography>
+            <Button
+              color="inherit"
+              onClick={handleClickUndo}
+              disabled={!selected.pastExists}
+            >
+              元に戻す
+            </Button>
+            <Button
+              color="inherit"
+              onClick={handleClickRedo}
+              disabled={!selected.futureExists}
+            >
+              やり直す
+            </Button>
+            <Button color="inherit" onClick={writeAll}>
+              保存
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <Hidden mdUp={true}>
+          <Drawer
+            variant="temporary"
+            anchor={"left"}
+            open={state.mobileOpen}
+            onClose={handleDrawerToggle}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
           >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant="h6"
-            color="inherit"
-            noWrap={true}
-            className={classes.title}
+            {drawer}
+          </Drawer>
+        </Hidden>
+        <Hidden mdDown={true} implementation="css">
+          <Drawer
+            variant="permanent"
+            open={true}
+            classes={{
+              docked: classes.drawerDocked,
+              paper: classes.drawerPaper,
+            }}
           >
-            pulp-scheduling<span className={classes.version}>v0.1.13</span>
-          </Typography>
-          <Button
-            color="inherit"
-            onClick={handleClickUndo}
-            disabled={!selected.pastExists}
-          >
-            元に戻す
-          </Button>
-          <Button
-            color="inherit"
-            onClick={handleClickRedo}
-            disabled={!selected.futureExists}
-          >
-            やり直す
-          </Button>
-          <Button color="inherit" onClick={writeAll}>
-            保存
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <Hidden mdUp={true}>
-        <Drawer
-          variant="temporary"
-          anchor={theme.direction === "rtl" ? "right" : "left"}
-          open={state.mobileOpen}
-          onClose={handleDrawerToggle}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </Hidden>
-      <Hidden mdDown={true} implementation="css">
-        <Drawer
-          variant="permanent"
-          open={true}
-          classes={{
-            docked: classes.drawerDocked,
-            paper: classes.drawerPaper,
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </Hidden>
-      <div className={classes.content}>
-        <div className={classes.toolbar} />
-        <Routes>
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/terms/:termIdName/schedules" element={<Schedules />} />
-          <Route path="/terms/:termIdName/members" element={<Members />} />
-          <Route path="/terms/:termIdName/kinmus" element={<Kinmus />} />
-          <Route path="/terms/:termIdName/groups" element={<Groups />} />
-          <Route
-            path="/terms/:termIdName/constraints0"
-            element={<Constraints0 />}
-          />
-          <Route
-            path="/terms/:termIdName/constraints1"
-            element={<Constraints1 />}
-          />
-          <Route
-            path="/terms/:termIdName/constraints2"
-            element={<Constraints2 />}
-          />
-          <Route
-            path="/terms/:termIdName/constraints3"
-            element={<Constraints3 />}
-          />
-          <Route
-            path="/terms/:termIdName/constraints4"
-            element={<Constraints4 />}
-          />
-          <Route
-            path="/terms/:termIdName/constraints5"
-            element={<Constraints5 />}
-          />
-          <Route
-            path="/terms/:termIdName/constraints6"
-            element={<Constraints6 />}
-          />
-          <Route
-            path="/terms/:termIdName/constraints7"
-            element={<Constraints7 />}
-          />
-          <Route
-            path="/terms/:termIdName/constraints8"
-            element={<Constraints8 />}
-          />
-          <Route
-            path="/terms/:termIdName/constraints9"
-            element={<Constraints9 />}
-          />
-          <Route
-            path="/terms/:termIdName/constraints10"
-            element={<Constraints10 />}
-          />
-        </Routes>
+            {drawer}
+          </Drawer>
+        </Hidden>
+        <div className={classes.content}>
+          <Toolbar />
+          <Routes>
+            <Route path="/terms" element={<Terms />} />
+            <Route
+              path="/terms/:termIdName/schedules"
+              element={<Schedules />}
+            />
+            <Route path="/terms/:termIdName/members" element={<Members />} />
+            <Route path="/terms/:termIdName/kinmus" element={<Kinmus />} />
+            <Route path="/terms/:termIdName/groups" element={<Groups />} />
+            <Route
+              path="/terms/:termIdName/constraints0"
+              element={<Constraints0 />}
+            />
+            <Route
+              path="/terms/:termIdName/constraints1"
+              element={<Constraints1 />}
+            />
+            <Route
+              path="/terms/:termIdName/constraints2"
+              element={<Constraints2 />}
+            />
+            <Route
+              path="/terms/:termIdName/constraints3"
+              element={<Constraints3 />}
+            />
+            <Route
+              path="/terms/:termIdName/constraints4"
+              element={<Constraints4 />}
+            />
+            <Route
+              path="/terms/:termIdName/constraints5"
+              element={<Constraints5 />}
+            />
+            <Route
+              path="/terms/:termIdName/constraints6"
+              element={<Constraints6 />}
+            />
+            <Route
+              path="/terms/:termIdName/constraints7"
+              element={<Constraints7 />}
+            />
+            <Route
+              path="/terms/:termIdName/constraints8"
+              element={<Constraints8 />}
+            />
+            <Route
+              path="/terms/:termIdName/constraints9"
+              element={<Constraints9 />}
+            />
+            <Route
+              path="/terms/:termIdName/constraints10"
+              element={<Constraints10 />}
+            />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </Root>
   );
 }
 
-export default withTheme(
-  // @ts-ignore: TODO: replace with hooks to avoid type errors
-  withStyles(styles, { withTheme: true })(ResponsiveDrawer)
-);
+export default ResponsiveDrawer;

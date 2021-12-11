@@ -1,13 +1,10 @@
 import Card from "@mui/material/Card";
+import { styled } from "@mui/material/styles";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Collapse from "@mui/material/Collapse";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import { Theme } from "@mui/material/styles";
-import { WithStyles } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
 import TextField from "@mui/material/TextField";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
@@ -29,9 +26,29 @@ import * as utils from "../utils";
 import * as terms from "../modules/terms";
 import { RootState } from "../modules/store";
 
+const PREFIX = "Term";
+
+const classes = {
+  expand: `${PREFIX}-expand`,
+  expandOpen: `${PREFIX}-expandOpen`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled("div")(({ theme }) => ({
+  [`& .${classes.expand}`]: {
+    transform: "rotate(0deg)",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  [`& .${classes.expandOpen}`]: {
+    transform: "rotate(180deg)",
+  },
+}));
+
 type Props = {
   term: terms.Term;
-} & WithStyles<typeof styles>;
+};
 
 type State = {
   expanded: boolean;
@@ -51,7 +68,7 @@ function select(state: RootState) {
   };
 }
 
-function Term(props: Props) {
+function Term(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const selected = useSelector(select, shallowEqual);
   const selectableTerms = selected.terms.filter(
@@ -158,7 +175,7 @@ function Term(props: Props) {
     props.term.stop_date_name
   );
   return (
-    <>
+    <Root>
       <Card>
         <CardHeader
           avatar={
@@ -170,8 +187,8 @@ function Term(props: Props) {
           }
           action={
             <IconButton
-              className={classnames(props.classes.expand, {
-                [props.classes.expandOpen]: state.expanded,
+              className={classnames(classes.expand, {
+                [classes.expandOpen]: state.expanded,
               })}
               onClick={handleClickExpand}
               aria-expanded={state.expanded}
@@ -363,21 +380,8 @@ function Term(props: Props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 
-const styles = (theme: Theme) =>
-  createStyles({
-    expand: {
-      transform: "rotate(0deg)",
-      transition: theme.transitions.create("transform", {
-        duration: theme.transitions.duration.shortest,
-      }),
-    },
-    expandOpen: {
-      transform: "rotate(180deg)",
-    },
-  });
-
-export default withStyles(styles)(Term);
+export default Term;

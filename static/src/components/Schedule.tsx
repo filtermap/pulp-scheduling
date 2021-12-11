@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -11,10 +12,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import { Theme } from "@mui/material/styles";
-import { WithStyles } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -31,9 +28,55 @@ import * as schedules from "../modules/schedules";
 import { RootState } from "../modules/store";
 import * as utils from "../utils";
 
+const PREFIX = "Schedule";
+
+const classes = {
+  expand: `${PREFIX}-expand`,
+  expandOpen: `${PREFIX}-expandOpen`,
+  leftHeaderCell: `${PREFIX}-leftHeaderCell`,
+  leftTopHeaderCell: `${PREFIX}-leftTopHeaderCell`,
+  tableWrapper: `${PREFIX}-tableWrapper`,
+  topHeaderCell: `${PREFIX}-topHeaderCell`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled("div")(({ theme }) => ({
+  [`& .${classes.expand}`]: {
+    transform: "rotate(0deg)",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  [`& .${classes.expandOpen}`]: {
+    transform: "rotate(180deg)",
+  },
+  [`& .${classes.leftHeaderCell}`]: {
+    background: "white",
+    left: 0,
+    position: "sticky",
+  },
+  [`& .${classes.leftTopHeaderCell}`]: {
+    background: "white",
+    left: 0,
+    position: "sticky",
+    top: 0,
+    zIndex: 2,
+  },
+  [`& .${classes.tableWrapper}`]: {
+    maxHeight: "calc(100vh - 200px)",
+    overflow: "auto",
+  },
+  [`& .${classes.topHeaderCell}`]: {
+    background: "white",
+    position: "sticky",
+    top: 0,
+    zIndex: 1,
+  },
+}));
+
 type Props = {
   schedule: schedules.Schedule;
-} & WithStyles<typeof styles>;
+};
 
 type State = {
   expanded: boolean;
@@ -56,7 +99,7 @@ function select(state: RootState) {
   };
 }
 
-function Schedule(props: Props) {
+function Schedule(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
@@ -123,14 +166,14 @@ function Schedule(props: Props) {
     schedule_kinmu_ids.has(id)
   );
   return (
-    <>
+    <Root>
       <Card>
         <CardHeader
           action={
             <>
               <IconButton
-                className={classnames(props.classes.expand, {
-                  [props.classes.expandOpen]: state.expanded,
+                className={classnames(classes.expand, {
+                  [classes.expandOpen]: state.expanded,
                 })}
                 onClick={handleClickExpand}
                 aria-expanded={state.expanded}
@@ -146,13 +189,13 @@ function Schedule(props: Props) {
           <CardContent>
             <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
-                <div className={props.classes.tableWrapper}>
+                <div className={classes.tableWrapper}>
                   <Table>
                     <TableHead>
                       <TableRow>
                         <TableCell
                           size="small"
-                          className={props.classes.leftTopHeaderCell}
+                          className={classes.leftTopHeaderCell}
                         >
                           \
                         </TableCell>
@@ -160,7 +203,7 @@ function Schedule(props: Props) {
                           <TableCell
                             key={date_name}
                             size="small"
-                            className={props.classes.topHeaderCell}
+                            className={classes.topHeaderCell}
                           >
                             {date_name}
                           </TableCell>
@@ -177,7 +220,7 @@ function Schedule(props: Props) {
                           <TableRow key={member.id}>
                             <TableCell
                               size="small"
-                              className={props.classes.leftHeaderCell}
+                              className={classes.leftHeaderCell}
                             >
                               {member.name}
                             </TableCell>
@@ -236,43 +279,8 @@ function Schedule(props: Props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 
-const styles = (theme: Theme) =>
-  createStyles({
-    expand: {
-      transform: "rotate(0deg)",
-      transition: theme.transitions.create("transform", {
-        duration: theme.transitions.duration.shortest,
-      }),
-    },
-    expandOpen: {
-      transform: "rotate(180deg)",
-    },
-    leftHeaderCell: {
-      background: "white",
-      left: 0,
-      position: "sticky",
-    },
-    leftTopHeaderCell: {
-      background: "white",
-      left: 0,
-      position: "sticky",
-      top: 0,
-      zIndex: 2,
-    },
-    tableWrapper: {
-      maxHeight: "calc(100vh - 200px)",
-      overflow: "auto",
-    },
-    topHeaderCell: {
-      background: "white",
-      position: "sticky",
-      top: 0,
-      zIndex: 1,
-    },
-  });
-
-export default withStyles(styles)(Schedule);
+export default Schedule;

@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -16,10 +17,6 @@ import FormGroup from "@mui/material/FormGroup";
 import FormLabel from "@mui/material/FormLabel";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import { Theme } from "@mui/material/styles";
-import { WithStyles } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -32,9 +29,29 @@ import * as group_members from "../modules/group_members";
 import * as groups from "../modules/groups";
 import { RootState } from "../modules/store";
 
+const PREFIX = "Group";
+
+const classes = {
+  expand: `${PREFIX}-expand`,
+  expandOpen: `${PREFIX}-expandOpen`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled("div")(({ theme }) => ({
+  [`& .${classes.expand}`]: {
+    transform: "rotate(0deg)",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  [`& .${classes.expandOpen}`]: {
+    transform: "rotate(180deg)",
+  },
+}));
+
 type Props = {
   group: groups.Group;
-} & WithStyles<typeof styles>;
+};
 
 type State = {
   expanded: boolean;
@@ -55,7 +72,7 @@ function select(state: RootState) {
   };
 }
 
-function Group(props: Props) {
+function Group(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
@@ -144,7 +161,7 @@ function Group(props: Props) {
   );
   const errorMessages = validate(props.group.name);
   return (
-    <>
+    <Root>
       <Card>
         <CardHeader
           avatar={
@@ -156,8 +173,8 @@ function Group(props: Props) {
           }
           action={
             <IconButton
-              className={classnames(props.classes.expand, {
-                [props.classes.expandOpen]: state.expanded,
+              className={classnames(classes.expand, {
+                [classes.expandOpen]: state.expanded,
               })}
               onClick={handleClickExpand}
               aria-expanded={state.expanded}
@@ -300,21 +317,8 @@ function Group(props: Props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 
-const styles = (theme: Theme) =>
-  createStyles({
-    expand: {
-      transform: "rotate(0deg)",
-      transition: theme.transitions.create("transform", {
-        duration: theme.transitions.duration.shortest,
-      }),
-    },
-    expandOpen: {
-      transform: "rotate(180deg)",
-    },
-  });
-
-export default withStyles(styles)(Group);
+export default Group;

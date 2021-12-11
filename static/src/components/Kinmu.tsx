@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -11,10 +12,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import { Theme } from "@mui/material/styles";
-import { WithStyles } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -26,9 +23,29 @@ import * as all from "../modules/all";
 import * as kinmus from "../modules/kinmus";
 import { RootState } from "../modules/store";
 
+const PREFIX = "Kinmu";
+
+const classes = {
+  expand: `${PREFIX}-expand`,
+  expandOpen: `${PREFIX}-expandOpen`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled("div")(({ theme }) => ({
+  [`& .${classes.expand}`]: {
+    transform: "rotate(0deg)",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  [`& .${classes.expandOpen}`]: {
+    transform: "rotate(180deg)",
+  },
+}));
+
 type Props = {
   kinmu: kinmus.Kinmu;
-} & WithStyles<typeof styles>;
+};
 
 type State = {
   deletionDialogIsOpen: boolean;
@@ -59,7 +76,7 @@ function select(state: RootState) {
   };
 }
 
-function Kinmu(props: Props) {
+function Kinmu(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
@@ -200,7 +217,7 @@ function Kinmu(props: Props) {
   );
   const errorMessages = validate(props.kinmu.name);
   return (
-    <>
+    <Root>
       <Card>
         <CardHeader
           avatar={
@@ -212,8 +229,8 @@ function Kinmu(props: Props) {
           }
           action={
             <IconButton
-              className={classnames(props.classes.expand, {
-                [props.classes.expandOpen]: state.expanded,
+              className={classnames(classes.expand, {
+                [classes.expandOpen]: state.expanded,
               })}
               onClick={handleClickExpand}
               aria-expanded={state.expanded}
@@ -396,21 +413,8 @@ function Kinmu(props: Props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 
-const styles = (theme: Theme) =>
-  createStyles({
-    expand: {
-      transform: "rotate(0deg)",
-      transition: theme.transitions.create("transform", {
-        duration: theme.transitions.duration.shortest,
-      }),
-    },
-    expandOpen: {
-      transform: "rotate(180deg)",
-    },
-  });
-
-export default withStyles(styles)(Kinmu);
+export default Kinmu;

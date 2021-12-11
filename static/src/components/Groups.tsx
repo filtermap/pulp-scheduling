@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -9,9 +10,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import FormLabel from "@mui/material/FormLabel";
 import Grid from "@mui/material/Grid";
-import { WithStyles } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
@@ -23,7 +21,22 @@ import * as all from "../modules/all";
 import { RootState } from "../modules/store";
 import Group from "./Group";
 
-type Props = WithStyles<typeof styles>;
+const PREFIX = "Groups";
+
+const classes = {
+  gridFrame: `${PREFIX}-gridFrame`,
+  toolbarTitle: `${PREFIX}-toolbarTitle`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled("div")({
+  [`& .${classes.gridFrame}`]: {
+    padding: 8,
+  },
+  [`& .${classes.toolbarTitle}`]: {
+    flex: 1,
+  },
+});
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -43,7 +56,7 @@ function select(state: RootState) {
   };
 }
 
-function Groups(props: Props) {
+function Groups(): JSX.Element {
   const dispatch = useDispatch();
   const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
@@ -122,15 +135,12 @@ function Groups(props: Props) {
   };
   const errorMessages = validate(state.newGroupName);
   return (
-    <>
-      <div className={props.classes.gridFrame}>
+    <Root>
+      <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
           <Grid item={true} xs={12}>
             <Toolbar>
-              <Typography
-                variant="subtitle1"
-                className={props.classes.toolbarTitle}
-              >
+              <Typography variant="subtitle1" className={classes.toolbarTitle}>
                 グループ
               </Typography>
               <Button size="small" onClick={handleClickOpenCreationDialog}>
@@ -221,17 +231,8 @@ function Groups(props: Props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 
-const styles = createStyles({
-  gridFrame: {
-    padding: 8,
-  },
-  toolbarTitle: {
-    flex: 1,
-  },
-});
-
-export default withStyles(styles)(Groups);
+export default Groups;

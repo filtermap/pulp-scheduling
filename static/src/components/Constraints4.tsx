@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -7,9 +8,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
-import { WithStyles } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
@@ -22,7 +20,29 @@ import * as constraints4 from "../modules/constraints4";
 import { RootState } from "../modules/store";
 import Constraint4 from "./Constraint4";
 
-type Props = WithStyles<typeof styles>;
+const PREFIX = "Constraints4";
+
+const classes = {
+  gridFrame: `${PREFIX}-gridFrame`,
+  lineThrough: `${PREFIX}-lineThrough`,
+  toolbarTitle: `${PREFIX}-toolbarTitle`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled("div")({
+  [`& .${classes.gridFrame}`]: {
+    padding: 8,
+  },
+  [`& .${classes.lineThrough}`]: {
+    "&::-webkit-datetime-edit-fields-wrapper": {
+      textDecoration: "line-through",
+    },
+    textDecoration: "line-through",
+  },
+  [`& .${classes.toolbarTitle}`]: {
+    flex: 1,
+  },
+});
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -44,7 +64,7 @@ function select(state: RootState) {
   };
 }
 
-function Constraints4(props: Props) {
+function Constraints4(): JSX.Element {
   const dispatch = useDispatch();
   const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
@@ -134,15 +154,12 @@ function Constraints4(props: Props) {
     );
   };
   return (
-    <>
-      <div className={props.classes.gridFrame}>
+    <Root>
+      <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
           <Grid item={true} xs={12}>
             <Toolbar>
-              <Typography
-                variant="subtitle1"
-                className={props.classes.toolbarTitle}
-              >
+              <Typography variant="subtitle1" className={classes.toolbarTitle}>
                 職員の勤務の割り当て数の上限
               </Typography>
               <Button size="small" onClick={handleClickOpenCreationDialog}>
@@ -234,7 +251,7 @@ function Constraints4(props: Props) {
                           {
                             <span
                               className={classnames({
-                                [props.classes.lineThrough]: !member.is_enabled,
+                                [classes.lineThrough]: !member.is_enabled,
                               })}
                             >
                               {member.name}
@@ -257,7 +274,7 @@ function Constraints4(props: Props) {
                           {
                             <span
                               className={classnames({
-                                [props.classes.lineThrough]: !kinmu.is_enabled,
+                                [classes.lineThrough]: !kinmu.is_enabled,
                               })}
                             >
                               {kinmu.name}
@@ -314,23 +331,8 @@ function Constraints4(props: Props) {
           );
         })()
       )}
-    </>
+    </Root>
   );
 }
 
-const styles = createStyles({
-  gridFrame: {
-    padding: 8,
-  },
-  lineThrough: {
-    "&::-webkit-datetime-edit-fields-wrapper": {
-      textDecoration: "line-through",
-    },
-    textDecoration: "line-through",
-  },
-  toolbarTitle: {
-    flex: 1,
-  },
-});
-
-export default withStyles(styles)(Constraints4);
+export default Constraints4;

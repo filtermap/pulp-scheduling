@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -12,10 +13,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
-import { Theme } from "@mui/material/styles";
-import { WithStyles } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -27,9 +24,36 @@ import * as constraints2 from "../modules/constraints2";
 import { RootState } from "../modules/store";
 import * as utils from "../utils";
 
+const PREFIX = "Constraint2";
+
+const classes = {
+  expand: `${PREFIX}-expand`,
+  expandOpen: `${PREFIX}-expandOpen`,
+  lineThrough: `${PREFIX}-lineThrough`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled("div")(({ theme }) => ({
+  [`& .${classes.expand}`]: {
+    transform: "rotate(0deg)",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  [`& .${classes.expandOpen}`]: {
+    transform: "rotate(180deg)",
+  },
+  [`& .${classes.lineThrough}`]: {
+    "&::-webkit-datetime-edit-fields-wrapper": {
+      textDecoration: "line-through",
+    },
+    textDecoration: "line-through",
+  },
+}));
+
 type Props = {
   constraint2: constraints2.Constraint2;
-} & WithStyles<typeof styles>;
+};
 
 type State = {
   expanded: boolean;
@@ -50,7 +74,7 @@ function select(state: RootState) {
   };
 }
 
-function Constraint2(props: Props) {
+function Constraint2(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
@@ -204,10 +228,10 @@ function Constraint2(props: Props) {
     constraint2Kinmu.is_enabled &&
     constraint2Group.is_enabled;
   const title = (
-    <>
+    <Root>
       <span
         className={classnames({
-          [props.classes.lineThrough]: !constraint2StartDateIsEnabled,
+          [classes.lineThrough]: !constraint2StartDateIsEnabled,
         })}
       >
         {props.constraint2.start_date_name}
@@ -215,7 +239,7 @@ function Constraint2(props: Props) {
       から
       <span
         className={classnames({
-          [props.classes.lineThrough]: !constraint2StopDateIsEnabled,
+          [classes.lineThrough]: !constraint2StopDateIsEnabled,
         })}
       >
         {props.constraint2.stop_date_name}
@@ -223,7 +247,7 @@ function Constraint2(props: Props) {
       までの
       <span
         className={classnames({
-          [props.classes.lineThrough]: !constraint2Kinmu.is_enabled,
+          [classes.lineThrough]: !constraint2Kinmu.is_enabled,
         })}
       >
         {constraint2Kinmu.name}
@@ -231,14 +255,13 @@ function Constraint2(props: Props) {
       に
       <span
         className={classnames({
-          [props.classes.lineThrough]: !constraint2Group.is_enabled,
+          [classes.lineThrough]: !constraint2Group.is_enabled,
         })}
       >
         {constraint2Group.name}
       </span>
-      から{props.constraint2.max_number_of_assignments}
-      人以下の職員を割り当てる
-    </>
+      から{props.constraint2.max_number_of_assignments}人以下の職員を割り当てる
+    </Root>
   );
   const errorMessages = validate(
     props.constraint2.start_date_name,
@@ -259,8 +282,8 @@ function Constraint2(props: Props) {
           }
           action={
             <IconButton
-              className={classnames(props.classes.expand, {
-                [props.classes.expandOpen]: state.expanded,
+              className={classnames(classes.expand, {
+                [classes.expandOpen]: state.expanded,
               })}
               onClick={handleClickExpand}
               aria-expanded={state.expanded}
@@ -289,8 +312,7 @@ function Constraint2(props: Props) {
                   }}
                   inputProps={{
                     className: classnames({
-                      [props.classes.lineThrough]:
-                        !constraint2StartDateIsEnabled,
+                      [classes.lineThrough]: !constraint2StartDateIsEnabled,
                     }),
                   }}
                   error={errorMessages.constraint2StartDateName.length > 0}
@@ -317,8 +339,7 @@ function Constraint2(props: Props) {
                   }}
                   inputProps={{
                     className: classnames({
-                      [props.classes.lineThrough]:
-                        !constraint2StopDateIsEnabled,
+                      [classes.lineThrough]: !constraint2StopDateIsEnabled,
                     }),
                   }}
                   error={errorMessages.constraint2StopDateName.length > 0}
@@ -346,7 +367,7 @@ function Constraint2(props: Props) {
                       {
                         <span
                           className={classnames({
-                            [props.classes.lineThrough]: !kinmu.is_enabled,
+                            [classes.lineThrough]: !kinmu.is_enabled,
                           })}
                         >
                           {kinmu.name}
@@ -369,7 +390,7 @@ function Constraint2(props: Props) {
                       {
                         <span
                           className={classnames({
-                            [props.classes.lineThrough]: !group.is_enabled,
+                            [classes.lineThrough]: !group.is_enabled,
                           })}
                         >
                           {group.name}
@@ -440,23 +461,4 @@ function Constraint2(props: Props) {
   );
 }
 
-const styles = (theme: Theme) =>
-  createStyles({
-    expand: {
-      transform: "rotate(0deg)",
-      transition: theme.transitions.create("transform", {
-        duration: theme.transitions.duration.shortest,
-      }),
-    },
-    expandOpen: {
-      transform: "rotate(180deg)",
-    },
-    lineThrough: {
-      "&::-webkit-datetime-edit-fields-wrapper": {
-        textDecoration: "line-through",
-      },
-      textDecoration: "line-through",
-    },
-  });
-
-export default withStyles(styles)(Constraint2);
+export default Constraint2;

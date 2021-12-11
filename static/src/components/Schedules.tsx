@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -6,9 +7,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import LinearProgress from "@mui/material/LinearProgress";
-import { WithStyles } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -25,7 +23,51 @@ import * as utils from "../utils";
 import { RootState } from "../modules/store";
 import Schedule from "./Schedule";
 
-type Props = WithStyles<typeof styles>;
+const PREFIX = "Schedules";
+
+const classes = {
+  dialogTableContent: `${PREFIX}-dialogTableContent`,
+  dialogTableWrapper: `${PREFIX}-dialogTableWrapper`,
+  gridFrame: `${PREFIX}-gridFrame`,
+  leftHeaderCell: `${PREFIX}-leftHeaderCell`,
+  leftTopHeaderCell: `${PREFIX}-leftTopHeaderCell`,
+  toolbarTitle: `${PREFIX}-toolbarTitle`,
+  topHeaderCell: `${PREFIX}-topHeaderCell`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled("div")({
+  [`& .${classes.dialogTableContent}`]: {
+    display: "flex",
+  },
+  [`& .${classes.dialogTableWrapper}`]: {
+    overflow: "auto",
+  },
+  [`& .${classes.gridFrame}`]: {
+    padding: 8,
+  },
+  [`& .${classes.leftHeaderCell}`]: {
+    background: "white",
+    left: 0,
+    position: "sticky",
+  },
+  [`& .${classes.leftTopHeaderCell}`]: {
+    background: "white",
+    left: 0,
+    position: "sticky",
+    top: 0,
+    zIndex: 2,
+  },
+  [`& .${classes.toolbarTitle}`]: {
+    flex: 1,
+  },
+  [`& .${classes.topHeaderCell}`]: {
+    background: "white",
+    position: "sticky",
+    top: 0,
+    zIndex: 1,
+  },
+});
 
 const FIRST = "FIRST";
 const SOLVE_IN_PROGRESS = "SOLVE_IN_PROGRESS";
@@ -98,7 +140,7 @@ function select(state: RootState) {
   };
 }
 
-function Schedules(props: Props) {
+function Schedules(): JSX.Element {
   const dispatch = useDispatch();
   const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
@@ -272,14 +314,14 @@ function Schedules(props: Props) {
             maxWidth="md"
           >
             <DialogTitle>勤務表の追加</DialogTitle>
-            <DialogContent className={props.classes.dialogTableContent}>
-              <div className={props.classes.dialogTableWrapper}>
+            <DialogContent className={classes.dialogTableContent}>
+              <div className={classes.dialogTableWrapper}>
                 <Table>
                   <TableHead>
                     <TableRow>
                       <TableCell
                         size="small"
-                        className={props.classes.leftTopHeaderCell}
+                        className={classes.leftTopHeaderCell}
                       >
                         \
                       </TableCell>
@@ -287,7 +329,7 @@ function Schedules(props: Props) {
                         <TableCell
                           key={date_name}
                           size="small"
-                          className={props.classes.topHeaderCell}
+                          className={classes.topHeaderCell}
                         >
                           {date_name}
                         </TableCell>
@@ -304,7 +346,7 @@ function Schedules(props: Props) {
                         <TableRow key={member.id}>
                           <TableCell
                             size="small"
-                            className={props.classes.leftHeaderCell}
+                            className={classes.leftHeaderCell}
                           >
                             {member.name}
                           </TableCell>
@@ -356,12 +398,12 @@ function Schedules(props: Props) {
                 勤務表を作成できませんでした
               </DialogContentText>
               {state.dialogState.errorMessage === "Infeasible" ? (
-                <>
+                <Root>
                   <Typography>条件を満たす勤務表が存在しません</Typography>
                   <Button size="small" onClick={handleClickPursue}>
                     勤務表を作成できない原因となる条件を特定
                   </Button>
-                </>
+                </Root>
               ) : (
                 <Typography>
                   pulp-schedulingの不具合や条件の誤りなどにより作成できない可能性があります（
@@ -604,14 +646,11 @@ function Schedules(props: Props) {
   };
   return (
     <>
-      <div className={props.classes.gridFrame}>
+      <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
           <Grid item={true} xs={12}>
             <Toolbar>
-              <Typography
-                variant="subtitle1"
-                className={props.classes.toolbarTitle}
-              >
+              <Typography variant="subtitle1" className={classes.toolbarTitle}>
                 勤務表
               </Typography>
               <Button size="small" onClick={handleClickOpenCreationDialog}>
@@ -631,37 +670,4 @@ function Schedules(props: Props) {
   );
 }
 
-const styles = createStyles({
-  dialogTableContent: {
-    display: "flex",
-  },
-  dialogTableWrapper: {
-    overflow: "auto",
-  },
-  gridFrame: {
-    padding: 8,
-  },
-  leftHeaderCell: {
-    background: "white",
-    left: 0,
-    position: "sticky",
-  },
-  leftTopHeaderCell: {
-    background: "white",
-    left: 0,
-    position: "sticky",
-    top: 0,
-    zIndex: 2,
-  },
-  toolbarTitle: {
-    flex: 1,
-  },
-  topHeaderCell: {
-    background: "white",
-    position: "sticky",
-    top: 0,
-    zIndex: 1,
-  },
-});
-
-export default withStyles(styles)(Schedules);
+export default Schedules;

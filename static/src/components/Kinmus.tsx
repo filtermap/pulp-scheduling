@@ -1,13 +1,11 @@
 import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
-import { WithStyles } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
@@ -19,7 +17,22 @@ import * as kinmus from "../modules/kinmus";
 import { RootState } from "../modules/store";
 import Kinmu from "./Kinmu";
 
-type Props = WithStyles<typeof styles>;
+const PREFIX = "Kinmus";
+
+const classes = {
+  gridFrame: `${PREFIX}-gridFrame`,
+  toolbarTitle: `${PREFIX}-toolbarTitle`,
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled("div")({
+  [`& .${classes.gridFrame}`]: {
+    padding: 8,
+  },
+  [`& .${classes.toolbarTitle}`]: {
+    flex: 1,
+  },
+});
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -37,7 +50,7 @@ function select(state: RootState) {
   };
 }
 
-function Kinmus(props: Props) {
+function Kinmus(): JSX.Element {
   const dispatch = useDispatch();
   const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
@@ -94,15 +107,12 @@ function Kinmus(props: Props) {
   };
   const errorMessages = validate(state.newKinmuName);
   return (
-    <>
-      <div className={props.classes.gridFrame}>
+    <Root>
+      <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
           <Grid item={true} xs={12}>
             <Toolbar>
-              <Typography
-                variant="subtitle1"
-                className={props.classes.toolbarTitle}
-              >
+              <Typography variant="subtitle1" className={classes.toolbarTitle}>
                 勤務
               </Typography>
               <Button size="small" onClick={handleClickOpenCreationDialog}>
@@ -171,17 +181,8 @@ function Kinmus(props: Props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 
-const styles = createStyles({
-  gridFrame: {
-    padding: 8,
-  },
-  toolbarTitle: {
-    flex: 1,
-  },
-});
-
-export default withStyles(styles)(Kinmus);
+export default Kinmus;
