@@ -29,7 +29,7 @@ type State = {
   creationDialogIsOpen: boolean;
   newMemberIsEnabled: boolean;
   newMemberName: string;
-  newMemberGroupIndices: number[];
+  newMemberGroupIds: number[];
 };
 
 type ErrorMessages = {
@@ -51,7 +51,7 @@ function Members(props: Props) {
   const termId = parseInt(termIdName, 10);
   const initialState = {
     creationDialogIsOpen: false,
-    newMemberGroupIndices: [],
+    newMemberGroupIds: [],
     newMemberIsEnabled: true,
     newMemberName: "",
   };
@@ -95,13 +95,13 @@ function Members(props: Props) {
       if (checked) {
         setState((state) => ({
           ...state,
-          newMemberGroupIndices: state.newMemberGroupIndices.concat(groupId),
+          newMemberGroupIds: state.newMemberGroupIds.concat(groupId),
         }));
         return;
       }
       setState((state) => ({
         ...state,
-        newMemberGroupIndices: state.newMemberGroupIndices.filter(
+        newMemberGroupIds: state.newMemberGroupIds.filter(
           (group_id) => group_id !== groupId
         ),
       }));
@@ -114,7 +114,7 @@ function Members(props: Props) {
         termId,
         state.newMemberIsEnabled,
         state.newMemberName,
-        state.newMemberGroupIndices
+        state.newMemberGroupIds
       )
     );
   };
@@ -190,7 +190,7 @@ function Members(props: Props) {
                       label={group.name}
                       control={
                         <Checkbox
-                          checked={state.newMemberGroupIndices.some(
+                          checked={state.newMemberGroupIds.some(
                             (group_id) => group_id === group.id
                           )}
                           onChange={handleChangeNewGroupMember(group.id)}

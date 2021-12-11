@@ -29,7 +29,7 @@ type State = {
   creationDialogIsOpen: boolean;
   newGroupIsEnabled: boolean;
   newGroupName: string;
-  newGroupMemberIndices: number[];
+  newGroupMemberIds: number[];
 };
 
 type ErrorMessages = {
@@ -52,7 +52,7 @@ function Groups(props: Props) {
   const initialState = {
     creationDialogIsOpen: false,
     newGroupIsEnabled: true,
-    newGroupMemberIndices: [],
+    newGroupMemberIds: [],
     newGroupName: "",
   };
   const [state, setState] = React.useState<State>(initialState);
@@ -95,13 +95,13 @@ function Groups(props: Props) {
       if (checked) {
         setState((state) => ({
           ...state,
-          newGroupMemberIndices: state.newGroupMemberIndices.concat(memberId),
+          newGroupMemberIds: state.newGroupMemberIds.concat(memberId),
         }));
         return;
       }
       setState((state) => ({
         ...state,
-        newGroupMemberIndices: state.newGroupMemberIndices.filter(
+        newGroupMemberIds: state.newGroupMemberIds.filter(
           (member_id) => member_id !== memberId
         ),
       }));
@@ -114,7 +114,7 @@ function Groups(props: Props) {
         termId,
         state.newGroupIsEnabled,
         state.newGroupName,
-        state.newGroupMemberIndices
+        state.newGroupMemberIds
       )
     );
   };
@@ -190,7 +190,7 @@ function Groups(props: Props) {
                       label={member.name}
                       control={
                         <Checkbox
-                          checked={state.newGroupMemberIndices.some(
+                          checked={state.newGroupMemberIds.some(
                             (member_id) => member_id === member.id
                           )}
                           onChange={handleChangeNewGroupMember(member.id)}
