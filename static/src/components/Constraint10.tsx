@@ -22,9 +22,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints10 from "../modules/constraints10";
+import { RootState } from "../modules/store";
 import * as utils from "../utils";
 
 type Props = {
@@ -41,7 +40,7 @@ type ErrorMessages = {
   constraint10StopDateName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     kinmus: state.present.kinmus,
     members: state.present.members,
@@ -51,7 +50,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraint10(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -73,17 +72,20 @@ function Constraint10(props: Props) {
     checked: boolean
   ) => {
     dispatch(
-      constraints10.updateConstraint10IsEnabled(props.constraint10.id, checked)
+      constraints10.updateConstraint10IsEnabled({
+        id: props.constraint10.id,
+        is_enabled: checked,
+      })
     );
   };
   const handleChangeConstraint10MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints10.updateConstraint10MemberId(
-        props.constraint10.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints10.updateConstraint10MemberId({
+        id: props.constraint10.id,
+        member_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const validate = (
@@ -110,30 +112,30 @@ function Constraint10(props: Props) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints10.updateConstraint10StartDateName(
-        props.constraint10.id,
-        event.target.value
-      )
+      constraints10.updateConstraint10StartDateName({
+        id: props.constraint10.id,
+        start_date_name: event.target.value,
+      })
     );
   };
   const handleChangeConstraint10StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints10.updateConstraint10StopDateName(
-        props.constraint10.id,
-        event.target.value
-      )
+      constraints10.updateConstraint10StopDateName({
+        id: props.constraint10.id,
+        stop_date_name: event.target.value,
+      })
     );
   };
   const handleChangeConstraint10KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints10.updateConstraint10KinmuId(
-        props.constraint10.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints10.updateConstraint10KinmuId({
+        id: props.constraint10.id,
+        kinmu_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleClickOpenDeletionDialog = () => {
@@ -144,7 +146,7 @@ function Constraint10(props: Props) {
   };
   const handleClickDeleteConstraint10 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints10.deleteConstraint10(props.constraint10.id));
+    dispatch(constraints10.deleteConstraint10({ id: props.constraint10.id }));
   };
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const constraint10Member = membersInTerm.find(

@@ -18,9 +18,8 @@ import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints7 from "../modules/constraints7";
+import { RootState } from "../modules/store";
 import Constraint7 from "./Constraint7";
 
 type Props = WithStyles<typeof styles>;
@@ -36,7 +35,7 @@ type ErrorMessages = {
   newConstraint7MinNumberOfDays: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints7: state.present.constraints7,
     kinmus: state.present.kinmus,
@@ -45,7 +44,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraints7(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -106,12 +105,12 @@ function Constraints7(props: Props) {
   const handleClickCreateConstraint7 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints7.createConstraint7(
-        termId,
-        state.newConstraint7IsEnabled,
-        state.newConstraint7KinmuId,
-        state.newConstraint7MinNumberOfDays
-      )
+      constraints7.createConstraint7({
+        term_id: termId,
+        is_enabled: state.newConstraint7IsEnabled,
+        kinmu_id: state.newConstraint7KinmuId,
+        min_number_of_days: state.newConstraint7MinNumberOfDays,
+      })
     );
   };
   return (

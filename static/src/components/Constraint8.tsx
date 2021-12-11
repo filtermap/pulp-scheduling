@@ -22,9 +22,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints8 from "../modules/constraints8";
+import { RootState } from "../modules/store";
 
 type Props = {
   constraint8: constraints8.Constraint8;
@@ -39,7 +38,7 @@ type ErrorMessages = {
   constraint8MaxNumberOfDays: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     kinmus: state.present.kinmus,
   };
@@ -47,7 +46,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraint8(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -63,17 +62,20 @@ function Constraint8(props: Props) {
     checked: boolean
   ) => {
     dispatch(
-      constraints8.updateConstraint8IsEnabled(props.constraint8.id, checked)
+      constraints8.updateConstraint8IsEnabled({
+        id: props.constraint8.id,
+        is_enabled: checked,
+      })
     );
   };
   const handleChangeConstraint8KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints8.updateConstraint8KinmuId(
-        props.constraint8.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints8.updateConstraint8KinmuId({
+        id: props.constraint8.id,
+        kinmu_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const validate = (constraint8MaxNumberOfDays: number): ErrorMessages => {
@@ -91,10 +93,10 @@ function Constraint8(props: Props) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints8.updateConstraint8MaxNumberOfDays(
-        props.constraint8.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints8.updateConstraint8MaxNumberOfDays({
+        id: props.constraint8.id,
+        max_number_of_days: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleClickOpenDeletionDialog = () => {
@@ -105,7 +107,7 @@ function Constraint8(props: Props) {
   };
   const handleClickDeleteConstraint8 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints8.deleteConstraint8(props.constraint8.id));
+    dispatch(constraints8.deleteConstraint8({ id: props.constraint8.id }));
   };
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const constraint8Kinmu = kinmusInTerm.find(

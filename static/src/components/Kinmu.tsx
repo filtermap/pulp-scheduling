@@ -21,9 +21,9 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as kinmus from "../modules/kinmus";
+import { RootState } from "../modules/store";
 
 type Props = {
   kinmu: kinmus.Kinmu;
@@ -38,7 +38,7 @@ type ErrorMessages = {
   kinmuName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     assignments: state.present.assignments,
     constraint0_kinmus: state.present.constraint0_kinmus,
@@ -60,7 +60,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Kinmu(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -118,7 +118,9 @@ function Kinmu(props: Props) {
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    dispatch(kinmus.updateKinmuIsEnabled(props.kinmu.id, checked));
+    dispatch(
+      kinmus.updateKinmuIsEnabled({ id: props.kinmu.id, is_enabled: checked })
+    );
   };
   const validate = (kinmuName: string): ErrorMessages => {
     const errorMessages: ErrorMessages = {
@@ -132,7 +134,12 @@ function Kinmu(props: Props) {
   const handleChangeKinmuName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    dispatch(kinmus.updateKinmuName(props.kinmu.id, event.target.value));
+    dispatch(
+      kinmus.updateKinmuName({
+        id: props.kinmu.id,
+        name: event.target.value,
+      })
+    );
   };
   const handleClickOpenDeletionDialog = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: true }));
@@ -142,7 +149,7 @@ function Kinmu(props: Props) {
   };
   const handleClickDeleteKinmu = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteKinmu(props.kinmu.id));
+    dispatch(all.deleteKinmu({ id: props.kinmu.id }));
   };
   const kinmuScheduleIds = Array.from(
     new Set(

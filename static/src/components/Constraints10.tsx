@@ -18,9 +18,8 @@ import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints10 from "../modules/constraints10";
+import { RootState } from "../modules/store";
 import * as utils from "../utils";
 import Constraint10 from "./Constraint10";
 
@@ -40,7 +39,7 @@ type ErrorMessages = {
   newConstraint10StopDateName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints10: state.present.constraints10,
     kinmus: state.present.kinmus,
@@ -51,7 +50,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraints10(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -144,14 +143,14 @@ function Constraints10(props: Props) {
   const handleClickCreateConstraint10 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints10.createConstraint10(
-        termId,
-        state.newConstraint10IsEnabled,
-        state.newConstraint10MemberId,
-        state.newConstraint10StartDateName,
-        state.newConstraint10StopDateName,
-        state.newConstraint10KinmuId
-      )
+      constraints10.createConstraint10({
+        term_id: termId,
+        is_enabled: state.newConstraint10IsEnabled,
+        member_id: state.newConstraint10MemberId,
+        start_date_name: state.newConstraint10StartDateName,
+        stop_date_name: state.newConstraint10StopDateName,
+        kinmu_id: state.newConstraint10KinmuId,
+      })
     );
   };
   return (

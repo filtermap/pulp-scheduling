@@ -22,9 +22,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints9 from "../modules/constraints9";
+import { RootState } from "../modules/store";
 import * as utils from "../utils";
 
 type Props = {
@@ -41,7 +40,7 @@ type ErrorMessages = {
   constraint9StopDateName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     kinmus: state.present.kinmus,
     members: state.present.members,
@@ -51,7 +50,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraint9(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -73,17 +72,20 @@ function Constraint9(props: Props) {
     checked: boolean
   ) => {
     dispatch(
-      constraints9.updateConstraint9IsEnabled(props.constraint9.id, checked)
+      constraints9.updateConstraint9IsEnabled({
+        id: props.constraint9.id,
+        is_enabled: checked,
+      })
     );
   };
   const handleChangeConstraint9MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints9.updateConstraint9MemberId(
-        props.constraint9.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints9.updateConstraint9MemberId({
+        id: props.constraint9.id,
+        member_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const validate = (
@@ -110,30 +112,30 @@ function Constraint9(props: Props) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints9.updateConstraint9StartDateName(
-        props.constraint9.id,
-        event.target.value
-      )
+      constraints9.updateConstraint9StartDateName({
+        id: props.constraint9.id,
+        start_date_name: event.target.value,
+      })
     );
   };
   const handleChangeConstraint9StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints9.updateConstraint9StopDateName(
-        props.constraint9.id,
-        event.target.value
-      )
+      constraints9.updateConstraint9StopDateName({
+        id: props.constraint9.id,
+        stop_date_name: event.target.value,
+      })
     );
   };
   const handleChangeConstraint9KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints9.updateConstraint9KinmuId(
-        props.constraint9.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints9.updateConstraint9KinmuId({
+        id: props.constraint9.id,
+        kinmu_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleClickOpenDeletionDialog = () => {
@@ -144,7 +146,7 @@ function Constraint9(props: Props) {
   };
   const handleClickDeleteConstraint9 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints9.deleteConstraint9(props.constraint9.id));
+    dispatch(constraints9.deleteConstraint9({ id: props.constraint9.id }));
   };
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const constraint9Member = membersInTerm.find(

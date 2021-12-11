@@ -1,12 +1,4 @@
-const CREATE_CONSTRAINT2 = "CREATE_CONSTRAINT2";
-const UPDATE_CONSTRAINT2_IS_ENABLED = "UPDATE_CONSTRAINT2_IS_ENABLED";
-const UPDATE_CONSTRAINT2_START_DATE_NAME = "UPDATE_CONSTRAINT2_START_DATE_NAME";
-const UPDATE_CONSTRAINT2_STOP_DATE_NAME = "UPDATE_CONSTRAINT2_STOP_DATE_NAME";
-const UPDATE_CONSTRAINT2_KINMU_ID = "UPDATE_CONSTRAINT2_KINMU_ID";
-const UPDATE_CONSTRAINT2_GROUP_ID = "UPDATE_CONSTRAINT2_GROUP_ID";
-const UPDATE_CONSTRAINT2_MAX_NUMBER_OF_ASSIGNMENTS =
-  "UPDATE_CONSTRAINT2_MAX_NUMBER_OF_ASSIGNMENTS";
-const DELETE_CONSTRAINT2 = "DELETE_CONSTRAINT2";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type Constraint2 = {
   id: number;
@@ -21,226 +13,133 @@ export type Constraint2 = {
 
 export const minOfConstraint2MaxNumberOfAssignments = 0;
 
-type CreateConstraint2 = {
-  type: typeof CREATE_CONSTRAINT2;
-  term_id: number;
-  is_enabled: boolean;
-  start_date_name: string;
-  stop_date_name: string;
-  kinmu_id: number;
-  group_id: number;
-  max_number_of_assignments: number;
-};
+const initialState: Constraint2[] = [];
 
-type UpdateConstraint2IsEnabled = {
-  type: typeof UPDATE_CONSTRAINT2_IS_ENABLED;
-  id: number;
-  is_enabled: boolean;
-};
-
-type UpdateConstraint2StartDateName = {
-  type: typeof UPDATE_CONSTRAINT2_START_DATE_NAME;
-  id: number;
-  start_date_name: string;
-};
-
-type UpdateConstraint2StopDateName = {
-  type: typeof UPDATE_CONSTRAINT2_STOP_DATE_NAME;
-  id: number;
-  stop_date_name: string;
-};
-
-type UpdateConstraint2KinmuId = {
-  type: typeof UPDATE_CONSTRAINT2_KINMU_ID;
-  id: number;
-  kinmu_id: number;
-};
-
-type UpdateConstraint2GroupId = {
-  type: typeof UPDATE_CONSTRAINT2_GROUP_ID;
-  id: number;
-  group_id: number;
-};
-
-type UpdateConstraint2MaxNumberOfAssignments = {
-  type: typeof UPDATE_CONSTRAINT2_MAX_NUMBER_OF_ASSIGNMENTS;
-  id: number;
-  max_number_of_assignments: number;
-};
-
-type DeleteConstraint2 = {
-  type: typeof DELETE_CONSTRAINT2;
-  id: number;
-};
-
-type Action =
-  | CreateConstraint2
-  | UpdateConstraint2IsEnabled
-  | UpdateConstraint2StartDateName
-  | UpdateConstraint2StopDateName
-  | UpdateConstraint2KinmuId
-  | UpdateConstraint2GroupId
-  | UpdateConstraint2MaxNumberOfAssignments
-  | DeleteConstraint2;
-
-export function createConstraint2(
-  term_id: number,
-  is_enabled: boolean,
-  start_date_name: string,
-  stop_date_name: string,
-  kinmu_id: number,
-  group_id: number,
-  max_number_of_assignments: number
-): CreateConstraint2 {
-  return {
-    term_id,
-    group_id,
-    is_enabled,
-    kinmu_id,
-    max_number_of_assignments,
-    start_date_name,
-    stop_date_name,
-    type: CREATE_CONSTRAINT2,
-  };
-}
-
-export function updateConstraint2IsEnabled(
-  id: number,
-  is_enabled: boolean
-): UpdateConstraint2IsEnabled {
-  return {
-    id,
-    is_enabled,
-    type: UPDATE_CONSTRAINT2_IS_ENABLED,
-  };
-}
-
-export function updateConstraint2StartDateName(
-  id: number,
-  start_date_name: string
-): UpdateConstraint2StartDateName {
-  return {
-    id,
-    start_date_name,
-    type: UPDATE_CONSTRAINT2_START_DATE_NAME,
-  };
-}
-
-export function updateConstraint2StopDateName(
-  id: number,
-  stop_date_name: string
-): UpdateConstraint2StopDateName {
-  return {
-    id,
-    stop_date_name,
-    type: UPDATE_CONSTRAINT2_STOP_DATE_NAME,
-  };
-}
-
-export function updateConstraint2KinmuId(
-  id: number,
-  kinmu_id: number
-): UpdateConstraint2KinmuId {
-  return {
-    id,
-    kinmu_id,
-    type: UPDATE_CONSTRAINT2_KINMU_ID,
-  };
-}
-
-export function updateConstraint2GroupId(
-  id: number,
-  group_id: number
-): UpdateConstraint2GroupId {
-  return {
-    group_id,
-    id,
-    type: UPDATE_CONSTRAINT2_GROUP_ID,
-  };
-}
-
-export function updateConstraint2MaxNumberOfAssignments(
-  id: number,
-  max_number_of_assignments: number
-): UpdateConstraint2MaxNumberOfAssignments {
-  return {
-    id,
-    max_number_of_assignments,
-    type: UPDATE_CONSTRAINT2_MAX_NUMBER_OF_ASSIGNMENTS,
-  };
-}
-
-export function deleteConstraint2(id: number): DeleteConstraint2 {
-  return {
-    id,
-    type: DELETE_CONSTRAINT2,
-  };
-}
-
-export type State = Constraint2[];
-
-const initialState: State = [];
-
-export function reducer(state: State = initialState, action: Action): State {
-  switch (action.type) {
-    case CREATE_CONSTRAINT2:
-      return state.concat({
-        group_id: action.group_id,
+const constraints2 = createSlice({
+  name: "constraints2",
+  initialState,
+  reducers: {
+    createConstraint2: (
+      state,
+      action: PayloadAction<{
+        term_id: number;
+        is_enabled: boolean;
+        start_date_name: string;
+        stop_date_name: string;
+        kinmu_id: number;
+        group_id: number;
+        max_number_of_assignments: number;
+      }>
+    ) => {
+      state.push({
+        group_id: action.payload.group_id,
         id: Math.max(0, ...state.map((c) => c.id)) + 1,
-        term_id: action.term_id,
-        is_enabled: action.is_enabled,
-        kinmu_id: action.kinmu_id,
-        max_number_of_assignments: action.max_number_of_assignments,
-        start_date_name: action.start_date_name,
-        stop_date_name: action.stop_date_name,
+        term_id: action.payload.term_id,
+        is_enabled: action.payload.is_enabled,
+        kinmu_id: action.payload.kinmu_id,
+        max_number_of_assignments: action.payload.max_number_of_assignments,
+        start_date_name: action.payload.start_date_name,
+        stop_date_name: action.payload.stop_date_name,
       });
-    case UPDATE_CONSTRAINT2_IS_ENABLED:
-      return state.map((c) => {
-        if (c.id !== action.id) {
-          return c;
-        }
-        return { ...c, is_enabled: action.is_enabled };
-      });
-    case UPDATE_CONSTRAINT2_START_DATE_NAME:
-      return state.map((c) => {
-        if (c.id !== action.id) {
-          return c;
-        }
-        return { ...c, start_date_name: action.start_date_name };
-      });
-    case UPDATE_CONSTRAINT2_STOP_DATE_NAME:
-      return state.map((c) => {
-        if (c.id !== action.id) {
-          return c;
-        }
-        return { ...c, stop_date_name: action.stop_date_name };
-      });
-    case UPDATE_CONSTRAINT2_KINMU_ID:
-      return state.map((c) => {
-        if (c.id !== action.id) {
-          return c;
-        }
-        return { ...c, kinmu_id: action.kinmu_id };
-      });
-    case UPDATE_CONSTRAINT2_GROUP_ID:
-      return state.map((c) => {
-        if (c.id !== action.id) {
-          return c;
-        }
-        return { ...c, group_id: action.group_id };
-      });
-    case UPDATE_CONSTRAINT2_MAX_NUMBER_OF_ASSIGNMENTS:
-      return state.map((c) => {
-        if (c.id !== action.id) {
-          return c;
-        }
-        return {
-          ...c,
-          max_number_of_assignments: action.max_number_of_assignments,
-        };
-      });
-    case DELETE_CONSTRAINT2:
-      return state.filter((c) => c.id !== action.id);
-  }
-  return state;
-}
+    },
+    updateConstraint2IsEnabled: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        is_enabled: boolean;
+      }>
+    ) => {
+      for (const c of state) {
+        if (c.id !== action.payload.id) continue;
+        c.is_enabled = action.payload.is_enabled;
+        break;
+      }
+    },
+    updateConstraint2StartDateName: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        start_date_name: string;
+      }>
+    ) => {
+      for (const c of state) {
+        if (c.id !== action.payload.id) continue;
+        c.start_date_name = action.payload.start_date_name;
+        break;
+      }
+    },
+    updateConstraint2StopDateName: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        stop_date_name: string;
+      }>
+    ) => {
+      for (const c of state) {
+        if (c.id !== action.payload.id) continue;
+        c.stop_date_name = action.payload.stop_date_name;
+        break;
+      }
+    },
+    updateConstraint2KinmuId: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        kinmu_id: number;
+      }>
+    ) => {
+      for (const c of state) {
+        if (c.id !== action.payload.id) continue;
+        c.kinmu_id = action.payload.kinmu_id;
+        break;
+      }
+    },
+    updateConstraint2GroupId: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        group_id: number;
+      }>
+    ) => {
+      for (const c of state) {
+        if (c.id !== action.payload.id) continue;
+        c.group_id = action.payload.group_id;
+        break;
+      }
+    },
+    updateConstraint2MaxNumberOfAssignments: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        max_number_of_assignments: number;
+      }>
+    ) => {
+      for (const c of state) {
+        if (c.id !== action.payload.id) continue;
+        c.max_number_of_assignments = action.payload.max_number_of_assignments;
+        break;
+      }
+    },
+    deleteConstraint2: (
+      state,
+      action: PayloadAction<{
+        id: number;
+      }>
+    ) => {
+      return state.filter((c) => c.id !== action.payload.id);
+    },
+  },
+});
+
+export const {
+  createConstraint2,
+  updateConstraint2IsEnabled,
+  updateConstraint2StartDateName,
+  updateConstraint2StopDateName,
+  updateConstraint2KinmuId,
+  updateConstraint2GroupId,
+  updateConstraint2MaxNumberOfAssignments,
+  deleteConstraint2,
+} = constraints2.actions;
+
+export const { reducer } = constraints2;

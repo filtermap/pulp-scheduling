@@ -26,10 +26,10 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as group_members from "../modules/group_members";
 import * as groups from "../modules/groups";
+import { RootState } from "../modules/store";
 
 type Props = {
   group: groups.Group;
@@ -44,7 +44,7 @@ type ErrorMessages = {
   groupName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints1: state.present.constraints1,
     constraints2: state.present.constraints2,
@@ -56,7 +56,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Group(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -84,7 +84,9 @@ function Group(props: Props) {
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    dispatch(groups.updateGroupIsEnabled(props.group.id, checked));
+    dispatch(
+      groups.updateGroupIsEnabled({ id: props.group.id, is_enabled: checked })
+    );
   };
   const validate = (groupName: string): ErrorMessages => {
     const errorMessages: ErrorMessages = {
@@ -98,15 +100,27 @@ function Group(props: Props) {
   const handleChangeGroupName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    dispatch(groups.updateGroupName(props.group.id, event.target.value));
+    dispatch(
+      groups.updateGroupName({ id: props.group.id, name: event.target.value })
+    );
   };
   const handleChangeGroupMember = (memberId: number) => {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
       if (checked) {
-        dispatch(group_members.createGroupMember(props.group.id, memberId));
+        dispatch(
+          group_members.createGroupMember({
+            group_id: props.group.id,
+            member_id: memberId,
+          })
+        );
         return;
       }
-      dispatch(group_members.deleteGroupMember(props.group.id, memberId));
+      dispatch(
+        group_members.deleteGroupMember({
+          group_id: props.group.id,
+          member_id: memberId,
+        })
+      );
     };
   };
   const handleClickOpenDeletionDialog = () => {
@@ -117,7 +131,7 @@ function Group(props: Props) {
   };
   const handleClickDeleteGroup = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteGroup(props.group.id));
+    dispatch(all.deleteGroup({ id: props.group.id }));
   };
   const groupConstraints1 = constraints1InTerm.filter(
     (c) => c.group_id === props.group.id

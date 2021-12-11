@@ -18,9 +18,8 @@ import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints5 from "../modules/constraints5";
+import { RootState } from "../modules/store";
 import Constraint5 from "./Constraint5";
 
 type Props = WithStyles<typeof styles>;
@@ -36,7 +35,7 @@ type ErrorMessages = {
   newConstraint5MinNumberOfDays: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints5: state.present.constraints5,
     kinmus: state.present.kinmus,
@@ -46,7 +45,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraints5(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -107,12 +106,12 @@ function Constraints5(props: Props) {
   const handleClickCreateConstraint5 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints5.createConstraint5(
-        termId,
-        state.newConstraint5IsEnabled,
-        state.newConstraint5KinmuId,
-        state.newConstraint5MinNumberOfDays
-      )
+      constraints5.createConstraint5({
+        term_id: termId,
+        is_enabled: state.newConstraint5IsEnabled,
+        kinmu_id: state.newConstraint5KinmuId,
+        min_number_of_days: state.newConstraint5MinNumberOfDays,
+      })
     );
   };
   return (

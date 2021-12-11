@@ -18,9 +18,8 @@ import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints6 from "../modules/constraints6";
+import { RootState } from "../modules/store";
 import Constraint6 from "./Constraint6";
 
 type Props = WithStyles<typeof styles>;
@@ -36,7 +35,7 @@ type ErrorMessages = {
   newConstraint6MaxNumberOfDays: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints6: state.present.constraints6,
     kinmus: state.present.kinmus,
@@ -45,7 +44,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraints6(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -106,12 +105,12 @@ function Constraints6(props: Props) {
   const handleClickCreateConstraint6 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints6.createConstraint6(
-        termId,
-        state.newConstraint6IsEnabled,
-        state.newConstraint6KinmuId,
-        state.newConstraint6MaxNumberOfDays
-      )
+      constraints6.createConstraint6({
+        term_id: termId,
+        is_enabled: state.newConstraint6IsEnabled,
+        kinmu_id: state.newConstraint6KinmuId,
+        max_number_of_days: state.newConstraint6MaxNumberOfDays,
+      })
     );
   };
   return (

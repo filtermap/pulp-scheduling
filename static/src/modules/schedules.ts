@@ -1,12 +1,16 @@
+import { createSlice } from "@reduxjs/toolkit";
+
 export type Schedule = {
   id: number;
   term_id: number;
 };
 
-export type State = Schedule[];
+const initialState: Schedule[] = [];
 
-const initialState: State = [];
+const schedules = createSlice({
+  name: "schedules",
+  initialState,
+  reducers: {},
+});
 
-export function reducer(state: State = initialState): State {
-  return state;
-}
+export const { reducer } = schedules;

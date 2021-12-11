@@ -1,6 +1,4 @@
-const CREATE_KINMU = "CREATE_KINMU";
-const UPDATE_KINMU_IS_ENABLED = "UPDATE_KINMU_IS_ENABLED";
-const UPDATE_KINMU_NAME = "UPDATE_KINMU_NAME";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type Kinmu = {
   id: number;
@@ -9,86 +7,51 @@ export type Kinmu = {
   name: string;
 };
 
-type CreateKinmu = {
-  type: typeof CREATE_KINMU;
-  term_id: number;
-  is_enabled: boolean;
-  name: string;
-};
+const initialState: Kinmu[] = [];
 
-type UpdateKinmuIsEnabled = {
-  type: typeof UPDATE_KINMU_IS_ENABLED;
-  id: number;
-  is_enabled: boolean;
-};
-
-type UpdateKinmuName = {
-  type: typeof UPDATE_KINMU_NAME;
-  id: number;
-  name: string;
-};
-
-type Action = CreateKinmu | UpdateKinmuIsEnabled | UpdateKinmuName;
-
-export function createKinmu(
-  term_id: number,
-  is_enabled: boolean,
-  name: string
-): CreateKinmu {
-  return {
-    term_id,
-    is_enabled,
-    name,
-    type: CREATE_KINMU,
-  };
-}
-
-export function updateKinmuIsEnabled(
-  id: number,
-  is_enabled: boolean
-): UpdateKinmuIsEnabled {
-  return {
-    id,
-    is_enabled,
-    type: UPDATE_KINMU_IS_ENABLED,
-  };
-}
-
-export function updateKinmuName(id: number, name: string): UpdateKinmuName {
-  return {
-    id,
-    name,
-    type: UPDATE_KINMU_NAME,
-  };
-}
-
-export type State = Kinmu[];
-
-const initialState: State = [];
-
-export function reducer(state: State = initialState, action: Action): State {
-  switch (action.type) {
-    case CREATE_KINMU:
-      return state.concat({
+const kinmus = createSlice({
+  name: "kinmus",
+  initialState,
+  reducers: {
+    createKinmu: (
+      state,
+      action: PayloadAction<{
+        term_id: number;
+        is_enabled: boolean;
+        name: string;
+      }>
+    ) => {
+      state.push({
         id: Math.max(0, ...state.map((kinmu) => kinmu.id)) + 1,
-        term_id: action.term_id,
-        is_enabled: action.is_enabled,
-        name: action.name,
+        term_id: action.payload.term_id,
+        is_enabled: action.payload.is_enabled,
+        name: action.payload.name,
       });
-    case UPDATE_KINMU_IS_ENABLED:
-      return state.map((kinmu) => {
-        if (kinmu.id !== action.id) {
-          return kinmu;
-        }
-        return { ...kinmu, is_enabled: action.is_enabled };
-      });
-    case UPDATE_KINMU_NAME:
-      return state.map((kinmu) => {
-        if (kinmu.id !== action.id) {
-          return kinmu;
-        }
-        return { ...kinmu, name: action.name };
-      });
-  }
-  return state;
-}
+    },
+    updateKinmuName: (
+      state,
+      action: PayloadAction<{ id: number; name: string }>
+    ) => {
+      for (const kinmu of state) {
+        if (kinmu.id !== action.payload.id) continue;
+        kinmu.name = action.payload.name;
+        break;
+      }
+    },
+    updateKinmuIsEnabled: (
+      state,
+      action: PayloadAction<{ id: number; is_enabled: boolean }>
+    ) => {
+      for (const kinmu of state) {
+        if (kinmu.id !== action.payload.id) continue;
+        kinmu.is_enabled = action.payload.is_enabled;
+        break;
+      }
+    },
+  },
+});
+
+export const { createKinmu, updateKinmuName, updateKinmuIsEnabled } =
+  kinmus.actions;
+
+export const { reducer } = kinmus;

@@ -18,11 +18,11 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
 import { useParams } from "react-router-dom";
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
 import * as utils from "../utils";
+import { RootState } from "../modules/store";
 import Schedule from "./Schedule";
 
 type Props = WithStyles<typeof styles>;
@@ -92,7 +92,7 @@ function sortDateNames(dateNames: string[]): string[] {
   );
 }
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     all: state.present,
   };
@@ -100,7 +100,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Schedules(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -207,7 +207,10 @@ function Schedules(props: Props) {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     if (state.dialogState.type === SOLVED) {
       dispatch(
-        all.createSchedule(termId, state.dialogState.newScheduleAssignments)
+        all.createSchedule({
+          term_id: termId,
+          new_assignments: state.dialogState.newScheduleAssignments,
+        })
       );
     }
   };

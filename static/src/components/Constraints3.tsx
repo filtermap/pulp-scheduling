@@ -18,9 +18,8 @@ import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints3 from "../modules/constraints3";
+import { RootState } from "../modules/store";
 import Constraint3 from "./Constraint3";
 
 type Props = WithStyles<typeof styles>;
@@ -37,7 +36,7 @@ type ErrorMessages = {
   newConstraint3MinNumberOfAssignments: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints3: state.present.constraints3,
     kinmus: state.present.kinmus,
@@ -47,7 +46,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraints3(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -123,13 +122,13 @@ function Constraints3(props: Props) {
   const handleClickCreateConstraint3 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints3.createConstraint3(
-        termId,
-        state.newConstraint3IsEnabled,
-        state.newConstraint3MemberId,
-        state.newConstraint3KinmuId,
-        state.newConstraint3MinNumberOfAssignments
-      )
+      constraints3.createConstraint3({
+        term_id: termId,
+        is_enabled: state.newConstraint3IsEnabled,
+        member_id: state.newConstraint3MemberId,
+        kinmu_id: state.newConstraint3KinmuId,
+        min_number_of_assignments: state.newConstraint3MinNumberOfAssignments,
+      })
     );
   };
   return (

@@ -26,10 +26,10 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as group_members from "../modules/group_members";
 import * as members from "../modules/members";
+import { RootState } from "../modules/store";
 
 type Props = {
   member: members.Member;
@@ -44,7 +44,7 @@ type ErrorMessages = {
   memberName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     assignments: state.present.assignments,
     constraints10: state.present.constraints10,
@@ -60,7 +60,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Member(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -96,7 +96,12 @@ function Member(props: Props) {
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    dispatch(members.updateMemberIsEnabled(props.member.id, checked));
+    dispatch(
+      members.updateMemberIsEnabled({
+        id: props.member.id,
+        is_enabled: checked,
+      })
+    );
   };
   const validate = (memberName: string): ErrorMessages => {
     const errorMessages: ErrorMessages = {
@@ -110,15 +115,30 @@ function Member(props: Props) {
   const handleChangeMemberName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    dispatch(members.updateMemberName(props.member.id, event.target.value));
+    dispatch(
+      members.updateMemberName({
+        id: props.member.id,
+        name: event.target.value,
+      })
+    );
   };
   const handleChangeGroupMember = (groupId: number) => {
     return (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
       if (checked) {
-        dispatch(group_members.createGroupMember(groupId, props.member.id));
+        dispatch(
+          group_members.createGroupMember({
+            group_id: groupId,
+            member_id: props.member.id,
+          })
+        );
         return;
       }
-      dispatch(group_members.deleteGroupMember(groupId, props.member.id));
+      dispatch(
+        group_members.deleteGroupMember({
+          group_id: groupId,
+          member_id: props.member.id,
+        })
+      );
     };
   };
   const handleClickOpenDeletionDialog = () => {
@@ -129,7 +149,7 @@ function Member(props: Props) {
   };
   const handleClickDeleteMember = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteMember(props.member.id));
+    dispatch(all.deleteMember({ id: props.member.id }));
   };
   const memberScheduleIds = Array.from(
     new Set(

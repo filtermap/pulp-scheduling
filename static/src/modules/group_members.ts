@@ -1,5 +1,4 @@
-const CREATE_GROUP_MEMBER = "CREATE_GROUP_MEMBER";
-const DELETE_GROUP_MEMBER = "DELETE_GROUP_MEMBER";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type GroupMember = {
   id: number;
@@ -7,62 +6,43 @@ export type GroupMember = {
   member_id: number;
 };
 
-type CreateGroupMember = {
-  type: typeof CREATE_GROUP_MEMBER;
-  group_id: number;
-  member_id: number;
-};
+const initialState: GroupMember[] = [];
 
-type DeleteGroupMember = {
-  type: typeof DELETE_GROUP_MEMBER;
-  group_id: number;
-  member_id: number;
-};
-
-type Action = CreateGroupMember | DeleteGroupMember;
-
-export function createGroupMember(
-  group_id: number,
-  member_id: number
-): CreateGroupMember {
-  return {
-    group_id,
-    member_id,
-    type: CREATE_GROUP_MEMBER,
-  };
-}
-
-export function deleteGroupMember(
-  group_id: number,
-  member_id: number
-): DeleteGroupMember {
-  return {
-    group_id,
-    member_id,
-    type: DELETE_GROUP_MEMBER,
-  };
-}
-
-export type State = GroupMember[];
-
-const initialState: State = [];
-
-export function reducer(state: State = initialState, action: Action): State {
-  switch (action.type) {
-    case CREATE_GROUP_MEMBER:
-      return state.concat({
+const group_members = createSlice({
+  name: "group_members",
+  initialState,
+  reducers: {
+    createGroupMember: (
+      state,
+      action: PayloadAction<{
+        group_id: number;
+        member_id: number;
+      }>
+    ) => {
+      state.push({
         id: Math.max(0, ...state.map((group_member) => group_member.id)) + 1,
-        group_id: action.group_id,
-        member_id: action.member_id,
+        group_id: action.payload.group_id,
+        member_id: action.payload.member_id,
       });
-    case DELETE_GROUP_MEMBER:
+    },
+    deleteGroupMember: (
+      state,
+      action: PayloadAction<{
+        group_id: number;
+        member_id: number;
+      }>
+    ) => {
       return state.filter(
         (group_member) =>
           !(
-            group_member.group_id === action.group_id &&
-            group_member.member_id === action.member_id
+            group_member.group_id === action.payload.group_id &&
+            group_member.member_id === action.payload.member_id
           )
       );
-  }
-  return state;
-}
+    },
+  },
+});
+
+export const { createGroupMember, deleteGroupMember } = group_members.actions;
+
+export const { reducer } = group_members;

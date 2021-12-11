@@ -15,9 +15,8 @@ import Typography from "@material-ui/core/Typography";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as kinmus from "../modules/kinmus";
+import { RootState } from "../modules/store";
 import Kinmu from "./Kinmu";
 
 type Props = WithStyles<typeof styles>;
@@ -32,7 +31,7 @@ type ErrorMessages = {
   newKinmuName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     kinmus: state.present.kinmus,
   };
@@ -40,7 +39,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Kinmus(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -84,7 +83,11 @@ function Kinmus(props: Props) {
   const handleClickCreateKinmu = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      kinmus.createKinmu(termId, state.newKinmuIsEnabled, state.newKinmuName)
+      kinmus.createKinmu({
+        term_id: termId,
+        is_enabled: state.newKinmuIsEnabled,
+        name: state.newKinmuName,
+      })
     );
   };
   const errorMessages = validate(state.newKinmuName);

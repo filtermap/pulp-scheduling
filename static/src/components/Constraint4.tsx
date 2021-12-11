@@ -22,9 +22,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints4 from "../modules/constraints4";
+import { RootState } from "../modules/store";
 
 type Props = {
   constraint4: constraints4.Constraint4;
@@ -39,7 +38,7 @@ type ErrorMessages = {
   constraint4MaxNumberOfAssignments: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     kinmus: state.present.kinmus,
     members: state.present.members,
@@ -48,7 +47,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraint4(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -67,27 +66,30 @@ function Constraint4(props: Props) {
     checked: boolean
   ) => {
     dispatch(
-      constraints4.updateConstraint4IsEnabled(props.constraint4.id, checked)
+      constraints4.updateConstraint4IsEnabled({
+        id: props.constraint4.id,
+        is_enabled: checked,
+      })
     );
   };
   const handleChangeConstraint4MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints4.updateConstraint4MemberId(
-        props.constraint4.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints4.updateConstraint4MemberId({
+        id: props.constraint4.id,
+        member_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleChangeConstraint4KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints4.updateConstraint4KinmuId(
-        props.constraint4.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints4.updateConstraint4KinmuId({
+        id: props.constraint4.id,
+        kinmu_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const validate = (
@@ -107,10 +109,10 @@ function Constraint4(props: Props) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints4.updateConstraint4MaxNumberOfAssignments(
-        props.constraint4.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints4.updateConstraint4MaxNumberOfAssignments({
+        id: props.constraint4.id,
+        max_number_of_assignments: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleClickOpenDeletionDialog = () => {
@@ -121,7 +123,7 @@ function Constraint4(props: Props) {
   };
   const handleClickDeleteConstraint4 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints4.deleteConstraint4(props.constraint4.id));
+    dispatch(constraints4.deleteConstraint4({ id: props.constraint4.id }));
   };
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const constraint4Member = membersInTerm.find(

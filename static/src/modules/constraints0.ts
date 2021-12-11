@@ -1,4 +1,4 @@
-const UPDATE_CONSTRAINT0_IS_ENABLED = "UPDATE_CONSTRAINT0_IS_ENABLED";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type Constraint0 = {
   id: number;
@@ -6,38 +6,28 @@ export type Constraint0 = {
   is_enabled: boolean;
 };
 
-type UpdateConstraint0IsEnabled = {
-  type: typeof UPDATE_CONSTRAINT0_IS_ENABLED;
-  id: number;
-  is_enabled: boolean;
-};
+const initialState: Constraint0[] = [];
 
-type Action = UpdateConstraint0IsEnabled;
+const constraints0 = createSlice({
+  name: "constraints0",
+  initialState,
+  reducers: {
+    updateConstraint0IsEnabled: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        is_enabled: boolean;
+      }>
+    ) => {
+      for (const c of state) {
+        if (c.id !== action.payload.id) continue;
+        c.is_enabled = action.payload.is_enabled;
+        break;
+      }
+    },
+  },
+});
 
-export function updateConstraint0IsEnabled(
-  id: number,
-  is_enabled: boolean
-): UpdateConstraint0IsEnabled {
-  return {
-    id,
-    is_enabled,
-    type: UPDATE_CONSTRAINT0_IS_ENABLED,
-  };
-}
+export const { updateConstraint0IsEnabled } = constraints0.actions;
 
-export type State = Constraint0[];
-
-const initialState: State = [];
-
-export function reducer(state: State = initialState, action: Action): State {
-  switch (action.type) {
-    case UPDATE_CONSTRAINT0_IS_ENABLED:
-      return state.map((c) => {
-        if (c.id !== action.id) {
-          return c;
-        }
-        return { ...c, is_enabled: action.is_enabled };
-      });
-  }
-  return state;
-}
+export const { reducer } = constraints0;

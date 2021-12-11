@@ -22,9 +22,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints1 from "../modules/constraints1";
+import { RootState } from "../modules/store";
 import * as utils from "../utils";
 
 type Props = {
@@ -42,7 +41,7 @@ type ErrorMessages = {
   constraint1MinNumberOfAssignments: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     groups: state.present.groups,
     kinmus: state.present.kinmus,
@@ -52,7 +51,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraint1(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -74,7 +73,10 @@ function Constraint1(props: Props) {
     checked: boolean
   ) => {
     dispatch(
-      constraints1.updateConstraint1IsEnabled(props.constraint1.id, checked)
+      constraints1.updateConstraint1IsEnabled({
+        id: props.constraint1.id,
+        is_enabled: checked,
+      })
     );
   };
   const validate = (
@@ -108,50 +110,50 @@ function Constraint1(props: Props) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints1.updateConstraint1StartDateName(
-        props.constraint1.id,
-        event.target.value
-      )
+      constraints1.updateConstraint1StartDateName({
+        id: props.constraint1.id,
+        start_date_name: event.target.value,
+      })
     );
   };
   const handleChangeConstraint1StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints1.updateConstraint1StopDateName(
-        props.constraint1.id,
-        event.target.value
-      )
+      constraints1.updateConstraint1StopDateName({
+        id: props.constraint1.id,
+        stop_date_name: event.target.value,
+      })
     );
   };
   const handleChangeConstraint1KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints1.updateConstraint1KinmuId(
-        props.constraint1.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints1.updateConstraint1KinmuId({
+        id: props.constraint1.id,
+        kinmu_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleChangeConstraint1GroupId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints1.updateConstraint1GroupId(
-        props.constraint1.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints1.updateConstraint1GroupId({
+        id: props.constraint1.id,
+        group_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleChangeConstraint1MinNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints1.updateConstraint1MinNumberOfAssignments(
-        props.constraint1.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints1.updateConstraint1MinNumberOfAssignments({
+        id: props.constraint1.id,
+        min_number_of_assignments: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleClickOpenDeletionDialog = () => {
@@ -162,7 +164,7 @@ function Constraint1(props: Props) {
   };
   const handleClickDeleteConstraint1 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints1.deleteConstraint1(props.constraint1.id));
+    dispatch(constraints1.deleteConstraint1({ id: props.constraint1.id }));
   };
   const constraint1StartDate = utils.stringToDate(
     props.constraint1.start_date_name

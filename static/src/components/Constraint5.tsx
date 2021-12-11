@@ -22,9 +22,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints5 from "../modules/constraints5";
+import { RootState } from "../modules/store";
 
 type Props = {
   constraint5: constraints5.Constraint5;
@@ -39,7 +38,7 @@ type ErrorMessages = {
   constraint5MinNumberOfDays: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     kinmus: state.present.kinmus,
   };
@@ -47,7 +46,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraint5(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -63,17 +62,20 @@ function Constraint5(props: Props) {
     checked: boolean
   ) => {
     dispatch(
-      constraints5.updateConstraint5IsEnabled(props.constraint5.id, checked)
+      constraints5.updateConstraint5IsEnabled({
+        id: props.constraint5.id,
+        is_enabled: checked,
+      })
     );
   };
   const handleChangeConstraint5KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints5.updateConstraint5KinmuId(
-        props.constraint5.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints5.updateConstraint5KinmuId({
+        id: props.constraint5.id,
+        kinmu_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const validate = (constraint5MinNumberOfDays: number): ErrorMessages => {
@@ -91,10 +93,10 @@ function Constraint5(props: Props) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints5.updateConstraint5MinNumberOfDays(
-        props.constraint5.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints5.updateConstraint5MinNumberOfDays({
+        id: props.constraint5.id,
+        min_number_of_days: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleClickOpenDeletionDialog = () => {
@@ -105,7 +107,7 @@ function Constraint5(props: Props) {
   };
   const handleClickDeleteConstraint5 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints5.deleteConstraint5(props.constraint5.id));
+    dispatch(constraints5.deleteConstraint5({ id: props.constraint5.id }));
   };
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const constraint5Kinmu = kinmusInTerm.find(

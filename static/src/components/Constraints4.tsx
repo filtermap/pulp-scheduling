@@ -18,9 +18,8 @@ import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints4 from "../modules/constraints4";
+import { RootState } from "../modules/store";
 import Constraint4 from "./Constraint4";
 
 type Props = WithStyles<typeof styles>;
@@ -37,7 +36,7 @@ type ErrorMessages = {
   newConstraint4MaxNumberOfAssignments: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints4: state.present.constraints4,
     kinmus: state.present.kinmus,
@@ -47,7 +46,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraints4(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -123,13 +122,13 @@ function Constraints4(props: Props) {
   const handleClickCreateConstraint4 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints4.createConstraint4(
-        termId,
-        state.newConstraint4IsEnabled,
-        state.newConstraint4MemberId,
-        state.newConstraint4KinmuId,
-        state.newConstraint4MaxNumberOfAssignments
-      )
+      constraints4.createConstraint4({
+        term_id: termId,
+        is_enabled: state.newConstraint4IsEnabled,
+        member_id: state.newConstraint4MemberId,
+        kinmu_id: state.newConstraint4KinmuId,
+        max_number_of_assignments: state.newConstraint4MaxNumberOfAssignments,
+      })
     );
   };
   return (

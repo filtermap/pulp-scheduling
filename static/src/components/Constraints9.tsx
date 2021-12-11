@@ -18,9 +18,8 @@ import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints9 from "../modules/constraints9";
+import { RootState } from "../modules/store";
 import * as utils from "../utils";
 import Constraint9 from "./Constraint9";
 
@@ -40,7 +39,7 @@ type ErrorMessages = {
   newConstraint9StopDateName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints9: state.present.constraints9,
     kinmus: state.present.kinmus,
@@ -51,7 +50,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraints9(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -144,14 +143,14 @@ function Constraints9(props: Props) {
   const handleClickCreateConstraint9 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints9.createConstraint9(
-        termId,
-        state.newConstraint9IsEnabled,
-        state.newConstraint9MemberId,
-        state.newConstraint9StartDateName,
-        state.newConstraint9StopDateName,
-        state.newConstraint9KinmuId
-      )
+      constraints9.createConstraint9({
+        term_id: termId,
+        is_enabled: state.newConstraint9IsEnabled,
+        member_id: state.newConstraint9MemberId,
+        start_date_name: state.newConstraint9StartDateName,
+        stop_date_name: state.newConstraint9StopDateName,
+        kinmu_id: state.newConstraint9KinmuId,
+      })
     );
   };
   return (

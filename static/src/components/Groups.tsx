@@ -18,9 +18,9 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
 import { useParams } from "react-router";
 import * as all from "../modules/all";
+import { RootState } from "../modules/store";
 import Group from "./Group";
 
 type Props = WithStyles<typeof styles>;
@@ -36,7 +36,7 @@ type ErrorMessages = {
   newGroupName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     groups: state.present.groups,
     members: state.present.members,
@@ -45,7 +45,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Groups(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -110,12 +110,12 @@ function Groups(props: Props) {
   const handleClickCreateGroup = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      all.createGroup(
-        termId,
-        state.newGroupIsEnabled,
-        state.newGroupName,
-        state.newGroupMemberIds
-      )
+      all.createGroup({
+        term_id: termId,
+        is_enabled: state.newGroupIsEnabled,
+        name: state.newGroupName,
+        member_ids: state.newGroupMemberIds,
+      })
     );
   };
   const errorMessages = validate(state.newGroupName);

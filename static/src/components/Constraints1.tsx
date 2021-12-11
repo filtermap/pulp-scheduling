@@ -18,9 +18,8 @@ import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints1 from "../modules/constraints1";
+import { RootState } from "../modules/store";
 import * as utils from "../utils";
 import Constraint1 from "./Constraint1";
 
@@ -42,7 +41,7 @@ type ErrorMessages = {
   newConstraint1MinNumberOfAssignments: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints1: state.present.constraints1,
     groups: state.present.groups,
@@ -53,7 +52,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraints1(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -163,15 +162,15 @@ function Constraints1(props: Props) {
   const handleClickCreateConstraint1 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints1.createConstraint1(
-        termId,
-        state.newConstraint1IsEnabled,
-        state.newConstraint1StartDateName,
-        state.newConstraint1StopDateName,
-        state.newConstraint1KinmuId,
-        state.newConstraint1GroupId,
-        state.newConstraint1MinNumberOfAssignments
-      )
+      constraints1.createConstraint1({
+        term_id: termId,
+        is_enabled: state.newConstraint1IsEnabled,
+        start_date_name: state.newConstraint1StartDateName,
+        stop_date_name: state.newConstraint1StopDateName,
+        kinmu_id: state.newConstraint1KinmuId,
+        group_id: state.newConstraint1GroupId,
+        min_number_of_assignments: state.newConstraint1MinNumberOfAssignments,
+      })
     );
   };
   return (

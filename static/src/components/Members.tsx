@@ -18,9 +18,9 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
 import { useParams } from "react-router";
 import * as all from "../modules/all";
+import { RootState } from "../modules/store";
 import Member from "./Member";
 
 type Props = WithStyles<typeof styles>;
@@ -36,7 +36,7 @@ type ErrorMessages = {
   newMemberName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     groups: state.present.groups,
     members: state.present.members,
@@ -45,7 +45,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Members(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -110,12 +110,12 @@ function Members(props: Props) {
   const handleClickCreateMember = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      all.createMember(
-        termId,
-        state.newMemberIsEnabled,
-        state.newMemberName,
-        state.newMemberGroupIds
-      )
+      all.createMember({
+        term_id: termId,
+        is_enabled: state.newMemberIsEnabled,
+        name: state.newMemberName,
+        group_ids: state.newMemberGroupIds,
+      })
     );
   };
   const errorMessages = validate(state.newMemberName);

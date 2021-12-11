@@ -18,9 +18,8 @@ import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints2 from "../modules/constraints2";
+import { RootState } from "../modules/store";
 import * as utils from "../utils";
 import Constraint2 from "./Constraint2";
 
@@ -42,7 +41,7 @@ type ErrorMessages = {
   newConstraint2MaxNumberOfAssignments: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints2: state.present.constraints2,
     groups: state.present.groups,
@@ -53,7 +52,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraints2(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -163,15 +162,15 @@ function Constraints2(props: Props) {
   const handleClickCreateConstraint2 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints2.createConstraint2(
-        termId,
-        state.newConstraint2IsEnabled,
-        state.newConstraint2StartDateName,
-        state.newConstraint2StopDateName,
-        state.newConstraint2KinmuId,
-        state.newConstraint2GroupId,
-        state.newConstraint2MaxNumberOfAssignments
-      )
+      constraints2.createConstraint2({
+        term_id: termId,
+        is_enabled: state.newConstraint2IsEnabled,
+        start_date_name: state.newConstraint2StartDateName,
+        stop_date_name: state.newConstraint2StopDateName,
+        kinmu_id: state.newConstraint2KinmuId,
+        group_id: state.newConstraint2GroupId,
+        max_number_of_assignments: state.newConstraint2MaxNumberOfAssignments,
+      })
     );
   };
   return (

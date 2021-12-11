@@ -20,13 +20,13 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Typography from "@material-ui/core/Typography";
 import DialogActions from "@material-ui/core/DialogActions";
-import { StateWithHistory } from "redux-undo";
 import MenuItem from "@material-ui/core/MenuItem";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as all from "../modules/all";
 import * as utils from "../utils";
 import * as terms from "../modules/terms";
+import { RootState } from "../modules/store";
 
 type Props = {
   term: terms.Term;
@@ -44,7 +44,7 @@ type ErrorMessages = {
   termStopDateName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     terms: state.present.terms,
   };
@@ -52,7 +52,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Term(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const selectableTerms = selected.terms.filter(
     ({ id, is_enabled }) => is_enabled && id !== props.term.id
   );
@@ -78,7 +78,9 @@ function Term(props: Props) {
     _: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    dispatch(terms.updateTermIsEnabled(props.term.id, checked));
+    dispatch(
+      terms.updateTermIsEnabled({ id: props.term.id, is_enabled: checked })
+    );
   };
   const validate = (
     termStartDateName: string,
@@ -99,12 +101,22 @@ function Term(props: Props) {
   const handleChangeTermStartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    dispatch(terms.updateTermStartDateName(props.term.id, event.target.value));
+    dispatch(
+      terms.updateTermStartDateName({
+        id: props.term.id,
+        start_date_name: event.target.value,
+      })
+    );
   };
   const handleChangeTermStopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    dispatch(terms.updateTermStopDateName(props.term.id, event.target.value));
+    dispatch(
+      terms.updateTermStopDateName({
+        id: props.term.id,
+        stop_date_name: event.target.value,
+      })
+    );
   };
   const handleClickOpenImportDataDialog = () => {
     setState((state) => ({ ...state, importDataDialogIsOpen: true }));
@@ -120,7 +132,12 @@ function Term(props: Props) {
   };
   const handleClickImportData = () => {
     setState((state) => ({ ...state, importDataDialogIsOpen: false }));
-    dispatch(all.importData(state.selectedTermId, props.term.id));
+    dispatch(
+      all.importData({
+        from_term_id: state.selectedTermId,
+        into_term_id: props.term.id,
+      })
+    );
   };
   const handleClickOpenDeletionDialog = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: true }));
@@ -130,7 +147,7 @@ function Term(props: Props) {
   };
   const handleClickDeleteTerm = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteTerm(props.term.id));
+    dispatch(all.deleteTerm({ id: props.term.id }));
   };
   const title = `${props.term.start_date_name}から${props.term.stop_date_name}まで`;
   const errorMessages = validate(

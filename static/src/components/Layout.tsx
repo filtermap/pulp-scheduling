@@ -1,4 +1,3 @@
-import { LinkProps } from "@material-ui/core/Link";
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
@@ -21,14 +20,20 @@ import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
-import { ActionCreators, StateWithHistory } from "redux-undo";
+import {
+  Link as RouterLink,
+  LinkProps as RouterLinkProps,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import { ActionCreators } from "redux-undo";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
-import * as all from "../modules/all";
 import * as utils from "../utils";
 import * as terms from "../modules/terms";
+import { RootState } from "../modules/store";
 import Constraints0 from "./Constraints0";
 import Constraints1 from "./Constraints1";
 import Constraints10 from "./Constraints10";
@@ -93,24 +98,30 @@ type State = {
   mobileOpen: boolean;
 };
 
-function LinkTo(to: string) {
-  return function LinkTo(
-    props: LinkProps & React.RefAttributes<HTMLAnchorElement>
-  ) {
-    return <Link to={to} {...props} />;
-  };
-}
-
-function ListItemLink(props: { to: string; text: string }) {
+function ListItemLink(props: { to: string; primary: string }) {
+  const { primary, to } = props;
   const location = useLocation();
+  const renderLink = React.useMemo(
+    () =>
+      React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(
+        function Link(itemProps, ref) {
+          return (
+            <RouterLink to={to} ref={ref} {...itemProps} role={undefined} />
+          );
+        }
+      ),
+    [to]
+  );
   return (
-    <ListItem
-      button={true}
-      selected={props.to === location.pathname}
-      component={LinkTo(props.to)}
-    >
-      <ListItemText primary={props.text} />
-    </ListItem>
+    <li>
+      <ListItem
+        button={true}
+        selected={to === location.pathname}
+        component={renderLink}
+      >
+        <ListItemText primary={primary} />
+      </ListItem>
+    </li>
   );
 }
 
@@ -138,62 +149,68 @@ function TermListItems(props: { term: terms.Term }) {
       </ListItem>
       <Collapse in={state.isOpen}>
         <Divider />
-        <ListItemLink to={`/terms/${props.term.id}/schedules`} text="勤務表" />
+        <ListItemLink
+          to={`/terms/${props.term.id}/schedules`}
+          primary="勤務表"
+        />
         <Divider />
-        <ListItemLink to={`/terms/${props.term.id}/members`} text="職員" />
-        <ListItemLink to={`/terms/${props.term.id}/kinmus`} text="勤務" />
-        <ListItemLink to={`/terms/${props.term.id}/groups`} text="グループ" />
+        <ListItemLink to={`/terms/${props.term.id}/members`} primary="職員" />
+        <ListItemLink to={`/terms/${props.term.id}/kinmus`} primary="勤務" />
+        <ListItemLink
+          to={`/terms/${props.term.id}/groups`}
+          primary="グループ"
+        />
         <Divider />
         <ListItemLink
           to={`/terms/${props.term.id}/constraints0`}
-          text="連続禁止勤務並び"
+          primary="連続禁止勤務並び"
         />
         <ListItemLink
           to={`/terms/${props.term.id}/constraints1`}
-          text="期間の勤務にグループから割り当てる職員数の下限"
+          primary="期間の勤務にグループから割り当てる職員数の下限"
         />
         <ListItemLink
           to={`/terms/${props.term.id}/constraints2`}
-          text="期間の勤務にグループから割り当てる職員数の上限"
+          primary="期間の勤務にグループから割り当てる職員数の上限"
         />
         <ListItemLink
           to={`/terms/${props.term.id}/constraints3`}
-          text="職員の勤務の割り当て数の下限"
+          primary="職員の勤務の割り当て数の下限"
         />
         <ListItemLink
           to={`/terms/${props.term.id}/constraints4`}
-          text="職員の勤務の割り当て数の上限"
+          primary="職員の勤務の割り当て数の上限"
         />
         <ListItemLink
           to={`/terms/${props.term.id}/constraints5`}
-          text="勤務の連続日数の下限"
+          primary="勤務の連続日数の下限"
         />
         <ListItemLink
           to={`/terms/${props.term.id}/constraints6`}
-          text="勤務の連続日数の上限"
+          primary="勤務の連続日数の上限"
         />
         <ListItemLink
           to={`/terms/${props.term.id}/constraints7`}
-          text="勤務の間隔日数の下限"
+          primary="勤務の間隔日数の下限"
         />
         <ListItemLink
           to={`/terms/${props.term.id}/constraints8`}
-          text="勤務の間隔日数の上限"
+          primary="勤務の間隔日数の上限"
         />
         <ListItemLink
           to={`/terms/${props.term.id}/constraints9`}
-          text="職員の期間に割り当てる勤務"
+          primary="職員の期間に割り当てる勤務"
         />
         <ListItemLink
           to={`/terms/${props.term.id}/constraints10`}
-          text="職員の期間に割り当てない勤務"
+          primary="職員の期間に割り当てない勤務"
         />
       </Collapse>
     </>
   );
 }
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     all: state.present,
     futureExists: state.future.length > 0,
@@ -203,7 +220,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function ResponsiveDrawer(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     mobileOpen: false,
   });
@@ -225,7 +242,7 @@ function ResponsiveDrawer(props: Props) {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        <ListItemLink to="/terms" text="期間" />
+        <ListItemLink to="/terms" primary="期間" />
       </List>
       {selected.all.terms
         .filter(({ is_enabled }) => is_enabled)

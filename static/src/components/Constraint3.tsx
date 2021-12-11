@@ -22,9 +22,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints3 from "../modules/constraints3";
+import { RootState } from "../modules/store";
 
 type Props = {
   constraint3: constraints3.Constraint3;
@@ -39,7 +38,7 @@ type ErrorMessages = {
   constraint3MinNumberOfAssignments: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     kinmus: state.present.kinmus,
     members: state.present.members,
@@ -48,7 +47,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraint3(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -67,27 +66,30 @@ function Constraint3(props: Props) {
     checked: boolean
   ) => {
     dispatch(
-      constraints3.updateConstraint3IsEnabled(props.constraint3.id, checked)
+      constraints3.updateConstraint3IsEnabled({
+        id: props.constraint3.id,
+        is_enabled: checked,
+      })
     );
   };
   const handleChangeConstraint3MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints3.updateConstraint3MemberId(
-        props.constraint3.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints3.updateConstraint3MemberId({
+        id: props.constraint3.id,
+        member_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleChangeConstraint3KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints3.updateConstraint3KinmuId(
-        props.constraint3.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints3.updateConstraint3KinmuId({
+        id: props.constraint3.id,
+        kinmu_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const validate = (
@@ -107,10 +109,10 @@ function Constraint3(props: Props) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints3.updateConstraint3MinNumberOfAssignments(
-        props.constraint3.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints3.updateConstraint3MinNumberOfAssignments({
+        id: props.constraint3.id,
+        min_number_of_assignments: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleClickOpenDeletionDialog = () => {
@@ -121,7 +123,7 @@ function Constraint3(props: Props) {
   };
   const handleClickDeleteConstraint3 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints3.deleteConstraint3(props.constraint3.id));
+    dispatch(constraints3.deleteConstraint3({ id: props.constraint3.id }));
   };
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const constraint3Member = membersInTerm.find(

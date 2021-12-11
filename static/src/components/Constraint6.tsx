@@ -22,9 +22,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints6 from "../modules/constraints6";
+import { RootState } from "../modules/store";
 
 type Props = {
   constraint6: constraints6.Constraint6;
@@ -39,7 +38,7 @@ type ErrorMessages = {
   constraint6MaxNumberOfDays: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     kinmus: state.present.kinmus,
   };
@@ -47,7 +46,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraint6(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -63,17 +62,20 @@ function Constraint6(props: Props) {
     checked: boolean
   ) => {
     dispatch(
-      constraints6.updateConstraint6IsEnabled(props.constraint6.id, checked)
+      constraints6.updateConstraint6IsEnabled({
+        id: props.constraint6.id,
+        is_enabled: checked,
+      })
     );
   };
   const handleChangeConstraint6KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints6.updateConstraint6KinmuId(
-        props.constraint6.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints6.updateConstraint6KinmuId({
+        id: props.constraint6.id,
+        kinmu_id: parseInt(event.target.value, 10),
+      })
     );
   };
   const validate = (constraint6MaxNumberOfDays: number): ErrorMessages => {
@@ -91,10 +93,10 @@ function Constraint6(props: Props) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints6.updateConstraint6MaxNumberOfDays(
-        props.constraint6.id,
-        parseInt(event.target.value, 10)
-      )
+      constraints6.updateConstraint6MaxNumberOfDays({
+        id: props.constraint6.id,
+        max_number_of_days: parseInt(event.target.value, 10),
+      })
     );
   };
   const handleClickOpenDeletionDialog = () => {
@@ -105,7 +107,7 @@ function Constraint6(props: Props) {
   };
   const handleClickDeleteConstraint6 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints6.deleteConstraint6(props.constraint6.id));
+    dispatch(constraints6.deleteConstraint6({ id: props.constraint6.id }));
   };
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const constraint6Kinmu = kinmusInTerm.find(

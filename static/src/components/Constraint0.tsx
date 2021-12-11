@@ -22,10 +22,10 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as constraints0 from "../modules/constraints0";
+import { RootState } from "../modules/store";
 import * as utils from "../utils";
 
 type Props = {
@@ -37,7 +37,7 @@ type State = {
   deletionDialogIsOpen: boolean;
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraint0_kinmus: state.present.constraint0_kinmus,
     kinmus: state.present.kinmus,
@@ -46,7 +46,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraint0(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -62,18 +62,21 @@ function Constraint0(props: Props) {
     checked: boolean
   ) => {
     dispatch(
-      constraints0.updateConstraint0IsEnabled(props.constraint0.id, checked)
+      constraints0.updateConstraint0IsEnabled({
+        id: props.constraint0.id,
+        is_enabled: checked,
+      })
     );
   };
   const handleClickCreateConstraint0Kinmu = (sequence_number: number) => {
     return () => {
       const kinmu_id = kinmusInTerm[0].id;
       dispatch(
-        constraint0_kinmus.createConstraint0Kinmu(
-          props.constraint0.id,
+        constraint0_kinmus.createConstraint0Kinmu({
+          constraint0_id: props.constraint0.id,
           sequence_number,
-          kinmu_id
-        )
+          kinmu_id,
+        })
       );
     };
   };
@@ -82,16 +85,16 @@ function Constraint0(props: Props) {
   ) => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       dispatch(
-        constraint0_kinmus.updateConstraint0KinmuKinmuId(
-          constraint0_kinmu_id,
-          parseInt(event.target.value, 10)
-        )
+        constraint0_kinmus.updateConstraint0KinmuKinmuId({
+          id: constraint0_kinmu_id,
+          kinmu_id: parseInt(event.target.value, 10),
+        })
       );
     };
   };
   const handleClickDeleteConstraint0Kinmu = (constraint0_kinmu_id: number) => {
     return () => {
-      dispatch(all.deleteConstraint0Kinmu(constraint0_kinmu_id));
+      dispatch(all.deleteConstraint0Kinmu({ id: constraint0_kinmu_id }));
     };
   };
   const handleClickOpenDeletionDialog = () => {
@@ -102,7 +105,7 @@ function Constraint0(props: Props) {
   };
   const handleClickDeleteConstraint0 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteConstraint0(props.constraint0.id));
+    dispatch(all.deleteConstraint0({ id: props.constraint0.id }));
   };
   const constraint0Constraint0Kinmus = selected.constraint0_kinmus
     .filter(({ constraint0_id }) => constraint0_id === props.constraint0.id)

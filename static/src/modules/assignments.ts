@@ -1,3 +1,5 @@
+import { createSlice } from "@reduxjs/toolkit";
+
 export type Assignment = {
   id: number;
   schedule_id: number;
@@ -6,10 +8,12 @@ export type Assignment = {
   kinmu_id: number;
 };
 
-export type State = Assignment[];
+const initialState: Assignment[] = [];
 
-const initialState: State = [];
+const assignments = createSlice({
+  name: "assignments",
+  initialState,
+  reducers: {},
+});
 
-export function reducer(state: State = initialState): State {
-  return state;
-}
+export const { reducer } = assignments;

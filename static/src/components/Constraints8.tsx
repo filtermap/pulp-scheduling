@@ -18,9 +18,8 @@ import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
-import * as all from "../modules/all";
 import * as constraints8 from "../modules/constraints8";
+import { RootState } from "../modules/store";
 import Constraint8 from "./Constraint8";
 
 type Props = WithStyles<typeof styles>;
@@ -36,7 +35,7 @@ type ErrorMessages = {
   newConstraint8MaxNumberOfDays: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints8: state.present.constraints8,
     kinmus: state.present.kinmus,
@@ -45,7 +44,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraints8(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -106,12 +105,12 @@ function Constraints8(props: Props) {
   const handleClickCreateConstraint8 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints8.createConstraint8(
-        termId,
-        state.newConstraint8IsEnabled,
-        state.newConstraint8KinmuId,
-        state.newConstraint8MaxNumberOfDays
-      )
+      constraints8.createConstraint8({
+        term_id: termId,
+        is_enabled: state.newConstraint8IsEnabled,
+        kinmu_id: state.newConstraint8KinmuId,
+        max_number_of_days: state.newConstraint8MaxNumberOfDays,
+      })
     );
   };
   return (

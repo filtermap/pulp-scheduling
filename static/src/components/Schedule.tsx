@@ -25,9 +25,9 @@ import classnames from "classnames";
 import * as iconv from "iconv-lite";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
 import * as schedules from "../modules/schedules";
+import { RootState } from "../modules/store";
 import * as utils from "../utils";
 
 type Props = {
@@ -47,7 +47,7 @@ function sortDateNames(dateNames: string[]): string[] {
   );
 }
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     assignments: state.present.assignments,
     kinmus: state.present.kinmus,
@@ -57,7 +57,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Schedule(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -82,7 +82,7 @@ function Schedule(props: Props) {
   };
   const handleClickDeleteSchedule = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteSchedule(props.schedule.id));
+    dispatch(all.deleteSchedule({ id: props.schedule.id }));
   };
   const handleClickExportToCSV = async () => {
     const assignments_by_schedule_id = assignmentsInTerm.filter(

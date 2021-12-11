@@ -7,7 +7,6 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { StateWithHistory } from "redux-undo";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -17,7 +16,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import * as utils from "../utils";
 import * as terms from "../modules/terms";
-import * as all from "../modules/all";
+import { RootState } from "../modules/store";
 import Term from "./Term";
 
 type Props = WithStyles<typeof styles>;
@@ -34,7 +33,7 @@ type ErrorMessages = {
   newTermStopDateName: string[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     terms: state.present.terms,
   };
@@ -42,7 +41,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Terms(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const todayString = utils.dateToString(new Date());
   const [state, setState] = React.useState<State>({
     creationDialogIsOpen: false,
@@ -97,11 +96,11 @@ function Terms(props: Props) {
   const handleClickCreateTerm = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      terms.createTerm(
-        state.newTermIsEnabled,
-        state.newTermStartDateName,
-        state.newTermStopDateName
-      )
+      terms.createTerm({
+        is_enabled: state.newTermIsEnabled,
+        start_date_name: state.newTermStartDateName,
+        stop_date_name: state.newTermStopDateName,
+      })
     );
   };
   const errorMessages = validate(

@@ -18,8 +18,8 @@ import classnames from "classnames";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { StateWithHistory } from "redux-undo";
 import * as all from "../modules/all";
+import { RootState } from "../modules/store";
 import Constraint0 from "./Constraint0";
 
 type Props = WithStyles<typeof styles>;
@@ -30,7 +30,7 @@ type State = {
   newConstraint0Constraint0KinmuKinmuIds: number[];
 };
 
-function selector(state: StateWithHistory<all.State>) {
+function select(state: RootState) {
   return {
     constraints0: state.present.constraints0,
     kinmus: state.present.kinmus,
@@ -39,7 +39,7 @@ function selector(state: StateWithHistory<all.State>) {
 
 function Constraints0(props: Props) {
   const dispatch = useDispatch();
-  const selected = useSelector(selector, shallowEqual);
+  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -114,11 +114,11 @@ function Constraints0(props: Props) {
   const handleClickCreateConstraint0 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      all.createConstraint0(
-        termId,
-        state.newConstraint0IsEnabled,
-        state.newConstraint0Constraint0KinmuKinmuIds
-      )
+      all.createConstraint0({
+        term_id: termId,
+        is_enabled: state.newConstraint0IsEnabled,
+        kinmu_ids: state.newConstraint0Constraint0KinmuKinmuIds,
+      })
     );
   };
   return (
