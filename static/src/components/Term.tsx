@@ -204,6 +204,7 @@ function Term(props: Props) {
                   type="date"
                   defaultValue={props.term.start_date_name}
                   onChange={handleChangeTermStartDateName}
+                  fullWidth={true}
                   margin="normal"
                   InputLabelProps={{
                     shrink: true,
@@ -224,6 +225,7 @@ function Term(props: Props) {
                   type="date"
                   defaultValue={props.term.stop_date_name}
                   onChange={handleChangeTermStopDateName}
+                  fullWidth={true}
                   margin="normal"
                   InputLabelProps={{
                     shrink: true,
