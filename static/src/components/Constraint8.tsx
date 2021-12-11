@@ -139,7 +139,7 @@ function Constraint8(props: Props): JSX.Element {
   )!;
   const relativesAreEnabled = constraint8Kinmu.is_enabled;
   const title = (
-    <Root>
+    <>
       <span
         className={classnames({
           [classes.lineThrough]: !constraint8Kinmu.is_enabled,
@@ -148,11 +148,11 @@ function Constraint8(props: Props): JSX.Element {
         {constraint8Kinmu.name}
       </span>
       の間隔日数を{props.constraint8.max_number_of_days}日以下にする
-    </Root>
+    </>
   );
   const errorMessages = validate(props.constraint8.max_number_of_days);
   return (
-    <>
+    <Root>
       <Card>
         <CardHeader
           avatar={
@@ -259,7 +259,7 @@ function Constraint8(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 

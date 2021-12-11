@@ -398,12 +398,12 @@ function Schedules(): JSX.Element {
                 勤務表を作成できませんでした
               </DialogContentText>
               {state.dialogState.errorMessage === "Infeasible" ? (
-                <Root>
+                <>
                   <Typography>条件を満たす勤務表が存在しません</Typography>
                   <Button size="small" onClick={handleClickPursue}>
                     勤務表を作成できない原因となる条件を特定
                   </Button>
-                </Root>
+                </>
               ) : (
                 <Typography>
                   pulp-schedulingの不具合や条件の誤りなどにより作成できない可能性があります（
@@ -645,7 +645,7 @@ function Schedules(): JSX.Element {
     }
   };
   return (
-    <>
+    <Root>
       <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
           <Grid item={true} xs={12}>
@@ -666,7 +666,7 @@ function Schedules(): JSX.Element {
         </Grid>
       </div>
       {dialog()}
-    </>
+    </Root>
   );
 }
 

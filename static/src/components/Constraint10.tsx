@@ -210,7 +210,7 @@ function Constraint10(props: Props): JSX.Element {
     constraint10StopDateIsEnabled &&
     constraint10Kinmu.is_enabled;
   const title = (
-    <Root>
+    <>
       <span
         className={classnames({
           [classes.lineThrough]: !constraint10Member.is_enabled,
@@ -243,14 +243,14 @@ function Constraint10(props: Props): JSX.Element {
         {constraint10Kinmu.name}
       </span>
       を割り当てない
-    </Root>
+    </>
   );
   const errorMessages = validate(
     props.constraint10.start_date_name,
     props.constraint10.stop_date_name
   );
   return (
-    <>
+    <Root>
       <Card>
         <CardHeader
           avatar={
@@ -412,7 +412,7 @@ function Constraint10(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 

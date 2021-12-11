@@ -160,7 +160,7 @@ function Constraint3(props: Props): JSX.Element {
   const relativesAreEnabled =
     constraint3Member.is_enabled && constraint3Kinmu.is_enabled;
   const title = (
-    <Root>
+    <>
       <span
         className={classnames({
           [classes.lineThrough]: !constraint3Member.is_enabled,
@@ -177,11 +177,11 @@ function Constraint3(props: Props): JSX.Element {
         {constraint3Kinmu.name}
       </span>
       を{props.constraint3.min_number_of_assignments}回以上割り当てる
-    </Root>
+    </>
   );
   const errorMessages = validate(props.constraint3.min_number_of_assignments);
   return (
-    <>
+    <Root>
       <Card>
         <CardHeader
           avatar={
@@ -313,7 +313,7 @@ function Constraint3(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 

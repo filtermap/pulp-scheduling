@@ -160,7 +160,7 @@ function Constraint4(props: Props): JSX.Element {
   const relativesAreEnabled =
     constraint4Member.is_enabled && constraint4Kinmu.is_enabled;
   const title = (
-    <Root>
+    <>
       <span
         className={classnames({
           [classes.lineThrough]: !constraint4Member.is_enabled,
@@ -177,11 +177,11 @@ function Constraint4(props: Props): JSX.Element {
         {constraint4Kinmu.name}
       </span>
       を{props.constraint4.max_number_of_assignments}回以下割り当てる
-    </Root>
+    </>
   );
   const errorMessages = validate(props.constraint4.max_number_of_assignments);
   return (
-    <>
+    <Root>
       <Card>
         <CardHeader
           avatar={
@@ -313,7 +313,7 @@ function Constraint4(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 

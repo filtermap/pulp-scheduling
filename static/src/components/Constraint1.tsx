@@ -228,7 +228,7 @@ function Constraint1(props: Props): JSX.Element {
     constraint1Kinmu.is_enabled &&
     constraint1Group.is_enabled;
   const title = (
-    <Root>
+    <>
       <span
         className={classnames({
           [classes.lineThrough]: !constraint1StartDateIsEnabled,
@@ -261,7 +261,7 @@ function Constraint1(props: Props): JSX.Element {
         {constraint1Group.name}
       </span>
       から{props.constraint1.min_number_of_assignments}人以上の職員を割り当てる
-    </Root>
+    </>
   );
   const errorMessages = validate(
     props.constraint1.start_date_name,
@@ -269,7 +269,7 @@ function Constraint1(props: Props): JSX.Element {
     props.constraint1.min_number_of_assignments
   );
   return (
-    <>
+    <Root>
       <Card>
         <CardHeader
           avatar={
@@ -457,7 +457,7 @@ function Constraint1(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 

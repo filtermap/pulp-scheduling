@@ -139,7 +139,7 @@ function Constraint6(props: Props): JSX.Element {
   )!;
   const relativesAreEnabled = constraint6Kinmu.is_enabled;
   const title = (
-    <Root>
+    <>
       <span
         className={classnames({
           [classes.lineThrough]: !constraint6Kinmu.is_enabled,
@@ -148,11 +148,11 @@ function Constraint6(props: Props): JSX.Element {
         {constraint6Kinmu.name}
       </span>
       の連続日数を{props.constraint6.max_number_of_days}日以下にする
-    </Root>
+    </>
   );
   const errorMessages = validate(props.constraint6.max_number_of_days);
   return (
-    <>
+    <Root>
       <Card>
         <CardHeader
           avatar={
@@ -259,7 +259,7 @@ function Constraint6(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Root>
   );
 }
 
