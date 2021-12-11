@@ -6,7 +6,6 @@ const reducer = undoable(all.reducer);
 
 export type RootState = ReturnType<typeof reducer>;
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const store = configureStore({
   reducer,
 });
