@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, Update } from "@reduxjs/toolkit";
 import { combineReducers, Reducer } from "redux";
 import * as assignments from "./assignments";
 import * as constraint0_kinmus from "./constraint0_kinmus";
@@ -20,9 +20,9 @@ import * as members from "./members";
 import * as schedules from "./schedules";
 import * as terms from "./terms";
 
-export type All = {
-  members: members.Member[];
+export type PlainAll = {
   terms: terms.Term[];
+  members: members.Member[];
   kinmus: kinmus.Kinmu[];
   groups: groups.Group[];
   group_members: group_members.GroupMember[];
@@ -42,26 +42,48 @@ export type All = {
   assignments: assignments.Assignment[];
 };
 
+export type All = {
+  terms: ReturnType<typeof terms.reducer>;
+  members: ReturnType<typeof members.reducer>;
+  kinmus: ReturnType<typeof kinmus.reducer>;
+  groups: ReturnType<typeof groups.reducer>;
+  group_members: ReturnType<typeof group_members.reducer>;
+  constraints0: ReturnType<typeof constraints0.reducer>;
+  constraint0_kinmus: ReturnType<typeof constraint0_kinmus.reducer>;
+  constraints1: ReturnType<typeof constraints1.reducer>;
+  constraints2: ReturnType<typeof constraints2.reducer>;
+  constraints3: ReturnType<typeof constraints3.reducer>;
+  constraints4: ReturnType<typeof constraints4.reducer>;
+  constraints5: ReturnType<typeof constraints5.reducer>;
+  constraints6: ReturnType<typeof constraints6.reducer>;
+  constraints7: ReturnType<typeof constraints7.reducer>;
+  constraints8: ReturnType<typeof constraints8.reducer>;
+  constraints9: ReturnType<typeof constraints9.reducer>;
+  constraints10: ReturnType<typeof constraints10.reducer>;
+  schedules: ReturnType<typeof schedules.reducer>;
+  assignments: ReturnType<typeof assignments.reducer>;
+};
+
 const initialState: All = {
-  members: [],
-  terms: [],
-  kinmus: [],
-  groups: [],
-  group_members: [],
-  constraints0: [],
-  constraint0_kinmus: [],
-  constraints1: [],
-  constraints2: [],
-  constraints3: [],
-  constraints4: [],
-  constraints5: [],
-  constraints6: [],
-  constraints7: [],
-  constraints8: [],
-  constraints9: [],
-  constraints10: [],
-  schedules: [],
-  assignments: [],
+  terms: terms.adapter.getInitialState(),
+  members: members.adapter.getInitialState(),
+  kinmus: kinmus.adapter.getInitialState(),
+  groups: groups.adapter.getInitialState(),
+  group_members: group_members.adapter.getInitialState(),
+  constraints0: constraints0.adapter.getInitialState(),
+  constraint0_kinmus: constraint0_kinmus.adapter.getInitialState(),
+  constraints1: constraints1.adapter.getInitialState(),
+  constraints2: constraints2.adapter.getInitialState(),
+  constraints3: constraints3.adapter.getInitialState(),
+  constraints4: constraints4.adapter.getInitialState(),
+  constraints5: constraints5.adapter.getInitialState(),
+  constraints6: constraints6.adapter.getInitialState(),
+  constraints7: constraints7.adapter.getInitialState(),
+  constraints8: constraints8.adapter.getInitialState(),
+  constraints9: constraints9.adapter.getInitialState(),
+  constraints10: constraints10.adapter.getInitialState(),
+  schedules: schedules.adapter.getInitialState(),
+  assignments: assignments.adapter.getInitialState(),
 };
 
 function maxId<T extends { id: number }>(array: T[]): number {
@@ -99,13 +121,65 @@ const all = createSlice({
   name: "all",
   initialState,
   reducers: {
-    replaceAll: (
-      _,
-      action: PayloadAction<{
-        all: All;
-      }>
-    ) => {
-      return action.payload.all;
+    replaceAll: (state, action: PayloadAction<PlainAll>) => {
+      terms.adapter.setAll(state.terms, action.payload.terms);
+      members.adapter.setAll(state.members, action.payload.members);
+      kinmus.adapter.setAll(state.kinmus, action.payload.kinmus);
+      groups.adapter.setAll(state.groups, action.payload.groups);
+      group_members.adapter.setAll(
+        state.group_members,
+        action.payload.group_members
+      );
+      constraints0.adapter.setAll(
+        state.constraints0,
+        action.payload.constraints0
+      );
+      constraint0_kinmus.adapter.setAll(
+        state.constraint0_kinmus,
+        action.payload.constraint0_kinmus
+      );
+      constraints1.adapter.setAll(
+        state.constraints1,
+        action.payload.constraints1
+      );
+      constraints2.adapter.setAll(
+        state.constraints2,
+        action.payload.constraints2
+      );
+      constraints3.adapter.setAll(
+        state.constraints3,
+        action.payload.constraints3
+      );
+      constraints4.adapter.setAll(
+        state.constraints4,
+        action.payload.constraints4
+      );
+      constraints5.adapter.setAll(
+        state.constraints5,
+        action.payload.constraints5
+      );
+      constraints6.adapter.setAll(
+        state.constraints6,
+        action.payload.constraints6
+      );
+      constraints7.adapter.setAll(
+        state.constraints7,
+        action.payload.constraints7
+      );
+      constraints8.adapter.setAll(
+        state.constraints8,
+        action.payload.constraints8
+      );
+      constraints9.adapter.setAll(
+        state.constraints9,
+        action.payload.constraints9
+      );
+      constraints10.adapter.setAll(
+        state.constraints10,
+        action.payload.constraints10
+      );
+      schedules.adapter.setAll(state.schedules, action.payload.schedules);
+      assignments.adapter.setAll(state.assignments, action.payload.assignments);
     },
     importData: (
       state,
@@ -116,53 +190,65 @@ const all = createSlice({
     ) => {
       const { copied: copiedMembers, idMap: memberIdMap } =
         doubleItemsByKey<members.Member>(
-          state.members,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          state.members.ids.map((id) => state.members.entities[id]!),
           "term_id",
           action.payload.from_term_id,
           action.payload.into_term_id
         );
       const { copied: copiedKinmus, idMap: kinmuIdMap } =
         doubleItemsByKey<kinmus.Kinmu>(
-          state.kinmus,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          state.kinmus.ids.map((id) => state.kinmus.entities[id]!),
           "term_id",
           action.payload.from_term_id,
           action.payload.into_term_id
         );
       const { copied: copiedGroups, idMap: groupIdMap } =
         doubleItemsByKey<groups.Group>(
-          state.groups,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          state.groups.ids.map((id) => state.groups.entities[id]!),
           "term_id",
           action.payload.from_term_id,
           action.payload.into_term_id
         );
-      const { copied: copiedGroupMembers } = state.group_members.reduce<{
-        lastId: number;
-        copied: group_members.GroupMember[];
-      }>(
-        (acc, gm) => {
-          const group_id = groupIdMap.get(gm.group_id);
-          const member_id = memberIdMap.get(gm.member_id);
-          if (!group_id || !member_id) return acc;
-          acc.lastId++;
-          acc.copied.push({
-            ...gm,
-            id: acc.lastId,
-            group_id,
-            member_id,
-          });
-          return acc;
-        },
-        { lastId: maxId(state.group_members), copied: [] }
-      );
+      const { copied: copiedGroupMembers } = state.group_members.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.group_members.entities[id]!)
+        .reduce<{
+          lastId: number;
+          copied: group_members.GroupMember[];
+        }>(
+          (acc, gm) => {
+            const group_id = groupIdMap.get(gm.group_id);
+            const member_id = memberIdMap.get(gm.member_id);
+            if (!group_id || !member_id) return acc;
+            acc.lastId++;
+            acc.copied.push({
+              ...gm,
+              id: acc.lastId,
+              group_id,
+              member_id,
+            });
+            return acc;
+          },
+          {
+            lastId: Math.max(0, ...(state.group_members.ids as number[])),
+            copied: [],
+          }
+        );
       const { copied: copiedConstraints0, idMap: constraint0IdMap } =
         doubleItemsByKey<constraints0.Constraint0>(
-          state.constraints0,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          state.constraints0.ids.map((id) => state.constraints0.entities[id]!),
           "term_id",
           action.payload.from_term_id,
           action.payload.into_term_id
         );
-      const { copied: copiedConstraint0Kinmus } =
-        state.constraint0_kinmus.reduce<{
+      const { copied: copiedConstraint0Kinmus } = state.constraint0_kinmus.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.constraint0_kinmus.entities[id]!)
+        .reduce<{
           lastId: number;
           copied: constraint0_kinmus.Constraint0Kinmu[];
         }>(
@@ -179,589 +265,715 @@ const all = createSlice({
             });
             return acc;
           },
-          { lastId: maxId(state.constraint0_kinmus), copied: [] }
+          {
+            lastId: Math.max(0, ...(state.constraint0_kinmus.ids as number[])),
+            copied: [],
+          }
         );
-      const { copied: copiedConstraints1 } = state.constraints1.reduce<{
-        lastId: number;
-        copied: constraints1.Constraint1[];
-      }>(
-        (acc, c) => {
-          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
-          const group_id = groupIdMap.get(c.group_id);
-          if (!kinmu_id || !group_id) return acc;
-          acc.lastId++;
-          acc.copied.push({
-            ...c,
-            id: acc.lastId,
-            term_id: action.payload.into_term_id,
-            kinmu_id,
-            group_id,
-          });
-          return acc;
-        },
-        { lastId: maxId(state.constraints1), copied: [] }
+      const { copied: copiedConstraints1 } = state.constraints1.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.constraints1.entities[id]!)
+        .reduce<{
+          lastId: number;
+          copied: constraints1.Constraint1[];
+        }>(
+          (acc, c) => {
+            const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+            const group_id = groupIdMap.get(c.group_id);
+            if (!kinmu_id || !group_id) return acc;
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.payload.into_term_id,
+              kinmu_id,
+              group_id,
+            });
+            return acc;
+          },
+          {
+            lastId: Math.max(0, ...(state.constraints1.ids as number[])),
+            copied: [],
+          }
+        );
+      const { copied: copiedConstraints2 } = state.constraints2.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.constraints2.entities[id]!)
+        .reduce<{
+          lastId: number;
+          copied: constraints2.Constraint2[];
+        }>(
+          (acc, c) => {
+            const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+            const group_id = groupIdMap.get(c.group_id);
+            if (!kinmu_id || !group_id) return acc;
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.payload.into_term_id,
+              kinmu_id,
+              group_id,
+            });
+            return acc;
+          },
+          {
+            lastId: Math.max(0, ...(state.constraints2.ids as number[])),
+            copied: [],
+          }
+        );
+      const { copied: copiedConstraints3 } = state.constraints3.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.constraints3.entities[id]!)
+        .reduce<{
+          lastId: number;
+          copied: constraints3.Constraint3[];
+        }>(
+          (acc, c) => {
+            const member_id = memberIdMap.get(c.member_id);
+            const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+            if (!member_id || !kinmu_id) return acc;
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.payload.into_term_id,
+              member_id,
+              kinmu_id,
+            });
+            return acc;
+          },
+          {
+            lastId: Math.max(0, ...(state.constraints3.ids as number[])),
+            copied: [],
+          }
+        );
+      const { copied: copiedConstraints4 } = state.constraints4.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.constraints4.entities[id]!)
+        .reduce<{
+          lastId: number;
+          copied: constraints4.Constraint4[];
+        }>(
+          (acc, c) => {
+            const member_id = memberIdMap.get(c.member_id);
+            const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+            if (!member_id || !kinmu_id) return acc;
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.payload.into_term_id,
+              member_id,
+              kinmu_id,
+            });
+            return acc;
+          },
+          {
+            lastId: Math.max(0, ...(state.constraints4.ids as number[])),
+            copied: [],
+          }
+        );
+      const { copied: copiedConstraints5 } = state.constraints5.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.constraints5.entities[id]!)
+        .reduce<{
+          lastId: number;
+          copied: constraints5.Constraint5[];
+        }>(
+          (acc, c) => {
+            const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+            if (!kinmu_id) return acc;
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.payload.into_term_id,
+              kinmu_id,
+            });
+            return acc;
+          },
+          {
+            lastId: Math.max(0, ...(state.constraints5.ids as number[])),
+            copied: [],
+          }
+        );
+      const { copied: copiedConstraints6 } = state.constraints6.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.constraints6.entities[id]!)
+        .reduce<{
+          lastId: number;
+          copied: constraints6.Constraint6[];
+        }>(
+          (acc, c) => {
+            const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+            if (!kinmu_id) return acc;
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.payload.into_term_id,
+              kinmu_id,
+            });
+            return acc;
+          },
+          {
+            lastId: Math.max(0, ...(state.constraints6.ids as number[])),
+            copied: [],
+          }
+        );
+      const { copied: copiedConstraints7 } = state.constraints7.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.constraints7.entities[id]!)
+        .reduce<{
+          lastId: number;
+          copied: constraints7.Constraint7[];
+        }>(
+          (acc, c) => {
+            const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+            if (!kinmu_id) return acc;
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.payload.into_term_id,
+              kinmu_id,
+            });
+            return acc;
+          },
+          {
+            lastId: Math.max(0, ...(state.constraints7.ids as number[])),
+            copied: [],
+          }
+        );
+      const { copied: copiedConstraints8 } = state.constraints8.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.constraints8.entities[id]!)
+        .reduce<{
+          lastId: number;
+          copied: constraints8.Constraint8[];
+        }>(
+          (acc, c) => {
+            const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+            if (!kinmu_id) return acc;
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.payload.into_term_id,
+              kinmu_id,
+            });
+            return acc;
+          },
+          {
+            lastId: Math.max(0, ...(state.constraints8.ids as number[])),
+            copied: [],
+          }
+        );
+      const { copied: copiedConstraints9 } = state.constraints9.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.constraints9.entities[id]!)
+        .reduce<{
+          lastId: number;
+          copied: constraints9.Constraint9[];
+        }>(
+          (acc, c) => {
+            const member_id = memberIdMap.get(c.member_id);
+            const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+            if (!member_id || !kinmu_id) return acc;
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.payload.into_term_id,
+              member_id,
+              kinmu_id,
+            });
+            return acc;
+          },
+          {
+            lastId: Math.max(0, ...(state.constraints9.ids as number[])),
+            copied: [],
+          }
+        );
+      const { copied: copiedConstraints10 } = state.constraints10.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.constraints10.entities[id]!)
+        .reduce<{
+          lastId: number;
+          copied: constraints10.Constraint10[];
+        }>(
+          (acc, c) => {
+            const member_id = memberIdMap.get(c.member_id);
+            const kinmu_id = kinmuIdMap.get(c.kinmu_id);
+            if (!member_id || !kinmu_id) return acc;
+            acc.lastId++;
+            acc.copied.push({
+              ...c,
+              id: acc.lastId,
+              term_id: action.payload.into_term_id,
+              member_id,
+              kinmu_id,
+            });
+            return acc;
+          },
+          {
+            lastId: Math.max(0, ...(state.constraints10.ids as number[])),
+            copied: [],
+          }
+        );
+      members.adapter.addMany(state.members, copiedMembers);
+      kinmus.adapter.addMany(state.kinmus, copiedKinmus);
+      groups.adapter.addMany(state.groups, copiedGroups);
+      group_members.adapter.addMany(state.group_members, copiedGroupMembers);
+      constraints0.adapter.addMany(state.constraints0, copiedConstraints0);
+      constraint0_kinmus.adapter.addMany(
+        state.constraint0_kinmus,
+        copiedConstraint0Kinmus
       );
-      const { copied: copiedConstraints2 } = state.constraints2.reduce<{
-        lastId: number;
-        copied: constraints2.Constraint2[];
-      }>(
-        (acc, c) => {
-          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
-          const group_id = groupIdMap.get(c.group_id);
-          if (!kinmu_id || !group_id) return acc;
-          acc.lastId++;
-          acc.copied.push({
-            ...c,
-            id: acc.lastId,
-            term_id: action.payload.into_term_id,
-            kinmu_id,
-            group_id,
-          });
-          return acc;
-        },
-        { lastId: maxId(state.constraints2), copied: [] }
-      );
-      const { copied: copiedConstraints3 } = state.constraints3.reduce<{
-        lastId: number;
-        copied: constraints3.Constraint3[];
-      }>(
-        (acc, c) => {
-          const member_id = memberIdMap.get(c.member_id);
-          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
-          if (!member_id || !kinmu_id) return acc;
-          acc.lastId++;
-          acc.copied.push({
-            ...c,
-            id: acc.lastId,
-            term_id: action.payload.into_term_id,
-            member_id,
-            kinmu_id,
-          });
-          return acc;
-        },
-        { lastId: maxId(state.constraints3), copied: [] }
-      );
-      const { copied: copiedConstraints4 } = state.constraints4.reduce<{
-        lastId: number;
-        copied: constraints4.Constraint4[];
-      }>(
-        (acc, c) => {
-          const member_id = memberIdMap.get(c.member_id);
-          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
-          if (!member_id || !kinmu_id) return acc;
-          acc.lastId++;
-          acc.copied.push({
-            ...c,
-            id: acc.lastId,
-            term_id: action.payload.into_term_id,
-            member_id,
-            kinmu_id,
-          });
-          return acc;
-        },
-        { lastId: maxId(state.constraints4), copied: [] }
-      );
-      const { copied: copiedConstraints5 } = state.constraints5.reduce<{
-        lastId: number;
-        copied: constraints5.Constraint5[];
-      }>(
-        (acc, c) => {
-          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
-          if (!kinmu_id) return acc;
-          acc.lastId++;
-          acc.copied.push({
-            ...c,
-            id: acc.lastId,
-            term_id: action.payload.into_term_id,
-            kinmu_id,
-          });
-          return acc;
-        },
-        { lastId: maxId(state.constraints5), copied: [] }
-      );
-      const { copied: copiedConstraints6 } = state.constraints6.reduce<{
-        lastId: number;
-        copied: constraints6.Constraint6[];
-      }>(
-        (acc, c) => {
-          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
-          if (!kinmu_id) return acc;
-          acc.lastId++;
-          acc.copied.push({
-            ...c,
-            id: acc.lastId,
-            term_id: action.payload.into_term_id,
-            kinmu_id,
-          });
-          return acc;
-        },
-        { lastId: maxId(state.constraints6), copied: [] }
-      );
-      const { copied: copiedConstraints7 } = state.constraints7.reduce<{
-        lastId: number;
-        copied: constraints7.Constraint7[];
-      }>(
-        (acc, c) => {
-          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
-          if (!kinmu_id) return acc;
-          acc.lastId++;
-          acc.copied.push({
-            ...c,
-            id: acc.lastId,
-            term_id: action.payload.into_term_id,
-            kinmu_id,
-          });
-          return acc;
-        },
-        { lastId: maxId(state.constraints7), copied: [] }
-      );
-      const { copied: copiedConstraints8 } = state.constraints8.reduce<{
-        lastId: number;
-        copied: constraints8.Constraint8[];
-      }>(
-        (acc, c) => {
-          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
-          if (!kinmu_id) return acc;
-          acc.lastId++;
-          acc.copied.push({
-            ...c,
-            id: acc.lastId,
-            term_id: action.payload.into_term_id,
-            kinmu_id,
-          });
-          return acc;
-        },
-        { lastId: maxId(state.constraints8), copied: [] }
-      );
-      const { copied: copiedConstraints9 } = state.constraints9.reduce<{
-        lastId: number;
-        copied: constraints9.Constraint9[];
-      }>(
-        (acc, c) => {
-          const member_id = memberIdMap.get(c.member_id);
-          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
-          if (!member_id || !kinmu_id) return acc;
-          acc.lastId++;
-          acc.copied.push({
-            ...c,
-            id: acc.lastId,
-            term_id: action.payload.into_term_id,
-            member_id,
-            kinmu_id,
-          });
-          return acc;
-        },
-        { lastId: maxId(state.constraints9), copied: [] }
-      );
-      const { copied: copiedConstraints10 } = state.constraints10.reduce<{
-        lastId: number;
-        copied: constraints10.Constraint10[];
-      }>(
-        (acc, c) => {
-          const member_id = memberIdMap.get(c.member_id);
-          const kinmu_id = kinmuIdMap.get(c.kinmu_id);
-          if (!member_id || !kinmu_id) return acc;
-          acc.lastId++;
-          acc.copied.push({
-            ...c,
-            id: acc.lastId,
-            term_id: action.payload.into_term_id,
-            member_id,
-            kinmu_id,
-          });
-          return acc;
-        },
-        { lastId: maxId(state.constraints10), copied: [] }
-      );
-      state.members.push(...copiedMembers);
-      state.kinmus.push(...copiedKinmus);
-      state.groups.push(...copiedGroups);
-      state.group_members.push(...copiedGroupMembers);
-      state.constraints0.push(...copiedConstraints0);
-      state.constraint0_kinmus.push(...copiedConstraint0Kinmus);
-      state.constraints1.push(...copiedConstraints1);
-      state.constraints2.push(...copiedConstraints2);
-      state.constraints3.push(...copiedConstraints3);
-      state.constraints4.push(...copiedConstraints4);
-      state.constraints5.push(...copiedConstraints5);
-      state.constraints6.push(...copiedConstraints6);
-      state.constraints7.push(...copiedConstraints7);
-      state.constraints8.push(...copiedConstraints8);
-      state.constraints9.push(...copiedConstraints9);
-      state.constraints10.push(...copiedConstraints10);
+      constraints1.adapter.addMany(state.constraints1, copiedConstraints1);
+      constraints2.adapter.addMany(state.constraints2, copiedConstraints2);
+      constraints3.adapter.addMany(state.constraints3, copiedConstraints3);
+      constraints4.adapter.addMany(state.constraints4, copiedConstraints4);
+      constraints5.adapter.addMany(state.constraints5, copiedConstraints5);
+      constraints6.adapter.addMany(state.constraints6, copiedConstraints6);
+      constraints7.adapter.addMany(state.constraints7, copiedConstraints7);
+      constraints8.adapter.addMany(state.constraints8, copiedConstraints8);
+      constraints9.adapter.addMany(state.constraints9, copiedConstraints9);
+      constraints10.adapter.addMany(state.constraints10, copiedConstraints10);
     },
     createMember: (
       state,
       action: PayloadAction<{
-        term_id: number;
-        is_enabled: boolean;
-        name: string;
+        member: {
+          term_id: number;
+          is_enabled: boolean;
+          name: string;
+        };
         group_ids: number[];
       }>
     ) => {
-      const member_id = Math.max(0, ...state.members.map(({ id }) => id)) + 1;
+      const member_id = Math.max(0, ...(state.members.ids as number[])) + 1;
+      members.adapter.addOne(state.members, {
+        ...action.payload.member,
+        id: member_id,
+      });
       const group_member_id =
-        Math.max(0, ...state.group_members.map(({ id }) => id)) + 1;
-      state.group_members.push(
-        ...action.payload.group_ids.map((group_id, index) => ({
-          group_id,
+        Math.max(0, ...(state.group_members.ids as number[])) + 1;
+      group_members.adapter.addMany(
+        state.group_members,
+        action.payload.group_ids.map((group_id, index) => ({
           id: group_member_id + index,
+          group_id,
           member_id,
         }))
       );
-      state.members.push({
-        id: member_id,
-        term_id: action.payload.term_id,
-        is_enabled: action.payload.is_enabled,
-        name: action.payload.name,
-      });
     },
-    createGroup: (
+    addGroup: (
       state,
       action: PayloadAction<{
-        term_id: number;
-        is_enabled: boolean;
-        name: string;
+        group: {
+          term_id: number;
+          is_enabled: boolean;
+          name: string;
+        };
         member_ids: number[];
       }>
     ) => {
-      const group_id = Math.max(0, ...state.groups.map(({ id }) => id)) + 1;
+      const group_id = Math.max(0, ...(state.groups.ids as number[])) + 1;
+      groups.adapter.addOne(state.groups, {
+        ...action.payload.group,
+        id: group_id,
+      });
       const group_member_id =
-        Math.max(0, ...state.group_members.map(({ id }) => id)) + 1;
-      state.group_members.push(
-        ...action.payload.member_ids.map((member_id, index) => ({
-          group_id,
+        Math.max(0, ...(state.group_members.ids as number[])) + 1;
+      group_members.adapter.addMany(
+        state.group_members,
+        action.payload.member_ids.map((member_id, index) => ({
           id: group_member_id + index,
+          group_id,
           member_id,
         }))
       );
-      state.groups.push({
-        id: group_id,
-        term_id: action.payload.term_id,
-        is_enabled: action.payload.is_enabled,
-        name: action.payload.name,
-      });
     },
     createConstraint0: (
       state,
       action: PayloadAction<{
-        term_id: number;
-        is_enabled: boolean;
+        constraint0: {
+          term_id: number;
+          is_enabled: boolean;
+        };
         kinmu_ids: number[];
       }>
     ) => {
       const constraint0_id =
-        Math.max(0, ...state.constraints0.map(({ id }) => id)) + 1;
+        Math.max(0, ...(state.constraints0.ids as number[])) + 1;
+      constraints0.adapter.addOne(state.constraints0, {
+        ...action.payload.constraint0,
+        id: constraint0_id,
+      });
       const constraint0_kinmu_id =
-        Math.max(0, ...state.constraint0_kinmus.map(({ id }) => id)) + 1;
-      state.constraint0_kinmus.push(
-        ...action.payload.kinmu_ids.map((kinmu_id, index) => ({
+        Math.max(0, ...(state.constraint0_kinmus.ids as number[])) + 1;
+      constraint0_kinmus.adapter.addMany(
+        state.constraint0_kinmus,
+        action.payload.kinmu_ids.map((kinmu_id, index) => ({
           constraint0_id,
           id: constraint0_kinmu_id + index,
           kinmu_id,
           sequence_number: index,
         }))
       );
-      state.constraints0.push({
-        id: constraint0_id,
-        term_id: action.payload.term_id,
-        is_enabled: action.payload.is_enabled,
-      });
     },
     createSchedule: (
       state,
       action: PayloadAction<{
-        term_id: number;
+        schedule: {
+          term_id: number;
+        };
         new_assignments: assignments.Assignment[];
       }>
     ) => {
-      const schedule_id =
-        Math.max(0, ...state.schedules.map(({ id }) => id)) + 1;
+      const schedule_id = Math.max(0, ...(state.schedules.ids as number[])) + 1;
+      schedules.adapter.addOne(state.schedules, {
+        ...action.payload.schedule,
+        id: schedule_id,
+      });
       const assignment_id =
-        Math.max(0, ...state.assignments.map(({ id }) => id)) + 1;
-      state.assignments.push(
-        ...action.payload.new_assignments.map((new_assignment, index) => ({
+        Math.max(0, ...(state.assignments.ids as number[])) + 1;
+      assignments.adapter.addMany(
+        state.assignments,
+        action.payload.new_assignments.map((new_assignment, index) => ({
           ...new_assignment,
           id: assignment_id + index,
           schedule_id,
         }))
       );
-      state.schedules.push({
-        id: schedule_id,
-        term_id: action.payload.term_id,
-      });
     },
-    deleteTerm: (
-      state,
-      action: PayloadAction<{
-        id: number;
-      }>
-    ) => {
+    removeTerm: (state, action: PayloadAction<number>) => {
       const deleted_group_ids = new Set(
-        state.groups
-          .filter(({ term_id }) => term_id === action.payload.id)
-          .map(({ id }) => id)
+        state.groups.ids.filter(
+          (id) => state.groups.entities[id]?.term_id === action.payload
+        )
       );
-      const deleted_constraint0_ids = new Set(
-        state.constraints0
-          .filter(({ term_id }) => term_id === action.payload.id)
-          .map(({ id }) => id)
+      const deleted_constraint0_ids = state.constraints0.ids.filter(
+        (id) => state.constraints0.entities[id]?.term_id === action.payload
       );
       const deleted_schedule_ids = new Set(
-        state.schedules
-          .filter(({ term_id }) => term_id === action.payload.id)
-          .map(({ id }) => id)
-      );
-      return {
-        ...state,
-        members: state.members.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        terms: state.terms.filter(({ id }) => id !== action.payload.id),
-        kinmus: state.kinmus.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        groups: state.groups.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        group_members: state.group_members.filter(
-          ({ group_id }) => !deleted_group_ids.has(group_id)
-        ),
-        constraints0: state.constraints0.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        constraint0_kinmus: state.constraint0_kinmus.filter(
-          ({ constraint0_id }) => !deleted_constraint0_ids.has(constraint0_id)
-        ),
-        constraints1: state.constraints1.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        constraints2: state.constraints2.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        constraints3: state.constraints3.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        constraints4: state.constraints4.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        constraints5: state.constraints5.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        constraints6: state.constraints6.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        constraints7: state.constraints7.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        constraints8: state.constraints8.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        constraints9: state.constraints9.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        constraints10: state.constraints10.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        schedules: state.schedules.filter(
-          ({ term_id }) => term_id !== action.payload.id
-        ),
-        assignments: state.assignments.filter(
-          ({ schedule_id }) => !deleted_schedule_ids.has(schedule_id)
-        ),
-      };
-    },
-    deleteMember: (
-      state,
-      action: PayloadAction<{
-        id: number;
-      }>
-    ) => {
-      const filtered_assignments = state.assignments.filter(
-        ({ member_id }) => member_id !== action.payload.id
-      );
-      const filtered_assignment_schedule_ids = Array.from(
-        new Set(filtered_assignments.map(({ schedule_id }) => schedule_id))
-      );
-      return {
-        ...state,
-        assignments: filtered_assignments,
-        constraints10: state.constraints10.filter(
-          (c) => c.member_id !== action.payload.id
-        ),
-        constraints3: state.constraints3.filter(
-          (c) => c.member_id !== action.payload.id
-        ),
-        constraints4: state.constraints4.filter(
-          (c) => c.member_id !== action.payload.id
-        ),
-        constraints9: state.constraints9.filter(
-          (c) => c.member_id !== action.payload.id
-        ),
-        group_members: state.group_members.filter(
-          ({ member_id }) => member_id !== action.payload.id
-        ),
-        members: state.members.filter(({ id }) => id !== action.payload.id),
-        schedules: state.schedules.filter(({ id }) =>
-          filtered_assignment_schedule_ids.includes(id)
-        ),
-      };
-    },
-    deleteGroup: (
-      state,
-      action: PayloadAction<{
-        id: number;
-      }>
-    ) => {
-      return {
-        ...state,
-        constraints1: state.constraints1.filter(
-          (c) => c.group_id !== action.payload.id
-        ),
-        constraints2: state.constraints2.filter(
-          (c) => c.group_id !== action.payload.id
-        ),
-        group_members: state.group_members.filter(
-          ({ group_id }) => group_id !== action.payload.id
-        ),
-        groups: state.groups.filter(({ id }) => id !== action.payload.id),
-      };
-    },
-    deleteKinmu: (
-      state,
-      action: PayloadAction<{
-        id: number;
-      }>
-    ) => {
-      const deleted_constraint0_ids = Array.from(
-        new Set(
-          state.constraint0_kinmus
-            .filter(({ kinmu_id }) => kinmu_id === action.payload.id)
-            .map(({ constraint0_id }) => constraint0_id)
+        state.schedules.ids.filter(
+          (id) => state.schedules.entities[id]?.term_id === action.payload
         )
       );
-      const deleted_schedule_ids = Array.from(
-        new Set(
-          state.assignments
-            .filter(({ kinmu_id }) => kinmu_id === action.payload.id)
-            .map(({ schedule_id }) => schedule_id)
+      terms.adapter.removeOne(state.terms, action.payload);
+      members.adapter.removeMany(
+        state.members,
+        state.members.ids.filter(
+          (id) => state.members.entities[id]?.term_id === action.payload
         )
       );
-      return {
-        ...state,
-        assignments: state.assignments.filter(
-          (assignment) => !deleted_schedule_ids.includes(assignment.schedule_id)
-        ),
-        constraint0_kinmus: state.constraint0_kinmus.filter(
-          ({ kinmu_id }) => kinmu_id !== action.payload.id
-        ),
-        constraints0: state.constraints0.filter(
-          (c) => !deleted_constraint0_ids.includes(c.id)
-        ),
-        constraints1: state.constraints1.filter(
-          (c) => c.kinmu_id !== action.payload.id
-        ),
-        constraints10: state.constraints10.filter(
-          (c) => c.kinmu_id !== action.payload.id
-        ),
-        constraints2: state.constraints2.filter(
-          (c) => c.kinmu_id !== action.payload.id
-        ),
-        constraints3: state.constraints3.filter(
-          (c) => c.kinmu_id !== action.payload.id
-        ),
-        constraints4: state.constraints4.filter(
-          (c) => c.kinmu_id !== action.payload.id
-        ),
-        constraints5: state.constraints5.filter(
-          (c) => c.kinmu_id !== action.payload.id
-        ),
-        constraints6: state.constraints6.filter(
-          (c) => c.kinmu_id !== action.payload.id
-        ),
-        constraints7: state.constraints7.filter(
-          (c) => c.kinmu_id !== action.payload.id
-        ),
-        constraints8: state.constraints8.filter(
-          (c) => c.kinmu_id !== action.payload.id
-        ),
-        constraints9: state.constraints9.filter(
-          (c) => c.kinmu_id !== action.payload.id
-        ),
-        kinmus: state.kinmus.filter(({ id }) => id !== action.payload.id),
-        schedules: state.schedules.filter(
-          ({ id }) => !deleted_schedule_ids.includes(id)
-        ),
-      };
-    },
-    deleteConstraint0: (
-      state,
-      action: PayloadAction<{
-        id: number;
-      }>
-    ) => {
-      return {
-        ...state,
-        constraint0_kinmus: state.constraint0_kinmus.filter(
-          ({ constraint0_id }) => constraint0_id !== action.payload.id
-        ),
-        constraints0: state.constraints0.filter(
-          (c) => c.id !== action.payload.id
-        ),
-      };
-    },
-    deleteConstraint0Kinmu: (
-      state,
-      action: PayloadAction<{
-        id: number;
-      }>
-    ) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const deleted_constraint0_kinmu = state.constraint0_kinmus.find(
-        ({ id }) => id === action.payload.id
-      )!;
-      const filtered_constraint0_kinmus = state.constraint0_kinmus.filter(
-        ({ id }) => id !== action.payload.id
+      kinmus.adapter.removeMany(
+        state.kinmus,
+        state.kinmus.ids.filter(
+          (id) => state.kinmus.entities[id]?.term_id === action.payload
+        )
       );
-      const filtered_constraint0_kinmu_constraint0_ids = Array.from(
-        new Set(
-          filtered_constraint0_kinmus.map(
-            ({ constraint0_id }) => constraint0_id
+      groups.adapter.removeMany(
+        state.groups,
+        state.groups.ids.filter(
+          (id) => state.groups.entities[id]?.term_id === action.payload
+        )
+      );
+      group_members.adapter.removeMany(
+        state.group_members,
+        state.group_members.ids.filter((id) =>
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          deleted_group_ids.has(state.group_members.entities[id]!.group_id)
+        )
+      );
+      constraints0.adapter.removeMany(
+        state.constraints0,
+        deleted_constraint0_ids
+      );
+      constraint0_kinmus.adapter.removeMany(
+        state.constraint0_kinmus,
+        state.constraint0_kinmus.ids.filter((id) =>
+          deleted_constraint0_ids.includes(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            state.constraint0_kinmus.entities[id]!.constraint0_id
           )
         )
       );
-      return {
-        ...state,
-        constraint0_kinmus: filtered_constraint0_kinmus.map((c_kinmu) => {
-          if (
-            c_kinmu.constraint0_id !== deleted_constraint0_kinmu.constraint0_id
-          ) {
-            return c_kinmu;
-          }
-          const sequence_number =
-            c_kinmu.sequence_number < deleted_constraint0_kinmu.sequence_number
-              ? c_kinmu.sequence_number
-              : c_kinmu.sequence_number - 1;
-          return { ...c_kinmu, sequence_number };
-        }),
-        constraints0: state.constraints0.filter(({ id }) =>
-          filtered_constraint0_kinmu_constraint0_ids.includes(id)
-        ),
-      };
+      constraints1.adapter.removeMany(
+        state.constraints1,
+        state.constraints1.ids.filter(
+          (id) => state.constraints1.entities[id]?.term_id === action.payload
+        )
+      );
+      constraints2.adapter.removeMany(
+        state.constraints2,
+        state.constraints2.ids.filter(
+          (id) => state.constraints2.entities[id]?.term_id === action.payload
+        )
+      );
+      constraints3.adapter.removeMany(
+        state.constraints3,
+        state.constraints3.ids.filter(
+          (id) => state.constraints3.entities[id]?.term_id === action.payload
+        )
+      );
+      constraints4.adapter.removeMany(
+        state.constraints4,
+        state.constraints4.ids.filter(
+          (id) => state.constraints4.entities[id]?.term_id === action.payload
+        )
+      );
+      constraints5.adapter.removeMany(
+        state.constraints5,
+        state.constraints5.ids.filter(
+          (id) => state.constraints5.entities[id]?.term_id === action.payload
+        )
+      );
+      constraints6.adapter.removeMany(
+        state.constraints6,
+        state.constraints6.ids.filter(
+          (id) => state.constraints6.entities[id]?.term_id === action.payload
+        )
+      );
+      constraints7.adapter.removeMany(
+        state.constraints7,
+        state.constraints7.ids.filter(
+          (id) => state.constraints7.entities[id]?.term_id === action.payload
+        )
+      );
+      constraints8.adapter.removeMany(
+        state.constraints8,
+        state.constraints8.ids.filter(
+          (id) => state.constraints8.entities[id]?.term_id === action.payload
+        )
+      );
+      constraints9.adapter.removeMany(
+        state.constraints9,
+        state.constraints9.ids.filter(
+          (id) => state.constraints9.entities[id]?.term_id === action.payload
+        )
+      );
+      constraints10.adapter.removeMany(
+        state.constraints10,
+        state.constraints10.ids.filter(
+          (id) => state.constraints10.entities[id]?.term_id === action.payload
+        )
+      );
+      schedules.adapter.removeMany(
+        state.schedules,
+        state.schedules.ids.filter(
+          (id) => state.schedules.entities[id]?.term_id !== action.payload
+        )
+      );
+      assignments.adapter.removeMany(
+        state.assignments,
+        state.assignments.ids.filter((id) =>
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          deleted_schedule_ids.has(state.assignments.entities[id]!.schedule_id)
+        )
+      );
     },
-    deleteSchedule: (
-      state,
-      action: PayloadAction<{
-        id: number;
-      }>
-    ) => {
-      return {
-        ...state,
-        assignments: state.assignments.filter(
-          ({ schedule_id }) => schedule_id !== action.payload.id
-        ),
-        schedules: state.schedules.filter(({ id }) => id !== action.payload.id),
-      };
+    removeMember: (state, action: PayloadAction<number>) => {
+      members.adapter.removeOne(state.members, action.payload);
+      const deleted_assignments = state.assignments.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.assignments.entities[id]!)
+        .filter(({ kinmu_id }) => kinmu_id === action.payload);
+      const deleted_assignment_ids = deleted_assignments.map(({ id }) => id);
+      const deleted_schedule_ids = deleted_assignments.map(
+        ({ schedule_id }) => schedule_id
+      );
+      group_members.adapter.removeMany(
+        state.group_members,
+        state.group_members.ids.filter(
+          (id) => state.group_members.entities[id]?.member_id === action.payload
+        )
+      );
+      constraints3.adapter.removeMany(
+        state.constraints3,
+        state.constraints3.ids.filter(
+          (id) => state.constraints3.entities[id]?.member_id === action.payload
+        )
+      );
+      constraints4.adapter.removeMany(
+        state.constraints4,
+        state.constraints4.ids.filter(
+          (id) => state.constraints4.entities[id]?.member_id === action.payload
+        )
+      );
+      constraints9.adapter.removeMany(
+        state.constraints9,
+        state.constraints9.ids.filter(
+          (id) => state.constraints9.entities[id]?.member_id === action.payload
+        )
+      );
+      constraints10.adapter.removeMany(
+        state.constraints10,
+        state.constraints10.ids.filter(
+          (id) => state.constraints10.entities[id]?.member_id === action.payload
+        )
+      );
+      schedules.adapter.removeMany(state.schedules, deleted_schedule_ids);
+      assignments.adapter.removeMany(state.assignments, deleted_assignment_ids);
+    },
+    deleteGroup: (state, action: PayloadAction<number>) => {
+      groups.adapter.removeOne(state.groups, action.payload);
+      constraints1.adapter.removeMany(
+        state.constraints1,
+        state.constraints1.ids.filter(
+          (id) => state.constraints1.entities[id]?.group_id === action.payload
+        )
+      );
+      constraints2.adapter.removeMany(
+        state.constraints2,
+        state.constraints2.ids.filter(
+          (id) => state.constraints2.entities[id]?.group_id === action.payload
+        )
+      );
+      group_members.adapter.removeMany(
+        state.group_members,
+        state.group_members.ids.filter(
+          (id) => state.group_members.entities[id]?.group_id === action.payload
+        )
+      );
+    },
+    removeKinmu: (state, action: PayloadAction<number>) => {
+      kinmus.adapter.removeOne(state.kinmus, action.payload);
+      const deleted_constraint0_ids = state.constraint0_kinmus.ids.filter(
+        (id) =>
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          state.constraint0_kinmus.entities[id]!.kinmu_id === action.payload
+      );
+      constraint0_kinmus.adapter.removeMany(
+        state.constraint0_kinmus,
+        deleted_constraint0_ids
+      );
+      constraints0.adapter.removeMany(
+        state.constraints0,
+        deleted_constraint0_ids
+      );
+      constraints1.adapter.removeMany(
+        state.constraints1,
+        state.constraints1.ids.filter(
+          (id) => state.constraints1.entities[id]?.kinmu_id === action.payload
+        )
+      );
+      constraints2.adapter.removeMany(
+        state.constraints2,
+        state.constraints2.ids.filter(
+          (id) => state.constraints2.entities[id]?.kinmu_id === action.payload
+        )
+      );
+      constraints3.adapter.removeMany(
+        state.constraints3,
+        state.constraints3.ids.filter(
+          (id) => state.constraints3.entities[id]?.kinmu_id === action.payload
+        )
+      );
+      constraints4.adapter.removeMany(
+        state.constraints4,
+        state.constraints4.ids.filter(
+          (id) => state.constraints4.entities[id]?.kinmu_id === action.payload
+        )
+      );
+      constraints5.adapter.removeMany(
+        state.constraints5,
+        state.constraints5.ids.filter(
+          (id) => state.constraints5.entities[id]?.kinmu_id === action.payload
+        )
+      );
+      constraints6.adapter.removeMany(
+        state.constraints6,
+        state.constraints6.ids.filter(
+          (id) => state.constraints6.entities[id]?.kinmu_id === action.payload
+        )
+      );
+      constraints7.adapter.removeMany(
+        state.constraints7,
+        state.constraints7.ids.filter(
+          (id) => state.constraints7.entities[id]?.kinmu_id === action.payload
+        )
+      );
+      constraints8.adapter.removeMany(
+        state.constraints8,
+        state.constraints8.ids.filter(
+          (id) => state.constraints8.entities[id]?.kinmu_id === action.payload
+        )
+      );
+      constraints9.adapter.removeMany(
+        state.constraints9,
+        state.constraints9.ids.filter(
+          (id) => state.constraints9.entities[id]?.kinmu_id === action.payload
+        )
+      );
+      constraints10.adapter.removeMany(
+        state.constraints10,
+        state.constraints10.ids.filter(
+          (id) => state.constraints10.entities[id]?.kinmu_id === action.payload
+        )
+      );
+      const deleted_assignments = state.assignments.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.assignments.entities[id]!)
+        .filter(({ kinmu_id }) => kinmu_id === action.payload);
+      const deleted_assignment_ids = deleted_assignments.map(({ id }) => id);
+      assignments.adapter.removeMany(state.assignments, deleted_assignment_ids);
+      const deleted_schedule_ids = deleted_assignments.map(
+        ({ schedule_id }) => schedule_id
+      );
+      schedules.adapter.removeMany(state.schedules, deleted_schedule_ids);
+    },
+    removeConstraint0: (state, action: PayloadAction<number>) => {
+      constraints0.adapter.removeOne(state.constraints0, action.payload);
+      constraint0_kinmus.adapter.removeMany(
+        state.constraint0_kinmus,
+        state.constraint0_kinmus.ids.filter(
+          (id) =>
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            state.constraint0_kinmus.entities[id]!.constraint0_id ===
+            action.payload
+        )
+      );
+    },
+    removeConstraint0Kinmu: (state, action: PayloadAction<number>) => {
+      const deleted_constraint0_kinmu =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        state.constraint0_kinmus.entities[action.payload]!;
+      constraint0_kinmus.adapter.removeOne(
+        state.constraint0_kinmus,
+        action.payload
+      );
+      const updatedConstraint0Kinmus: Update<constraint0_kinmus.Constraint0Kinmu>[] =
+        state.constraint0_kinmus.ids
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          .map((id) => state.constraint0_kinmus.entities[id]!)
+          .filter(
+            (c) =>
+              c.constraint0_id === deleted_constraint0_kinmu.constraint0_id &&
+              c.sequence_number >= deleted_constraint0_kinmu.sequence_number
+          )
+          .map((c) => ({
+            id: c.id,
+            changes: {
+              sequence_number: c.sequence_number - 1,
+            },
+          }));
+      constraint0_kinmus.adapter.updateMany(
+        state.constraint0_kinmus,
+        updatedConstraint0Kinmus
+      );
+    },
+    removeSchedule: (state, action: PayloadAction<number>) => {
+      schedules.adapter.removeOne(state.schedules, action.payload);
+      assignments.adapter.removeMany(
+        state.assignments,
+        state.assignments.ids.filter(
+          (id) => state.assignments.entities[id]?.schedule_id === action.payload
+        )
+      );
     },
   },
 });
@@ -770,16 +982,16 @@ export const {
   replaceAll,
   importData,
   createMember,
-  createGroup,
+  addGroup,
   createConstraint0,
   createSchedule,
-  deleteTerm,
-  deleteMember,
+  removeTerm,
+  removeMember,
   deleteGroup,
-  deleteKinmu,
-  deleteConstraint0,
-  deleteConstraint0Kinmu,
-  deleteSchedule,
+  removeKinmu,
+  removeConstraint0,
+  removeConstraint0Kinmu,
+  removeSchedule,
 } = all.actions;
 
 const combinedReducer = combineReducers({

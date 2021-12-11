@@ -15,10 +15,11 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import * as all from "../modules/all";
-import { RootState } from "../modules/store";
+import * as groups from "../modules/groups";
+import * as members from "../modules/members";
 import Member from "./Member";
 
 const PREFIX = "Members";
@@ -49,34 +50,32 @@ type ErrorMessages = {
   newMemberName: string[];
 };
 
-function select(state: RootState) {
-  return {
-    groups: state.present.groups,
-    members: state.present.members,
-  };
-}
-
 function Members(): JSX.Element {
-  const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
-  if (!termIdName) throw new Error("!termIdName");
-  const termId = parseInt(termIdName, 10);
-  const initialState = {
-    creationDialogIsOpen: false,
-    newMemberGroupIds: [],
-    newMemberIsEnabled: true,
-    newMemberName: "",
-  };
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const termId = parseInt(termIdName!, 10);
+  const dispatch = useDispatch();
+  const selectedMembers = useSelector(members.selectors.selectAll);
+  const selectedGroups = useSelector(groups.selectors.selectAll);
+  const membersInTerm = selectedMembers.filter(
+    ({ term_id }) => term_id === termId
+  );
+  const groupsInTerm = React.useMemo(
+    () => selectedGroups.filter(({ term_id }) => term_id === termId),
+    [selectedGroups, termId]
+  );
+  const initialState = React.useMemo(
+    () => ({
+      creationDialogIsOpen: false,
+      newMemberGroupIds: [],
+      newMemberIsEnabled: true,
+      newMemberName: "",
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [groupsInTerm]
+  );
   const [state, setState] = React.useState<State>(initialState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setState(initialState), [termId]);
-  const membersInTerm = selected.members.filter(
-    ({ term_id }) => term_id === termId
-  );
-  const groupsInTerm = selected.groups.filter(
-    ({ term_id }) => term_id === termId
-  );
+  React.useEffect(() => setState(initialState), [initialState]);
   const handleClickOpenCreationDialog = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
@@ -126,9 +125,11 @@ function Members(): JSX.Element {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
       all.createMember({
-        term_id: termId,
-        is_enabled: state.newMemberIsEnabled,
-        name: state.newMemberName,
+        member: {
+          term_id: termId,
+          is_enabled: state.newMemberIsEnabled,
+          name: state.newMemberName,
+        },
         group_ids: state.newMemberGroupIds,
       })
     );

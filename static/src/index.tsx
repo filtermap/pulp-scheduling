@@ -16,10 +16,8 @@ import "typeface-roboto";
 import { blue, teal } from "@mui/material/colors";
 import Layout from "./components/Layout";
 import * as store from "./modules/store";
-import * as utils from "./utils";
 
 async function main() {
-  const initialState = (await utils.sendJSONRPCRequest("read_all")).result;
   const theme = createTheme({
     palette: {
       primary: blue,
@@ -31,7 +29,7 @@ async function main() {
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Provider store={store.createStore(initialState)}>
+          <Provider store={store.store}>
             <Router>
               <Layout />
             </Router>

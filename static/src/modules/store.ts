@@ -7,13 +7,11 @@ const reducer = undoable(all.reducer);
 export type RootState = ReturnType<typeof reducer>;
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const createStore = (preloadedState: RootState) =>
-  configureStore({
-    reducer,
-    preloadedState,
-  });
+export const store = configureStore({
+  reducer,
+});
 
-export type AppDispatch = ReturnType<typeof createStore>["dispatch"];
+export type AppDispatch = typeof store.dispatch;
 // export type AppThunk<ReturnType = void> = ThunkAction<
 //   ReturnType,
 //   RootState,

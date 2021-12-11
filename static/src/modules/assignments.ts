@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "./store";
 
 export type Assignment = {
   id: number;
@@ -8,11 +9,15 @@ export type Assignment = {
   kinmu_id: number;
 };
 
-const initialState: Assignment[] = [];
+export const adapter = createEntityAdapter<Assignment>();
+
+export const selectors = adapter.getSelectors<RootState>(
+  (state) => state.present.assignments
+);
 
 const assignments = createSlice({
   name: "assignments",
-  initialState,
+  initialState: adapter.getInitialState(),
   reducers: {},
 });
 

@@ -14,10 +14,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import * as all from "../modules/all";
-import { RootState } from "../modules/store";
+import * as constraints0 from "../modules/constraints0";
+import * as kinmus from "../modules/kinmus";
 import Constraint0 from "./Constraint0";
 
 const PREFIX = "Constraints0";
@@ -50,34 +51,31 @@ type State = {
   newConstraint0Constraint0KinmuKinmuIds: number[];
 };
 
-function select(state: RootState) {
-  return {
-    constraints0: state.present.constraints0,
-    kinmus: state.present.kinmus,
-  };
-}
-
 function Constraints0(): JSX.Element {
-  const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
-  if (!termIdName) throw new Error("!termIdName");
-  const termId = parseInt(termIdName, 10);
-  const constraints0InTerm = selected.constraints0.filter(
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const termId = parseInt(termIdName!, 10);
+  const dispatch = useDispatch();
+  const selectedConstraints0 = useSelector(constraints0.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const constraints0InTerm = selectedConstraints0.filter(
     ({ term_id }) => term_id === termId
   );
-  const kinmusInTerm = selected.kinmus.filter(
-    ({ term_id }) => term_id === termId
+  const kinmusInTerm = React.useMemo(
+    () => selectedKinmus.filter(({ term_id }) => term_id === termId),
+    [selectedKinmus, termId]
   );
-  const initialState = {
-    creationDialogIsOpen: false,
-    newConstraint0Constraint0KinmuKinmuIds:
-      kinmusInTerm.length > 0 ? [kinmusInTerm[0].id, kinmusInTerm[0].id] : [],
-    newConstraint0IsEnabled: true,
-  };
+  const initialState = React.useMemo(
+    () => ({
+      creationDialogIsOpen: false,
+      newConstraint0Constraint0KinmuKinmuIds:
+        kinmusInTerm.length > 0 ? [kinmusInTerm[0].id, kinmusInTerm[0].id] : [],
+      newConstraint0IsEnabled: true,
+    }),
+    [kinmusInTerm]
+  );
   const [state, setState] = React.useState<State>(initialState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setState(initialState), [termId]);
+  React.useEffect(() => setState(initialState), [initialState]);
   const handleClickOpenCreationDialog = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
@@ -137,8 +135,10 @@ function Constraints0(): JSX.Element {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
       all.createConstraint0({
-        term_id: termId,
-        is_enabled: state.newConstraint0IsEnabled,
+        constraint0: {
+          term_id: termId,
+          is_enabled: state.newConstraint0IsEnabled,
+        },
         kinmu_ids: state.newConstraint0Constraint0KinmuKinmuIds,
       })
     );
@@ -173,9 +173,9 @@ function Constraints0(): JSX.Element {
         >
           <DialogTitle>連続禁止勤務並びを追加できません</DialogTitle>
           <DialogContent>
-            {kinmusInTerm.length === 0 ? (
+            {kinmusInTerm.length === 0 && (
               <DialogContentText>勤務がありません</DialogContentText>
-            ) : null}
+            )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>

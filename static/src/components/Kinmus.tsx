@@ -11,10 +11,9 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import * as kinmus from "../modules/kinmus";
-import { RootState } from "../modules/store";
 import Kinmu from "./Kinmu";
 
 const PREFIX = "Kinmus";
@@ -44,18 +43,12 @@ type ErrorMessages = {
   newKinmuName: string[];
 };
 
-function select(state: RootState) {
-  return {
-    kinmus: state.present.kinmus,
-  };
-}
-
 function Kinmus(): JSX.Element {
-  const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
-  if (!termIdName) throw new Error("!termIdName");
-  const termId = parseInt(termIdName, 10);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const termId = parseInt(termIdName!, 10);
+  const dispatch = useDispatch();
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const initialState = {
     creationDialogIsOpen: false,
     newKinmuIsEnabled: true,
@@ -64,7 +57,7 @@ function Kinmus(): JSX.Element {
   const [state, setState] = React.useState<State>(initialState);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => setState(initialState), [termId]);
-  const kinmusInTerm = selected.kinmus.filter(
+  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === termId
   );
   const handleClickOpenCreationDialog = () => {
@@ -98,7 +91,7 @@ function Kinmus(): JSX.Element {
   const handleClickCreateKinmu = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      kinmus.createKinmu({
+      kinmus.add({
         term_id: termId,
         is_enabled: state.newKinmuIsEnabled,
         name: state.newKinmuName,

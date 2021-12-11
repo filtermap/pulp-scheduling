@@ -1,4 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSlice,
+  PayloadAction,
+  Update,
+} from "@reduxjs/toolkit";
+import { RootState } from "./store";
 
 export type Constraint0Kinmu = {
   id: number;
@@ -7,13 +13,17 @@ export type Constraint0Kinmu = {
   kinmu_id: number;
 };
 
-const initialState: Constraint0Kinmu[] = [];
+export const adapter = createEntityAdapter<Constraint0Kinmu>();
+
+export const selectors = adapter.getSelectors<RootState>(
+  (state) => state.present.constraint0_kinmus
+);
 
 const constraint0_kinmus = createSlice({
   name: "constraint0_kinmus",
-  initialState,
+  initialState: adapter.getInitialState(),
   reducers: {
-    createConstraint0Kinmu: (
+    add: (
       state,
       action: PayloadAction<{
         constraint0_id: number;
@@ -21,35 +31,30 @@ const constraint0_kinmus = createSlice({
         kinmu_id: number;
       }>
     ) => {
-      for (const c_kinmu of state) {
-        if (c_kinmu.constraint0_id !== action.payload.constraint0_id) continue;
-        if (c_kinmu.sequence_number < action.payload.sequence_number) continue;
-        c_kinmu.sequence_number++;
-      }
-      state.push({
-        constraint0_id: action.payload.constraint0_id,
-        id: Math.max(0, ...state.map(({ id }) => id)) + 1,
-        kinmu_id: action.payload.kinmu_id,
-        sequence_number: action.payload.sequence_number,
+      const updatedConstraint0Kinmus: Update<Constraint0Kinmu>[] = state.ids
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((id) => state.entities[id]!)
+        .filter(
+          (c) =>
+            c.constraint0_id === action.payload.constraint0_id &&
+            c.sequence_number >= action.payload.sequence_number
+        )
+        .map((c) => ({
+          id: c.id,
+          changes: {
+            sequence_number: c.sequence_number + 1,
+          },
+        }));
+      adapter.updateMany(state, updatedConstraint0Kinmus);
+      adapter.addOne(state, {
+        ...action.payload,
+        id: Math.max(0, ...(state.ids as number[])) + 1,
       });
     },
-    updateConstraint0KinmuKinmuId: (
-      state,
-      action: PayloadAction<{
-        id: number;
-        kinmu_id: number;
-      }>
-    ) => {
-      for (const c_kinmu of state) {
-        if (c_kinmu.id !== action.payload.id) continue;
-        c_kinmu.kinmu_id = action.payload.kinmu_id;
-        break;
-      }
-    },
+    update: adapter.updateOne,
   },
 });
 
-export const { createConstraint0Kinmu, updateConstraint0KinmuKinmuId } =
-  constraint0_kinmus.actions;
+export const { add, update } = constraint0_kinmus.actions;
 
 export const { reducer } = constraint0_kinmus;

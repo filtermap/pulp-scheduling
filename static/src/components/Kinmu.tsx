@@ -18,10 +18,23 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as all from "../modules/all";
 import * as kinmus from "../modules/kinmus";
-import { RootState } from "../modules/store";
+import * as assignments from "../modules/assignments";
+import * as constraint0_kinmus from "../modules/constraint0_kinmus";
+import * as constraints1 from "../modules/constraints1";
+import * as constraints10 from "../modules/constraints10";
+import * as constraints2 from "../modules/constraints2";
+import * as constraints3 from "../modules/constraints3";
+import * as constraints4 from "../modules/constraints4";
+import * as constraints5 from "../modules/constraints5";
+import * as constraints6 from "../modules/constraints6";
+import * as constraints7 from "../modules/constraints7";
+import * as constraints8 from "../modules/constraints8";
+import * as constraints9 from "../modules/constraints9";
+import * as groups from "../modules/groups";
+import * as members from "../modules/members";
 
 const PREFIX = "Kinmu";
 
@@ -56,77 +69,73 @@ type ErrorMessages = {
   kinmuName: string[];
 };
 
-function select(state: RootState) {
-  return {
-    assignments: state.present.assignments,
-    constraint0_kinmus: state.present.constraint0_kinmus,
-    constraints1: state.present.constraints1,
-    constraints10: state.present.constraints10,
-    constraints2: state.present.constraints2,
-    constraints3: state.present.constraints3,
-    constraints4: state.present.constraints4,
-    constraints5: state.present.constraints5,
-    constraints6: state.present.constraints6,
-    constraints7: state.present.constraints7,
-    constraints8: state.present.constraints8,
-    constraints9: state.present.constraints9,
-    groups: state.present.groups,
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-  };
-}
-
 function Kinmu(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedAssignments = useSelector(assignments.selectors.selectAll);
+  const selectedConstraint0Kinmus = useSelector(
+    constraint0_kinmus.selectors.selectAll
+  );
+  const selectedConstraints1 = useSelector(constraints1.selectors.selectAll);
+  const selectedConstraints10 = useSelector(constraints10.selectors.selectAll);
+  const selectedConstraints2 = useSelector(constraints2.selectors.selectAll);
+  const selectedConstraints3 = useSelector(constraints3.selectors.selectAll);
+  const selectedConstraints4 = useSelector(constraints4.selectors.selectAll);
+  const selectedConstraints5 = useSelector(constraints5.selectors.selectAll);
+  const selectedConstraints6 = useSelector(constraints6.selectors.selectAll);
+  const selectedConstraints7 = useSelector(constraints7.selectors.selectAll);
+  const selectedConstraints8 = useSelector(constraints8.selectors.selectAll);
+  const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
+  const selectedGroups = useSelector(groups.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedMembers = useSelector(members.selectors.selectAll);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
-  const kinmusInTerm = selected.kinmus.filter(
+  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
   const kinmuIdsInTerm = new Set(kinmusInTerm.map(({ id }) => id));
-  const assignmentsInTerm = selected.assignments.filter(({ kinmu_id }) =>
+  const assignmentsInTerm = selectedAssignments.filter(({ kinmu_id }) =>
     kinmuIdsInTerm.has(kinmu_id)
   );
-  const constraint0KinmusInTerm = selected.constraint0_kinmus.filter(
+  const constraint0KinmusInTerm = selectedConstraint0Kinmus.filter(
     ({ kinmu_id }) => kinmuIdsInTerm.has(kinmu_id)
   );
-  const constraints1InTerm = selected.constraints1.filter(
+  const constraints1InTerm = selectedConstraints1.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
-  const constraints2InTerm = selected.constraints2.filter(
+  const constraints2InTerm = selectedConstraints2.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
-  const constraints3InTerm = selected.constraints3.filter(
+  const constraints3InTerm = selectedConstraints3.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
-  const constraints4InTerm = selected.constraints4.filter(
+  const constraints4InTerm = selectedConstraints4.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
-  const constraints5InTerm = selected.constraints5.filter(
+  const constraints5InTerm = selectedConstraints5.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
-  const constraints6InTerm = selected.constraints6.filter(
+  const constraints6InTerm = selectedConstraints6.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
-  const constraints7InTerm = selected.constraints7.filter(
+  const constraints7InTerm = selectedConstraints7.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
-  const constraints8InTerm = selected.constraints8.filter(
+  const constraints8InTerm = selectedConstraints8.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
-  const constraints9InTerm = selected.constraints9.filter(
+  const constraints9InTerm = selectedConstraints9.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
-  const constraints10InTerm = selected.constraints10.filter(
+  const constraints10InTerm = selectedConstraints10.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
-  const membersInTerm = selected.members.filter(
+  const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
-  const groupsInTerm = selected.groups.filter(
+  const groupsInTerm = selectedGroups.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
   const handleClickExpand = () => {
@@ -136,9 +145,11 @@ function Kinmu(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      kinmus.updateKinmuIsEnabled({
+      kinmus.update({
         id: props.kinmu.id,
-        is_enabled: event.target.checked,
+        changes: {
+          is_enabled: event.target.checked,
+        },
       })
     );
   };
@@ -155,9 +166,11 @@ function Kinmu(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      kinmus.updateKinmuName({
+      kinmus.update({
         id: props.kinmu.id,
-        name: event.target.value,
+        changes: {
+          name: event.target.value,
+        },
       })
     );
   };
@@ -169,7 +182,7 @@ function Kinmu(props: Props): JSX.Element {
   };
   const handleClickDeleteKinmu = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteKinmu({ id: props.kinmu.id }));
+    dispatch(all.removeKinmu(props.kinmu.id));
   };
   const kinmuScheduleIds = Array.from(
     new Set(

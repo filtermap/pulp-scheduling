@@ -9,7 +9,7 @@ import TextField from "@mui/material/TextField";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -24,7 +24,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import * as all from "../modules/all";
 import * as utils from "../utils";
 import * as terms from "../modules/terms";
-import { RootState } from "../modules/store";
 
 const PREFIX = "Term";
 
@@ -52,7 +51,7 @@ type Props = {
 
 type State = {
   expanded: boolean;
-  selectedTermId: number;
+  selectedTermId: number | undefined;
   importDataDialogIsOpen: boolean;
   deletionDialogIsOpen: boolean;
 };
@@ -62,21 +61,22 @@ type ErrorMessages = {
   termStopDateName: string[];
 };
 
-function select(state: RootState) {
-  return {
-    terms: state.present.terms,
-  };
-}
-
 function Term(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
-  const selectableTerms = selected.terms.filter(
-    ({ id, is_enabled }) => is_enabled && id !== props.term.id
+  const selectedTerms = useSelector(terms.selectors.selectAll);
+  const selectableTerms = React.useMemo(
+    () =>
+      selectedTerms.filter(
+        (term) => term.id !== props.term.id && term.is_enabled
+      ),
+    [props.term.id, selectedTerms]
   );
-  const initialSelectedTermId = Math.max(
-    0,
-    ...selectableTerms.map(({ id }) => id)
+  const initialSelectedTermId = React.useMemo(
+    () =>
+      selectableTerms.length > 0
+        ? selectableTerms[selectableTerms.length - 1].id
+        : undefined,
+    [selectableTerms]
   );
   const initialState = React.useMemo(
     () => ({
@@ -96,9 +96,11 @@ function Term(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      terms.updateTermIsEnabled({
+      terms.update({
         id: props.term.id,
-        is_enabled: event.target.checked,
+        changes: {
+          is_enabled: event.target.checked,
+        },
       })
     );
   };
@@ -122,9 +124,11 @@ function Term(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      terms.updateTermStartDateName({
+      terms.update({
         id: props.term.id,
-        start_date_name: event.target.value,
+        changes: {
+          start_date_name: event.target.value,
+        },
       })
     );
   };
@@ -132,9 +136,11 @@ function Term(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      terms.updateTermStopDateName({
+      terms.update({
         id: props.term.id,
-        stop_date_name: event.target.value,
+        changes: {
+          stop_date_name: event.target.value,
+        },
       })
     );
   };
@@ -154,7 +160,8 @@ function Term(props: Props): JSX.Element {
     setState((state) => ({ ...state, importDataDialogIsOpen: false }));
     dispatch(
       all.importData({
-        from_term_id: state.selectedTermId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        from_term_id: state.selectedTermId!,
         into_term_id: props.term.id,
       })
     );
@@ -167,7 +174,7 @@ function Term(props: Props): JSX.Element {
   };
   const handleClickDeleteTerm = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteTerm({ id: props.term.id }));
+    dispatch(all.removeTerm(props.term.id));
   };
   const title = `${props.term.start_date_name}から${props.term.stop_date_name}まで`;
   const errorMessages = validate(
@@ -314,15 +321,17 @@ function Term(props: Props): JSX.Element {
                   onChange={handleChangeTermId}
                   fullWidth={true}
                 >
-                  {selectableTerms.map((term) => (
-                    <MenuItem key={term.id} value={term.id}>
-                      {
-                        <span>
-                          {`${term.start_date_name}から${term.stop_date_name}まで`}
-                        </span>
-                      }
-                    </MenuItem>
-                  ))}
+                  {selectableTerms.map(
+                    ({ id, start_date_name, stop_date_name }) => (
+                      <MenuItem key={id} value={id}>
+                        {
+                          <span>
+                            {`${start_date_name}から${stop_date_name}まで`}
+                          </span>
+                        }
+                      </MenuItem>
+                    )
+                  )}
                 </TextField>
               </Grid>
               <Grid item={true} xs={12}>

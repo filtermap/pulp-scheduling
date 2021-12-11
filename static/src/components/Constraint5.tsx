@@ -19,9 +19,10 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as constraints5 from "../modules/constraints5";
-import { RootState } from "../modules/store";
+import * as kinmus from "../modules/kinmus";
+import { useAppSelector } from "../modules/hooks";
 
 const PREFIX = "Constraint5";
 
@@ -62,21 +63,18 @@ type State = {
 type ErrorMessages = {
   constraint5MinNumberOfDays: string[];
 };
-
-function select(state: RootState) {
-  return {
-    kinmus: state.present.kinmus,
-  };
-}
-
 function Constraint5(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedKinmu = useAppSelector(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (state) => kinmus.selectors.selectById(state, props.constraint5.kinmu_id)!
+  );
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
-  const kinmusInTerm = selected.kinmus.filter(
+  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.constraint5.term_id
   );
   const handleClickExpand = () => {
@@ -86,9 +84,11 @@ function Constraint5(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints5.updateConstraint5IsEnabled({
+      constraints5.update({
         id: props.constraint5.id,
-        is_enabled: event.target.checked,
+        changes: {
+          is_enabled: event.target.checked,
+        },
       })
     );
   };
@@ -96,9 +96,11 @@ function Constraint5(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints5.updateConstraint5KinmuId({
+      constraints5.update({
         id: props.constraint5.id,
-        kinmu_id: parseInt(event.target.value, 10),
+        changes: {
+          kinmu_id: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -117,9 +119,11 @@ function Constraint5(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints5.updateConstraint5MinNumberOfDays({
+      constraints5.update({
         id: props.constraint5.id,
-        min_number_of_days: parseInt(event.target.value, 10),
+        changes: {
+          min_number_of_days: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -131,21 +135,17 @@ function Constraint5(props: Props): JSX.Element {
   };
   const handleClickDeleteConstraint5 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints5.deleteConstraint5({ id: props.constraint5.id }));
+    dispatch(constraints5.remove(props.constraint5.id));
   };
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const constraint5Kinmu = kinmusInTerm.find(
-    ({ id }) => id === props.constraint5.kinmu_id
-  )!;
-  const relativesAreEnabled = constraint5Kinmu.is_enabled;
+  const relativesAreEnabled = selectedKinmu.is_enabled;
   const title = (
     <>
       <span
         className={classnames({
-          [classes.lineThrough]: !constraint5Kinmu.is_enabled,
+          [classes.lineThrough]: !selectedKinmu.is_enabled,
         })}
       >
-        {constraint5Kinmu.name}
+        {selectedKinmu.name}
       </span>
       の連続日数を{props.constraint5.min_number_of_days}日以上にする
     </>

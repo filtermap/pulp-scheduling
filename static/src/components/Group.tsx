@@ -23,11 +23,14 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as all from "../modules/all";
 import * as group_members from "../modules/group_members";
 import * as groups from "../modules/groups";
-import { RootState } from "../modules/store";
+import * as constraints1 from "../modules/constraints1";
+import * as constraints2 from "../modules/constraints2";
+import * as kinmus from "../modules/kinmus";
+import * as members from "../modules/members";
 
 const PREFIX = "Group";
 
@@ -62,39 +65,33 @@ type ErrorMessages = {
   groupName: string[];
 };
 
-function select(state: RootState) {
-  return {
-    constraints1: state.present.constraints1,
-    constraints2: state.present.constraints2,
-    group_members: state.present.group_members,
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-  };
-}
-
 function Group(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedMembers = useSelector(members.selectors.selectAll);
+  const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
+  const selectedConstraints1 = useSelector(constraints1.selectors.selectAll);
+  const selectedConstraints2 = useSelector(constraints2.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const membersInTerm = selectedMembers.filter(
+    ({ term_id }) => term_id === props.group.term_id
+  );
+  const memberIdsInTerm = new Set(membersInTerm.map(({ id }) => id));
+  const groupMembersInTerm = selectedGroupMembers.filter(({ member_id }) =>
+    memberIdsInTerm.has(member_id)
+  );
+  const constraints1InTerm = selectedConstraints1.filter(
+    ({ term_id }) => term_id === props.group.term_id
+  );
+  const constraints2InTerm = selectedConstraints2.filter(
+    ({ term_id }) => term_id === props.group.term_id
+  );
+  const kinmusInTerm = selectedKinmus.filter(
+    ({ term_id }) => term_id === props.group.term_id
+  );
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
-  const membersInTerm = selected.members.filter(
-    ({ term_id }) => term_id === props.group.term_id
-  );
-  const memberIdsInTerm = new Set(membersInTerm.map(({ id }) => id));
-  const groupMembersInTerm = selected.group_members.filter(({ member_id }) =>
-    memberIdsInTerm.has(member_id)
-  );
-  const constraints1InTerm = selected.constraints1.filter(
-    ({ term_id }) => term_id === props.group.term_id
-  );
-  const constraints2InTerm = selected.constraints2.filter(
-    ({ term_id }) => term_id === props.group.term_id
-  );
-  const kinmusInTerm = selected.kinmus.filter(
-    ({ term_id }) => term_id === props.group.term_id
-  );
   const handleClickExpand = () => {
     setState((state) => ({ ...state, expanded: !state.expanded }));
   };
@@ -102,9 +99,11 @@ function Group(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      groups.updateGroupIsEnabled({
+      groups.update({
         id: props.group.id,
-        is_enabled: event.target.checked,
+        changes: {
+          is_enabled: event.target.checked,
+        },
       })
     );
   };
@@ -121,14 +120,19 @@ function Group(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      groups.updateGroupName({ id: props.group.id, name: event.target.value })
+      groups.update({
+        id: props.group.id,
+        changes: {
+          name: event.target.value,
+        },
+      })
     );
   };
   const handleChangeGroupMember = (memberId: number) => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
         dispatch(
-          group_members.createGroupMember({
+          group_members.add({
             group_id: props.group.id,
             member_id: memberId,
           })
@@ -136,7 +140,7 @@ function Group(props: Props): JSX.Element {
         return;
       }
       dispatch(
-        group_members.deleteGroupMember({
+        group_members.remove({
           group_id: props.group.id,
           member_id: memberId,
         })
@@ -151,7 +155,7 @@ function Group(props: Props): JSX.Element {
   };
   const handleClickDeleteGroup = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteGroup({ id: props.group.id }));
+    dispatch(all.deleteGroup(props.group.id));
   };
   const groupConstraints1 = constraints1InTerm.filter(
     (c) => c.group_id === props.group.id

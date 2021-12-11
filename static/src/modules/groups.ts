@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "./store";
 
 export type Group = {
   id: number;
@@ -7,35 +8,20 @@ export type Group = {
   name: string;
 };
 
-const initialState: Group[] = [];
+export const adapter = createEntityAdapter<Group>();
+
+export const selectors = adapter.getSelectors<RootState>(
+  (state) => state.present.groups
+);
 
 const groups = createSlice({
   name: "groups",
-  initialState,
+  initialState: adapter.getInitialState(),
   reducers: {
-    updateGroupIsEnabled: (
-      state,
-      action: PayloadAction<{ id: number; is_enabled: boolean }>
-    ) => {
-      for (const group of state) {
-        if (group.id !== action.payload.id) continue;
-        group.is_enabled = action.payload.is_enabled;
-        break;
-      }
-    },
-    updateGroupName: (
-      state,
-      action: PayloadAction<{ id: number; name: string }>
-    ) => {
-      for (const group of state) {
-        if (group.id !== action.payload.id) continue;
-        group.name = action.payload.name;
-        break;
-      }
-    },
+    update: adapter.updateOne,
   },
 });
 
-export const { updateGroupIsEnabled, updateGroupName } = groups.actions;
+export const { update } = groups.actions;
 
 export const { reducer } = groups;

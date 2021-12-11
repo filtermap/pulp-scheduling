@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "./store";
 
 export type Member = {
   id: number;
@@ -7,38 +8,20 @@ export type Member = {
   name: string;
 };
 
-const initialState: Member[] = [];
+export const adapter = createEntityAdapter<Member>();
+
+export const selectors = adapter.getSelectors<RootState>(
+  (state) => state.present.members
+);
 
 const members = createSlice({
   name: "members",
-  initialState,
+  initialState: adapter.getInitialState(),
   reducers: {
-    updateMemberIsEnabled: (
-      state,
-      action: PayloadAction<{
-        id: number;
-        is_enabled: boolean;
-      }>
-    ) => {
-      for (const member of state) {
-        if (member.id !== action.payload.id) continue;
-        member.is_enabled = action.payload.is_enabled;
-        break;
-      }
-    },
-    updateMemberName: (
-      state,
-      action: PayloadAction<{ id: number; name: string }>
-    ) => {
-      for (const member of state) {
-        if (member.id !== action.payload.id) continue;
-        member.name = action.payload.name;
-        break;
-      }
-    },
+    update: adapter.updateOne,
   },
 });
 
-export const { updateMemberIsEnabled, updateMemberName } = members.actions;
+export const { update } = members.actions;
 
 export const { reducer } = members;

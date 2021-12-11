@@ -19,10 +19,13 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as constraints9 from "../modules/constraints9";
-import { RootState } from "../modules/store";
 import * as utils from "../utils";
+import * as kinmus from "../modules/kinmus";
+import * as members from "../modules/members";
+import * as terms from "../modules/terms";
+import { useAppSelector } from "../modules/hooks";
 
 const PREFIX = "Constraint9";
 
@@ -65,28 +68,30 @@ type ErrorMessages = {
   constraint9StopDateName: string[];
 };
 
-function select(state: RootState) {
-  return {
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-    terms: state.present.terms,
-  };
-}
-
 function Constraint9(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedMembers = useSelector(members.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedMember = useAppSelector(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (state) => members.selectors.selectById(state, props.constraint9.member_id)!
+  );
+  const selectedTerm = useAppSelector(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (state) => terms.selectors.selectById(state, props.constraint9.term_id)!
+  );
+  const selectedKinmu = useAppSelector(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (state) => kinmus.selectors.selectById(state, props.constraint9.kinmu_id)!
+  );
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
-  const membersInTerm = selected.members.filter(
+  const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === props.constraint9.term_id
   );
-  const termsInTerm = selected.terms.filter(
-    ({ id }) => id === props.constraint9.term_id
-  );
-  const kinmusInTerm = selected.kinmus.filter(
+  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.constraint9.term_id
   );
   const handleClickExpand = () => {
@@ -96,9 +101,11 @@ function Constraint9(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints9.updateConstraint9IsEnabled({
+      constraints9.update({
         id: props.constraint9.id,
-        is_enabled: event.target.checked,
+        changes: {
+          is_enabled: event.target.checked,
+        },
       })
     );
   };
@@ -106,9 +113,11 @@ function Constraint9(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints9.updateConstraint9MemberId({
+      constraints9.update({
         id: props.constraint9.id,
-        member_id: parseInt(event.target.value, 10),
+        changes: {
+          member_id: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -136,9 +145,11 @@ function Constraint9(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints9.updateConstraint9StartDateName({
+      constraints9.update({
         id: props.constraint9.id,
-        start_date_name: event.target.value,
+        changes: {
+          start_date_name: event.target.value,
+        },
       })
     );
   };
@@ -146,9 +157,11 @@ function Constraint9(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints9.updateConstraint9StopDateName({
+      constraints9.update({
         id: props.constraint9.id,
-        stop_date_name: event.target.value,
+        changes: {
+          stop_date_name: event.target.value,
+        },
       })
     );
   };
@@ -156,9 +169,11 @@ function Constraint9(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints9.updateConstraint9KinmuId({
+      constraints9.update({
         id: props.constraint9.id,
-        kinmu_id: parseInt(event.target.value, 10),
+        changes: {
+          kinmu_id: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -170,53 +185,37 @@ function Constraint9(props: Props): JSX.Element {
   };
   const handleClickDeleteConstraint9 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints9.deleteConstraint9({ id: props.constraint9.id }));
+    dispatch(constraints9.remove(props.constraint9.id));
   };
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const constraint9Member = membersInTerm.find(
-    ({ id }) => id === props.constraint9.member_id
-  )!;
   const constraint9StartDate = utils.stringToDate(
     props.constraint9.start_date_name
   );
-  const constraint9StartDateIsEnabled = constraint9StartDate
-    ? termsInTerm.every(({ start_date_name }) => {
-        const startDate = utils.stringToDate(start_date_name);
-        if (!startDate) {
-          return false;
-        }
-        return startDate <= constraint9StartDate;
-      })
-    : false;
+  const termStartDate = utils.stringToDate(selectedTerm.start_date_name);
+  const constraint9StartDateIsEnabled =
+    !constraint9StartDate || !termStartDate
+      ? false
+      : termStartDate <= constraint9StartDate;
   const constraint9StopDate = utils.stringToDate(
     props.constraint9.stop_date_name
   );
-  const constraint9StopDateIsEnabled = constraint9StopDate
-    ? termsInTerm.every(({ stop_date_name }) => {
-        const stopDate = utils.stringToDate(stop_date_name);
-        if (!stopDate) {
-          return false;
-        }
-        return stopDate >= constraint9StopDate;
-      })
-    : false;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const constraint9Kinmu = kinmusInTerm.find(
-    ({ id }) => id === props.constraint9.kinmu_id
-  )!;
+  const termStopDate = utils.stringToDate(selectedTerm.stop_date_name);
+  const constraint9StopDateIsEnabled =
+    !constraint9StopDate || !termStopDate
+      ? false
+      : constraint9StopDate <= termStopDate;
   const relativesAreEnabled =
-    constraint9Member.is_enabled &&
+    selectedMember.is_enabled &&
     constraint9StartDateIsEnabled &&
     constraint9StopDateIsEnabled &&
-    constraint9Kinmu.is_enabled;
+    selectedKinmu.is_enabled;
   const title = (
     <>
       <span
         className={classnames({
-          [classes.lineThrough]: !constraint9Member.is_enabled,
+          [classes.lineThrough]: !selectedMember.is_enabled,
         })}
       >
-        {constraint9Member.name}
+        {selectedMember.name}
       </span>
       の
       <span
@@ -237,10 +236,10 @@ function Constraint9(props: Props): JSX.Element {
       までに
       <span
         className={classnames({
-          [classes.lineThrough]: !constraint9Kinmu.is_enabled,
+          [classes.lineThrough]: !selectedKinmu.is_enabled,
         })}
       >
-        {constraint9Kinmu.name}
+        {selectedKinmu.name}
       </span>
       を割り当てる
     </>

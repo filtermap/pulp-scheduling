@@ -19,9 +19,10 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as constraints7 from "../modules/constraints7";
-import { RootState } from "../modules/store";
+import * as kinmus from "../modules/kinmus";
+import { useAppSelector } from "../modules/hooks";
 
 const PREFIX = "Constraint7";
 
@@ -62,21 +63,18 @@ type State = {
 type ErrorMessages = {
   constraint7MinNumberOfDays: string[];
 };
-
-function select(state: RootState) {
-  return {
-    kinmus: state.present.kinmus,
-  };
-}
-
 function Constraint7(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedKinmu = useAppSelector(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (state) => kinmus.selectors.selectById(state, props.constraint7.kinmu_id)!
+  );
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
-  const kinmusInTerm = selected.kinmus.filter(
+  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.constraint7.term_id
   );
   const handleClickExpand = () => {
@@ -86,9 +84,11 @@ function Constraint7(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints7.updateConstraint7IsEnabled({
+      constraints7.update({
         id: props.constraint7.id,
-        is_enabled: event.target.checked,
+        changes: {
+          is_enabled: event.target.checked,
+        },
       })
     );
   };
@@ -96,9 +96,11 @@ function Constraint7(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints7.updateConstraint7KinmuId({
+      constraints7.update({
         id: props.constraint7.id,
-        kinmu_id: parseInt(event.target.value, 10),
+        changes: {
+          kinmu_id: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -117,9 +119,11 @@ function Constraint7(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints7.updateConstraint7MinNumberOfDays({
+      constraints7.update({
         id: props.constraint7.id,
-        min_number_of_days: parseInt(event.target.value, 10),
+        changes: {
+          min_number_of_days: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -131,21 +135,17 @@ function Constraint7(props: Props): JSX.Element {
   };
   const handleClickDeleteConstraint7 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints7.deleteConstraint7({ id: props.constraint7.id }));
+    dispatch(constraints7.remove(props.constraint7.id));
   };
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const constraint7Kinmu = kinmusInTerm.find(
-    ({ id }) => id === props.constraint7.kinmu_id
-  )!;
-  const relativesAreEnabled = constraint7Kinmu.is_enabled;
+  const relativesAreEnabled = selectedKinmu.is_enabled;
   const title = (
     <>
       <span
         className={classnames({
-          [classes.lineThrough]: !constraint7Kinmu.is_enabled,
+          [classes.lineThrough]: !selectedKinmu.is_enabled,
         })}
       >
-        {constraint7Kinmu.name}
+        {selectedKinmu.name}
       </span>
       の間隔日数を{props.constraint7.min_number_of_days}日以上にする
     </>

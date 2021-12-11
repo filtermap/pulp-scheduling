@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "./store";
 
 export type Constraint0 = {
   id: number;
@@ -6,28 +7,20 @@ export type Constraint0 = {
   is_enabled: boolean;
 };
 
-const initialState: Constraint0[] = [];
+export const adapter = createEntityAdapter<Constraint0>();
+
+export const selectors = adapter.getSelectors<RootState>(
+  (state) => state.present.constraints0
+);
 
 const constraints0 = createSlice({
   name: "constraints0",
-  initialState,
+  initialState: adapter.getInitialState(),
   reducers: {
-    updateConstraint0IsEnabled: (
-      state,
-      action: PayloadAction<{
-        id: number;
-        is_enabled: boolean;
-      }>
-    ) => {
-      for (const c of state) {
-        if (c.id !== action.payload.id) continue;
-        c.is_enabled = action.payload.is_enabled;
-        break;
-      }
-    },
+    update: adapter.updateOne,
   },
 });
 
-export const { updateConstraint0IsEnabled } = constraints0.actions;
+export const { update } = constraints0.actions;
 
 export const { reducer } = constraints0;

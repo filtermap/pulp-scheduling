@@ -1,4 +1,9 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
+import { RootState } from "./store";
 
 export type Constraint5 = {
   id: number;
@@ -10,13 +15,17 @@ export type Constraint5 = {
 
 export const minOfConstraint5MinNumberOfDays = 2;
 
-const initialState: Constraint5[] = [];
+export const adapter = createEntityAdapter<Constraint5>();
+
+export const selectors = adapter.getSelectors<RootState>(
+  (state) => state.present.constraints5
+);
 
 const constraints5 = createSlice({
   name: "constraints5",
-  initialState,
+  initialState: adapter.getInitialState(),
   reducers: {
-    createConstraint5: (
+    add: (
       state,
       action: PayloadAction<{
         term_id: number;
@@ -24,71 +33,16 @@ const constraints5 = createSlice({
         kinmu_id: number;
         min_number_of_days: number;
       }>
-    ) => {
-      state.push({
-        id: Math.max(0, ...state.map((c) => c.id)) + 1,
-        term_id: action.payload.term_id,
-        is_enabled: action.payload.is_enabled,
-        kinmu_id: action.payload.kinmu_id,
-        min_number_of_days: action.payload.min_number_of_days,
-      });
-    },
-    updateConstraint5IsEnabled: (
-      state,
-      action: PayloadAction<{
-        id: number;
-        is_enabled: boolean;
-      }>
-    ) => {
-      for (const c of state) {
-        if (c.id !== action.payload.id) continue;
-        c.is_enabled = action.payload.is_enabled;
-        break;
-      }
-    },
-    updateConstraint5KinmuId: (
-      state,
-      action: PayloadAction<{
-        id: number;
-        kinmu_id: number;
-      }>
-    ) => {
-      for (const c of state) {
-        if (c.id !== action.payload.id) continue;
-        c.kinmu_id = action.payload.kinmu_id;
-        break;
-      }
-    },
-    updateConstraint5MinNumberOfDays: (
-      state,
-      action: PayloadAction<{
-        id: number;
-        min_number_of_days: number;
-      }>
-    ) => {
-      for (const c of state) {
-        if (c.id !== action.payload.id) continue;
-        c.min_number_of_days = action.payload.min_number_of_days;
-        break;
-      }
-    },
-    deleteConstraint5: (
-      state,
-      action: PayloadAction<{
-        id: number;
-      }>
-    ) => {
-      return state.filter((c) => c.id !== action.payload.id);
-    },
+    ) =>
+      adapter.addOne(state, {
+        ...action.payload,
+        id: Math.max(0, ...(state.ids as number[])) + 1,
+      }),
+    update: adapter.updateOne,
+    remove: adapter.removeOne,
   },
 });
 
-export const {
-  createConstraint5,
-  updateConstraint5IsEnabled,
-  updateConstraint5KinmuId,
-  updateConstraint5MinNumberOfDays,
-  deleteConstraint5,
-} = constraints5.actions;
+export const { add, update, remove } = constraints5.actions;
 
 export const { reducer } = constraints5;

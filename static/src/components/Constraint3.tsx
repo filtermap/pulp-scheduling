@@ -19,9 +19,11 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as constraints3 from "../modules/constraints3";
-import { RootState } from "../modules/store";
+import * as kinmus from "../modules/kinmus";
+import * as members from "../modules/members";
+import { useAppSelector } from "../modules/hooks";
 
 const PREFIX = "Constraint3";
 
@@ -63,24 +65,26 @@ type ErrorMessages = {
   constraint3MinNumberOfAssignments: string[];
 };
 
-function select(state: RootState) {
-  return {
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-  };
-}
-
 function Constraint3(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedMembers = useSelector(members.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedMember = useAppSelector(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (state) => members.selectors.selectById(state, props.constraint3.member_id)!
+  );
+  const selectedKinmu = useAppSelector(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (state) => kinmus.selectors.selectById(state, props.constraint3.kinmu_id)!
+  );
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
-  const membersInTerm = selected.members.filter(
+  const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === props.constraint3.term_id
   );
-  const kinmusInTerm = selected.kinmus.filter(
+  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.constraint3.term_id
   );
   const handleClickExpand = () => {
@@ -90,9 +94,11 @@ function Constraint3(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints3.updateConstraint3IsEnabled({
+      constraints3.update({
         id: props.constraint3.id,
-        is_enabled: event.target.checked,
+        changes: {
+          is_enabled: event.target.checked,
+        },
       })
     );
   };
@@ -100,9 +106,11 @@ function Constraint3(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints3.updateConstraint3MemberId({
+      constraints3.update({
         id: props.constraint3.id,
-        member_id: parseInt(event.target.value, 10),
+        changes: {
+          member_id: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -110,9 +118,11 @@ function Constraint3(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints3.updateConstraint3KinmuId({
+      constraints3.update({
         id: props.constraint3.id,
-        kinmu_id: parseInt(event.target.value, 10),
+        changes: {
+          kinmu_id: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -133,9 +143,11 @@ function Constraint3(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints3.updateConstraint3MinNumberOfAssignments({
+      constraints3.update({
         id: props.constraint3.id,
-        min_number_of_assignments: parseInt(event.target.value, 10),
+        changes: {
+          min_number_of_assignments: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -147,34 +159,26 @@ function Constraint3(props: Props): JSX.Element {
   };
   const handleClickDeleteConstraint3 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints3.deleteConstraint3({ id: props.constraint3.id }));
+    dispatch(constraints3.remove(props.constraint3.id));
   };
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const constraint3Member = membersInTerm.find(
-    ({ id }) => id === props.constraint3.member_id
-  )!;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const constraint3Kinmu = kinmusInTerm.find(
-    ({ id }) => id === props.constraint3.kinmu_id
-  )!;
   const relativesAreEnabled =
-    constraint3Member.is_enabled && constraint3Kinmu.is_enabled;
+    selectedMember.is_enabled && selectedKinmu.is_enabled;
   const title = (
     <>
       <span
         className={classnames({
-          [classes.lineThrough]: !constraint3Member.is_enabled,
+          [classes.lineThrough]: !selectedMember.is_enabled,
         })}
       >
-        {constraint3Member.name}
+        {selectedMember.name}
       </span>
       に
       <span
         className={classnames({
-          [classes.lineThrough]: !constraint3Kinmu.is_enabled,
+          [classes.lineThrough]: !selectedKinmu.is_enabled,
         })}
       >
-        {constraint3Kinmu.name}
+        {selectedKinmu.name}
       </span>
       を{props.constraint3.min_number_of_assignments}回以上割り当てる
     </>

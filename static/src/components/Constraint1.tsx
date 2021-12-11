@@ -19,10 +19,13 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as constraints1 from "../modules/constraints1";
-import { RootState } from "../modules/store";
 import * as utils from "../utils";
+import * as groups from "../modules/groups";
+import * as kinmus from "../modules/kinmus";
+import * as terms from "../modules/terms";
+import { useAppSelector } from "../modules/hooks";
 
 const PREFIX = "Constraint1";
 
@@ -66,28 +69,22 @@ type ErrorMessages = {
   constraint1MinNumberOfAssignments: string[];
 };
 
-function select(state: RootState) {
-  return {
-    groups: state.present.groups,
-    kinmus: state.present.kinmus,
-    terms: state.present.terms,
-  };
-}
-
 function Constraint1(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedGroups = useSelector(groups.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedTerm = useAppSelector(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (state) => terms.selectors.selectById(state, props.constraint1.term_id)!
+  );
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
-  const termsInTerm = selected.terms.filter(
-    ({ id }) => id === props.constraint1.term_id
-  );
-  const kinmusInTerm = selected.kinmus.filter(
+  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.constraint1.term_id
   );
-  const groupsInTerm = selected.groups.filter(
+  const groupsInTerm = selectedGroups.filter(
     ({ term_id }) => term_id === props.constraint1.term_id
   );
   const handleClickExpand = () => {
@@ -97,9 +94,11 @@ function Constraint1(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints1.updateConstraint1IsEnabled({
+      constraints1.update({
         id: props.constraint1.id,
-        is_enabled: event.target.checked,
+        changes: {
+          is_enabled: event.target.checked,
+        },
       })
     );
   };
@@ -134,9 +133,11 @@ function Constraint1(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints1.updateConstraint1StartDateName({
+      constraints1.update({
         id: props.constraint1.id,
-        start_date_name: event.target.value,
+        changes: {
+          start_date_name: event.target.value,
+        },
       })
     );
   };
@@ -144,9 +145,11 @@ function Constraint1(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints1.updateConstraint1StopDateName({
+      constraints1.update({
         id: props.constraint1.id,
-        stop_date_name: event.target.value,
+        changes: {
+          stop_date_name: event.target.value,
+        },
       })
     );
   };
@@ -154,9 +157,11 @@ function Constraint1(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints1.updateConstraint1KinmuId({
+      constraints1.update({
         id: props.constraint1.id,
-        kinmu_id: parseInt(event.target.value, 10),
+        changes: {
+          kinmu_id: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -164,9 +169,11 @@ function Constraint1(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints1.updateConstraint1GroupId({
+      constraints1.update({
         id: props.constraint1.id,
-        group_id: parseInt(event.target.value, 10),
+        changes: {
+          group_id: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -174,9 +181,11 @@ function Constraint1(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints1.updateConstraint1MinNumberOfAssignments({
+      constraints1.update({
         id: props.constraint1.id,
-        min_number_of_assignments: parseInt(event.target.value, 10),
+        changes: {
+          min_number_of_assignments: parseInt(event.target.value, 10),
+        },
       })
     );
   };
@@ -188,32 +197,24 @@ function Constraint1(props: Props): JSX.Element {
   };
   const handleClickDeleteConstraint1 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(constraints1.deleteConstraint1({ id: props.constraint1.id }));
+    dispatch(constraints1.remove(props.constraint1.id));
   };
   const constraint1StartDate = utils.stringToDate(
     props.constraint1.start_date_name
   );
-  const constraint1StartDateIsEnabled = constraint1StartDate
-    ? termsInTerm.every(({ start_date_name }) => {
-        const startDate = utils.stringToDate(start_date_name);
-        if (!startDate) {
-          return false;
-        }
-        return startDate <= constraint1StartDate;
-      })
-    : false;
+  const termStartDate = utils.stringToDate(selectedTerm.start_date_name);
+  const constraint1StartDateIsEnabled =
+    !constraint1StartDate || !termStartDate
+      ? false
+      : termStartDate <= constraint1StartDate;
   const constraint1StopDate = utils.stringToDate(
     props.constraint1.stop_date_name
   );
-  const constraint1StopDateIsEnabled = constraint1StopDate
-    ? termsInTerm.every(({ stop_date_name }) => {
-        const stopDate = utils.stringToDate(stop_date_name);
-        if (!stopDate) {
-          return false;
-        }
-        return stopDate >= constraint1StopDate;
-      })
-    : false;
+  const termStopDate = utils.stringToDate(selectedTerm.stop_date_name);
+  const constraint1StopDateIsEnabled =
+    !constraint1StopDate || !termStopDate
+      ? false
+      : constraint1StopDate <= termStopDate;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const constraint1Kinmu = kinmusInTerm.find(
     ({ id }) => id === props.constraint1.kinmu_id

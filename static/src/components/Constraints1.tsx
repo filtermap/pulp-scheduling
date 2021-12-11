@@ -14,11 +14,14 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import * as constraints1 from "../modules/constraints1";
-import { RootState } from "../modules/store";
 import * as utils from "../utils";
+import * as constraints1 from "../modules/constraints1";
+import * as groups from "../modules/groups";
+import * as kinmus from "../modules/kinmus";
+import * as terms from "../modules/terms";
+import { useAppSelector } from "../modules/hooks";
 import Constraint1 from "./Constraint1";
 
 const PREFIX = "Constraints1";
@@ -50,8 +53,8 @@ type State = {
   newConstraint1IsEnabled: boolean;
   newConstraint1StartDateName: string;
   newConstraint1StopDateName: string;
-  newConstraint1KinmuId: number;
-  newConstraint1GroupId: number;
+  newConstraint1KinmuId: number | undefined;
+  newConstraint1GroupId: number | undefined;
   newConstraint1MinNumberOfAssignments: number;
 };
 
@@ -61,45 +64,47 @@ type ErrorMessages = {
   newConstraint1MinNumberOfAssignments: string[];
 };
 
-function select(state: RootState) {
-  return {
-    constraints1: state.present.constraints1,
-    groups: state.present.groups,
-    kinmus: state.present.kinmus,
-    terms: state.present.terms,
-  };
-}
-
 function Constraints1(): JSX.Element {
-  const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
-  if (!termIdName) throw new Error("!termIdName");
-  const termId = parseInt(termIdName, 10);
-  const termsInTerm = selected.terms.filter(({ id }) => id === termId);
-  const constraints1InTerm = selected.constraints1.filter(
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const termId = parseInt(termIdName!, 10);
+  const dispatch = useDispatch();
+  const selectedConstraints1 = useSelector(constraints1.selectors.selectAll);
+  const selectedGroups = useSelector(groups.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedTerm = useAppSelector(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (state) => terms.selectors.selectById(state, termId)!
+  );
+  const constraints1InTerm = selectedConstraints1.filter(
     ({ term_id }) => term_id === termId
   );
-  const kinmusInTerm = selected.kinmus.filter(
-    ({ term_id }) => term_id === termId
+  const kinmusInTerm = React.useMemo(
+    () => selectedKinmus.filter(({ term_id }) => term_id === termId),
+    [selectedKinmus, termId]
   );
-  const groupsInTerm = selected.groups.filter(
-    ({ term_id }) => term_id === termId
+  const groupsInTerm = React.useMemo(
+    () => selectedGroups.filter(({ term_id }) => term_id === termId),
+    [selectedGroups, termId]
   );
   const todayString = utils.dateToString(new Date());
-  const initialState = {
-    creationDialogIsOpen: false,
-    newConstraint1GroupId: groupsInTerm.length > 0 ? groupsInTerm[0].id : 0,
-    newConstraint1IsEnabled: true,
-    newConstraint1KinmuId: kinmusInTerm.length > 0 ? kinmusInTerm[0].id : 0,
-    newConstraint1MinNumberOfAssignments:
-      constraints1.minOfConstraint1MinNumberOfAssignments,
-    newConstraint1StartDateName: todayString,
-    newConstraint1StopDateName: todayString,
-  };
+  const initialState = React.useMemo(
+    () => ({
+      creationDialogIsOpen: false,
+      newConstraint1GroupId:
+        groupsInTerm.length > 0 ? groupsInTerm[0].id : undefined,
+      newConstraint1IsEnabled: true,
+      newConstraint1KinmuId:
+        kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined,
+      newConstraint1MinNumberOfAssignments:
+        constraints1.minOfConstraint1MinNumberOfAssignments,
+      newConstraint1StartDateName: todayString,
+      newConstraint1StopDateName: todayString,
+    }),
+    [groupsInTerm, kinmusInTerm, todayString]
+  );
   const [state, setState] = React.useState<State>(initialState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setState(initialState), [termId]);
+  React.useEffect(() => setState(initialState), [initialState]);
   const handleClickOpenCreationDialog = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
@@ -184,13 +189,15 @@ function Constraints1(): JSX.Element {
   const handleClickCreateConstraint1 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints1.createConstraint1({
+      constraints1.add({
         term_id: termId,
         is_enabled: state.newConstraint1IsEnabled,
         start_date_name: state.newConstraint1StartDateName,
         stop_date_name: state.newConstraint1StopDateName,
-        kinmu_id: state.newConstraint1KinmuId,
-        group_id: state.newConstraint1GroupId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        kinmu_id: state.newConstraint1KinmuId!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        group_id: state.newConstraint1GroupId!,
         min_number_of_assignments: state.newConstraint1MinNumberOfAssignments,
       })
     );
@@ -216,7 +223,7 @@ function Constraints1(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {kinmusInTerm.length === 0 || groupsInTerm.length === 0 ? (
+      {!state.newConstraint1KinmuId || !state.newConstraint1GroupId ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -227,12 +234,12 @@ function Constraints1(): JSX.Element {
             期間の勤務にグループから割り当てる職員数の下限を追加できません
           </DialogTitle>
           <DialogContent>
-            {kinmusInTerm.length === 0 ? (
+            {!state.newConstraint1KinmuId && (
               <DialogContentText>勤務がありません</DialogContentText>
-            ) : null}
-            {groupsInTerm.length === 0 ? (
+            )}
+            {!state.newConstraint1GroupId && (
               <DialogContentText>グループがありません</DialogContentText>
-            ) : null}
+            )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
@@ -245,27 +252,21 @@ function Constraints1(): JSX.Element {
           const newConstraint1StartDate = utils.stringToDate(
             state.newConstraint1StartDateName
           );
-          const newConstraint1StartDateIsEnabled = newConstraint1StartDate
-            ? termsInTerm.every(({ start_date_name }) => {
-                const startDate = utils.stringToDate(start_date_name);
-                if (!startDate) {
-                  return false;
-                }
-                return startDate <= newConstraint1StartDate;
-              })
-            : false;
+          const termStartDate = utils.stringToDate(
+            selectedTerm.start_date_name
+          );
+          const newConstraint1StartDateIsEnabled =
+            !newConstraint1StartDate || !termStartDate
+              ? false
+              : termStartDate <= newConstraint1StartDate;
           const newConstraint1StopDate = utils.stringToDate(
             state.newConstraint1StopDateName
           );
-          const newConstraint1StopDateIsEnabled = newConstraint1StopDate
-            ? termsInTerm.every(({ stop_date_name }) => {
-                const stopDate = utils.stringToDate(stop_date_name);
-                if (!stopDate) {
-                  return false;
-                }
-                return stopDate >= newConstraint1StopDate;
-              })
-            : false;
+          const termStopDate = utils.stringToDate(selectedTerm.stop_date_name);
+          const newConstraint1StopDateIsEnabled =
+            !newConstraint1StopDate || !termStopDate
+              ? false
+              : newConstraint1StopDate <= termStopDate;
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const newConstraint1Kinmu = kinmusInTerm.find(
             ({ id }) => id === state.newConstraint1KinmuId

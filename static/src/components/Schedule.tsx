@@ -22,11 +22,13 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as iconv from "iconv-lite";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as all from "../modules/all";
 import * as schedules from "../modules/schedules";
-import { RootState } from "../modules/store";
 import * as utils from "../utils";
+import * as assignments from "../modules/assignments";
+import * as kinmus from "../modules/kinmus";
+import * as members from "../modules/members";
 
 const PREFIX = "Schedule";
 
@@ -91,28 +93,22 @@ function sortDateNames(dateNames: string[]): string[] {
   );
 }
 
-function select(state: RootState) {
-  return {
-    assignments: state.present.assignments,
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-  };
-}
-
 function Schedule(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedAssignments = useSelector(assignments.selectors.selectAll);
+  const selectedMembers = useSelector(members.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
-  const assignmentsInTerm = selected.assignments.filter(
+  const assignmentsInTerm = selectedAssignments.filter(
     ({ schedule_id }) => schedule_id === props.schedule.id
   );
-  const membersInTerm = selected.members.filter(
+  const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === props.schedule.term_id
   );
-  const kinmusInTerm = selected.kinmus.filter(
+  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.schedule.term_id
   );
   const handleClickExpand = () => {
@@ -126,7 +122,7 @@ function Schedule(props: Props): JSX.Element {
   };
   const handleClickDeleteSchedule = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteSchedule({ id: props.schedule.id }));
+    dispatch(all.removeSchedule(props.schedule.id));
   };
   const handleClickExportToCSV = async () => {
     const assignments_by_schedule_id = assignmentsInTerm.filter(

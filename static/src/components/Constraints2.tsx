@@ -14,11 +14,14 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import * as constraints2 from "../modules/constraints2";
-import { RootState } from "../modules/store";
 import * as utils from "../utils";
+import * as constraints2 from "../modules/constraints2";
+import * as groups from "../modules/groups";
+import * as kinmus from "../modules/kinmus";
+import * as terms from "../modules/terms";
+import { useAppSelector } from "../modules/hooks";
 import Constraint2 from "./Constraint2";
 
 const PREFIX = "Constraints2";
@@ -50,8 +53,8 @@ type State = {
   newConstraint2IsEnabled: boolean;
   newConstraint2StartDateName: string;
   newConstraint2StopDateName: string;
-  newConstraint2KinmuId: number;
-  newConstraint2GroupId: number;
+  newConstraint2KinmuId: number | undefined;
+  newConstraint2GroupId: number | undefined;
   newConstraint2MaxNumberOfAssignments: number;
 };
 
@@ -61,45 +64,46 @@ type ErrorMessages = {
   newConstraint2MaxNumberOfAssignments: string[];
 };
 
-function select(state: RootState) {
-  return {
-    constraints2: state.present.constraints2,
-    groups: state.present.groups,
-    kinmus: state.present.kinmus,
-    terms: state.present.terms,
-  };
-}
-
 function Constraints2(): JSX.Element {
-  const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
-  if (!termIdName) throw new Error("!termIdName");
-  const termId = parseInt(termIdName, 10);
-  const termsInTerm = selected.terms.filter(({ id }) => id === termId);
-  const constraints2InTerm = selected.constraints2.filter(
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const termId = parseInt(termIdName!, 10);
+  const dispatch = useDispatch();
+  const selectedConstraints2 = useSelector(constraints2.selectors.selectAll);
+  const selectedGroups = useSelector(groups.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedTerm = useAppSelector(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (state) => terms.selectors.selectById(state, termId)!
+  );
+  const constraints2InTerm = React.useMemo(
+    () => selectedConstraints2.filter(({ term_id }) => term_id === termId),
+    [selectedConstraints2, termId]
+  );
+  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === termId
   );
-  const kinmusInTerm = selected.kinmus.filter(
-    ({ term_id }) => term_id === termId
-  );
-  const groupsInTerm = selected.groups.filter(
+  const groupsInTerm = selectedGroups.filter(
     ({ term_id }) => term_id === termId
   );
   const todayString = utils.dateToString(new Date());
-  const initialState = {
-    creationDialogIsOpen: false,
-    newConstraint2GroupId: groupsInTerm.length > 0 ? groupsInTerm[0].id : 0,
-    newConstraint2IsEnabled: true,
-    newConstraint2KinmuId: kinmusInTerm.length > 0 ? kinmusInTerm[0].id : 0,
-    newConstraint2MaxNumberOfAssignments:
-      constraints2.minOfConstraint2MaxNumberOfAssignments,
-    newConstraint2StartDateName: todayString,
-    newConstraint2StopDateName: todayString,
-  };
+  const initialState = React.useMemo(
+    () => ({
+      creationDialogIsOpen: false,
+      newConstraint2GroupId:
+        groupsInTerm.length > 0 ? groupsInTerm[0].id : undefined,
+      newConstraint2IsEnabled: true,
+      newConstraint2KinmuId:
+        kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined,
+      newConstraint2MaxNumberOfAssignments:
+        constraints2.minOfConstraint2MaxNumberOfAssignments,
+      newConstraint2StartDateName: todayString,
+      newConstraint2StopDateName: todayString,
+    }),
+    [groupsInTerm, kinmusInTerm, todayString]
+  );
   const [state, setState] = React.useState<State>(initialState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setState(initialState), [termId]);
+  // React.useEffect(() => setState(initialState), [initialState]);
   const handleClickOpenCreationDialog = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
@@ -184,13 +188,15 @@ function Constraints2(): JSX.Element {
   const handleClickCreateConstraint2 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints2.createConstraint2({
+      constraints2.add({
         term_id: termId,
         is_enabled: state.newConstraint2IsEnabled,
         start_date_name: state.newConstraint2StartDateName,
         stop_date_name: state.newConstraint2StopDateName,
-        kinmu_id: state.newConstraint2KinmuId,
-        group_id: state.newConstraint2GroupId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        kinmu_id: state.newConstraint2KinmuId!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        group_id: state.newConstraint2GroupId!,
         max_number_of_assignments: state.newConstraint2MaxNumberOfAssignments,
       })
     );
@@ -216,7 +222,7 @@ function Constraints2(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {kinmusInTerm.length === 0 || groupsInTerm.length === 0 ? (
+      {!state.newConstraint2KinmuId || !state.newConstraint2GroupId ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -227,12 +233,12 @@ function Constraints2(): JSX.Element {
             期間の勤務にグループから割り当てる職員数の上限を追加できません
           </DialogTitle>
           <DialogContent>
-            {kinmusInTerm.length === 0 ? (
+            {!state.newConstraint2KinmuId && (
               <DialogContentText>勤務がありません</DialogContentText>
-            ) : null}
-            {groupsInTerm.length === 0 ? (
+            )}
+            {!state.newConstraint2GroupId && (
               <DialogContentText>グループがありません</DialogContentText>
-            ) : null}
+            )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
@@ -245,27 +251,21 @@ function Constraints2(): JSX.Element {
           const newConstraint2StartDate = utils.stringToDate(
             state.newConstraint2StartDateName
           );
-          const newConstraint2StartDateIsEnabled = newConstraint2StartDate
-            ? termsInTerm.every(({ start_date_name }) => {
-                const startDate = utils.stringToDate(start_date_name);
-                if (!startDate) {
-                  return false;
-                }
-                return startDate <= newConstraint2StartDate;
-              })
-            : false;
+          const termStartDate = utils.stringToDate(
+            selectedTerm.start_date_name
+          );
+          const newConstraint2StartDateIsEnabled =
+            !newConstraint2StartDate || !termStartDate
+              ? false
+              : termStartDate <= newConstraint2StartDate;
           const newConstraint2StopDate = utils.stringToDate(
             state.newConstraint2StopDateName
           );
-          const newConstraint2StopDateIsEnabled = newConstraint2StopDate
-            ? termsInTerm.every(({ stop_date_name }) => {
-                const stopDate = utils.stringToDate(stop_date_name);
-                if (!stopDate) {
-                  return false;
-                }
-                return stopDate >= newConstraint2StopDate;
-              })
-            : false;
+          const termStopDate = utils.stringToDate(selectedTerm.stop_date_name);
+          const newConstraint2StopDateIsEnabled =
+            !newConstraint2StopDate || !termStopDate
+              ? false
+              : newConstraint2StopDate <= termStopDate;
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const newConstraint2Kinmu = kinmusInTerm.find(
             ({ id }) => id === state.newConstraint2KinmuId

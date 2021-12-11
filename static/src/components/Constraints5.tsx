@@ -14,10 +14,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import * as constraints5 from "../modules/constraints5";
-import { RootState } from "../modules/store";
+import * as kinmus from "../modules/kinmus";
 import Constraint5 from "./Constraint5";
 
 const PREFIX = "Constraints5";
@@ -47,7 +47,7 @@ const Root = styled("div")({
 type State = {
   creationDialogIsOpen: boolean;
   newConstraint5IsEnabled: boolean;
-  newConstraint5KinmuId: number;
+  newConstraint5KinmuId: number | undefined;
   newConstraint5MinNumberOfDays: number;
 };
 
@@ -55,35 +55,33 @@ type ErrorMessages = {
   newConstraint5MinNumberOfDays: string[];
 };
 
-function select(state: RootState) {
-  return {
-    constraints5: state.present.constraints5,
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-  };
-}
-
 function Constraints5(): JSX.Element {
-  const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
-  if (!termIdName) throw new Error("!termIdName");
-  const termId = parseInt(termIdName, 10);
-  const constraints5InTerm = selected.constraints5.filter(
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const termId = parseInt(termIdName!, 10);
+  const dispatch = useDispatch();
+  const selectedConstraints5 = useSelector(constraints5.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const constraints5InTerm = selectedConstraints5.filter(
     ({ term_id }) => term_id === termId
   );
-  const kinmusInTerm = selected.kinmus.filter(
-    ({ term_id }) => term_id === termId
+  const kinmusInTerm = React.useMemo(
+    () => selectedKinmus.filter(({ term_id }) => term_id === termId),
+    [selectedKinmus, termId]
   );
-  const initialState = {
-    creationDialogIsOpen: false,
-    newConstraint5IsEnabled: true,
-    newConstraint5KinmuId: kinmusInTerm.length > 0 ? kinmusInTerm[0].id : 0,
-    newConstraint5MinNumberOfDays: constraints5.minOfConstraint5MinNumberOfDays,
-  };
+  const initialState = React.useMemo(
+    () => ({
+      creationDialogIsOpen: false,
+      newConstraint5IsEnabled: true,
+      newConstraint5KinmuId:
+        kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined,
+      newConstraint5MinNumberOfDays:
+        constraints5.minOfConstraint5MinNumberOfDays,
+    }),
+    [kinmusInTerm]
+  );
   const [state, setState] = React.useState<State>(initialState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setState(initialState), [termId]);
+  React.useEffect(() => setState(initialState), [initialState]);
   const handleClickOpenCreationDialog = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
@@ -128,10 +126,11 @@ function Constraints5(): JSX.Element {
   const handleClickCreateConstraint5 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints5.createConstraint5({
+      constraints5.add({
         term_id: termId,
         is_enabled: state.newConstraint5IsEnabled,
-        kinmu_id: state.newConstraint5KinmuId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        kinmu_id: state.newConstraint5KinmuId!,
         min_number_of_days: state.newConstraint5MinNumberOfDays,
       })
     );
@@ -157,7 +156,7 @@ function Constraints5(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {kinmusInTerm.length === 0 ? (
+      {!state.newConstraint5KinmuId ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -166,9 +165,9 @@ function Constraints5(): JSX.Element {
         >
           <DialogTitle>勤務の連続日数の下限を追加できません</DialogTitle>
           <DialogContent>
-            {kinmusInTerm.length === 0 ? (
+            {!state.newConstraint5KinmuId && (
               <DialogContentText>勤務がありません</DialogContentText>
-            ) : null}
+            )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>

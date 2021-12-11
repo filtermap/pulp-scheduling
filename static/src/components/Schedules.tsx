@@ -15,12 +15,29 @@ import TableRow from "@mui/material/TableRow";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
 import * as utils from "../utils";
-import { RootState } from "../modules/store";
+import * as constraints0 from "../modules/constraints0";
+import * as constraints1 from "../modules/constraints1";
+import * as constraints2 from "../modules/constraints2";
+import * as constraints3 from "../modules/constraints3";
+import * as constraints4 from "../modules/constraints4";
+import * as constraints5 from "../modules/constraints5";
+import * as constraints6 from "../modules/constraints6";
+import * as constraints7 from "../modules/constraints7";
+import * as constraints8 from "../modules/constraints8";
+import * as constraints9 from "../modules/constraints9";
+import * as constraints10 from "../modules/constraints10";
+import * as groups from "../modules/groups";
+import * as members from "../modules/members";
+import * as terms from "../modules/terms";
+import * as kinmus from "../modules/kinmus";
+import * as constraint0_kinmus from "../modules/constraint0_kinmus";
+import * as schedules from "../modules/schedules";
+import * as group_members from "../modules/group_members";
 import Schedule from "./Schedule";
 
 const PREFIX = "Schedules";
@@ -134,15 +151,28 @@ function sortDateNames(dateNames: string[]): string[] {
   );
 }
 
-function select(state: RootState) {
-  return {
-    all: state.present,
-  };
-}
-
 function Schedules(): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedGroups = useSelector(groups.selectors.selectAll);
+  const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
+  const selectedMembers = useSelector(members.selectors.selectAll);
+  const selectedTerms = useSelector(terms.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedConstraint0Kinmus = useSelector(
+    constraint0_kinmus.selectors.selectAll
+  );
+  const selectedConstraints0 = useSelector(constraints0.selectors.selectAll);
+  const selectedConstraints1 = useSelector(constraints1.selectors.selectAll);
+  const selectedConstraints2 = useSelector(constraints2.selectors.selectAll);
+  const selectedConstraints3 = useSelector(constraints3.selectors.selectAll);
+  const selectedConstraints4 = useSelector(constraints4.selectors.selectAll);
+  const selectedConstraints5 = useSelector(constraints5.selectors.selectAll);
+  const selectedConstraints6 = useSelector(constraints6.selectors.selectAll);
+  const selectedConstraints7 = useSelector(constraints7.selectors.selectAll);
+  const selectedConstraints8 = useSelector(constraints8.selectors.selectAll);
+  const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
+  const selectedConstraints10 = useSelector(constraints10.selectors.selectAll);
+  const selectedSchedules = useSelector(schedules.selectors.selectAll);
   const { termIdName } = useParams();
   if (!termIdName) throw new Error("!termIdName");
   const termId = parseInt(termIdName, 10);
@@ -156,33 +186,33 @@ function Schedules(): JSX.Element {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => setState(initialState), [termId]);
   const byTermId = ({ term_id }: { term_id: number }) => term_id === termId;
-  const constraints0InTerm = selected.all.constraints0.filter(byTermId);
+  const constraints0InTerm = selectedConstraints0.filter(byTermId);
   const constraint0IdsInTerm = new Set(constraints0InTerm.map(({ id }) => id));
-  const groupsInTerm = selected.all.groups.filter(byTermId);
+  const groupsInTerm = selectedGroups.filter(byTermId);
   const groupIdsInTerm = new Set(groupsInTerm.map(({ id }) => id));
   const allInTerm = {
-    terms: selected.all.terms.filter(({ id }) => id === termId),
-    members: selected.all.members.filter(byTermId),
-    kinmus: selected.all.kinmus.filter(byTermId),
+    terms: selectedTerms.filter(({ id }) => termId),
+    members: selectedMembers.filter(byTermId),
+    kinmus: selectedKinmus.filter(byTermId),
     groups: groupsInTerm,
-    group_members: selected.all.group_members.filter(({ group_id }) =>
+    group_members: selectedGroupMembers.filter(({ group_id }) =>
       groupIdsInTerm.has(group_id)
     ),
     constraints0: constraints0InTerm,
-    constraint0_kinmus: selected.all.constraint0_kinmus.filter(
-      ({ constraint0_id }) => constraint0IdsInTerm.has(constraint0_id)
+    constraint0_kinmus: selectedConstraint0Kinmus.filter(({ constraint0_id }) =>
+      constraint0IdsInTerm.has(constraint0_id)
     ),
-    constraints1: selected.all.constraints1.filter(byTermId),
-    constraints2: selected.all.constraints2.filter(byTermId),
-    constraints3: selected.all.constraints3.filter(byTermId),
-    constraints4: selected.all.constraints4.filter(byTermId),
-    constraints5: selected.all.constraints5.filter(byTermId),
-    constraints6: selected.all.constraints6.filter(byTermId),
-    constraints7: selected.all.constraints7.filter(byTermId),
-    constraints8: selected.all.constraints8.filter(byTermId),
-    constraints9: selected.all.constraints9.filter(byTermId),
-    constraints10: selected.all.constraints10.filter(byTermId),
-    schedules: selected.all.schedules.filter(byTermId),
+    constraints1: selectedConstraints1.filter(byTermId),
+    constraints2: selectedConstraints2.filter(byTermId),
+    constraints3: selectedConstraints3.filter(byTermId),
+    constraints4: selectedConstraints4.filter(byTermId),
+    constraints5: selectedConstraints5.filter(byTermId),
+    constraints6: selectedConstraints6.filter(byTermId),
+    constraints7: selectedConstraints7.filter(byTermId),
+    constraints8: selectedConstraints8.filter(byTermId),
+    constraints9: selectedConstraints9.filter(byTermId),
+    constraints10: selectedConstraints10.filter(byTermId),
+    schedules: selectedSchedules.filter(byTermId),
   };
   const handleClickOpenCreationDialog = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: true }));
@@ -250,7 +280,9 @@ function Schedules(): JSX.Element {
     if (state.dialogState.type === SOLVED) {
       dispatch(
         all.createSchedule({
-          term_id: termId,
+          schedule: {
+            term_id: termId,
+          },
           new_assignments: state.dialogState.newScheduleAssignments,
         })
       );

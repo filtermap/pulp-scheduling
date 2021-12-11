@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -14,7 +14,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import * as utils from "../utils";
 import * as terms from "../modules/terms";
-import { RootState } from "../modules/store";
 import Term from "./Term";
 
 const PREFIX = "Terms";
@@ -46,15 +45,9 @@ type ErrorMessages = {
   newTermStopDateName: string[];
 };
 
-function select(state: RootState) {
-  return {
-    terms: state.present.terms,
-  };
-}
-
 function Terms(): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedTerms = useSelector(terms.selectors.selectAll);
   const todayString = utils.dateToString(new Date());
   const [state, setState] = React.useState<State>({
     creationDialogIsOpen: false,
@@ -108,7 +101,7 @@ function Terms(): JSX.Element {
   const handleClickCreateTerm = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      terms.createTerm({
+      terms.add({
         is_enabled: state.newTermIsEnabled,
         start_date_name: state.newTermStartDateName,
         stop_date_name: state.newTermStopDateName,
@@ -133,7 +126,7 @@ function Terms(): JSX.Element {
               </Button>
             </Toolbar>
           </Grid>
-          {selected.terms.map((term) => (
+          {selectedTerms.map((term) => (
             <Grid key={term.id} item={true} xs={12}>
               <Term term={term} />
             </Grid>

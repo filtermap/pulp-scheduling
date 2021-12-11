@@ -14,10 +14,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import * as constraints4 from "../modules/constraints4";
-import { RootState } from "../modules/store";
+import * as kinmus from "../modules/kinmus";
+import * as members from "../modules/members";
 import Constraint4 from "./Constraint4";
 
 const PREFIX = "Constraints4";
@@ -47,8 +48,8 @@ const Root = styled("div")({
 type State = {
   creationDialogIsOpen: boolean;
   newConstraint4IsEnabled: boolean;
-  newConstraint4MemberId: number;
-  newConstraint4KinmuId: number;
+  newConstraint4MemberId: number | undefined;
+  newConstraint4KinmuId: number | undefined;
   newConstraint4MaxNumberOfAssignments: number;
 };
 
@@ -56,40 +57,40 @@ type ErrorMessages = {
   newConstraint4MaxNumberOfAssignments: string[];
 };
 
-function select(state: RootState) {
-  return {
-    constraints4: state.present.constraints4,
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-  };
-}
-
 function Constraints4(): JSX.Element {
-  const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
-  if (!termIdName) throw new Error("!termIdName");
-  const termId = parseInt(termIdName, 10);
-  const constraints4InTerm = selected.constraints4.filter(
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const termId = parseInt(termIdName!, 10);
+  const dispatch = useDispatch();
+  const selectedConstraints4 = useSelector(constraints4.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedMembers = useSelector(members.selectors.selectAll);
+  const constraints4InTerm = selectedConstraints4.filter(
     ({ term_id }) => term_id === termId
   );
-  const membersInTerm = selected.members.filter(
-    ({ term_id }) => term_id === termId
+  const membersInTerm = React.useMemo(
+    () => selectedMembers.filter(({ term_id }) => term_id === termId),
+    [selectedMembers, termId]
   );
-  const kinmusInTerm = selected.kinmus.filter(
-    ({ term_id }) => term_id === termId
+  const kinmusInTerm = React.useMemo(
+    () => selectedKinmus.filter(({ term_id }) => term_id === termId),
+    [selectedKinmus, termId]
   );
-  const initialState = {
-    creationDialogIsOpen: false,
-    newConstraint4IsEnabled: true,
-    newConstraint4KinmuId: kinmusInTerm.length > 0 ? kinmusInTerm[0].id : 0,
-    newConstraint4MaxNumberOfAssignments:
-      constraints4.minOfConstraint4MaxNumberOfAssignments,
-    newConstraint4MemberId: membersInTerm.length > 0 ? membersInTerm[0].id : 0,
-  };
+  const initialState = React.useMemo(
+    () => ({
+      creationDialogIsOpen: false,
+      newConstraint4IsEnabled: true,
+      newConstraint4KinmuId:
+        kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined,
+      newConstraint4MaxNumberOfAssignments:
+        constraints4.minOfConstraint4MaxNumberOfAssignments,
+      newConstraint4MemberId:
+        membersInTerm.length > 0 ? membersInTerm[0].id : undefined,
+    }),
+    [kinmusInTerm, membersInTerm]
+  );
   const [state, setState] = React.useState<State>(initialState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setState(initialState), [termId]);
+  React.useEffect(() => setState(initialState), [initialState]);
   const handleClickOpenCreationDialog = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
@@ -144,11 +145,13 @@ function Constraints4(): JSX.Element {
   const handleClickCreateConstraint4 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints4.createConstraint4({
+      constraints4.add({
         term_id: termId,
         is_enabled: state.newConstraint4IsEnabled,
-        member_id: state.newConstraint4MemberId,
-        kinmu_id: state.newConstraint4KinmuId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        member_id: state.newConstraint4MemberId!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        kinmu_id: state.newConstraint4KinmuId!,
         max_number_of_assignments: state.newConstraint4MaxNumberOfAssignments,
       })
     );
@@ -174,7 +177,7 @@ function Constraints4(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {membersInTerm.length === 0 || kinmusInTerm.length === 0 ? (
+      {!state.newConstraint4MemberId || !state.newConstraint4KinmuId ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -185,12 +188,12 @@ function Constraints4(): JSX.Element {
             職員の勤務の割り当て数の上限を追加できません
           </DialogTitle>
           <DialogContent>
-            {membersInTerm.length === 0 ? (
+            {!state.newConstraint4MemberId && (
               <DialogContentText>職員がいません</DialogContentText>
-            ) : null}
-            {kinmusInTerm.length === 0 ? (
+            )}
+            {!state.newConstraint4KinmuId && (
               <DialogContentText>勤務がありません</DialogContentText>
-            ) : null}
+            )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>

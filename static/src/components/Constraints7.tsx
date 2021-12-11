@@ -14,10 +14,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import * as constraints7 from "../modules/constraints7";
-import { RootState } from "../modules/store";
+import * as kinmus from "../modules/kinmus";
 import Constraint7 from "./Constraint7";
 
 const PREFIX = "Constraints7";
@@ -47,42 +47,40 @@ const Root = styled("div")({
 type State = {
   creationDialogIsOpen: boolean;
   newConstraint7IsEnabled: boolean;
-  newConstraint7KinmuId: number;
+  newConstraint7KinmuId: number | undefined;
   newConstraint7MinNumberOfDays: number;
 };
 
 type ErrorMessages = {
   newConstraint7MinNumberOfDays: string[];
 };
-
-function select(state: RootState) {
-  return {
-    constraints7: state.present.constraints7,
-    kinmus: state.present.kinmus,
-  };
-}
-
 function Constraints7(): JSX.Element {
-  const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
-  if (!termIdName) throw new Error("!termIdName");
-  const termId = parseInt(termIdName, 10);
-  const constraints7InTerm = selected.constraints7.filter(
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const termId = parseInt(termIdName!, 10);
+  const dispatch = useDispatch();
+  const selectedConstraints7 = useSelector(constraints7.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const constraints7InTerm = selectedConstraints7.filter(
     ({ term_id }) => term_id === termId
   );
-  const kinmusInTerm = selected.kinmus.filter(
-    ({ term_id }) => term_id === termId
+  const kinmusInTerm = React.useMemo(
+    () => selectedKinmus.filter(({ term_id }) => term_id === termId),
+    [selectedKinmus, termId]
   );
-  const initialState = {
-    creationDialogIsOpen: false,
-    newConstraint7IsEnabled: true,
-    newConstraint7KinmuId: kinmusInTerm.length > 0 ? kinmusInTerm[0].id : 0,
-    newConstraint7MinNumberOfDays: constraints7.minOfConstraint7MinNumberOfDays,
-  };
+  const initialState = React.useMemo(
+    () => ({
+      creationDialogIsOpen: false,
+      newConstraint7IsEnabled: true,
+      newConstraint7KinmuId:
+        kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined,
+      newConstraint7MinNumberOfDays:
+        constraints7.minOfConstraint7MinNumberOfDays,
+    }),
+    [kinmusInTerm]
+  );
   const [state, setState] = React.useState<State>(initialState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setState(initialState), [termId]);
+  React.useEffect(() => setState(initialState), [initialState]);
   const handleClickOpenCreationDialog = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
@@ -127,10 +125,11 @@ function Constraints7(): JSX.Element {
   const handleClickCreateConstraint7 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints7.createConstraint7({
+      constraints7.add({
         term_id: termId,
         is_enabled: state.newConstraint7IsEnabled,
-        kinmu_id: state.newConstraint7KinmuId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        kinmu_id: state.newConstraint7KinmuId!,
         min_number_of_days: state.newConstraint7MinNumberOfDays,
       })
     );
@@ -156,7 +155,7 @@ function Constraints7(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {kinmusInTerm.length === 0 ? (
+      {!state.newConstraint7KinmuId ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -165,9 +164,9 @@ function Constraints7(): JSX.Element {
         >
           <DialogTitle>勤務の間隔日数の下限を追加できません</DialogTitle>
           <DialogContent>
-            {kinmusInTerm.length === 0 ? (
+            {!state.newConstraint7KinmuId && (
               <DialogContentText>勤務がありません</DialogContentText>
-            ) : null}
+            )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>

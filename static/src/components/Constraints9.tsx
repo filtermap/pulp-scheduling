@@ -14,11 +14,15 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import * as constraints9 from "../modules/constraints9";
-import { RootState } from "../modules/store";
 import * as utils from "../utils";
+
+import * as kinmus from "../modules/kinmus";
+import * as members from "../modules/members";
+import * as terms from "../modules/terms";
+import { useAppSelector } from "../modules/hooks";
 import Constraint9 from "./Constraint9";
 
 const PREFIX = "Constraints9";
@@ -48,10 +52,10 @@ const Root = styled("div")({
 type State = {
   creationDialogIsOpen: boolean;
   newConstraint9IsEnabled: boolean;
-  newConstraint9MemberId: number;
+  newConstraint9MemberId: number | undefined;
   newConstraint9StartDateName: string;
   newConstraint9StopDateName: string;
-  newConstraint9KinmuId: number;
+  newConstraint9KinmuId: number | undefined;
 };
 
 type ErrorMessages = {
@@ -59,43 +63,45 @@ type ErrorMessages = {
   newConstraint9StopDateName: string[];
 };
 
-function select(state: RootState) {
-  return {
-    constraints9: state.present.constraints9,
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-    terms: state.present.terms,
-  };
-}
-
 function Constraints9(): JSX.Element {
-  const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
   const { termIdName } = useParams();
-  if (!termIdName) throw new Error("!termIdName");
-  const termId = parseInt(termIdName, 10);
-  const constraints9InTerm = selected.constraints9.filter(
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const termId = parseInt(termIdName!, 10);
+  const dispatch = useDispatch();
+  const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedMembers = useSelector(members.selectors.selectAll);
+  const selectedTerm = useAppSelector(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (state) => terms.selectors.selectById(state, termId)!
+  );
+  const constraints9InTerm = selectedConstraints9.filter(
     ({ term_id }) => term_id === termId
   );
-  const membersInTerm = selected.members.filter(
-    ({ term_id }) => term_id === termId
+  const membersInTerm = React.useMemo(
+    () => selectedMembers.filter(({ term_id }) => term_id === termId),
+    [selectedMembers, termId]
   );
-  const termsInTerm = selected.terms.filter(({ id }) => id === termId);
-  const kinmusInTerm = selected.kinmus.filter(
-    ({ term_id }) => term_id === termId
+  const kinmusInTerm = React.useMemo(
+    () => selectedKinmus.filter(({ term_id }) => term_id === termId),
+    [selectedKinmus, termId]
   );
   const todayString = utils.dateToString(new Date());
-  const initialState = {
-    creationDialogIsOpen: false,
-    newConstraint9IsEnabled: true,
-    newConstraint9KinmuId: kinmusInTerm.length > 0 ? kinmusInTerm[0].id : 0,
-    newConstraint9MemberId: membersInTerm.length > 0 ? membersInTerm[0].id : 0,
-    newConstraint9StartDateName: todayString,
-    newConstraint9StopDateName: todayString,
-  };
+  const initialState = React.useMemo(
+    () => ({
+      creationDialogIsOpen: false,
+      newConstraint9IsEnabled: true,
+      newConstraint9KinmuId:
+        kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined,
+      newConstraint9MemberId:
+        membersInTerm.length > 0 ? membersInTerm[0].id : 0,
+      newConstraint9StartDateName: todayString,
+      newConstraint9StopDateName: todayString,
+    }),
+    [kinmusInTerm, membersInTerm, todayString]
+  );
   const [state, setState] = React.useState<State>(initialState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setState(initialState), [termId]);
+  React.useEffect(() => setState(initialState), [initialState]);
   const handleClickOpenCreationDialog = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: true }));
   };
@@ -165,13 +171,15 @@ function Constraints9(): JSX.Element {
   const handleClickCreateConstraint9 = () => {
     setState((state) => ({ ...state, creationDialogIsOpen: false }));
     dispatch(
-      constraints9.createConstraint9({
+      constraints9.add({
         term_id: termId,
         is_enabled: state.newConstraint9IsEnabled,
-        member_id: state.newConstraint9MemberId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        member_id: state.newConstraint9MemberId!,
         start_date_name: state.newConstraint9StartDateName,
         stop_date_name: state.newConstraint9StopDateName,
-        kinmu_id: state.newConstraint9KinmuId,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        kinmu_id: state.newConstraint9KinmuId!,
       })
     );
   };
@@ -196,7 +204,7 @@ function Constraints9(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {membersInTerm.length === 0 || kinmusInTerm.length === 0 ? (
+      {!state.newConstraint9MemberId || !state.newConstraint9KinmuId ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -205,12 +213,12 @@ function Constraints9(): JSX.Element {
         >
           <DialogTitle>職員の期間に割り当てる勤務を追加できません</DialogTitle>
           <DialogContent>
-            {membersInTerm.length === 0 ? (
+            {!state.newConstraint9MemberId && (
               <DialogContentText>職員がいません</DialogContentText>
-            ) : null}
-            {kinmusInTerm.length === 0 ? (
+            )}
+            {!state.newConstraint9KinmuId && (
               <DialogContentText>勤務がありません</DialogContentText>
-            ) : null}
+            )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
@@ -227,27 +235,21 @@ function Constraints9(): JSX.Element {
           const newConstraint9StartDate = utils.stringToDate(
             state.newConstraint9StartDateName
           );
-          const newConstraint9StartDateIsEnabled = newConstraint9StartDate
-            ? termsInTerm.every(({ start_date_name }) => {
-                const startDate = utils.stringToDate(start_date_name);
-                if (!startDate) {
-                  return false;
-                }
-                return startDate <= newConstraint9StartDate;
-              })
-            : false;
+          const termStartDate = utils.stringToDate(
+            selectedTerm.start_date_name
+          );
+          const newConstraint9StartDateIsEnabled =
+            !newConstraint9StartDate || !termStartDate
+              ? false
+              : termStartDate <= newConstraint9StartDate;
           const newConstraint9StopDate = utils.stringToDate(
             state.newConstraint9StopDateName
           );
-          const newConstraint9StopDateIsEnabled = newConstraint9StopDate
-            ? termsInTerm.every(({ stop_date_name }) => {
-                const stopDate = utils.stringToDate(stop_date_name);
-                if (!stopDate) {
-                  return false;
-                }
-                return stopDate >= newConstraint9StopDate;
-              })
-            : false;
+          const termStopDate = utils.stringToDate(selectedTerm.stop_date_name);
+          const newConstraint9StopDateIsEnabled =
+            !newConstraint9StopDate || !termStopDate
+              ? false
+              : newConstraint9StopDate <= termStopDate;
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const newConstraint9Kinmu = kinmusInTerm.find(
             ({ id }) => id === state.newConstraint9KinmuId

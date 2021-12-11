@@ -12,7 +12,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Link as RouterLink,
   LinkProps as RouterLinkProps,
@@ -26,7 +26,26 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import * as utils from "../utils";
 import * as terms from "../modules/terms";
-import { RootState } from "../modules/store";
+import * as members from "../modules/members";
+import * as kinmus from "../modules/kinmus";
+import * as groups from "../modules/groups";
+import * as group_members from "../modules/group_members";
+import * as constraints0 from "../modules/constraints0";
+import * as constraint0_kinmus from "../modules/constraint0_kinmus";
+import * as constraints1 from "../modules/constraints1";
+import * as constraints2 from "../modules/constraints2";
+import * as constraints3 from "../modules/constraints3";
+import * as constraints4 from "../modules/constraints4";
+import * as constraints5 from "../modules/constraints5";
+import * as constraints6 from "../modules/constraints6";
+import * as constraints7 from "../modules/constraints7";
+import * as constraints8 from "../modules/constraints8";
+import * as constraints9 from "../modules/constraints9";
+import * as constraints10 from "../modules/constraints10";
+import * as schedules from "../modules/schedules";
+import * as assignments from "../modules/assignments";
+import * as all from "../modules/all";
+import { useAppSelector } from "../modules/hooks";
 import Constraints0 from "./Constraints0";
 import Constraints1 from "./Constraints1";
 import Constraints10 from "./Constraints10";
@@ -212,20 +231,43 @@ function TermListItems(props: { term: terms.Term }) {
   );
 }
 
-function select(state: RootState) {
-  return {
-    all: state.present,
-    futureExists: state.future.length > 0,
-    pastExists: state.past.length > 0,
-  };
-}
-
 function ResponsiveDrawer(): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedFutureExists = useAppSelector(
+    (state) => state.future.length > 0
+  );
+  const selectedPastExists = useAppSelector((state) => state.past.length > 0);
+  const selectedTerms = useSelector(terms.selectors.selectAll);
+  const selectedMembers = useSelector(members.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedGroups = useSelector(groups.selectors.selectAll);
+  const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
+  const selectedConstraints0 = useSelector(constraints0.selectors.selectAll);
+  const selectedConstraint0Kinmus = useSelector(
+    constraint0_kinmus.selectors.selectAll
+  );
+  const selectedConstraints1 = useSelector(constraints1.selectors.selectAll);
+  const selectedConstraints2 = useSelector(constraints2.selectors.selectAll);
+  const selectedConstraints3 = useSelector(constraints3.selectors.selectAll);
+  const selectedConstraints4 = useSelector(constraints4.selectors.selectAll);
+  const selectedConstraints5 = useSelector(constraints5.selectors.selectAll);
+  const selectedConstraints6 = useSelector(constraints6.selectors.selectAll);
+  const selectedConstraints7 = useSelector(constraints7.selectors.selectAll);
+  const selectedConstraints8 = useSelector(constraints8.selectors.selectAll);
+  const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
+  const selectedConstraints10 = useSelector(constraints10.selectors.selectAll);
+  const selectedSchedules = useSelector(schedules.selectors.selectAll);
+  const selectedAssignments = useSelector(assignments.selectors.selectAll);
   const [state, setState] = React.useState<State>({
     mobileOpen: false,
   });
+  React.useEffect(() => {
+    async function f(): Promise<void> {
+      const { result } = await utils.sendJSONRPCRequest("read_all");
+      dispatch(all.replaceAll(result as all.PlainAll));
+    }
+    f();
+  }, [dispatch]);
   const handleDrawerToggle = () => {
     setState((state) => ({ ...state, mobileOpen: !state.mobileOpen }));
   };
@@ -236,7 +278,28 @@ function ResponsiveDrawer(): JSX.Element {
     dispatch(ActionCreators.redo());
   };
   const writeAll = () => {
-    utils.sendJSONRPCRequest("write_all", [selected.all]);
+    const plainAll: all.PlainAll = {
+      terms: selectedTerms,
+      members: selectedMembers,
+      kinmus: selectedKinmus,
+      groups: selectedGroups,
+      group_members: selectedGroupMembers,
+      constraints0: selectedConstraints0,
+      constraint0_kinmus: selectedConstraint0Kinmus,
+      constraints1: selectedConstraints1,
+      constraints2: selectedConstraints2,
+      constraints3: selectedConstraints3,
+      constraints4: selectedConstraints4,
+      constraints5: selectedConstraints5,
+      constraints6: selectedConstraints6,
+      constraints7: selectedConstraints7,
+      constraints8: selectedConstraints8,
+      constraints9: selectedConstraints9,
+      constraints10: selectedConstraints10,
+      schedules: selectedSchedules,
+      assignments: selectedAssignments,
+    };
+    utils.sendJSONRPCRequest("write_all", [plainAll]);
   };
   const drawer = (
     <>
@@ -245,7 +308,7 @@ function ResponsiveDrawer(): JSX.Element {
       <List>
         <ListItemLink to="/terms" primary="期間" />
       </List>
-      {selected.all.terms
+      {selectedTerms
         .filter(({ is_enabled }) => is_enabled)
         .map((term) => (
           <TermListItems key={term.id} term={term} />
@@ -277,14 +340,14 @@ function ResponsiveDrawer(): JSX.Element {
             <Button
               color="inherit"
               onClick={handleClickUndo}
-              disabled={!selected.pastExists}
+              disabled={!selectedPastExists}
             >
               元に戻す
             </Button>
             <Button
               color="inherit"
               onClick={handleClickRedo}
-              disabled={!selected.futureExists}
+              disabled={!selectedFutureExists}
             >
               やり直す
             </Button>

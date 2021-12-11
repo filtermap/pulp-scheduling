@@ -23,11 +23,17 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as all from "../modules/all";
+import * as assignments from "../modules/assignments";
+import * as constraints10 from "../modules/constraints10";
+import * as constraints3 from "../modules/constraints3";
+import * as constraints4 from "../modules/constraints4";
+import * as constraints9 from "../modules/constraints9";
 import * as group_members from "../modules/group_members";
+import * as groups from "../modules/groups";
+import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
-import { RootState } from "../modules/store";
 
 const PREFIX = "Member";
 
@@ -62,49 +68,42 @@ type ErrorMessages = {
   memberName: string[];
 };
 
-function select(state: RootState) {
-  return {
-    assignments: state.present.assignments,
-    constraints10: state.present.constraints10,
-    constraints3: state.present.constraints3,
-    constraints4: state.present.constraints4,
-    constraints9: state.present.constraints9,
-    group_members: state.present.group_members,
-    groups: state.present.groups,
-    kinmus: state.present.kinmus,
-    members: state.present.members,
-  };
-}
-
 function Member(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedAssignments = useSelector(assignments.selectors.selectAll);
+  const selectedConstraints10 = useSelector(constraints10.selectors.selectAll);
+  const selectedConstraints3 = useSelector(constraints3.selectors.selectAll);
+  const selectedConstraints4 = useSelector(constraints4.selectors.selectAll);
+  const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
+  const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
+  const selectedGroups = useSelector(groups.selectors.selectAll);
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
-  const groupMembersInTerm = selected.group_members.filter(
+  const groupMembersInTerm = selectedGroupMembers.filter(
     ({ member_id }) => member_id === props.member.id
   );
-  const groupsInTerm = selected.groups.filter(
+  const groupsInTerm = selectedGroups.filter(
     ({ term_id }) => term_id === props.member.term_id
   );
-  const assignmentsInTerm = selected.assignments.filter(
+  const assignmentsInTerm = selectedAssignments.filter(
     ({ member_id }) => member_id === props.member.id
   );
-  const constraints3InTerm = selected.constraints3.filter(
+  const constraints3InTerm = selectedConstraints3.filter(
     ({ term_id }) => term_id === props.member.term_id
   );
-  const constraints4InTerm = selected.constraints4.filter(
+  const constraints4InTerm = selectedConstraints4.filter(
     ({ term_id }) => term_id === props.member.term_id
   );
-  const constraints9InTerm = selected.constraints9.filter(
+  const constraints9InTerm = selectedConstraints9.filter(
     ({ term_id }) => term_id === props.member.term_id
   );
-  const constraints10InTerm = selected.constraints10.filter(
+  const constraints10InTerm = selectedConstraints10.filter(
     ({ term_id }) => term_id === props.member.term_id
   );
-  const kinmusInTerm = selected.kinmus.filter(
+  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.member.term_id
   );
   const handleClickExpand = () => {
@@ -114,9 +113,11 @@ function Member(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      members.updateMemberIsEnabled({
+      members.update({
         id: props.member.id,
-        is_enabled: event.target.checked,
+        changes: {
+          is_enabled: event.target.checked,
+        },
       })
     );
   };
@@ -133,9 +134,11 @@ function Member(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      members.updateMemberName({
+      members.update({
         id: props.member.id,
-        name: event.target.value,
+        changes: {
+          name: event.target.value,
+        },
       })
     );
   };
@@ -143,7 +146,7 @@ function Member(props: Props): JSX.Element {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
         dispatch(
-          group_members.createGroupMember({
+          group_members.add({
             group_id: groupId,
             member_id: props.member.id,
           })
@@ -151,7 +154,7 @@ function Member(props: Props): JSX.Element {
         return;
       }
       dispatch(
-        group_members.deleteGroupMember({
+        group_members.remove({
           group_id: groupId,
           member_id: props.member.id,
         })
@@ -166,7 +169,7 @@ function Member(props: Props): JSX.Element {
   };
   const handleClickDeleteMember = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteMember({ id: props.member.id }));
+    dispatch(all.removeMember(props.member.id));
   };
   const memberScheduleIds = Array.from(
     new Set(

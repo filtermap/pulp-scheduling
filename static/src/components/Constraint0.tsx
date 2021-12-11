@@ -19,11 +19,11 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as all from "../modules/all";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
+import * as kinmus from "../modules/kinmus";
 import * as constraints0 from "../modules/constraints0";
-import { RootState } from "../modules/store";
 import * as utils from "../utils";
 
 const PREFIX = "Constraint0";
@@ -62,21 +62,18 @@ type State = {
   deletionDialogIsOpen: boolean;
 };
 
-function select(state: RootState) {
-  return {
-    constraint0_kinmus: state.present.constraint0_kinmus,
-    kinmus: state.present.kinmus,
-  };
-}
-
 function Constraint0(props: Props): JSX.Element {
   const dispatch = useDispatch();
-  const selected = useSelector(select, shallowEqual);
+  const selectedConstraint0Kinmus = useSelector(
+    constraint0_kinmus.selectors.selectAll
+  );
+  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
-  const kinmusInTerm = selected.kinmus.filter(
+  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.constraint0.term_id
   );
   const handleClickExpand = () => {
@@ -86,9 +83,11 @@ function Constraint0(props: Props): JSX.Element {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     dispatch(
-      constraints0.updateConstraint0IsEnabled({
+      constraints0.update({
         id: props.constraint0.id,
-        is_enabled: event.target.checked,
+        changes: {
+          is_enabled: event.target.checked,
+        },
       })
     );
   };
@@ -96,7 +95,7 @@ function Constraint0(props: Props): JSX.Element {
     return () => {
       const kinmu_id = kinmusInTerm[0].id;
       dispatch(
-        constraint0_kinmus.createConstraint0Kinmu({
+        constraint0_kinmus.add({
           constraint0_id: props.constraint0.id,
           sequence_number,
           kinmu_id,
@@ -109,16 +108,18 @@ function Constraint0(props: Props): JSX.Element {
   ) => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       dispatch(
-        constraint0_kinmus.updateConstraint0KinmuKinmuId({
+        constraint0_kinmus.update({
           id: constraint0_kinmu_id,
-          kinmu_id: parseInt(event.target.value, 10),
+          changes: {
+            kinmu_id: parseInt(event.target.value, 10),
+          },
         })
       );
     };
   };
   const handleClickDeleteConstraint0Kinmu = (constraint0_kinmu_id: number) => {
     return () => {
-      dispatch(all.deleteConstraint0Kinmu({ id: constraint0_kinmu_id }));
+      dispatch(all.removeConstraint0Kinmu(constraint0_kinmu_id));
     };
   };
   const handleClickOpenDeletionDialog = () => {
@@ -129,30 +130,29 @@ function Constraint0(props: Props): JSX.Element {
   };
   const handleClickDeleteConstraint0 = () => {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
-    dispatch(all.deleteConstraint0({ id: props.constraint0.id }));
+    dispatch(all.removeConstraint0(props.constraint0.id));
   };
-  const constraint0Constraint0Kinmus = selected.constraint0_kinmus
+  const constraint0Constraint0Kinmus = selectedConstraint0Kinmus
     .filter(({ constraint0_id }) => constraint0_id === props.constraint0.id)
     .sort((a, b) => a.sequence_number - b.sequence_number);
-  const constraint0Constraint0KinmuKinmus = constraint0Constraint0Kinmus.map(
-    ({ kinmu_id }) =>
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      kinmusInTerm.find((kinmu) => kinmu.id === kinmu_id)!
-  );
-  const relativesAreEnabled = constraint0Constraint0KinmuKinmus.every(
-    ({ is_enabled }) => is_enabled
+  const relativesAreEnabled = constraint0Constraint0Kinmus.every(
+    ({ kinmu_id }) => selectedKinmuById[kinmu_id]?.is_enabled
   );
   const title = utils.intersperse(
-    constraint0Constraint0KinmuKinmus.map((kinmu) => (
-      <span
-        key={kinmu.id}
-        className={classnames({
-          [classes.lineThrough]: !kinmu.is_enabled,
-        })}
-      >
-        {kinmu.name}
-      </span>
-    )),
+    constraint0Constraint0Kinmus.map(({ kinmu_id }) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const kinmu = selectedKinmuById[kinmu_id]!;
+      return (
+        <span
+          key={kinmu.id}
+          className={classnames({
+            [classes.lineThrough]: !kinmu.is_enabled,
+          })}
+        >
+          {kinmu.name}
+        </span>
+      );
+    }),
     ", "
   );
   return (
@@ -222,8 +222,8 @@ function Constraint0(props: Props): JSX.Element {
                       ))}
                     </TextField>
                   </Grid>
-                  <Grid item={true} xs={12}>
-                    {constraint0Constraint0Kinmus.length > 2 && (
+                  {constraint0Constraint0Kinmus.length > 2 && (
+                    <Grid item={true} xs={12}>
                       <Button
                         size="small"
                         onClick={handleClickDeleteConstraint0Kinmu(
@@ -232,8 +232,8 @@ function Constraint0(props: Props): JSX.Element {
                       >
                         削除
                       </Button>
-                    )}
-                  </Grid>
+                    </Grid>
+                  )}
                   <Grid item={true} xs={12}>
                     <Button
                       size="small"

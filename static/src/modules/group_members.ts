@@ -1,4 +1,9 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
+import { RootState } from "./store";
 
 export type GroupMember = {
   id: number;
@@ -6,43 +11,48 @@ export type GroupMember = {
   member_id: number;
 };
 
-const initialState: GroupMember[] = [];
+export const adapter = createEntityAdapter<GroupMember>();
+
+export const selectors = adapter.getSelectors<RootState>(
+  (state) => state.present.group_members
+);
 
 const group_members = createSlice({
   name: "group_members",
-  initialState,
+  initialState: adapter.getInitialState(),
   reducers: {
-    createGroupMember: (
+    add: (
       state,
       action: PayloadAction<{
         group_id: number;
         member_id: number;
       }>
-    ) => {
-      state.push({
-        id: Math.max(0, ...state.map((group_member) => group_member.id)) + 1,
-        group_id: action.payload.group_id,
-        member_id: action.payload.member_id,
-      });
-    },
-    deleteGroupMember: (
+    ) =>
+      adapter.addOne(state, {
+        ...action.payload,
+        id: Math.max(0, ...(state.ids as number[])) + 1,
+      }),
+    remove: (
       state,
       action: PayloadAction<{
         group_id: number;
         member_id: number;
       }>
-    ) => {
-      return state.filter(
-        (group_member) =>
-          !(
-            group_member.group_id === action.payload.group_id &&
-            group_member.member_id === action.payload.member_id
-          )
-      );
-    },
+    ) =>
+      adapter.removeMany(
+        state,
+        state.ids.filter((id) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const { group_id, member_id } = state.entities[id]!;
+          return (
+            group_id === action.payload.group_id &&
+            member_id === action.payload.member_id
+          );
+        })
+      ),
   },
 });
 
-export const { createGroupMember, deleteGroupMember } = group_members.actions;
+export const { add, remove } = group_members.actions;
 
 export const { reducer } = group_members;
