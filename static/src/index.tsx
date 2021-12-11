@@ -4,7 +4,6 @@ import {
   Theme,
   StyledEngineProvider,
   createTheme,
-  adaptV4Theme,
 } from "@mui/material/styles";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -27,14 +26,12 @@ declare module "@mui/styles/defaultTheme" {
 
 async function main() {
   const initialState = (await utils.sendJSONRPCRequest("read_all")).result;
-  const theme = createTheme(
-    adaptV4Theme({
-      palette: {
-        primary: blue,
-        secondary: teal,
-      },
-    })
-  );
+  const theme = createTheme({
+    palette: {
+      primary: blue,
+      secondary: teal,
+    },
+  });
   ReactDOM.render(
     <React.StrictMode>
       <StyledEngineProvider injectFirst>
