@@ -438,7 +438,7 @@ function Schedules(): JSX.Element {
                 </>
               ) : (
                 <Typography>
-                  pulp-schedulingの不具合や条件の誤りなどにより作成できない可能性があります（
+                  pulp-schedulingの不具合やデータの破損などにより作成できない可能性があります（
                   {state.dialogState.errorMessage}）
                 </Typography>
               )}
