@@ -263,8 +263,10 @@ function ResponsiveDrawer(): JSX.Element {
   });
   React.useEffect(() => {
     async function f(): Promise<void> {
-      const { result } = await utils.sendJSONRPCRequest("read_all");
-      dispatch(all.replaceAll(result as all.PlainAll));
+      const { result } = (await utils.sendJSONRPCRequest("read_all")) as {
+        result: all.PlainAll;
+      };
+      dispatch(all.replaceAll(result));
     }
     f();
   }, [dispatch]);

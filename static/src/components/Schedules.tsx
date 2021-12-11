@@ -227,8 +227,10 @@ function Schedules(): JSX.Element {
         type: SOLVE_IN_PROGRESS,
       },
     }));
-    const response = await utils.sendJSONRPCRequest("solve", [allInTerm]);
-    if (Object.prototype.hasOwnProperty.call(response, "error")) {
+    const response = (await utils.sendJSONRPCRequest("solve", [allInTerm])) as
+      | { error: { message: string } }
+      | { result: assignments.Assignment[] };
+    if ("error" in response) {
       setState((state) => ({
         ...state,
         dialogState: {
@@ -253,8 +255,10 @@ function Schedules(): JSX.Element {
         type: PURSUE_IN_PROGRESS,
       },
     }));
-    const response = await utils.sendJSONRPCRequest("pursue", [allInTerm]);
-    if (Object.prototype.hasOwnProperty.call(response, "error")) {
+    const response = (await utils.sendJSONRPCRequest("pursue", [allInTerm])) as
+      | { error: { message: string } }
+      | { result: { constraint: { id: number; type: string } } };
+    if ("error" in response) {
       setState((state) => ({
         ...state,
         dialogState: {

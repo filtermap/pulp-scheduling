@@ -130,11 +130,11 @@ function Schedule(props: Props): JSX.Element {
     );
     const csv = iconv.encode(
       (
-        await utils.sendJSONRPCRequest("download_csv", [
+        (await utils.sendJSONRPCRequest("download_csv", [
           assignments_by_schedule_id,
           membersInTerm,
           kinmusInTerm,
-        ])
+        ])) as { result: string }
       ).result,
       "Shift_JIS"
     );
