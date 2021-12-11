@@ -1,23 +1,20 @@
-import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
-import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
-import Hidden from "@material-ui/core/Hidden";
-import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import {
-  createStyles,
-  withStyles,
-  WithStyles,
-  withTheme,
-  WithTheme,
-  Theme,
-} from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import MenuIcon from "@material-ui/icons/Menu";
+import AppBar from "@mui/material/AppBar";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import Hidden from "@mui/material/Hidden";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import { Theme } from "@mui/material/styles";
+import { WithStyles, WithTheme } from "@mui/styles";
+import createStyles from "@mui/styles/createStyles";
+import withStyles from "@mui/styles/withStyles";
+import withTheme from "@mui/styles/withTheme";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import MenuIcon from "@mui/icons-material/Menu";
 import * as React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
@@ -28,9 +25,9 @@ import {
   useLocation,
 } from "react-router-dom";
 import { ActionCreators } from "redux-undo";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import Collapse from "@material-ui/core/Collapse";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import Collapse from "@mui/material/Collapse";
 import * as utils from "../utils";
 import * as terms from "../modules/terms";
 import { RootState } from "../modules/store";
@@ -260,6 +257,7 @@ function ResponsiveDrawer(props: Props) {
             aria-label="open drawer"
             onClick={handleDrawerToggle}
             className={classes.navIconHide}
+            size="large"
           >
             <MenuIcon />
           </IconButton>
@@ -306,7 +304,7 @@ function ResponsiveDrawer(props: Props) {
           {drawer}
         </Drawer>
       </Hidden>
-      <Hidden smDown={true} implementation="css">
+      <Hidden mdDown={true} implementation="css">
         <Drawer
           variant="permanent"
           open={true}
