@@ -1,7 +1,6 @@
 import AppBar from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import Hidden from "@mui/material/Hidden";
 import IconButton from "@mui/material/IconButton";
@@ -126,23 +125,19 @@ function ListItemLink(props: { to: string; primary: string }) {
     () =>
       React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(
         function Link(itemProps, ref) {
-          return (
-            <RouterLink to={to} ref={ref} {...itemProps} role={undefined} />
-          );
+          return <RouterLink to={to} ref={ref} {...itemProps} />;
         }
       ),
     [to]
   );
   return (
-    <li>
-      <ListItem
-        button={true}
-        selected={to === location.pathname}
-        component={renderLink}
-      >
-        <ListItemText primary={primary} />
-      </ListItem>
-    </li>
+    <ListItem
+      button={true}
+      selected={to === location.pathname}
+      component={renderLink}
+    >
+      <ListItemText primary={primary} />
+    </ListItem>
   );
 }
 
@@ -154,78 +149,69 @@ function TermListItems(props: { term: terms.Term }) {
     setState((state) => ({ ...state, isOpen: !state.isOpen }));
   return (
     <>
-      <Divider />
       <ListItem button={true} onClick={handleClickTerm}>
         <ListItemText
-          primary={
-            <>
-              {`${props.term.start_date_name}から`}
-              <br />
-              {"　"}
-              {`${props.term.stop_date_name}まで`}
-            </>
-          }
+          primary={`${props.term.start_date_name}から${props.term.stop_date_name}まで`}
         />
         {state.isOpen ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={state.isOpen}>
-        <Divider />
-        <ListItemLink
-          to={`/terms/${props.term.id}/schedules`}
-          primary="勤務表"
-        />
-        <Divider />
-        <ListItemLink to={`/terms/${props.term.id}/members`} primary="職員" />
-        <ListItemLink to={`/terms/${props.term.id}/kinmus`} primary="勤務" />
-        <ListItemLink
-          to={`/terms/${props.term.id}/groups`}
-          primary="グループ"
-        />
-        <Divider />
-        <ListItemLink
-          to={`/terms/${props.term.id}/constraints0`}
-          primary="連続禁止勤務並び"
-        />
-        <ListItemLink
-          to={`/terms/${props.term.id}/constraints1`}
-          primary="期間の勤務にグループから割り当てる職員数の下限"
-        />
-        <ListItemLink
-          to={`/terms/${props.term.id}/constraints2`}
-          primary="期間の勤務にグループから割り当てる職員数の上限"
-        />
-        <ListItemLink
-          to={`/terms/${props.term.id}/constraints3`}
-          primary="職員の勤務の割り当て数の下限"
-        />
-        <ListItemLink
-          to={`/terms/${props.term.id}/constraints4`}
-          primary="職員の勤務の割り当て数の上限"
-        />
-        <ListItemLink
-          to={`/terms/${props.term.id}/constraints5`}
-          primary="勤務の連続日数の下限"
-        />
-        <ListItemLink
-          to={`/terms/${props.term.id}/constraints6`}
-          primary="勤務の連続日数の上限"
-        />
-        <ListItemLink
-          to={`/terms/${props.term.id}/constraints7`}
-          primary="勤務の間隔日数の下限"
-        />
-        <ListItemLink
-          to={`/terms/${props.term.id}/constraints8`}
-          primary="勤務の間隔日数の上限"
-        />
-        <ListItemLink
-          to={`/terms/${props.term.id}/constraints9`}
-          primary="職員の期間に割り当てる勤務"
-        />
-        <ListItemLink
-          to={`/terms/${props.term.id}/constraints10`}
-          primary="職員の期間に割り当てない勤務"
-        />
+        <List component="div" disablePadding>
+          <ListItemLink
+            to={`/terms/${props.term.id}/schedules`}
+            primary="勤務表"
+          />
+          <ListItemLink to={`/terms/${props.term.id}/members`} primary="職員" />
+          <ListItemLink to={`/terms/${props.term.id}/kinmus`} primary="勤務" />
+          <ListItemLink
+            to={`/terms/${props.term.id}/groups`}
+            primary="グループ"
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/constraints0`}
+            primary="連続禁止勤務並び"
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/constraints1`}
+            primary="期間の勤務にグループから割り当てる職員数の下限"
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/constraints2`}
+            primary="期間の勤務にグループから割り当てる職員数の上限"
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/constraints3`}
+            primary="職員の勤務の割り当て数の下限"
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/constraints4`}
+            primary="職員の勤務の割り当て数の上限"
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/constraints5`}
+            primary="勤務の連続日数の下限"
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/constraints6`}
+            primary="勤務の連続日数の上限"
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/constraints7`}
+            primary="勤務の間隔日数の下限"
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/constraints8`}
+            primary="勤務の間隔日数の上限"
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/constraints9`}
+            primary="職員の期間に割り当てる勤務"
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/constraints10`}
+            primary="職員の期間に割り当てない勤務"
+          />
+        </List>
       </Collapse>
     </>
   );
@@ -306,15 +292,14 @@ function ResponsiveDrawer(): JSX.Element {
   const drawer = (
     <>
       <Toolbar />
-      <Divider />
-      <List>
+      <List component="div" disablePadding>
         <ListItemLink to="/terms" primary="期間" />
+        {selectedTerms
+          .filter(({ is_enabled }) => is_enabled)
+          .map((term) => (
+            <TermListItems key={term.id} term={term} />
+          ))}
       </List>
-      {selectedTerms
-        .filter(({ is_enabled }) => is_enabled)
-        .map((term) => (
-          <TermListItems key={term.id} term={term} />
-        ))}
     </>
   );
   return (
