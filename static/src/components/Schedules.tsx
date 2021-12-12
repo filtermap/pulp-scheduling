@@ -191,7 +191,7 @@ function Schedules(): JSX.Element {
   const groupsInTerm = selectedGroups.filter(byTermId);
   const groupIdsInTerm = new Set(groupsInTerm.map(({ id }) => id));
   const allInTerm = {
-    terms: selectedTerms.filter(({ id }) => termId),
+    terms: selectedTerms.filter(({ id }) => id === termId),
     members: selectedMembers.filter(byTermId),
     kinmus: selectedKinmus.filter(byTermId),
     groups: groupsInTerm,
