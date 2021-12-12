@@ -322,7 +322,7 @@ function ResponsiveDrawer(): JSX.Element {
               noWrap={true}
               className={classes.title}
             >
-              pulp-scheduling<span className={classes.version}>v0.1.13</span>
+              pulp-scheduling<span className={classes.version}>v0.2.0</span>
             </Typography>
             <Button
               color="inherit"
