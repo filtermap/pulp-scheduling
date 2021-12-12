@@ -2,7 +2,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import undoable from "redux-undo";
 import * as all from "./all";
 
-const reducer = undoable(all.reducer);
+const reducer = undoable(all.reducer, {
+  ignoreInitialState: true,
+});
 
 export type RootState = ReturnType<typeof reducer>;
 
