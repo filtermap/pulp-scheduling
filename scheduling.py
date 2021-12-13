@@ -893,12 +893,12 @@ def to_constraints(enabled, dates):
     x = pulp.LpVariable.dicts("x", (M, D, K), 0, 1, pulp.LpBinary)
 
     # 目的関数。
-    objective = sum(
+    objective = pulp.lpSum(
         c["min_number_of_assignments"]
-        - sum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
+        - pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
         for c in C1
-    ) + sum(
-        sum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
+    ) + pulp.lpSum(
+        pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
         - c["max_number_of_assignments"]
         for c in C2
     )
@@ -907,7 +907,7 @@ def to_constraints(enabled, dates):
     indispensable = []
     for m in M:
         for d in D:
-            indispensable.append(sum([x[m][d][k] for k in K]) == 1)
+            indispensable.append(pulp.lpSum([x[m][d][k] for k in K]) == 1)
 
     optional = []
     optional_types_and_ids = []
@@ -918,31 +918,33 @@ def to_constraints(enabled, dates):
                 if d - l not in D:
                     continue
                 optional.append(
-                    sum(x[m][d - l + i][c["kinmu_ids"][i]] for i in range(0, l + 1))
+                    pulp.lpSum(
+                        x[m][d - l + i][c["kinmu_ids"][i]] for i in range(0, l + 1)
+                    )
                     <= l
                 )
                 optional_types_and_ids.append({"type": "Constraint0", "id": c["id"]})
     for c in C1:
         optional.append(
-            sum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
+            pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
             >= c["min_number_of_assignments"]
         )
         optional_types_and_ids.append({"type": "Constraint1", "id": c["id"]})
     for c in C2:
         optional.append(
-            sum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
+            pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
             <= c["max_number_of_assignments"]
         )
         optional_types_and_ids.append({"type": "Constraint2", "id": c["id"]})
     for c in C3:
         optional.append(
-            sum(x[c["member_id"]][d][c["kinmu_id"]] for d in D)
+            pulp.lpSum(x[c["member_id"]][d][c["kinmu_id"]] for d in D)
             >= c["min_number_of_assignments"]
         )
         optional_types_and_ids.append({"type": "Constraint3", "id": c["id"]})
     for c in C4:
         optional.append(
-            sum(x[c["member_id"]][d][c["kinmu_id"]] for d in D)
+            pulp.lpSum(x[c["member_id"]][d][c["kinmu_id"]] for d in D)
             <= c["max_number_of_assignments"]
         )
         optional_types_and_ids.append({"type": "Constraint4", "id": c["id"]})
@@ -955,7 +957,7 @@ def to_constraints(enabled, dates):
                     c["min_number_of_days"] if d - c["min_number_of_days"] >= 0 else d
                 )
                 optional.append(
-                    sum(
+                    pulp.lpSum(
                         x[m][d - i][c["kinmu_id"]]
                         for i in range(2, min_number_of_days + 1)
                     )
@@ -970,7 +972,7 @@ def to_constraints(enabled, dates):
                 if d - c["max_number_of_days"] not in D:
                     continue
                 optional.append(
-                    sum(
+                    pulp.lpSum(
                         x[m][d - i][c["kinmu_id"]]
                         for i in range(0, c["max_number_of_days"] + 1)
                     )
@@ -985,7 +987,7 @@ def to_constraints(enabled, dates):
                         continue
                     optional.append(
                         x[m][d - i][c["kinmu_id"]]
-                        - sum(x[m][d - j][c["kinmu_id"]] for j in range(1, i))
+                        - pulp.lpSum(x[m][d - j][c["kinmu_id"]] for j in range(1, i))
                         + x[m][d][c["kinmu_id"]]
                         <= 1
                     )
@@ -998,7 +1000,7 @@ def to_constraints(enabled, dates):
                 if d - c["max_number_of_days"] not in D:
                     continue
                 optional.append(
-                    sum(
+                    pulp.lpSum(
                         x[m][d - i][c["kinmu_id"]]
                         for i in range(0, c["max_number_of_days"] + 1)
                     )
