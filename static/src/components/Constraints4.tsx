@@ -179,7 +179,8 @@ function Constraints4(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {!state.newConstraint4MemberId || !state.newConstraint4KinmuId ? (
+      {state.newConstraint4MemberId === undefined ||
+      state.newConstraint4KinmuId === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -190,10 +191,10 @@ function Constraints4(): JSX.Element {
             職員の勤務の割り当て数の上限を追加できません
           </DialogTitle>
           <DialogContent>
-            {!state.newConstraint4MemberId && (
+            {state.newConstraint4MemberId === undefined && (
               <DialogContentText>職員がいません</DialogContentText>
             )}
-            {!state.newConstraint4KinmuId && (
+            {state.newConstraint4KinmuId === undefined && (
               <DialogContentText>勤務がありません</DialogContentText>
             )}
           </DialogContent>

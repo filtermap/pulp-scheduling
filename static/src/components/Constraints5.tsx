@@ -157,7 +157,7 @@ function Constraints5(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {!state.newConstraint5KinmuId ? (
+      {state.newConstraint5KinmuId === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -166,7 +166,7 @@ function Constraints5(): JSX.Element {
         >
           <DialogTitle>勤務の連続日数の下限を追加できません</DialogTitle>
           <DialogContent>
-            {!state.newConstraint5KinmuId && (
+            {state.newConstraint5KinmuId === undefined && (
               <DialogContentText>勤務がありません</DialogContentText>
             )}
           </DialogContent>

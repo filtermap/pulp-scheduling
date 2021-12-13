@@ -206,7 +206,8 @@ function Constraints9(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {!state.newConstraint9MemberId || !state.newConstraint9KinmuId ? (
+      {state.newConstraint9MemberId === undefined ||
+      state.newConstraint9KinmuId === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -215,10 +216,10 @@ function Constraints9(): JSX.Element {
         >
           <DialogTitle>職員の期間に割り当てる勤務を追加できません</DialogTitle>
           <DialogContent>
-            {!state.newConstraint9MemberId && (
+            {state.newConstraint9MemberId === undefined && (
               <DialogContentText>職員がいません</DialogContentText>
             )}
-            {!state.newConstraint9KinmuId && (
+            {state.newConstraint9KinmuId === undefined && (
               <DialogContentText>勤務がありません</DialogContentText>
             )}
           </DialogContent>

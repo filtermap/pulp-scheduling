@@ -225,7 +225,8 @@ function Constraints1(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {!state.newConstraint1KinmuId || !state.newConstraint1GroupId ? (
+      {state.newConstraint1KinmuId === undefined ||
+      state.newConstraint1GroupId === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -236,10 +237,10 @@ function Constraints1(): JSX.Element {
             期間の勤務にグループから割り当てる職員数の下限を追加できません
           </DialogTitle>
           <DialogContent>
-            {!state.newConstraint1KinmuId && (
+            {state.newConstraint1KinmuId === undefined && (
               <DialogContentText>勤務がありません</DialogContentText>
             )}
-            {!state.newConstraint1GroupId && (
+            {state.newConstraint1GroupId === undefined && (
               <DialogContentText>グループがありません</DialogContentText>
             )}
           </DialogContent>

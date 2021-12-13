@@ -278,7 +278,7 @@ function Term(props: Props): JSX.Element {
           </CardActions>
         </Collapse>
       </Card>
-      {selectableTerms.length === 0 ? (
+      {state.selectedTermId === undefined ? (
         <Dialog
           onClose={handleClickCloseImportDataDialog}
           open={state.importDataDialogIsOpen}
@@ -289,7 +289,9 @@ function Term(props: Props): JSX.Element {
             他の期間からデータと条件をインポートできません
           </DialogTitle>
           <DialogContent>
-            <DialogContentText>有効な他の期間がありません</DialogContentText>
+            {state.selectedTermId === undefined && (
+              <DialogContentText>有効な他の期間がありません</DialogContentText>
+            )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleClickCloseImportDataDialog}>
