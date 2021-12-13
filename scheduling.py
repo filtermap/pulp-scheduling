@@ -56,11 +56,7 @@ def read_terms():
     with open(in_data_directory(terms_filename)) as f:
         next(f)
         terms = [
-            {
-                **r,
-                "id": int(r["id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-            }
+            {**r, "id": int(r["id"]), "is_enabled": int(r["is_enabled"]) != 0}
             for r in csv.DictReader(f, term_attribute_names)
         ]
     return terms
