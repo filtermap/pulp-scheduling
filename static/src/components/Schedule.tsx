@@ -11,15 +11,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import classnames from "classnames";
 import * as iconv from "iconv-lite";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,12 +26,11 @@ import * as utils from "../utils";
 import * as assignments from "../modules/assignments";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
+import ExpandMoreButton from "./parts/ExpandMoreButton";
 
 const PREFIX = "Schedule";
 
 const classes = {
-  expand: `${PREFIX}-expand`,
-  expandOpen: `${PREFIX}-expandOpen`,
   leftHeaderCell: `${PREFIX}-leftHeaderCell`,
   leftTopHeaderCell: `${PREFIX}-leftTopHeaderCell`,
   tableWrapper: `${PREFIX}-tableWrapper`,
@@ -43,15 +39,6 @@ const classes = {
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled("div")(({ theme }) => ({
-  [`& .${classes.expand}`]: {
-    transform: "rotate(0deg)",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  [`& .${classes.expandOpen}`]: {
-    transform: "rotate(180deg)",
-  },
   [`& .${classes.leftHeaderCell}`]: {
     background: theme.palette.background.default,
     left: 0,
@@ -162,16 +149,12 @@ function Schedule(props: Props): JSX.Element {
         <CardHeader
           action={
             <>
-              <IconButton
-                className={classnames(classes.expand, {
-                  [classes.expandOpen]: state.expanded,
-                })}
+              <ExpandMoreButton
+                expanded={state.expanded}
                 onClick={handleClickExpand}
                 aria-expanded={state.expanded}
                 size="large"
-              >
-                <ExpandMoreIcon />
-              </IconButton>
+              />
             </>
           }
           title={`勤務表${props.schedule.id}`}

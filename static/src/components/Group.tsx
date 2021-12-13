@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -16,12 +15,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import FormLabel from "@mui/material/FormLabel";
 import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import classnames from "classnames";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as all from "../modules/all";
@@ -31,26 +27,7 @@ import * as constraints1 from "../modules/constraints1";
 import * as constraints2 from "../modules/constraints2";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
-
-const PREFIX = "Group";
-
-const classes = {
-  expand: `${PREFIX}-expand`,
-  expandOpen: `${PREFIX}-expandOpen`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")(({ theme }) => ({
-  [`& .${classes.expand}`]: {
-    transform: "rotate(0deg)",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  [`& .${classes.expandOpen}`]: {
-    transform: "rotate(180deg)",
-  },
-}));
+import ExpandMoreButton from "./parts/ExpandMoreButton";
 
 type Props = {
   group: groups.Group;
@@ -163,7 +140,7 @@ function Group(props: Props): JSX.Element {
   );
   const errorMessages = validate(props.group.name);
   return (
-    <Root>
+    <>
       <Card>
         <CardHeader
           avatar={
@@ -174,16 +151,12 @@ function Group(props: Props): JSX.Element {
             />
           }
           action={
-            <IconButton
-              className={classnames(classes.expand, {
-                [classes.expandOpen]: state.expanded,
-              })}
+            <ExpandMoreButton
+              expanded={state.expanded}
               onClick={handleClickExpand}
               aria-expanded={state.expanded}
               size="large"
-            >
-              <ExpandMoreIcon />
-            </IconButton>
+            />
           }
           title={props.group.name}
           titleTypographyProps={{
@@ -309,7 +282,7 @@ function Group(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </Root>
+    </>
   );
 }
 

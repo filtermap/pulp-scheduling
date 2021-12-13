@@ -11,12 +11,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import classnames from "classnames";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,33 +23,23 @@ import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as kinmus from "../modules/kinmus";
 import * as constraints0 from "../modules/constraints0";
 import * as utils from "../utils";
+import ExpandMoreButton from "./parts/ExpandMoreButton";
 
 const PREFIX = "Constraint0";
 
 const classes = {
-  expand: `${PREFIX}-expand`,
-  expandOpen: `${PREFIX}-expandOpen`,
   lineThrough: `${PREFIX}-lineThrough`,
 };
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")(({ theme }) => ({
-  [`& .${classes.expand}`]: {
-    transform: "rotate(0deg)",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  [`& .${classes.expandOpen}`]: {
-    transform: "rotate(180deg)",
-  },
+const Root = styled("div")({
   [`& .${classes.lineThrough}`]: {
     "&::-webkit-datetime-edit-fields-wrapper": {
       textDecoration: "line-through",
     },
     textDecoration: "line-through",
   },
-}));
+});
 
 type Props = {
   constraint0: constraints0.Constraint0;
@@ -168,16 +156,12 @@ function Constraint0(props: Props): JSX.Element {
             />
           }
           action={
-            <IconButton
-              className={classnames(classes.expand, {
-                [classes.expandOpen]: state.expanded,
-              })}
+            <ExpandMoreButton
+              expanded={state.expanded}
               onClick={handleClickExpand}
               aria-expanded={state.expanded}
               size="large"
-            >
-              <ExpandMoreIcon />
-            </IconButton>
+            />
           }
           title={title}
           titleTypographyProps={{
