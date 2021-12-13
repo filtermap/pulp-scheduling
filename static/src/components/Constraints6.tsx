@@ -157,7 +157,7 @@ function Constraints6(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {state.newConstraint6KinmuId ? (
+      {!state.newConstraint6KinmuId ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}

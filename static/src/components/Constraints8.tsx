@@ -156,7 +156,7 @@ function Constraints8(): JSX.Element {
           ))}
         </Grid>
       </div>
-      {state.newConstraint8KinmuId ? (
+      {!state.newConstraint8KinmuId ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
