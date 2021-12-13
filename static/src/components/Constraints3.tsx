@@ -65,6 +65,8 @@ function Constraints3(): JSX.Element {
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedConstraints3 = useSelector(constraints3.selectors.selectAll);
+  const selectedMemberById = useSelector(members.selectors.selectEntities);
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const constraints3InTerm = selectedConstraints3.filter(
     ({ term_id }) => term_id === termId
   );
@@ -203,14 +205,12 @@ function Constraints3(): JSX.Element {
         </Dialog>
       ) : (
         (() => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const newConstraint3Member = membersInTerm.find(
-            ({ id }) => id === state.newConstraint3MemberId
-          )!;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const newConstraint3Kinmu = kinmusInTerm.find(
-            ({ id }) => id === state.newConstraint3KinmuId
-          )!;
+          const newConstraint3Member =
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            selectedMemberById[state.newConstraint3MemberId]!;
+          const newConstraint3Kinmu =
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            selectedKinmuById[state.newConstraint3KinmuId]!;
           const relativesAreEnabled =
             newConstraint3Member.is_enabled && newConstraint3Kinmu.is_enabled;
           const errorMessages = validate(

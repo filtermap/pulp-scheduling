@@ -76,6 +76,8 @@ function Constraints2(): JSX.Element {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     (state) => terms.selectors.selectById(state, termId)!
   );
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
+  const selectedGroupById = useSelector(groups.selectors.selectEntities);
   const constraints2InTerm = React.useMemo(
     () => selectedConstraints2.filter(({ term_id }) => term_id === termId),
     [selectedConstraints2, termId]
@@ -266,14 +268,12 @@ function Constraints2(): JSX.Element {
             !newConstraint2StopDate || !termStopDate
               ? false
               : newConstraint2StopDate <= termStopDate;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const newConstraint2Kinmu = kinmusInTerm.find(
-            ({ id }) => id === state.newConstraint2KinmuId
-          )!;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const newConstraint2Group = groupsInTerm.find(
-            ({ id }) => id === state.newConstraint2GroupId
-          )!;
+          const newConstraint2Kinmu =
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            selectedKinmuById[state.newConstraint2KinmuId]!;
+          const newConstraint2Group =
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            selectedGroupById[state.newConstraint2GroupId]!;
           const relativesAreEnabled =
             newConstraint2StartDateIsEnabled &&
             newConstraint2StopDateIsEnabled &&

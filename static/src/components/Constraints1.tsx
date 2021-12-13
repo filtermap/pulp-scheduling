@@ -76,6 +76,8 @@ function Constraints1(): JSX.Element {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     (state) => terms.selectors.selectById(state, termId)!
   );
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
+  const selectedGroupById = useSelector(groups.selectors.selectEntities);
   const constraints1InTerm = selectedConstraints1.filter(
     ({ term_id }) => term_id === termId
   );
@@ -267,14 +269,12 @@ function Constraints1(): JSX.Element {
             !newConstraint1StopDate || !termStopDate
               ? false
               : newConstraint1StopDate <= termStopDate;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const newConstraint1Kinmu = kinmusInTerm.find(
-            ({ id }) => id === state.newConstraint1KinmuId
-          )!;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const newConstraint1Group = groupsInTerm.find(
-            ({ id }) => id === state.newConstraint1GroupId
-          )!;
+          const newConstraint1Kinmu =
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            selectedKinmuById[state.newConstraint1KinmuId]!;
+          const newConstraint1Group =
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            selectedGroupById[state.newConstraint1GroupId]!;
           const relativesAreEnabled =
             newConstraint1StartDateIsEnabled &&
             newConstraint1StopDateIsEnabled &&

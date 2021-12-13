@@ -77,7 +77,8 @@ function Member(props: Props): JSX.Element {
   const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
   const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
   const selectedGroups = useSelector(groups.selectors.selectAll);
-  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedGroupById = useSelector(groups.selectors.selectEntities);
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -101,9 +102,6 @@ function Member(props: Props): JSX.Element {
     ({ term_id }) => term_id === props.member.term_id
   );
   const constraints10InTerm = selectedConstraints10.filter(
-    ({ term_id }) => term_id === props.member.term_id
-  );
-  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.member.term_id
   );
   const handleClickExpand = () => {
@@ -222,13 +220,8 @@ function Member(props: Props): JSX.Element {
             .filter(
               (group_member) => group_member.member_id === props.member.id
             )
-            .map(
-              (group_member) =>
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                groupsInTerm.find(
-                  (group) => group.id === group_member.group_id
-                )!.name
-            )
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            .map(({ group_id }) => selectedGroupById[group_id]!.name)
             .join(", ")}
           subheaderTypographyProps={{
             variant: "body2",
@@ -303,13 +296,8 @@ function Member(props: Props): JSX.Element {
                   .filter(
                     (group_member) => group_member.member_id === props.member.id
                   )
-                  .map(
-                    (group_member) =>
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      groupsInTerm.find(
-                        (group) => group.id === group_member.group_id
-                      )!.name
-                  )
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  .map(({ group_id }) => selectedGroupById[group_id]!.name)
                   .join(", ")}
               </Typography>
             </Grid>
@@ -335,25 +323,25 @@ function Member(props: Props): JSX.Element {
               {memberConstraints3.map((c) => (
                 <Typography key={`constraint3_${c.id}`}>{`${
                   props.member.name
-                }に${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  kinmusInTerm.find((kinmu) => kinmu.id === c.kinmu_id)!.name
-                }を${c.min_number_of_assignments}回以上割り当てる`}</Typography>
+                }に${selectedKinmuById[c.kinmu_id]!.name}を${
+                  c.min_number_of_assignments
+                }回以上割り当てる`}</Typography>
               ))}
               {memberConstraints4.map((c) => (
                 <Typography key={`constraint4_${c.id}`}>{`${
                   props.member.name
-                }に${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  kinmusInTerm.find((kinmu) => kinmu.id === c.kinmu_id)!.name
-                }を${c.max_number_of_assignments}回以下割り当てる`}</Typography>
+                }に${selectedKinmuById[c.kinmu_id]!.name}を${
+                  c.max_number_of_assignments
+                }回以下割り当てる`}</Typography>
               ))}
               {memberConstraints9.map((c) => (
                 <Typography key={`constraint9_${c.id}`}>{`${
                   props.member.name
                 }の${c.start_date_name}から${c.stop_date_name}までに${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  kinmusInTerm.find((kinmu) => kinmu.id === c.kinmu_id)!.name
+                  selectedKinmuById[c.kinmu_id]!.name
                 }を割り当てる`}</Typography>
               ))}
               {memberConstraints10.map((c) => (
@@ -361,7 +349,7 @@ function Member(props: Props): JSX.Element {
                   props.member.name
                 }の${c.start_date_name}から${c.stop_date_name}までに${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  kinmusInTerm.find((kinmu) => kinmu.id === c.kinmu_id)!.name
+                  selectedKinmuById[c.kinmu_id]!.name
                 }を割り当てない`}</Typography>
               ))}
             </Grid>

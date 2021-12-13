@@ -61,6 +61,7 @@ function Constraints7(): JSX.Element {
   const dispatch = useDispatch();
   const selectedConstraints7 = useSelector(constraints7.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const constraints7InTerm = selectedConstraints7.filter(
     ({ term_id }) => term_id === termId
   );
@@ -176,10 +177,9 @@ function Constraints7(): JSX.Element {
         </Dialog>
       ) : (
         (() => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const newConstraint7Kinmu = kinmusInTerm.find(
-            ({ id }) => id === state.newConstraint7KinmuId
-          )!;
+          const newConstraint7Kinmu =
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            selectedKinmuById[state.newConstraint7KinmuId]!;
           const relativesAreEnabled = newConstraint7Kinmu.is_enabled;
           const errorMessages = validate(state.newConstraint7MinNumberOfDays);
           return (

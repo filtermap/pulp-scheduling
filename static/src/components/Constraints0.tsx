@@ -58,6 +58,7 @@ function Constraints0(): JSX.Element {
   const dispatch = useDispatch();
   const selectedConstraints0 = useSelector(constraints0.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const constraints0InTerm = selectedConstraints0.filter(
     ({ term_id }) => term_id === termId
   );
@@ -189,7 +190,7 @@ function Constraints0(): JSX.Element {
             state.newConstraint0Constraint0KinmuKinmuIds.map(
               (kinmu_id) =>
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                kinmusInTerm.find(({ id }) => id === kinmu_id)!
+                selectedKinmuById[kinmu_id]!
             );
           const relativesAreEnabled =
             newConstraint0Constraint0KinmuKinmus.every(

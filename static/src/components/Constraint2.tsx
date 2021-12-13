@@ -77,6 +77,8 @@ function Constraint2(props: Props): JSX.Element {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     (state) => terms.selectors.selectById(state, props.constraint2.term_id)!
   );
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
+  const selectedGroupById = useSelector(groups.selectors.selectEntities);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -216,13 +218,9 @@ function Constraint2(props: Props): JSX.Element {
       ? false
       : constraint2StopDate <= termStopDate;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const constraint2Kinmu = kinmusInTerm.find(
-    ({ id }) => id === props.constraint2.kinmu_id
-  )!;
+  const constraint2Kinmu = selectedKinmuById[props.constraint2.kinmu_id]!;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const constraint2Group = groupsInTerm.find(
-    ({ id }) => id === props.constraint2.group_id
-  )!;
+  const constraint2Group = selectedGroupById[props.constraint2.group_id]!;
   const relativesAreEnabled =
     constraint2StartDateIsEnabled &&
     constraint2StopDateIsEnabled &&

@@ -98,6 +98,7 @@ function Schedule(props: Props): JSX.Element {
   const selectedAssignments = useSelector(assignments.selectors.selectAll);
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -154,12 +155,6 @@ function Schedule(props: Props): JSX.Element {
   );
   const schedule_members = membersInTerm.filter(({ id }) =>
     schedule_member_ids.includes(id)
-  );
-  const schedule_kinmu_ids = new Set(
-    schedule_assignments.map(({ kinmu_id }) => kinmu_id)
-  );
-  const schedule_kinmus = kinmusInTerm.filter(({ id }) =>
-    schedule_kinmu_ids.has(id)
   );
   return (
     <Root>
@@ -224,15 +219,13 @@ function Schedule(props: Props): JSX.Element {
                               <TableCell size="small" key={date_name}>
                                 {
                                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                  schedule_kinmus.find(
-                                    (kinmu) =>
-                                      kinmu.id ===
-                                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                      schedule_member_assignments.find(
-                                        (assignment) =>
-                                          assignment.date_name === date_name
-                                      )!.kinmu_id
-                                  )!.name
+                                  selectedKinmuById[
+                                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                    schedule_member_assignments.find(
+                                      (assignment) =>
+                                        assignment.date_name === date_name
+                                    )!.kinmu_id
+                                  ]!.name
                                 }
                               </TableCell>
                             ))}

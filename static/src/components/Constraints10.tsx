@@ -74,6 +74,8 @@ function Constraints10(): JSX.Element {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     (state) => terms.selectors.selectById(state, termId)!
   );
+  const selectedMemberById = useSelector(members.selectors.selectEntities);
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const constraints10InTerm = selectedConstraints10.filter(
     ({ term_id }) => term_id === termId
   );
@@ -229,10 +231,9 @@ function Constraints10(): JSX.Element {
         </Dialog>
       ) : (
         (() => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const newConstraint10Member = membersInTerm.find(
-            ({ id }) => id === state.newConstraint10MemberId
-          )!;
+          const newConstraint10Member =
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            selectedMemberById[state.newConstraint10MemberId]!;
           const newConstraint10StartDate = utils.stringToDate(
             state.newConstraint10StartDateName
           );
@@ -251,10 +252,9 @@ function Constraints10(): JSX.Element {
             !newConstraint10StopDate || !termStopDate
               ? false
               : newConstraint10StopDate <= termStopDate;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const newConstraint10Kinmu = kinmusInTerm.find(
-            ({ id }) => id === state.newConstraint10KinmuId
-          )!;
+          const newConstraint10Kinmu =
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            selectedKinmuById[state.newConstraint10KinmuId]!;
           const relativesAreEnabled =
             newConstraint10Member.is_enabled &&
             newConstraint10StartDateIsEnabled &&

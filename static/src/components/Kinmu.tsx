@@ -85,9 +85,10 @@ function Kinmu(props: Props): JSX.Element {
   const selectedConstraints7 = useSelector(constraints7.selectors.selectAll);
   const selectedConstraints8 = useSelector(constraints8.selectors.selectAll);
   const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
-  const selectedGroups = useSelector(groups.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
-  const selectedMembers = useSelector(members.selectors.selectAll);
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
+  const selectedGroupById = useSelector(groups.selectors.selectEntities);
+  const selectedMemberById = useSelector(members.selectors.selectEntities);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -130,12 +131,6 @@ function Kinmu(props: Props): JSX.Element {
     ({ term_id }) => term_id === props.kinmu.term_id
   );
   const constraints10InTerm = selectedConstraints10.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
-  );
-  const membersInTerm = selectedMembers.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
-  );
-  const groupsInTerm = selectedGroups.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
   const handleClickExpand = () => {
@@ -329,12 +324,8 @@ function Kinmu(props: Props): JSX.Element {
                   {constraint0KinmusInTerm
                     .filter((c0_kinmu) => c0_kinmu.constraint0_id === c0_id)
                     .sort((a, b) => a.sequence_number - b.sequence_number)
-                    .map(
-                      ({ kinmu_id }) =>
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        kinmusInTerm.find((kinmu) => kinmu.id === kinmu_id)!
-                          .name
-                    )
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    .map(({ kinmu_id }) => selectedKinmuById[kinmu_id]!.name)
                     .join(", ")}
                 </Typography>
               ))}
@@ -343,7 +334,7 @@ function Kinmu(props: Props): JSX.Element {
                   c.start_date_name
                 }から${c.stop_date_name}までの${props.kinmu.name}に${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  groupsInTerm.find((group) => group.id === c.group_id)!.name
+                  selectedGroupById[c.group_id]!.name
                 }から${
                   c.min_number_of_assignments
                 }人以上の職員を割り当てる`}</Typography>
@@ -353,7 +344,7 @@ function Kinmu(props: Props): JSX.Element {
                   c.start_date_name
                 }から${c.stop_date_name}までの${props.kinmu.name}に${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  groupsInTerm.find((group) => group.id === c.group_id)!.name
+                  selectedGroupById[c.group_id]!.name
                 }から${
                   c.max_number_of_assignments
                 }人以下の職員を割り当てる`}</Typography>
@@ -361,8 +352,7 @@ function Kinmu(props: Props): JSX.Element {
               {kinmuConstraints3.map((c) => (
                 <Typography key={`constraint3_${c.id}`}>{`${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  membersInTerm.find((member) => member.id === c.member_id)!
-                    .name
+                  selectedMemberById[c.member_id]!.name
                 }に${props.kinmu.name}を${
                   c.min_number_of_assignments
                 }回以上割り当てる`}</Typography>
@@ -370,8 +360,7 @@ function Kinmu(props: Props): JSX.Element {
               {kinmuConstraints4.map((c) => (
                 <Typography key={`constraint4_${c.id}`}>{`${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  membersInTerm.find((member) => member.id === c.member_id)!
-                    .name
+                  selectedMemberById[c.member_id]!.name
                 }に${props.kinmu.name}を${
                   c.max_number_of_assignments
                 }回以下割り当てる`}</Typography>
@@ -399,8 +388,7 @@ function Kinmu(props: Props): JSX.Element {
               {kinmuConstraints9.map((c) => (
                 <Typography key={`constraint9_${c.id}`}>{`${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  membersInTerm.find((member) => member.id === c.member_id)!
-                    .name
+                  selectedMemberById[c.member_id]!.name
                 }の${c.start_date_name}から${c.stop_date_name}までに${
                   props.kinmu.name
                 }を割り当てる`}</Typography>
@@ -408,8 +396,7 @@ function Kinmu(props: Props): JSX.Element {
               {kinmuConstraints10.map((c) => (
                 <Typography key={`constraint10_${c.id}`}>{`${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  membersInTerm.find((member) => member.id === c.member_id)!
-                    .name
+                  selectedMemberById[c.member_id]!.name
                 }の${c.start_date_name}から${c.stop_date_name}までに${
                   props.kinmu.name
                 }を割り当てない`}</Typography>

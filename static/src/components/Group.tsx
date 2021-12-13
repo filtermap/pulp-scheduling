@@ -71,7 +71,8 @@ function Group(props: Props): JSX.Element {
   const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
   const selectedConstraints1 = useSelector(constraints1.selectors.selectAll);
   const selectedConstraints2 = useSelector(constraints2.selectors.selectAll);
-  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
+  const selectedMemberById = useSelector(members.selectors.selectEntities);
+  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === props.group.term_id
   );
@@ -83,9 +84,6 @@ function Group(props: Props): JSX.Element {
     ({ term_id }) => term_id === props.group.term_id
   );
   const constraints2InTerm = selectedConstraints2.filter(
-    ({ term_id }) => term_id === props.group.term_id
-  );
-  const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.group.term_id
   );
   const [state, setState] = React.useState<State>({
@@ -193,13 +191,8 @@ function Group(props: Props): JSX.Element {
           }}
           subheader={groupMembersInTerm
             .filter((group_member) => group_member.group_id === props.group.id)
-            .map(
-              (group_member) =>
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                membersInTerm.find(
-                  (member) => member.id === group_member.member_id
-                )!.name
-            )
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            .map(({ member_id }) => selectedMemberById[member_id]!.name)
             .join(", ")}
           subheaderTypographyProps={{
             variant: "body2",
@@ -274,13 +267,8 @@ function Group(props: Props): JSX.Element {
                   .filter(
                     (group_member) => group_member.group_id === props.group.id
                   )
-                  .map(
-                    (group_member) =>
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      membersInTerm.find(
-                        (member) => member.id === group_member.member_id
-                      )!.name
-                  )
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  .map(({ member_id }) => selectedMemberById[member_id]!.name)
                   .join(", ")}
               </Typography>
             </Grid>
@@ -294,7 +282,7 @@ function Group(props: Props): JSX.Element {
                   c.start_date_name
                 }から${c.stop_date_name}までの${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  kinmusInTerm.find(({ id }) => id === c.kinmu_id)!.name
+                  selectedKinmuById[c.kinmu_id]!.name
                 }に${props.group.name}から${
                   c.min_number_of_assignments
                 }人以上の職員を割り当てる`}</Typography>
@@ -304,7 +292,7 @@ function Group(props: Props): JSX.Element {
                   c.start_date_name
                 }から${c.stop_date_name}までの${
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  kinmusInTerm.find(({ id }) => id === c.kinmu_id)!.name
+                  selectedKinmuById[c.kinmu_id]!.name
                 }に${props.group.name}から${
                   c.max_number_of_assignments
                 }人以下の職員を割り当てる`}</Typography>
