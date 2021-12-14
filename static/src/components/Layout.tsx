@@ -1,8 +1,6 @@
 import AppBar from "@mui/material/AppBar";
-import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
-import Hidden from "@mui/material/Hidden";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -23,6 +21,7 @@ import { ActionCreators } from "redux-undo";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
+import Box from "@mui/material/Box";
 import * as utils from "../utils";
 import * as terms from "../modules/terms";
 import * as members from "../modules/members";
@@ -61,52 +60,6 @@ import Kinmus from "./Kinmus";
 import Members from "./Members";
 import Schedules from "./Schedules";
 import Terms from "./Terms";
-
-const PREFIX = "Layout";
-
-const classes = {
-  appBar: `${PREFIX}-appBar`,
-  content: `${PREFIX}-content`,
-  drawerDocked: `${PREFIX}-drawerDocked`,
-  drawerPaper: `${PREFIX}-drawerPaper`,
-  navIconHide: `${PREFIX}-navIconHide`,
-  root: `${PREFIX}-root`,
-  version: `${PREFIX}-version`,
-};
-
-const Root = styled("div")(({ theme }) => ({
-  [`& .${classes.appBar}`]: {
-    [theme.breakpoints.up("md")]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-    },
-    position: "fixed",
-  },
-  [`& .${classes.content}`]: {
-    [theme.breakpoints.up("md")]: {
-      maxWidth: `calc(100% - ${drawerWidth}px)`,
-    },
-    flex: 1,
-    maxWidth: "100%",
-  },
-  [`& .${classes.drawerDocked}`]: {
-    width: drawerWidth,
-  },
-  [`& .${classes.drawerPaper}`]: {
-    width: drawerWidth,
-  },
-  [`& .${classes.navIconHide}`]: {
-    [theme.breakpoints.up("md")]: {
-      display: "none",
-    },
-  },
-  [`& .${classes.root}`]: {
-    display: "flex",
-  },
-  [`& .${classes.version}`]: {
-    ...theme.typography.subtitle2,
-    marginLeft: theme.spacing(3),
-  },
-}));
 
 const drawerWidth = 240;
 
@@ -299,133 +252,152 @@ function ResponsiveDrawer(): JSX.Element {
     </>
   );
   return (
-    <Root>
-      <div className={classes.root}>
-        <AppBar className={classes.appBar} position="sticky">
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerToggle}
-              className={classes.navIconHide}
-              size="large"
-            >
-              <MenuIcon />
-            </IconButton>
+    <Box sx={{ display: "flex" }}>
+      <AppBar
+        sx={{
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          position: "fixed",
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerToggle}
+            size="large"
+            sx={{ display: { md: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            variant="h6"
+            color="inherit"
+            noWrap={true}
+            sx={{ flexGrow: 1 }}
+          >
+            pulp-scheduling
             <Typography
-              variant="h6"
-              color="inherit"
-              noWrap={true}
-              sx={{ flexGrow: 1 }}
+              component="span"
+              variant="subtitle2"
+              sx={{
+                marginLeft: 3,
+              }}
             >
-              pulp-scheduling<span className={classes.version}>v0.2.0</span>
+              v0.2.0
             </Typography>
-            <Button
-              color="inherit"
-              onClick={handleClickUndo}
-              disabled={!selectedPastExists}
-            >
-              元に戻す
-            </Button>
-            <Button
-              color="inherit"
-              onClick={handleClickRedo}
-              disabled={!selectedFutureExists}
-            >
-              やり直す
-            </Button>
-            <Button color="inherit" onClick={writeAll}>
-              保存
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <Hidden mdUp={true}>
-          <Drawer
-            variant="temporary"
-            anchor={"left"}
-            open={state.mobileOpen}
-            onClose={handleDrawerToggle}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
+          </Typography>
+          <Button
+            color="inherit"
+            onClick={handleClickUndo}
+            disabled={!selectedPastExists}
           >
-            {drawer}
-          </Drawer>
-        </Hidden>
-        <Hidden mdDown={true} implementation="css">
-          <Drawer
-            variant="permanent"
-            open={true}
-            classes={{
-              docked: classes.drawerDocked,
-              paper: classes.drawerPaper,
-            }}
+            元に戻す
+          </Button>
+          <Button
+            color="inherit"
+            onClick={handleClickRedo}
+            disabled={!selectedFutureExists}
           >
-            {drawer}
-          </Drawer>
-        </Hidden>
-        <div className={classes.content}>
-          <Toolbar />
-          <Routes>
-            <Route path="/terms" element={<Terms />} />
-            <Route
-              path="/terms/:termIdName/schedules"
-              element={<Schedules />}
-            />
-            <Route path="/terms/:termIdName/members" element={<Members />} />
-            <Route path="/terms/:termIdName/kinmus" element={<Kinmus />} />
-            <Route path="/terms/:termIdName/groups" element={<Groups />} />
-            <Route
-              path="/terms/:termIdName/constraints0"
-              element={<Constraints0 />}
-            />
-            <Route
-              path="/terms/:termIdName/constraints1"
-              element={<Constraints1 />}
-            />
-            <Route
-              path="/terms/:termIdName/constraints2"
-              element={<Constraints2 />}
-            />
-            <Route
-              path="/terms/:termIdName/constraints3"
-              element={<Constraints3 />}
-            />
-            <Route
-              path="/terms/:termIdName/constraints4"
-              element={<Constraints4 />}
-            />
-            <Route
-              path="/terms/:termIdName/constraints5"
-              element={<Constraints5 />}
-            />
-            <Route
-              path="/terms/:termIdName/constraints6"
-              element={<Constraints6 />}
-            />
-            <Route
-              path="/terms/:termIdName/constraints7"
-              element={<Constraints7 />}
-            />
-            <Route
-              path="/terms/:termIdName/constraints8"
-              element={<Constraints8 />}
-            />
-            <Route
-              path="/terms/:termIdName/constraints9"
-              element={<Constraints9 />}
-            />
-            <Route
-              path="/terms/:termIdName/constraints10"
-              element={<Constraints10 />}
-            />
-          </Routes>
-        </div>
-      </div>
-    </Root>
+            やり直す
+          </Button>
+          <Button color="inherit" onClick={writeAll}>
+            保存
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Box sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}>
+        <Drawer
+          variant="temporary"
+          anchor={"left"}
+          open={state.mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: "block", md: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          open={true}
+          sx={{
+            display: { xs: "none", md: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          maxWidth: { md: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
+        <Toolbar />
+        <Routes>
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/terms/:termIdName/schedules" element={<Schedules />} />
+          <Route path="/terms/:termIdName/members" element={<Members />} />
+          <Route path="/terms/:termIdName/kinmus" element={<Kinmus />} />
+          <Route path="/terms/:termIdName/groups" element={<Groups />} />
+          <Route
+            path="/terms/:termIdName/constraints0"
+            element={<Constraints0 />}
+          />
+          <Route
+            path="/terms/:termIdName/constraints1"
+            element={<Constraints1 />}
+          />
+          <Route
+            path="/terms/:termIdName/constraints2"
+            element={<Constraints2 />}
+          />
+          <Route
+            path="/terms/:termIdName/constraints3"
+            element={<Constraints3 />}
+          />
+          <Route
+            path="/terms/:termIdName/constraints4"
+            element={<Constraints4 />}
+          />
+          <Route
+            path="/terms/:termIdName/constraints5"
+            element={<Constraints5 />}
+          />
+          <Route
+            path="/terms/:termIdName/constraints6"
+            element={<Constraints6 />}
+          />
+          <Route
+            path="/terms/:termIdName/constraints7"
+            element={<Constraints7 />}
+          />
+          <Route
+            path="/terms/:termIdName/constraints8"
+            element={<Constraints8 />}
+          />
+          <Route
+            path="/terms/:termIdName/constraints9"
+            element={<Constraints9 />}
+          />
+          <Route
+            path="/terms/:termIdName/constraints10"
+            element={<Constraints10 />}
+          />
+        </Routes>
+      </Box>
+    </Box>
   );
 }
 
