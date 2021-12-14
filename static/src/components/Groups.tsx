@@ -133,18 +133,16 @@ function Groups(): JSX.Element {
   const errorMessages = validate(state.newGroupName);
   return (
     <Root>
+      <Toolbar>
+        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+          グループ
+        </Typography>
+        <Button size="small" onClick={handleClickOpenCreationDialog}>
+          追加
+        </Button>
+      </Toolbar>
       <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
-          <Grid item={true} xs={12}>
-            <Toolbar>
-              <Typography variant="subtitle1" className={classes.toolbarTitle}>
-                グループ
-              </Typography>
-              <Button size="small" onClick={handleClickOpenCreationDialog}>
-                追加
-              </Button>
-            </Toolbar>
-          </Grid>
           {groupsInTerm.map((group) => (
             <Grid key={group.id} item={true} xs={12}>
               <Group group={group} />

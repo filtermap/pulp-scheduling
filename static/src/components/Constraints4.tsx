@@ -154,18 +154,16 @@ function Constraints4(): JSX.Element {
   };
   return (
     <Root>
+      <Toolbar>
+        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+          職員の勤務の割り当て数の上限
+        </Typography>
+        <Button size="small" onClick={handleClickOpenCreationDialog}>
+          追加
+        </Button>
+      </Toolbar>
       <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
-          <Grid item={true} xs={12}>
-            <Toolbar>
-              <Typography variant="subtitle1" className={classes.toolbarTitle}>
-                職員の勤務の割り当て数の上限
-              </Typography>
-              <Button size="small" onClick={handleClickOpenCreationDialog}>
-                追加
-              </Button>
-            </Toolbar>
-          </Grid>
           {constraints4InTerm.map((c) => (
             <Grid key={c.id} item={true} xs={12}>
               <Constraint4 constraint4={c} />

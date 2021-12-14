@@ -181,18 +181,16 @@ function Constraints9(): JSX.Element {
   };
   return (
     <Root>
+      <Toolbar>
+        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+          職員の期間に割り当てる勤務
+        </Typography>
+        <Button size="small" onClick={handleClickOpenCreationDialog}>
+          追加
+        </Button>
+      </Toolbar>
       <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
-          <Grid item={true} xs={12}>
-            <Toolbar>
-              <Typography variant="subtitle1" className={classes.toolbarTitle}>
-                職員の期間に割り当てる勤務
-              </Typography>
-              <Button size="small" onClick={handleClickOpenCreationDialog}>
-                追加
-              </Button>
-            </Toolbar>
-          </Grid>
           {constraints9InTerm.map((c) => (
             <Grid key={c.id} item={true} xs={12}>
               <Constraint9 constraint9={c} />

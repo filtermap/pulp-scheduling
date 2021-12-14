@@ -101,18 +101,16 @@ function Kinmus(): JSX.Element {
   const errorMessages = validate(state.newKinmuName);
   return (
     <Root>
+      <Toolbar>
+        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+          勤務
+        </Typography>
+        <Button size="small" onClick={handleClickOpenCreationDialog}>
+          追加
+        </Button>
+      </Toolbar>
       <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
-          <Grid item={true} xs={12}>
-            <Toolbar>
-              <Typography variant="subtitle1" className={classes.toolbarTitle}>
-                勤務
-              </Typography>
-              <Button size="small" onClick={handleClickOpenCreationDialog}>
-                追加
-              </Button>
-            </Toolbar>
-          </Grid>
           {kinmusInTerm.map((kinmu) => (
             <Grid key={kinmu.id} item={true} xs={12}>
               <Kinmu kinmu={kinmu} />

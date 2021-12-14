@@ -666,18 +666,16 @@ function Schedules(): JSX.Element {
   };
   return (
     <Root>
+      <Toolbar>
+        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+          勤務表
+        </Typography>
+        <Button size="small" onClick={handleClickOpenCreationDialog}>
+          追加
+        </Button>
+      </Toolbar>
       <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
-          <Grid item={true} xs={12}>
-            <Toolbar>
-              <Typography variant="subtitle1" className={classes.toolbarTitle}>
-                勤務表
-              </Typography>
-              <Button size="small" onClick={handleClickOpenCreationDialog}>
-                追加
-              </Button>
-            </Toolbar>
-          </Grid>
           {allInTerm.schedules.map((schedule) => (
             <Grid key={schedule.id} item={true} xs={12}>
               <Schedule schedule={schedule} />

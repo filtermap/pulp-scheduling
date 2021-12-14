@@ -200,18 +200,16 @@ function Constraints1(): JSX.Element {
   };
   return (
     <Root>
+      <Toolbar>
+        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+          期間の勤務にグループから割り当てる職員数の下限
+        </Typography>
+        <Button size="small" onClick={handleClickOpenCreationDialog}>
+          追加
+        </Button>
+      </Toolbar>
       <div className={classes.gridFrame}>
         <Grid container={true} spacing={1}>
-          <Grid item={true} xs={12}>
-            <Toolbar>
-              <Typography variant="subtitle1" className={classes.toolbarTitle}>
-                期間の勤務にグループから割り当てる職員数の下限
-              </Typography>
-              <Button size="small" onClick={handleClickOpenCreationDialog}>
-                追加
-              </Button>
-            </Toolbar>
-          </Grid>
           {constraints1InTerm.map((c) => (
             <Grid key={c.id} item={true} xs={12}>
               <Constraint1 constraint1={c} />
