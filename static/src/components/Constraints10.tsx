@@ -24,19 +24,16 @@ import * as utils from "../utils";
 import { useAppSelector } from "../modules/hooks";
 import Constraint10 from "./Constraint10";
 import { lineThroughSx } from "./parts/lineThroughSx";
+import GridFrame from "./parts/GridFrame";
 
 const PREFIX = "Constraints10";
 
 const classes = {
-  gridFrame: `${PREFIX}-gridFrame`,
   toolbarTitle: `${PREFIX}-toolbarTitle`,
 };
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled("div")({
-  [`& .${classes.gridFrame}`]: {
-    padding: 8,
-  },
   [`& .${classes.toolbarTitle}`]: {
     flex: 1,
   },
@@ -188,7 +185,7 @@ function Constraints10(): JSX.Element {
           追加
         </Button>
       </Toolbar>
-      <div className={classes.gridFrame}>
+      <GridFrame>
         <Grid container={true} spacing={1}>
           {constraints10InTerm.map((c) => (
             <Grid key={c.id} item={true} xs={12}>
@@ -196,7 +193,7 @@ function Constraints10(): JSX.Element {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </GridFrame>
       {state.newConstraint10MemberId === undefined ||
       state.newConstraint10KinmuId === undefined ? (
         <Dialog

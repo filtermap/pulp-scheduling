@@ -15,19 +15,16 @@ import Switch from "@mui/material/Switch";
 import * as utils from "../utils";
 import * as terms from "../modules/terms";
 import Term from "./Term";
+import GridFrame from "./parts/GridFrame";
 
 const PREFIX = "Terms";
 
 const classes = {
-  gridFrame: `${PREFIX}-gridFrame`,
   toolbarTitle: `${PREFIX}-toolbarTitle`,
 };
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled("div")({
-  [`& .${classes.gridFrame}`]: {
-    padding: 8,
-  },
   [`& .${classes.toolbarTitle}`]: {
     flex: 1,
   },
@@ -122,7 +119,7 @@ function Terms(): JSX.Element {
           追加
         </Button>
       </Toolbar>
-      <div className={classes.gridFrame}>
+      <GridFrame>
         <Grid container={true} spacing={1}>
           {selectedTerms.map((term) => (
             <Grid key={term.id} item={true} xs={12}>
@@ -130,7 +127,7 @@ function Terms(): JSX.Element {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </GridFrame>
       <Dialog
         onClose={handleCloseCreationDialog}
         open={state.creationDialogIsOpen}

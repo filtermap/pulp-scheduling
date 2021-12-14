@@ -21,19 +21,16 @@ import * as all from "../modules/all";
 import * as groups from "../modules/groups";
 import * as members from "../modules/members";
 import Member from "./Member";
+import GridFrame from "./parts/GridFrame";
 
 const PREFIX = "Members";
 
 const classes = {
-  gridFrame: `${PREFIX}-gridFrame`,
   toolbarTitle: `${PREFIX}-toolbarTitle`,
 };
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled("div")({
-  [`& .${classes.gridFrame}`]: {
-    padding: 8,
-  },
   [`& .${classes.toolbarTitle}`]: {
     flex: 1,
   },
@@ -145,7 +142,7 @@ function Members(): JSX.Element {
           追加
         </Button>
       </Toolbar>
-      <div className={classes.gridFrame}>
+      <GridFrame>
         <Grid container={true} spacing={1}>
           {membersInTerm.map((member) => (
             <Grid key={member.id} item={true} xs={12}>
@@ -153,7 +150,7 @@ function Members(): JSX.Element {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </GridFrame>
       <Dialog
         onClose={handleCloseCreationDialog}
         open={state.creationDialogIsOpen}

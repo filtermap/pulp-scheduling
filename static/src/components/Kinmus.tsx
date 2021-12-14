@@ -15,19 +15,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import * as kinmus from "../modules/kinmus";
 import Kinmu from "./Kinmu";
+import GridFrame from "./parts/GridFrame";
 
 const PREFIX = "Kinmus";
 
 const classes = {
-  gridFrame: `${PREFIX}-gridFrame`,
   toolbarTitle: `${PREFIX}-toolbarTitle`,
 };
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled("div")({
-  [`& .${classes.gridFrame}`]: {
-    padding: 8,
-  },
   [`& .${classes.toolbarTitle}`]: {
     flex: 1,
   },
@@ -109,7 +106,7 @@ function Kinmus(): JSX.Element {
           追加
         </Button>
       </Toolbar>
-      <div className={classes.gridFrame}>
+      <GridFrame>
         <Grid container={true} spacing={1}>
           {kinmusInTerm.map((kinmu) => (
             <Grid key={kinmu.id} item={true} xs={12}>
@@ -117,7 +114,7 @@ function Kinmus(): JSX.Element {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </GridFrame>
       <Dialog
         onClose={handleCloseCreationDialog}
         open={state.creationDialogIsOpen}

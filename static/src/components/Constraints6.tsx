@@ -20,19 +20,16 @@ import * as constraints6 from "../modules/constraints6";
 import * as kinmus from "../modules/kinmus";
 import Constraint6 from "./Constraint6";
 import { lineThroughSx } from "./parts/lineThroughSx";
+import GridFrame from "./parts/GridFrame";
 
 const PREFIX = "Constraints6";
 
 const classes = {
-  gridFrame: `${PREFIX}-gridFrame`,
   toolbarTitle: `${PREFIX}-toolbarTitle`,
 };
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled("div")({
-  [`& .${classes.gridFrame}`]: {
-    padding: 8,
-  },
   [`& .${classes.toolbarTitle}`]: {
     flex: 1,
   },
@@ -140,7 +137,7 @@ function Constraints6(): JSX.Element {
           追加
         </Button>
       </Toolbar>
-      <div className={classes.gridFrame}>
+      <GridFrame>
         <Grid container={true} spacing={1}>
           {constraints6InTerm.map((c) => (
             <Grid key={c.id} item={true} xs={12}>
@@ -148,7 +145,7 @@ function Constraints6(): JSX.Element {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </GridFrame>
       {state.newConstraint6KinmuId === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}

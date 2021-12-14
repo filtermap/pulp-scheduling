@@ -21,19 +21,16 @@ import * as all from "../modules/all";
 import * as groups from "../modules/groups";
 import * as members from "../modules/members";
 import Group from "./Group";
+import GridFrame from "./parts/GridFrame";
 
 const PREFIX = "Groups";
 
 const classes = {
-  gridFrame: `${PREFIX}-gridFrame`,
   toolbarTitle: `${PREFIX}-toolbarTitle`,
 };
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled("div")({
-  [`& .${classes.gridFrame}`]: {
-    padding: 8,
-  },
   [`& .${classes.toolbarTitle}`]: {
     flex: 1,
   },
@@ -141,7 +138,7 @@ function Groups(): JSX.Element {
           追加
         </Button>
       </Toolbar>
-      <div className={classes.gridFrame}>
+      <GridFrame>
         <Grid container={true} spacing={1}>
           {groupsInTerm.map((group) => (
             <Grid key={group.id} item={true} xs={12}>
@@ -149,7 +146,7 @@ function Groups(): JSX.Element {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </GridFrame>
       <Dialog
         onClose={handleCloseCreationDialog}
         open={state.creationDialogIsOpen}

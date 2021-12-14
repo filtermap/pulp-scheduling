@@ -20,19 +20,16 @@ import * as constraints8 from "../modules/constraints8";
 import * as kinmus from "../modules/kinmus";
 import Constraint8 from "./Constraint8";
 import { lineThroughSx } from "./parts/lineThroughSx";
+import GridFrame from "./parts/GridFrame";
 
 const PREFIX = "Constraints8";
 
 const classes = {
-  gridFrame: `${PREFIX}-gridFrame`,
   toolbarTitle: `${PREFIX}-toolbarTitle`,
 };
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled("div")({
-  [`& .${classes.gridFrame}`]: {
-    padding: 8,
-  },
   [`& .${classes.toolbarTitle}`]: {
     flex: 1,
   },
@@ -139,7 +136,7 @@ function Constraints8(): JSX.Element {
           追加
         </Button>
       </Toolbar>
-      <div className={classes.gridFrame}>
+      <GridFrame>
         <Grid container={true} spacing={1}>
           {constraints8InTerm.map((c) => (
             <Grid key={c.id} item={true} xs={12}>
@@ -147,7 +144,7 @@ function Constraints8(): JSX.Element {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </GridFrame>
       {state.newConstraint8KinmuId === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}

@@ -21,19 +21,16 @@ import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
 import Constraint3 from "./Constraint3";
 import { lineThroughSx } from "./parts/lineThroughSx";
+import GridFrame from "./parts/GridFrame";
 
 const PREFIX = "Constraints3";
 
 const classes = {
-  gridFrame: `${PREFIX}-gridFrame`,
   toolbarTitle: `${PREFIX}-toolbarTitle`,
 };
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled("div")({
-  [`& .${classes.gridFrame}`]: {
-    padding: 8,
-  },
   [`& .${classes.toolbarTitle}`]: {
     flex: 1,
   },
@@ -162,7 +159,7 @@ function Constraints3(): JSX.Element {
           追加
         </Button>
       </Toolbar>
-      <div className={classes.gridFrame}>
+      <GridFrame>
         <Grid container={true} spacing={1}>
           {constraints3InTerm.map((c) => (
             <Grid key={c.id} item={true} xs={12}>
@@ -170,7 +167,7 @@ function Constraints3(): JSX.Element {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </GridFrame>
       {state.newConstraint3MemberId === undefined ||
       state.newConstraint3KinmuId === undefined ? (
         <Dialog

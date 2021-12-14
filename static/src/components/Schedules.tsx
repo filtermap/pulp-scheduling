@@ -39,13 +39,13 @@ import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as schedules from "../modules/schedules";
 import * as group_members from "../modules/group_members";
 import Schedule from "./Schedule";
+import GridFrame from "./parts/GridFrame";
 
 const PREFIX = "Schedules";
 
 const classes = {
   dialogTableContent: `${PREFIX}-dialogTableContent`,
   dialogTableWrapper: `${PREFIX}-dialogTableWrapper`,
-  gridFrame: `${PREFIX}-gridFrame`,
   leftHeaderCell: `${PREFIX}-leftHeaderCell`,
   leftTopHeaderCell: `${PREFIX}-leftTopHeaderCell`,
   toolbarTitle: `${PREFIX}-toolbarTitle`,
@@ -59,9 +59,6 @@ const Root = styled("div")(({ theme }) => ({
   },
   [`& .${classes.dialogTableWrapper}`]: {
     overflow: "auto",
-  },
-  [`& .${classes.gridFrame}`]: {
-    padding: 8,
   },
   [`& .${classes.leftHeaderCell}`]: {
     background: theme.palette.background.default,
@@ -674,7 +671,7 @@ function Schedules(): JSX.Element {
           追加
         </Button>
       </Toolbar>
-      <div className={classes.gridFrame}>
+      <GridFrame>
         <Grid container={true} spacing={1}>
           {allInTerm.schedules.map((schedule) => (
             <Grid key={schedule.id} item={true} xs={12}>
@@ -682,7 +679,7 @@ function Schedules(): JSX.Element {
             </Grid>
           ))}
         </Grid>
-      </div>
+      </GridFrame>
       {dialog()}
     </Root>
   );
