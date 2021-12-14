@@ -71,7 +71,6 @@ const classes = {
   drawerPaper: `${PREFIX}-drawerPaper`,
   navIconHide: `${PREFIX}-navIconHide`,
   root: `${PREFIX}-root`,
-  title: `${PREFIX}-title`,
   version: `${PREFIX}-version`,
 };
 
@@ -102,9 +101,6 @@ const Root = styled("div")(({ theme }) => ({
   },
   [`& .${classes.root}`]: {
     display: "flex",
-  },
-  [`& .${classes.title}`]: {
-    flex: 1,
   },
   [`& .${classes.version}`]: {
     ...theme.typography.subtitle2,
@@ -320,7 +316,7 @@ function ResponsiveDrawer(): JSX.Element {
               variant="h6"
               color="inherit"
               noWrap={true}
-              className={classes.title}
+              sx={{ flexGrow: 1 }}
             >
               pulp-scheduling<span className={classes.version}>v0.2.0</span>
             </Typography>

@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -21,19 +20,6 @@ import * as kinmus from "../modules/kinmus";
 import Constraint7 from "./Constraint7";
 import { lineThroughSx } from "./parts/lineThroughSx";
 import GridFrame from "./parts/GridFrame";
-
-const PREFIX = "Constraints7";
-
-const classes = {
-  toolbarTitle: `${PREFIX}-toolbarTitle`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")({
-  [`& .${classes.toolbarTitle}`]: {
-    flex: 1,
-  },
-});
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -127,9 +113,9 @@ function Constraints7(): JSX.Element {
     );
   };
   return (
-    <Root>
+    <>
       <Toolbar>
-        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+        <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           勤務の間隔日数の下限
         </Typography>
         <Button size="small" onClick={handleClickOpenCreationDialog}>
@@ -260,7 +246,7 @@ function Constraints7(): JSX.Element {
           );
         })()
       )}
-    </Root>
+    </>
   );
 }
 

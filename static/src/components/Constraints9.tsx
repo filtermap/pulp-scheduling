@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -26,19 +25,6 @@ import { useAppSelector } from "../modules/hooks";
 import Constraint9 from "./Constraint9";
 import { lineThroughSx } from "./parts/lineThroughSx";
 import GridFrame from "./parts/GridFrame";
-
-const PREFIX = "Constraints9";
-
-const classes = {
-  toolbarTitle: `${PREFIX}-toolbarTitle`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")({
-  [`& .${classes.toolbarTitle}`]: {
-    flex: 1,
-  },
-});
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -177,9 +163,9 @@ function Constraints9(): JSX.Element {
     );
   };
   return (
-    <Root>
+    <>
       <Toolbar>
-        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+        <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           職員の期間に割り当てる勤務
         </Typography>
         <Button size="small" onClick={handleClickOpenCreationDialog}>
@@ -398,7 +384,7 @@ function Constraints9(): JSX.Element {
           );
         })()
       )}
-    </Root>
+    </>
   );
 }
 

@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -16,19 +15,6 @@ import { useParams } from "react-router";
 import * as kinmus from "../modules/kinmus";
 import Kinmu from "./Kinmu";
 import GridFrame from "./parts/GridFrame";
-
-const PREFIX = "Kinmus";
-
-const classes = {
-  toolbarTitle: `${PREFIX}-toolbarTitle`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")({
-  [`& .${classes.toolbarTitle}`]: {
-    flex: 1,
-  },
-});
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -97,9 +83,9 @@ function Kinmus(): JSX.Element {
   };
   const errorMessages = validate(state.newKinmuName);
   return (
-    <Root>
+    <>
       <Toolbar>
-        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+        <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           勤務
         </Typography>
         <Button size="small" onClick={handleClickOpenCreationDialog}>
@@ -169,7 +155,7 @@ function Kinmus(): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </Root>
+    </>
   );
 }
 

@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -22,19 +21,6 @@ import * as members from "../modules/members";
 import Constraint4 from "./Constraint4";
 import { lineThroughSx } from "./parts/lineThroughSx";
 import GridFrame from "./parts/GridFrame";
-
-const PREFIX = "Constraints4";
-
-const classes = {
-  toolbarTitle: `${PREFIX}-toolbarTitle`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")({
-  [`& .${classes.toolbarTitle}`]: {
-    flex: 1,
-  },
-});
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -150,9 +136,9 @@ function Constraints4(): JSX.Element {
     );
   };
   return (
-    <Root>
+    <>
       <Toolbar>
-        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+        <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           職員の勤務の割り当て数の上限
         </Typography>
         <Button size="small" onClick={handleClickOpenCreationDialog}>
@@ -318,7 +304,7 @@ function Constraints4(): JSX.Element {
           );
         })()
       )}
-    </Root>
+    </>
   );
 }
 

@@ -48,7 +48,6 @@ const classes = {
   dialogTableWrapper: `${PREFIX}-dialogTableWrapper`,
   leftHeaderCell: `${PREFIX}-leftHeaderCell`,
   leftTopHeaderCell: `${PREFIX}-leftTopHeaderCell`,
-  toolbarTitle: `${PREFIX}-toolbarTitle`,
   topHeaderCell: `${PREFIX}-topHeaderCell`,
 };
 
@@ -71,9 +70,6 @@ const Root = styled("div")(({ theme }) => ({
     position: "sticky",
     top: 0,
     zIndex: 2,
-  },
-  [`& .${classes.toolbarTitle}`]: {
-    flex: 1,
   },
   [`& .${classes.topHeaderCell}`]: {
     background: theme.palette.background.default,
@@ -664,7 +660,7 @@ function Schedules(): JSX.Element {
   return (
     <Root>
       <Toolbar>
-        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+        <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           勤務表
         </Typography>
         <Button size="small" onClick={handleClickOpenCreationDialog}>

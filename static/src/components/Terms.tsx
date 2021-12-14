@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -16,19 +15,6 @@ import * as utils from "../utils";
 import * as terms from "../modules/terms";
 import Term from "./Term";
 import GridFrame from "./parts/GridFrame";
-
-const PREFIX = "Terms";
-
-const classes = {
-  toolbarTitle: `${PREFIX}-toolbarTitle`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")({
-  [`& .${classes.toolbarTitle}`]: {
-    flex: 1,
-  },
-});
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -110,9 +96,9 @@ function Terms(): JSX.Element {
     state.newTermStopDateName
   );
   return (
-    <Root>
+    <>
       <Toolbar>
-        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+        <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           期間
         </Typography>
         <Button size="small" onClick={handleClickOpenCreationDialog}>
@@ -208,7 +194,7 @@ function Terms(): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </Root>
+    </>
   );
 }
 

@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -22,19 +21,6 @@ import * as groups from "../modules/groups";
 import * as members from "../modules/members";
 import Member from "./Member";
 import GridFrame from "./parts/GridFrame";
-
-const PREFIX = "Members";
-
-const classes = {
-  toolbarTitle: `${PREFIX}-toolbarTitle`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")({
-  [`& .${classes.toolbarTitle}`]: {
-    flex: 1,
-  },
-});
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -133,9 +119,9 @@ function Members(): JSX.Element {
   };
   const errorMessages = validate(state.newMemberName);
   return (
-    <Root>
+    <>
       <Toolbar>
-        <Typography variant="subtitle1" className={classes.toolbarTitle}>
+        <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           職員
         </Typography>
         <Button size="small" onClick={handleClickOpenCreationDialog}>
@@ -227,7 +213,7 @@ function Members(): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </Root>
+    </>
   );
 }
 
