@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -40,44 +39,9 @@ import * as schedules from "../modules/schedules";
 import * as group_members from "../modules/group_members";
 import Schedule from "./Schedule";
 import GridFrame from "./parts/GridFrame";
-
-const PREFIX = "Schedules";
-
-const classes = {
-  dialogTableContent: `${PREFIX}-dialogTableContent`,
-  dialogTableWrapper: `${PREFIX}-dialogTableWrapper`,
-  leftHeaderCell: `${PREFIX}-leftHeaderCell`,
-  leftTopHeaderCell: `${PREFIX}-leftTopHeaderCell`,
-  topHeaderCell: `${PREFIX}-topHeaderCell`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")(({ theme }) => ({
-  [`& .${classes.dialogTableContent}`]: {
-    display: "flex",
-  },
-  [`& .${classes.dialogTableWrapper}`]: {
-    overflow: "auto",
-  },
-  [`& .${classes.leftHeaderCell}`]: {
-    background: theme.palette.background.default,
-    left: 0,
-    position: "sticky",
-  },
-  [`& .${classes.leftTopHeaderCell}`]: {
-    background: theme.palette.background.default,
-    left: 0,
-    position: "sticky",
-    top: 0,
-    zIndex: 2,
-  },
-  [`& .${classes.topHeaderCell}`]: {
-    background: theme.palette.background.default,
-    position: "sticky",
-    top: 0,
-    zIndex: 1,
-  },
-}));
+import StickyLeftTopTableCell from "./parts/StickyLeftTopTableCell";
+import StickyLeftTableCell from "./parts/StickyLeftTableCell";
+import StickyTopTableCell from "./parts/StickyTopTableCell";
 
 const FIRST = "FIRST";
 const SOLVE_IN_PROGRESS = "SOLVE_IN_PROGRESS";
@@ -379,62 +343,50 @@ function Schedules(): JSX.Element {
             maxWidth="md"
           >
             <DialogTitle>勤務表の追加</DialogTitle>
-            <DialogContent className={classes.dialogTableContent}>
-              <div className={classes.dialogTableWrapper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell
-                        size="small"
-                        className={classes.leftTopHeaderCell}
-                      >
-                        \
-                      </TableCell>
-                      {newScheduleDateNames.map((date_name) => (
-                        <TableCell
-                          key={date_name}
-                          size="small"
-                          className={classes.topHeaderCell}
-                        >
-                          {date_name}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {newScheduleMembers.map((member) => {
-                      const newScheduleMemberAssignments =
-                        newScheduleAssignments.filter(
-                          (assignment) => assignment.member_id === member.id
-                        );
-                      return (
-                        <TableRow key={member.id}>
-                          <TableCell
-                            size="small"
-                            className={classes.leftHeaderCell}
-                          >
-                            {member.name}
-                          </TableCell>
-                          {newScheduleDateNames.map((date_name) => (
-                            <TableCell size="small" key={date_name}>
-                              {
-                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                selectedKinmuById[
-                                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                  newScheduleMemberAssignments.find(
-                                    (assignment) =>
-                                      assignment.date_name === date_name
-                                  )!.kinmu_id
-                                ]!.name
-                              }
-                            </TableCell>
-                          ))}
-                        </TableRow>
+            <DialogContent sx={{ overflow: "auto", padding: 0 }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <StickyLeftTopTableCell size="small">
+                      \
+                    </StickyLeftTopTableCell>
+                    {newScheduleDateNames.map((date_name) => (
+                      <StickyTopTableCell key={date_name} size="small">
+                        {date_name}
+                      </StickyTopTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {newScheduleMembers.map((member) => {
+                    const newScheduleMemberAssignments =
+                      newScheduleAssignments.filter(
+                        (assignment) => assignment.member_id === member.id
                       );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
+                    return (
+                      <TableRow key={member.id}>
+                        <StickyLeftTableCell size="small">
+                          {member.name}
+                        </StickyLeftTableCell>
+                        {newScheduleDateNames.map((date_name) => (
+                          <TableCell size="small" key={date_name}>
+                            {
+                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                              selectedKinmuById[
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                newScheduleMemberAssignments.find(
+                                  (assignment) =>
+                                    assignment.date_name === date_name
+                                )!.kinmu_id
+                              ]!.name
+                            }
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleClickCreateSchedule}>
@@ -658,7 +610,7 @@ function Schedules(): JSX.Element {
     }
   };
   return (
-    <Root>
+    <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           勤務表
@@ -677,7 +629,7 @@ function Schedules(): JSX.Element {
         </Grid>
       </GridFrame>
       {dialog()}
-    </Root>
+    </>
   );
 }
 

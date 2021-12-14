@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -20,6 +19,7 @@ import Typography from "@mui/material/Typography";
 import * as iconv from "iconv-lite";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Box from "@mui/material/Box";
 import * as all from "../modules/all";
 import * as schedules from "../modules/schedules";
 import * as utils from "../utils";
@@ -27,41 +27,9 @@ import * as assignments from "../modules/assignments";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-
-const PREFIX = "Schedule";
-
-const classes = {
-  leftHeaderCell: `${PREFIX}-leftHeaderCell`,
-  leftTopHeaderCell: `${PREFIX}-leftTopHeaderCell`,
-  tableWrapper: `${PREFIX}-tableWrapper`,
-  topHeaderCell: `${PREFIX}-topHeaderCell`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")(({ theme }) => ({
-  [`& .${classes.leftHeaderCell}`]: {
-    background: theme.palette.background.default,
-    left: 0,
-    position: "sticky",
-  },
-  [`& .${classes.leftTopHeaderCell}`]: {
-    background: theme.palette.background.default,
-    left: 0,
-    position: "sticky",
-    top: 0,
-    zIndex: 2,
-  },
-  [`& .${classes.tableWrapper}`]: {
-    maxHeight: "calc(100vh - 200px)",
-    overflow: "auto",
-  },
-  [`& .${classes.topHeaderCell}`]: {
-    background: theme.palette.background.default,
-    position: "sticky",
-    top: 0,
-    zIndex: 1,
-  },
-}));
+import StickyLeftTopTableCell from "./parts/StickyLeftTopTableCell";
+import StickyLeftTableCell from "./parts/StickyLeftTableCell";
+import StickyTopTableCell from "./parts/StickyTopTableCell";
 
 type Props = {
   schedule: schedules.Schedule;
@@ -144,7 +112,7 @@ function Schedule(props: Props): JSX.Element {
     schedule_member_ids.includes(id)
   );
   return (
-    <Root>
+    <>
       <Card>
         <CardHeader
           action={
@@ -160,27 +128,22 @@ function Schedule(props: Props): JSX.Element {
           title={`勤務表${props.schedule.id}`}
         />
         <Collapse in={state.expanded} timeout="auto" unmountOnExit={true}>
-          <CardContent>
+          <CardContent sx={{ padding: 0 }}>
             <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
-                <div className={classes.tableWrapper}>
+                <Box
+                  sx={{ maxHeight: "calc(100vh - 200px)", overflow: "auto" }}
+                >
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell
-                          size="small"
-                          className={classes.leftTopHeaderCell}
-                        >
+                        <StickyLeftTopTableCell size="small">
                           \
-                        </TableCell>
+                        </StickyLeftTopTableCell>
                         {schedule_date_names.map((date_name) => (
-                          <TableCell
-                            key={date_name}
-                            size="small"
-                            className={classes.topHeaderCell}
-                          >
+                          <StickyTopTableCell key={date_name} size="small">
                             {date_name}
-                          </TableCell>
+                          </StickyTopTableCell>
                         ))}
                       </TableRow>
                     </TableHead>
@@ -192,12 +155,9 @@ function Schedule(props: Props): JSX.Element {
                           );
                         return (
                           <TableRow key={member.id}>
-                            <TableCell
-                              size="small"
-                              className={classes.leftHeaderCell}
-                            >
+                            <StickyLeftTableCell size="small">
                               {member.name}
-                            </TableCell>
+                            </StickyLeftTableCell>
                             {schedule_date_names.map((date_name) => (
                               <TableCell size="small" key={date_name}>
                                 {
@@ -217,7 +177,7 @@ function Schedule(props: Props): JSX.Element {
                       })}
                     </TableBody>
                   </Table>
-                </div>
+                </Box>
               </Grid>
             </Grid>
           </CardContent>
@@ -251,7 +211,7 @@ function Schedule(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </Root>
+    </>
   );
 }
 
