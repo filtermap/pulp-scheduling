@@ -12,20 +12,20 @@ import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import classnames from "classnames";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import Box from "@mui/material/Box";
 import * as all from "../modules/all";
 import * as constraints0 from "../modules/constraints0";
 import * as kinmus from "../modules/kinmus";
 import Constraint0 from "./Constraint0";
+import { lineThroughSx } from "./parts/lineThroughSx";
 
 const PREFIX = "Constraints0";
 
 const classes = {
   gridFrame: `${PREFIX}-gridFrame`,
-  lineThrough: `${PREFIX}-lineThrough`,
   toolbarTitle: `${PREFIX}-toolbarTitle`,
 };
 
@@ -33,12 +33,6 @@ const classes = {
 const Root = styled("div")({
   [`& .${classes.gridFrame}`]: {
     padding: 8,
-  },
-  [`& .${classes.lineThrough}`]: {
-    "&::-webkit-datetime-edit-fields-wrapper": {
-      textDecoration: "line-through",
-    },
-    textDecoration: "line-through",
   },
   [`& .${classes.toolbarTitle}`]: {
     flex: 1,
@@ -246,15 +240,14 @@ function Constraints0(): JSX.Element {
                           >
                             {kinmusInTerm.map((kinmu) => (
                               <MenuItem key={kinmu.id} value={kinmu.id}>
-                                {
-                                  <span
-                                    className={classnames({
-                                      [classes.lineThrough]: !kinmu.is_enabled,
-                                    })}
-                                  >
-                                    {kinmu.name}
-                                  </span>
-                                }
+                                <Box
+                                  component="span"
+                                  sx={{
+                                    ...(!kinmu.is_enabled && lineThroughSx),
+                                  }}
+                                >
+                                  {kinmu.name}
+                                </Box>
                               </MenuItem>
                             ))}
                           </TextField>

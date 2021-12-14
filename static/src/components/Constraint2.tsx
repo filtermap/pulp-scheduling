@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -15,9 +14,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import classnames from "classnames";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Box from "@mui/material/Box";
 import * as constraints2 from "../modules/constraints2";
 import * as utils from "../utils";
 import * as groups from "../modules/groups";
@@ -25,22 +24,7 @@ import * as terms from "../modules/terms";
 import * as kinmus from "../modules/kinmus";
 import { useAppSelector } from "../modules/hooks";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-
-const PREFIX = "Constraint2";
-
-const classes = {
-  lineThrough: `${PREFIX}-lineThrough`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")({
-  [`& .${classes.lineThrough}`]: {
-    "&::-webkit-datetime-edit-fields-wrapper": {
-      textDecoration: "line-through",
-    },
-    textDecoration: "line-through",
-  },
-});
+import { lineThroughSx } from "./parts/lineThroughSx";
 
 type Props = {
   constraint2: constraints2.Constraint2;
@@ -216,37 +200,33 @@ function Constraint2(props: Props): JSX.Element {
     constraint2Group.is_enabled;
   const title = (
     <>
-      <span
-        className={classnames({
-          [classes.lineThrough]: !constraint2StartDateIsEnabled,
-        })}
+      <Box
+        component="span"
+        sx={{ ...(!constraint2StartDateIsEnabled && lineThroughSx) }}
       >
         {props.constraint2.start_date_name}
-      </span>
+      </Box>
       から
-      <span
-        className={classnames({
-          [classes.lineThrough]: !constraint2StopDateIsEnabled,
-        })}
+      <Box
+        component="span"
+        sx={{ ...(!constraint2StopDateIsEnabled && lineThroughSx) }}
       >
         {props.constraint2.stop_date_name}
-      </span>
+      </Box>
       までの
-      <span
-        className={classnames({
-          [classes.lineThrough]: !constraint2Kinmu.is_enabled,
-        })}
+      <Box
+        component="span"
+        sx={{ ...(!constraint2Kinmu.is_enabled && lineThroughSx) }}
       >
         {constraint2Kinmu.name}
-      </span>
+      </Box>
       に
-      <span
-        className={classnames({
-          [classes.lineThrough]: !constraint2Group.is_enabled,
-        })}
+      <Box
+        component="span"
+        sx={{ ...(!constraint2Group.is_enabled && lineThroughSx) }}
       >
         {constraint2Group.name}
-      </span>
+      </Box>
       から{props.constraint2.max_number_of_assignments}人以下の職員を割り当てる
     </>
   );
@@ -256,7 +236,7 @@ function Constraint2(props: Props): JSX.Element {
     props.constraint2.max_number_of_assignments
   );
   return (
-    <Root>
+    <>
       <Card>
         <CardHeader
           avatar={
@@ -294,9 +274,9 @@ function Constraint2(props: Props): JSX.Element {
                     shrink: true,
                   }}
                   inputProps={{
-                    className: classnames({
-                      [classes.lineThrough]: !constraint2StartDateIsEnabled,
-                    }),
+                    sx: {
+                      ...(!constraint2StartDateIsEnabled && lineThroughSx),
+                    },
                   }}
                   error={errorMessages.constraint2StartDateName.length > 0}
                   FormHelperTextProps={{
@@ -321,9 +301,7 @@ function Constraint2(props: Props): JSX.Element {
                     shrink: true,
                   }}
                   inputProps={{
-                    className: classnames({
-                      [classes.lineThrough]: !constraint2StopDateIsEnabled,
-                    }),
+                    sx: { ...(constraint2StopDateIsEnabled && lineThroughSx) },
                   }}
                   error={errorMessages.constraint2StopDateName.length > 0}
                   FormHelperTextProps={{
@@ -347,15 +325,12 @@ function Constraint2(props: Props): JSX.Element {
                 >
                   {kinmusInTerm.map((kinmu) => (
                     <MenuItem key={kinmu.id} value={kinmu.id}>
-                      {
-                        <span
-                          className={classnames({
-                            [classes.lineThrough]: !kinmu.is_enabled,
-                          })}
-                        >
-                          {kinmu.name}
-                        </span>
-                      }
+                      <Box
+                        component="span"
+                        sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
+                      >
+                        {kinmu.name}
+                      </Box>
                     </MenuItem>
                   ))}
                 </TextField>
@@ -370,15 +345,12 @@ function Constraint2(props: Props): JSX.Element {
                 >
                   {groupsInTerm.map((group) => (
                     <MenuItem key={group.id} value={group.id}>
-                      {
-                        <span
-                          className={classnames({
-                            [classes.lineThrough]: !group.is_enabled,
-                          })}
-                        >
-                          {group.name}
-                        </span>
-                      }
+                      <Box
+                        component="span"
+                        sx={{ ...(!group.is_enabled && lineThroughSx) }}
+                      >
+                        {group.name}
+                      </Box>
                     </MenuItem>
                   ))}
                 </TextField>
@@ -440,7 +412,7 @@ function Constraint2(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </Root>
+    </>
   );
 }
 

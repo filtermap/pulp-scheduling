@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -15,30 +14,15 @@ import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import classnames from "classnames";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Box from "@mui/material/Box";
 import * as constraints3 from "../modules/constraints3";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
 import { useAppSelector } from "../modules/hooks";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-
-const PREFIX = "Constraint3";
-
-const classes = {
-  lineThrough: `${PREFIX}-lineThrough`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")({
-  [`& .${classes.lineThrough}`]: {
-    "&::-webkit-datetime-edit-fields-wrapper": {
-      textDecoration: "line-through",
-    },
-    textDecoration: "line-through",
-  },
-});
+import { lineThroughSx } from "./parts/lineThroughSx";
 
 type Props = {
   constraint3: constraints3.Constraint3;
@@ -153,27 +137,25 @@ function Constraint3(props: Props): JSX.Element {
     selectedMember.is_enabled && selectedKinmu.is_enabled;
   const title = (
     <>
-      <span
-        className={classnames({
-          [classes.lineThrough]: !selectedMember.is_enabled,
-        })}
+      <Box
+        component="span"
+        sx={{ ...(!selectedMember.is_enabled && lineThroughSx) }}
       >
         {selectedMember.name}
-      </span>
+      </Box>
       に
-      <span
-        className={classnames({
-          [classes.lineThrough]: !selectedKinmu.is_enabled,
-        })}
+      <Box
+        component="span"
+        sx={{ ...(!selectedKinmu.is_enabled && lineThroughSx) }}
       >
         {selectedKinmu.name}
-      </span>
+      </Box>
       を{props.constraint3.min_number_of_assignments}回以上割り当てる
     </>
   );
   const errorMessages = validate(props.constraint3.min_number_of_assignments);
   return (
-    <Root>
+    <>
       <Card>
         <CardHeader
           avatar={
@@ -211,13 +193,12 @@ function Constraint3(props: Props): JSX.Element {
                   {membersInTerm.map((member) => (
                     <MenuItem key={member.id} value={member.id}>
                       {
-                        <span
-                          className={classnames({
-                            [classes.lineThrough]: !member.is_enabled,
-                          })}
+                        <Box
+                          component="span"
+                          sx={{ ...(!member.is_enabled && lineThroughSx) }}
                         >
                           {member.name}
-                        </span>
+                        </Box>
                       }
                     </MenuItem>
                   ))}
@@ -234,13 +215,12 @@ function Constraint3(props: Props): JSX.Element {
                   {kinmusInTerm.map((kinmu) => (
                     <MenuItem key={kinmu.id} value={kinmu.id}>
                       {
-                        <span
-                          className={classnames({
-                            [classes.lineThrough]: !kinmu.is_enabled,
-                          })}
+                        <Box
+                          component="span"
+                          sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
                         >
                           {kinmu.name}
-                        </span>
+                        </Box>
                       }
                     </MenuItem>
                   ))}
@@ -301,7 +281,7 @@ function Constraint3(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </Root>
+    </>
   );
 }
 

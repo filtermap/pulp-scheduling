@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -15,9 +14,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import classnames from "classnames";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Box from "@mui/material/Box";
 import * as constraints10 from "../modules/constraints10";
 import * as utils from "../utils";
 import * as kinmus from "../modules/kinmus";
@@ -25,22 +24,7 @@ import * as members from "../modules/members";
 import * as terms from "../modules/terms";
 import { useAppSelector } from "../modules/hooks";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-
-const PREFIX = "Constraint10";
-
-const classes = {
-  lineThrough: `${PREFIX}-lineThrough`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")({
-  [`& .${classes.lineThrough}`]: {
-    "&::-webkit-datetime-edit-fields-wrapper": {
-      textDecoration: "line-through",
-    },
-    textDecoration: "line-through",
-  },
-});
+import { lineThroughSx } from "./parts/lineThroughSx";
 
 type Props = {
   constraint10: constraints10.Constraint10;
@@ -199,37 +183,33 @@ function Constraint10(props: Props): JSX.Element {
     selectedKinmu.is_enabled;
   const title = (
     <>
-      <span
-        className={classnames({
-          [classes.lineThrough]: !selectedMember.is_enabled,
-        })}
+      <Box
+        component="span"
+        sx={{ ...(!selectedMember.is_enabled && lineThroughSx) }}
       >
         {selectedMember.name}
-      </span>
+      </Box>
       の
-      <span
-        className={classnames({
-          [classes.lineThrough]: !constraint10StartDateIsEnabled,
-        })}
+      <Box
+        component="span"
+        sx={{ ...(!constraint10StartDateIsEnabled && lineThroughSx) }}
       >
         {props.constraint10.start_date_name}
-      </span>
+      </Box>
       から
-      <span
-        className={classnames({
-          [classes.lineThrough]: !constraint10StopDateIsEnabled,
-        })}
+      <Box
+        component="span"
+        sx={{ ...(!constraint10StopDateIsEnabled && lineThroughSx) }}
       >
         {props.constraint10.stop_date_name}
-      </span>
+      </Box>
       までに
-      <span
-        className={classnames({
-          [classes.lineThrough]: !selectedKinmu.is_enabled,
-        })}
+      <Box
+        component="span"
+        sx={{ ...(!selectedKinmu.is_enabled && lineThroughSx) }}
       >
         {selectedKinmu.name}
-      </span>
+      </Box>
       を割り当てない
     </>
   );
@@ -238,7 +218,7 @@ function Constraint10(props: Props): JSX.Element {
     props.constraint10.stop_date_name
   );
   return (
-    <Root>
+    <>
       <Card>
         <CardHeader
           avatar={
@@ -275,15 +255,12 @@ function Constraint10(props: Props): JSX.Element {
                 >
                   {membersInTerm.map((member) => (
                     <MenuItem key={member.id} value={member.id}>
-                      {
-                        <span
-                          className={classnames({
-                            [classes.lineThrough]: !member.is_enabled,
-                          })}
-                        >
-                          {member.name}
-                        </span>
-                      }
+                      <Box
+                        component="span"
+                        sx={{ ...(!member.is_enabled && lineThroughSx) }}
+                      >
+                        {member.name}
+                      </Box>
                     </MenuItem>
                   ))}
                 </TextField>
@@ -299,9 +276,9 @@ function Constraint10(props: Props): JSX.Element {
                     shrink: true,
                   }}
                   inputProps={{
-                    className: classnames({
-                      [classes.lineThrough]: !constraint10StartDateIsEnabled,
-                    }),
+                    sx: {
+                      ...(!constraint10StartDateIsEnabled && lineThroughSx),
+                    },
                   }}
                   error={errorMessages.constraint10StartDateName.length > 0}
                   FormHelperTextProps={{
@@ -326,9 +303,9 @@ function Constraint10(props: Props): JSX.Element {
                     shrink: true,
                   }}
                   inputProps={{
-                    className: classnames({
-                      [classes.lineThrough]: !constraint10StopDateIsEnabled,
-                    }),
+                    sx: {
+                      ...(!constraint10StopDateIsEnabled && lineThroughSx),
+                    },
                   }}
                   error={errorMessages.constraint10StopDateName.length > 0}
                   FormHelperTextProps={{
@@ -352,15 +329,12 @@ function Constraint10(props: Props): JSX.Element {
                 >
                   {kinmusInTerm.map((kinmu) => (
                     <MenuItem key={kinmu.id} value={kinmu.id}>
-                      {
-                        <span
-                          className={classnames({
-                            [classes.lineThrough]: !kinmu.is_enabled,
-                          })}
-                        >
-                          {kinmu.name}
-                        </span>
-                      }
+                      <Box
+                        component="span"
+                        sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
+                      >
+                        {kinmu.name}
+                      </Box>
                     </MenuItem>
                   ))}
                 </TextField>
@@ -396,7 +370,7 @@ function Constraint10(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </Root>
+    </>
   );
 }
 

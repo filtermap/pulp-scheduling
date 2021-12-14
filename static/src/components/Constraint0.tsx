@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -15,31 +14,16 @@ import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import classnames from "classnames";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Box from "@mui/material/Box";
 import * as all from "../modules/all";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as kinmus from "../modules/kinmus";
 import * as constraints0 from "../modules/constraints0";
 import * as utils from "../utils";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-
-const PREFIX = "Constraint0";
-
-const classes = {
-  lineThrough: `${PREFIX}-lineThrough`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled("div")({
-  [`& .${classes.lineThrough}`]: {
-    "&::-webkit-datetime-edit-fields-wrapper": {
-      textDecoration: "line-through",
-    },
-    textDecoration: "line-through",
-  },
-});
+import { lineThroughSx } from "./parts/lineThroughSx";
 
 type Props = {
   constraint0: constraints0.Constraint0;
@@ -131,20 +115,19 @@ function Constraint0(props: Props): JSX.Element {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const kinmu = selectedKinmuById[kinmu_id]!;
       return (
-        <span
+        <Box
           key={id}
-          className={classnames({
-            [classes.lineThrough]: !kinmu.is_enabled,
-          })}
+          component="span"
+          sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
         >
           {kinmu.name}
-        </span>
+        </Box>
       );
     }),
     ", "
   );
   return (
-    <Root>
+    <>
       <Card>
         <CardHeader
           avatar={
@@ -193,15 +176,12 @@ function Constraint0(props: Props): JSX.Element {
                     >
                       {kinmusInTerm.map((kinmu) => (
                         <MenuItem key={kinmu.id} value={kinmu.id}>
-                          {
-                            <span
-                              className={classnames({
-                                [classes.lineThrough]: !kinmu.is_enabled,
-                              })}
-                            >
-                              {kinmu.name}
-                            </span>
-                          }
+                          <Box
+                            component="span"
+                            sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
+                          >
+                            {kinmu.name}
+                          </Box>
                         </MenuItem>
                       ))}
                     </TextField>
@@ -261,7 +241,7 @@ function Constraint0(props: Props): JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </Root>
+    </>
   );
 }
 

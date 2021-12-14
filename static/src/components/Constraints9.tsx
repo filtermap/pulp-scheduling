@@ -12,10 +12,10 @@ import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import classnames from "classnames";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import Box from "@mui/material/Box";
 import * as constraints9 from "../modules/constraints9";
 import * as utils from "../utils";
 
@@ -24,12 +24,12 @@ import * as members from "../modules/members";
 import * as terms from "../modules/terms";
 import { useAppSelector } from "../modules/hooks";
 import Constraint9 from "./Constraint9";
+import { lineThroughSx } from "./parts/lineThroughSx";
 
 const PREFIX = "Constraints9";
 
 const classes = {
   gridFrame: `${PREFIX}-gridFrame`,
-  lineThrough: `${PREFIX}-lineThrough`,
   toolbarTitle: `${PREFIX}-toolbarTitle`,
 };
 
@@ -37,12 +37,6 @@ const classes = {
 const Root = styled("div")({
   [`& .${classes.gridFrame}`]: {
     padding: 8,
-  },
-  [`& .${classes.lineThrough}`]: {
-    "&::-webkit-datetime-edit-fields-wrapper": {
-      textDecoration: "line-through",
-    },
-    textDecoration: "line-through",
   },
   [`& .${classes.toolbarTitle}`]: {
     flex: 1,
@@ -299,15 +293,12 @@ function Constraints9(): JSX.Element {
                     >
                       {membersInTerm.map((member) => (
                         <MenuItem key={member.id} value={member.id}>
-                          {
-                            <span
-                              className={classnames({
-                                [classes.lineThrough]: !member.is_enabled,
-                              })}
-                            >
-                              {member.name}
-                            </span>
-                          }
+                          <Box
+                            component="span"
+                            sx={{ ...(!member.is_enabled && lineThroughSx) }}
+                          >
+                            {member.name}
+                          </Box>
                         </MenuItem>
                       ))}
                     </TextField>
@@ -323,10 +314,10 @@ function Constraints9(): JSX.Element {
                         shrink: true,
                       }}
                       inputProps={{
-                        className: classnames({
-                          [classes.lineThrough]:
-                            !newConstraint9StartDateIsEnabled,
-                        }),
+                        sx: {
+                          ...(!newConstraint9StartDateIsEnabled &&
+                            lineThroughSx),
+                        },
                       }}
                       error={
                         errorMessages.newConstraint9StartDateName.length > 0
@@ -353,10 +344,10 @@ function Constraints9(): JSX.Element {
                         shrink: true,
                       }}
                       inputProps={{
-                        className: classnames({
-                          [classes.lineThrough]:
-                            !newConstraint9StopDateIsEnabled,
-                        }),
+                        sx: {
+                          ...(!newConstraint9StopDateIsEnabled &&
+                            lineThroughSx),
+                        },
                       }}
                       error={
                         errorMessages.newConstraint9StopDateName.length > 0
@@ -382,15 +373,12 @@ function Constraints9(): JSX.Element {
                     >
                       {kinmusInTerm.map((kinmu) => (
                         <MenuItem key={kinmu.id} value={kinmu.id}>
-                          {
-                            <span
-                              className={classnames({
-                                [classes.lineThrough]: !kinmu.is_enabled,
-                              })}
-                            >
-                              {kinmu.name}
-                            </span>
-                          }
+                          <Box
+                            component="span"
+                            sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
+                          >
+                            {kinmu.name}
+                          </Box>
                         </MenuItem>
                       ))}
                     </TextField>
