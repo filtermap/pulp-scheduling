@@ -22,6 +22,9 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import useTheme from "@mui/material/styles/useTheme";
 import * as utils from "../utils";
 import * as terms from "../modules/terms";
 import * as members from "../modules/members";
@@ -64,7 +67,7 @@ import Terms from "./Terms";
 const drawerWidth = 240;
 
 type State = {
-  mobileOpen: boolean;
+  drawerIsOpen: boolean;
 };
 
 function ListItemLink(props: { to: string; primary: string }) {
@@ -166,7 +169,7 @@ function TermListItems(props: { term: terms.Term }) {
   );
 }
 
-function ResponsiveDrawer(): JSX.Element {
+export default function Layout(): JSX.Element {
   const dispatch = useDispatch();
   const selectedFutureExists = useAppSelector(
     (state) => state.future.length > 0
@@ -193,8 +196,12 @@ function ResponsiveDrawer(): JSX.Element {
   const selectedConstraints10 = useSelector(constraints10.selectors.selectAll);
   const selectedSchedules = useSelector(schedules.selectors.selectAll);
   const selectedAssignments = useSelector(assignments.selectors.selectAll);
+  const theme = useTheme();
+  const viewportIsWide = useMediaQuery(theme.breakpoints.up("md"), {
+    noSsr: true,
+  });
   const [state, setState] = React.useState<State>({
-    mobileOpen: false,
+    drawerIsOpen: viewportIsWide,
   });
   React.useEffect(() => {
     async function f(): Promise<void> {
@@ -206,7 +213,7 @@ function ResponsiveDrawer(): JSX.Element {
     f();
   }, [dispatch]);
   const handleDrawerToggle = () => {
-    setState((state) => ({ ...state, mobileOpen: !state.mobileOpen }));
+    setState((state) => ({ ...state, drawerIsOpen: !state.drawerIsOpen }));
   };
   const handleClickUndo = () => {
     dispatch(ActionCreators.undo());
@@ -240,7 +247,18 @@ function ResponsiveDrawer(): JSX.Element {
   };
   const drawer = (
     <>
-      <Toolbar />
+      <Toolbar
+        sx={{
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "flex-end",
+          padding: [0, 1],
+        }}
+      >
+        <IconButton onClick={handleDrawerToggle}>
+          <ChevronLeftIcon />
+        </IconButton>
+      </Toolbar>
       <List component="div" disablePadding>
         <ListItemLink to="/terms" primary="期間" />
         {selectedTerms
@@ -254,10 +272,21 @@ function ResponsiveDrawer(): JSX.Element {
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar
-        sx={{
-          width: { md: `calc(100% - ${drawerWidth}px)` },
+        sx={(theme) => ({
           position: "fixed",
-        }}
+          transition: theme.transitions.create(["margin", "width"], {
+            duration: theme.transitions.duration.leavingScreen,
+            easing: theme.transitions.easing.sharp,
+          }),
+          ...(state.drawerIsOpen && {
+            marginLeft: { md: `${drawerWidth}px` },
+            transition: theme.transitions.create(["margin", "width"], {
+              duration: theme.transitions.duration.enteringScreen,
+              easing: theme.transitions.easing.easeOut,
+            }),
+            width: { md: `calc(100% - ${drawerWidth}px)` },
+          }),
+        })}
       >
         <Toolbar>
           <IconButton
@@ -265,7 +294,7 @@ function ResponsiveDrawer(): JSX.Element {
             aria-label="open drawer"
             onClick={handleDrawerToggle}
             size="large"
-            sx={{ display: { md: "none" } }}
+            sx={{ ...(state.drawerIsOpen && { display: { md: "none" } }) }}
           >
             <MenuIcon />
           </IconButton>
@@ -279,9 +308,7 @@ function ResponsiveDrawer(): JSX.Element {
             <Typography
               component="span"
               variant="subtitle2"
-              sx={{
-                marginLeft: 3,
-              }}
+              sx={{ marginLeft: 3 }}
             >
               v0.2.0
             </Typography>
@@ -305,44 +332,56 @@ function ResponsiveDrawer(): JSX.Element {
           </Button>
         </Toolbar>
       </AppBar>
-      <Box sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}>
-        <Drawer
-          variant="temporary"
-          anchor={"left"}
-          open={state.mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          open={true}
-          sx={{
-            display: { xs: "none", md: "block" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </Box>
-      <Box
-        sx={{
-          flexGrow: 1,
-          maxWidth: { md: `calc(100% - ${drawerWidth}px)` },
+      <Drawer
+        anchor="left"
+        variant="temporary"
+        open={state.drawerIsOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
         }}
+        sx={{
+          display: { xs: "block", md: "none" },
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth,
+          },
+        }}
+      >
+        {drawer}
+      </Drawer>
+      <Drawer
+        anchor="left"
+        variant="persistent"
+        open={state.drawerIsOpen}
+        sx={{
+          display: { xs: "none", md: "block" },
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth,
+          },
+        }}
+      >
+        {drawer}
+      </Drawer>
+      <Box
+        sx={(theme) => ({
+          flexGrow: 1,
+          transition: theme.transitions.create(["margin", "width"], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+          }),
+          ...(state.drawerIsOpen && {
+            marginLeft: { md: `${drawerWidth}px` },
+            transition: theme.transitions.create(["margin", "width"], {
+              easing: theme.transitions.easing.easeOut,
+              duration: theme.transitions.duration.enteringScreen,
+            }),
+            width: { md: `calc(100% - ${drawerWidth}px)` },
+          }),
+        })}
       >
         <Toolbar />
         <Routes>
@@ -400,5 +439,3 @@ function ResponsiveDrawer(): JSX.Element {
     </Box>
   );
 }
-
-export default ResponsiveDrawer;
