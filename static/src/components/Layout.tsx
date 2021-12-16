@@ -245,30 +245,6 @@ export default function Layout(): JSX.Element {
     };
     utils.sendJSONRPCRequest("write_all", [plainAll]);
   };
-  const drawer = (
-    <>
-      <Toolbar
-        sx={{
-          alignItems: "center",
-          display: "flex",
-          justifyContent: "flex-end",
-          padding: [0, 1],
-        }}
-      >
-        <IconButton onClick={handleDrawerToggle}>
-          <ChevronLeftIcon />
-        </IconButton>
-      </Toolbar>
-      <List component="div" disablePadding>
-        <ListItemLink to="/terms" primary="期間" />
-        {selectedTerms
-          .filter(({ is_enabled }) => is_enabled)
-          .map((term) => (
-            <TermListItems key={term.id} term={term} />
-          ))}
-      </List>
-    </>
-  );
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar
@@ -279,12 +255,12 @@ export default function Layout(): JSX.Element {
             easing: theme.transitions.easing.sharp,
           }),
           ...(state.drawerIsOpen && {
-            marginLeft: { md: `${drawerWidth}px` },
+            marginLeft: `${drawerWidth}px`,
             transition: theme.transitions.create(["margin", "width"], {
               duration: theme.transitions.duration.enteringScreen,
               easing: theme.transitions.easing.easeOut,
             }),
-            width: { md: `calc(100% - ${drawerWidth}px)` },
+            width: `calc(100% - ${drawerWidth}px)`,
           }),
         })}
       >
@@ -294,7 +270,7 @@ export default function Layout(): JSX.Element {
             aria-label="open drawer"
             onClick={handleDrawerToggle}
             size="large"
-            sx={{ ...(state.drawerIsOpen && { display: { md: "none" } }) }}
+            sx={{ ...(state.drawerIsOpen && { display: "none" }) }}
           >
             <MenuIcon />
           </IconButton>
@@ -334,29 +310,9 @@ export default function Layout(): JSX.Element {
       </AppBar>
       <Drawer
         anchor="left"
-        variant="temporary"
-        open={state.drawerIsOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
-        }}
-        sx={{
-          display: { xs: "block", md: "none" },
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: drawerWidth,
-          },
-        }}
-      >
-        {drawer}
-      </Drawer>
-      <Drawer
-        anchor="left"
         variant="persistent"
         open={state.drawerIsOpen}
         sx={{
-          display: { xs: "none", md: "block" },
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
@@ -364,7 +320,26 @@ export default function Layout(): JSX.Element {
           },
         }}
       >
-        {drawer}
+        <Toolbar
+          sx={{
+            alignItems: "center",
+            display: "flex",
+            justifyContent: "flex-end",
+            padding: [0, 1],
+          }}
+        >
+          <IconButton onClick={handleDrawerToggle}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </Toolbar>
+        <List component="div" disablePadding>
+          <ListItemLink to="/terms" primary="期間" />
+          {selectedTerms
+            .filter(({ is_enabled }) => is_enabled)
+            .map((term) => (
+              <TermListItems key={term.id} term={term} />
+            ))}
+        </List>
       </Drawer>
       <Box
         sx={(theme) => ({
@@ -374,12 +349,12 @@ export default function Layout(): JSX.Element {
             duration: theme.transitions.duration.leavingScreen,
           }),
           ...(state.drawerIsOpen && {
-            marginLeft: { md: `${drawerWidth}px` },
+            marginLeft: `${drawerWidth}px`,
             transition: theme.transitions.create(["margin", "width"], {
               easing: theme.transitions.easing.easeOut,
               duration: theme.transitions.duration.enteringScreen,
             }),
-            width: { md: `calc(100% - ${drawerWidth}px)` },
+            width: `calc(100% - ${drawerWidth}px)`,
           }),
         })}
       >
