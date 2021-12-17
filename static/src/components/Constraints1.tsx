@@ -66,7 +66,6 @@ function Constraints1(): JSX.Element {
     () => selectedGroups.filter(({ term_id }) => term_id === termId),
     [selectedGroups, termId]
   );
-  const todayString = utils.dateToString(new Date());
   const initialState = React.useMemo(
     () => ({
       creationDialogIsOpen: false,
@@ -77,10 +76,10 @@ function Constraints1(): JSX.Element {
         kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined,
       newConstraint1MinNumberOfAssignments:
         constraints1.minOfConstraint1MinNumberOfAssignments,
-      newConstraint1StartDateName: todayString,
-      newConstraint1StopDateName: todayString,
+      newConstraint1StartDateName: selectedTerm.start_date_name,
+      newConstraint1StopDateName: selectedTerm.stop_date_name,
     }),
-    [groupsInTerm, kinmusInTerm, todayString]
+    [groupsInTerm, kinmusInTerm, selectedTerm]
   );
   const [state, setState] = React.useState<State>(initialState);
   React.useEffect(() => setState(initialState), [initialState]);

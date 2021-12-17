@@ -64,7 +64,6 @@ function Constraints10(): JSX.Element {
     () => selectedKinmus.filter(({ term_id }) => term_id === termId),
     [selectedKinmus, termId]
   );
-  const todayString = utils.dateToString(new Date());
   const initialState = React.useMemo(
     () => ({
       creationDialogIsOpen: false,
@@ -73,10 +72,10 @@ function Constraints10(): JSX.Element {
         kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined,
       newConstraint10MemberId:
         membersInTerm.length > 0 ? membersInTerm[0].id : undefined,
-      newConstraint10StartDateName: todayString,
-      newConstraint10StopDateName: todayString,
+      newConstraint10StartDateName: selectedTerm.start_date_name,
+      newConstraint10StopDateName: selectedTerm.stop_date_name,
     }),
-    [kinmusInTerm, membersInTerm, todayString]
+    [kinmusInTerm, membersInTerm, selectedTerm]
   );
   const [state, setState] = React.useState<State>(initialState);
   React.useEffect(() => setState(initialState), [initialState]);
