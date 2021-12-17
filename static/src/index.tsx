@@ -6,7 +6,7 @@ import "ts-polyfill/lib/es2017-object";
 import "ts-polyfill/lib/es2017-string";
 import App from "./App";
 
-async function main() {
+function main() {
   ReactDOM.render(
     <React.StrictMode>
       <App />
