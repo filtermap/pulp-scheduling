@@ -15,8 +15,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import * as all from "../modules/all";
-import * as kinmus from "../modules/kinmus";
 import * as assignments from "../modules/assignments";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as constraints1 from "../modules/constraints1";
@@ -30,7 +30,9 @@ import * as constraints7 from "../modules/constraints7";
 import * as constraints8 from "../modules/constraints8";
 import * as constraints9 from "../modules/constraints9";
 import * as groups from "../modules/groups";
+import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
+
 import ExpandMoreButton from "./parts/ExpandMoreButton";
 
 type Props = {

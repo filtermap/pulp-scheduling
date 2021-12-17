@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import undoable from "redux-undo";
+
 import * as all from "./all";
 
 const reducer = undoable(all.reducer, {

@@ -1,3 +1,4 @@
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -16,13 +17,14 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Box from "@mui/material/Box";
+
 import * as constraints2 from "../modules/constraints2";
-import * as utils from "../utils";
 import * as groups from "../modules/groups";
-import * as terms from "../modules/terms";
-import * as kinmus from "../modules/kinmus";
 import { useAppSelector } from "../modules/hooks";
+import * as kinmus from "../modules/kinmus";
+import * as terms from "../modules/terms";
+import * as utils from "../utils";
+
 import ExpandMoreButton from "./parts/ExpandMoreButton";
 import { lineThroughSx } from "./parts/lineThroughSx";
 

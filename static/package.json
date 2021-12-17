@@ -61,7 +61,15 @@
           "ts-ignore": "allow-with-description"
         }
       ],
-      "import/order": "error"
+      "import/order": [
+        "error",
+        {
+          "newlines-between": "always",
+          "alphabetize": {
+            "order": "asc"
+          }
+        }
+      ]
     }
   },
   "browserslist": {

@@ -20,13 +20,15 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import * as all from "../modules/all";
-import * as group_members from "../modules/group_members";
-import * as groups from "../modules/groups";
 import * as constraints1 from "../modules/constraints1";
 import * as constraints2 from "../modules/constraints2";
+import * as group_members from "../modules/group_members";
+import * as groups from "../modules/groups";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
+
 import ExpandMoreButton from "./parts/ExpandMoreButton";
 
 type Props = {

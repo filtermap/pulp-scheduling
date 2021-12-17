@@ -1,15 +1,16 @@
 import "typeface-roboto";
-import * as React from "react";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import CssBaseline from "@mui/material/CssBaseline";
+import { blue, teal } from "@mui/material/colors";
 import {
   ThemeProvider,
   StyledEngineProvider,
   createTheme,
 } from "@mui/material/styles";
-import { blue, teal } from "@mui/material/colors";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import * as React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
+
 import Layout from "./components/Layout";
 import * as store from "./modules/store";
 

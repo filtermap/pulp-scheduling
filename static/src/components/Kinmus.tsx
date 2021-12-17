@@ -12,7 +12,9 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+
 import * as kinmus from "../modules/kinmus";
+
 import Kinmu from "./Kinmu";
 import GridFrame from "./parts/GridFrame";
 

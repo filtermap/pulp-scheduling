@@ -1,3 +1,4 @@
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -14,16 +15,17 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import Box from "@mui/material/Box";
-import * as utils from "../utils";
+
 import * as constraints2 from "../modules/constraints2";
 import * as groups from "../modules/groups";
+import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
 import * as terms from "../modules/terms";
-import { useAppSelector } from "../modules/hooks";
+import * as utils from "../utils";
+
 import Constraint2 from "./Constraint2";
-import { lineThroughSx } from "./parts/lineThroughSx";
 import GridFrame from "./parts/GridFrame";
+import { lineThroughSx } from "./parts/lineThroughSx";
 
 type State = {
   creationDialogIsOpen: boolean;

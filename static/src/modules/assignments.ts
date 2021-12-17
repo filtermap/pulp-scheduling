@@ -1,4 +1,5 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+
 import { RootState } from "./store";
 
 export type Assignment = {
