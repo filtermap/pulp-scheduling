@@ -204,13 +204,12 @@ export default function Layout(): JSX.Element {
     drawerIsOpen: viewportIsWide,
   });
   React.useEffect(() => {
-    async function f(): Promise<void> {
+    (async () => {
       const { result } = (await utils.sendJSONRPCRequest("read_all")) as {
         result: all.PlainAll;
       };
       dispatch(all.replaceAll(result));
-    }
-    f();
+    })();
   }, [dispatch]);
   const handleDrawerToggle = () => {
     setState((state) => ({ ...state, drawerIsOpen: !state.drawerIsOpen }));
