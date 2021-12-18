@@ -1,6 +1,4 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -65,6 +63,7 @@ import Kinmus from "./Kinmus";
 import Members from "./Members";
 import Schedules from "./Schedules";
 import Terms from "./Terms";
+import RotationalExpandMore from "./parts/RotationalExpandMore";
 
 const drawerWidth = 240;
 
@@ -107,7 +106,7 @@ function TermListItems(props: { term: terms.Term }) {
         <ListItemText
           primary={`${props.term.start_date_name}から${props.term.stop_date_name}まで`}
         />
-        {state.isOpen ? <ExpandLess /> : <ExpandMore />}
+        <RotationalExpandMore expanded={state.isOpen} />
       </ListItem>
       <Collapse in={state.isOpen}>
         <List component="div" disablePadding>
