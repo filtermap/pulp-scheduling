@@ -3,15 +3,19 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
+import * as t from "io-ts";
 
 import { RootState } from "./store";
 
-export type Term = {
-  id: number;
-  is_enabled: boolean;
-  start_date_name: string;
-  stop_date_name: string;
-};
+export const Term = t.type({
+  id: t.number,
+  is_enabled: t.boolean,
+  start_date_name: t.string,
+  stop_date_name: t.string,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type Term = t.TypeOf<typeof Term>;
 
 export const adapter = createEntityAdapter<Term>();
 

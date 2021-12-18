@@ -3,14 +3,18 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
+import * as t from "io-ts";
 
 import { RootState } from "./store";
 
-export type GroupMember = {
-  id: number;
-  group_id: number;
-  member_id: number;
-};
+export const GroupMember = t.type({
+  id: t.number,
+  group_id: t.number,
+  member_id: t.number,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type GroupMember = t.TypeOf<typeof GroupMember>;
 
 export const adapter = createEntityAdapter<GroupMember>();
 

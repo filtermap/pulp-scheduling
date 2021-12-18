@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, Update } from "@reduxjs/toolkit";
+import * as t from "io-ts";
 import { combineReducers, Reducer } from "redux";
 
 import * as assignments from "./assignments";
@@ -21,27 +22,30 @@ import * as members from "./members";
 import * as schedules from "./schedules";
 import * as terms from "./terms";
 
-export type PlainAll = {
-  terms: terms.Term[];
-  members: members.Member[];
-  kinmus: kinmus.Kinmu[];
-  groups: groups.Group[];
-  group_members: group_members.GroupMember[];
-  constraints0: constraints0.Constraint0[];
-  constraint0_kinmus: constraint0_kinmus.Constraint0Kinmu[];
-  constraints1: constraints1.Constraint1[];
-  constraints2: constraints2.Constraint2[];
-  constraints3: constraints3.Constraint3[];
-  constraints4: constraints4.Constraint4[];
-  constraints5: constraints5.Constraint5[];
-  constraints6: constraints6.Constraint6[];
-  constraints7: constraints7.Constraint7[];
-  constraints8: constraints8.Constraint8[];
-  constraints9: constraints9.Constraint9[];
-  constraints10: constraints10.Constraint10[];
-  schedules: schedules.Schedule[];
-  assignments: assignments.Assignment[];
-};
+export const PlainAll = t.type({
+  terms: t.array(terms.Term),
+  members: t.array(members.Member),
+  kinmus: t.array(kinmus.Kinmu),
+  groups: t.array(groups.Group),
+  group_members: t.array(group_members.GroupMember),
+  constraints0: t.array(constraints0.Constraint0),
+  constraint0_kinmus: t.array(constraint0_kinmus.Constraint0Kinmu),
+  constraints1: t.array(constraints1.Constraint1),
+  constraints2: t.array(constraints2.Constraint2),
+  constraints3: t.array(constraints3.Constraint3),
+  constraints4: t.array(constraints4.Constraint4),
+  constraints5: t.array(constraints5.Constraint5),
+  constraints6: t.array(constraints6.Constraint6),
+  constraints7: t.array(constraints7.Constraint7),
+  constraints8: t.array(constraints8.Constraint8),
+  constraints9: t.array(constraints9.Constraint9),
+  constraints10: t.array(constraints10.Constraint10),
+  schedules: t.array(schedules.Schedule),
+  assignments: t.array(assignments.Assignment),
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type PlainAll = t.TypeOf<typeof PlainAll>;
 
 export type All = {
   terms: ReturnType<typeof terms.reducer>;
@@ -117,6 +121,12 @@ function doubleItemsByKey<T extends { id: number }>(
     { lastId: maxId(array), copied: [], idMap: new Map() }
   );
 }
+
+export type NewAssignment = {
+  date_name: string;
+  member_id: number;
+  kinmu_id: number;
+};
 
 const all = createSlice({
   name: "all",
@@ -631,7 +641,7 @@ const all = createSlice({
         schedule: {
           term_id: number;
         };
-        new_assignments: assignments.Assignment[];
+        new_assignments: NewAssignment[];
       }>
     ) => {
       const schedule_id = Math.max(0, ...(state.schedules.ids as number[])) + 1;

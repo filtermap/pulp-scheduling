@@ -3,16 +3,20 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
+import * as t from "io-ts";
 
 import { RootState } from "./store";
 
-export type Constraint6 = {
-  id: number;
-  term_id: number;
-  is_enabled: boolean;
-  kinmu_id: number;
-  max_number_of_days: number;
-};
+export const Constraint6 = t.type({
+  id: t.number,
+  term_id: t.number,
+  is_enabled: t.boolean,
+  kinmu_id: t.number,
+  max_number_of_days: t.number,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type Constraint6 = t.TypeOf<typeof Constraint6>;
 
 export const minOfConstraint6MaxNumberOfDays = 2;
 

@@ -1,11 +1,15 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import * as t from "io-ts";
 
 import { RootState } from "./store";
 
-export type Schedule = {
-  id: number;
-  term_id: number;
-};
+export const Schedule = t.type({
+  id: t.number,
+  term_id: t.number,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type Schedule = t.TypeOf<typeof Schedule>;
 
 export const adapter = createEntityAdapter<Schedule>();
 

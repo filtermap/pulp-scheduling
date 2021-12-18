@@ -18,7 +18,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import * as all from "../modules/all";
-import * as assignments from "../modules/assignments";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as constraints0 from "../modules/constraints0";
 import * as constraints1 from "../modules/constraints1";
@@ -63,7 +62,7 @@ type SolveInProgress = {
 
 type Solved = {
   type: typeof SOLVED;
-  newScheduleAssignments: assignments.Assignment[];
+  newScheduleAssignments: all.NewAssignment[];
 };
 
 type Unsolved = {
@@ -222,9 +221,7 @@ function Schedules(): JSX.Element {
         type: SOLVE_IN_PROGRESS,
       },
     }));
-    const response = (await utils.sendJSONRPCRequest("solve", [allInTerm])) as
-      | { error: { message: string } }
-      | { result: assignments.Assignment[] };
+    const response = await utils.sendJSONRPCRequest("solve", [allInTerm]);
     if ("error" in response) {
       setState((state) => ({
         ...state,
@@ -235,10 +232,11 @@ function Schedules(): JSX.Element {
       }));
       return;
     }
+    const { result } = response;
     setState((state) => ({
       ...state,
       dialogState: {
-        newScheduleAssignments: response.result,
+        newScheduleAssignments: result as all.NewAssignment[],
         type: SOLVED,
       },
     }));
@@ -250,9 +248,7 @@ function Schedules(): JSX.Element {
         type: PURSUE_IN_PROGRESS,
       },
     }));
-    const response = (await utils.sendJSONRPCRequest("pursue", [allInTerm])) as
-      | { error: { message: string } }
-      | { result: { constraint: { id: number; type: string } } };
+    const response = await utils.sendJSONRPCRequest("pursue", [allInTerm]);
     if ("error" in response) {
       setState((state) => ({
         ...state,
@@ -263,13 +259,14 @@ function Schedules(): JSX.Element {
       }));
       return;
     }
+    const { result } = response;
+    const { constraint } = result as {
+      constraint: { id: number; type: string };
+    };
     setState((state) => ({
       ...state,
       dialogState: {
-        constraint: {
-          id: response.result.constraint.id,
-          type: response.result.constraint.type,
-        },
+        constraint,
         type: PURSUED,
       },
     }));

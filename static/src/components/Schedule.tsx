@@ -86,16 +86,13 @@ function Schedule(props: Props): JSX.Element {
     const assignments_by_schedule_id = assignmentsInTerm.filter(
       (assignment) => assignment.schedule_id === props.schedule.id
     );
-    const csv = iconv.encode(
-      (
-        (await utils.sendJSONRPCRequest("download_csv", [
-          assignments_by_schedule_id,
-          membersInTerm,
-          kinmusInTerm,
-        ])) as { result: string }
-      ).result,
-      "Shift_JIS"
-    );
+    const response = await utils.sendJSONRPCRequest("download_csv", [
+      assignments_by_schedule_id,
+      membersInTerm,
+      kinmusInTerm,
+    ]);
+    if ("error" in response) throw new Error(response.error.message);
+    const csv = iconv.encode(response.result as string, "Shift_JIS");
     const a = document.createElement("a");
     a.download = `勤務表${props.schedule.id}.csv`;
     a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));

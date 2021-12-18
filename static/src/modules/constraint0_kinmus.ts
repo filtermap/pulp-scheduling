@@ -4,15 +4,19 @@ import {
   PayloadAction,
   Update,
 } from "@reduxjs/toolkit";
+import * as t from "io-ts";
 
 import { RootState } from "./store";
 
-export type Constraint0Kinmu = {
-  id: number;
-  constraint0_id: number;
-  sequence_number: number;
-  kinmu_id: number;
-};
+export const Constraint0Kinmu = t.type({
+  id: t.number,
+  constraint0_id: t.number,
+  sequence_number: t.number,
+  kinmu_id: t.number,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type Constraint0Kinmu = t.TypeOf<typeof Constraint0Kinmu>;
 
 export const adapter = createEntityAdapter<Constraint0Kinmu>();
 

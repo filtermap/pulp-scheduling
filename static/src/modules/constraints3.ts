@@ -3,17 +3,21 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
+import * as t from "io-ts";
 
 import { RootState } from "./store";
 
-export type Constraint3 = {
-  id: number;
-  term_id: number;
-  is_enabled: boolean;
-  member_id: number;
-  kinmu_id: number;
-  min_number_of_assignments: number;
-};
+export const Constraint3 = t.type({
+  id: t.number,
+  term_id: t.number,
+  is_enabled: t.boolean,
+  member_id: t.number,
+  kinmu_id: t.number,
+  min_number_of_assignments: t.number,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type Constraint3 = t.TypeOf<typeof Constraint3>;
 
 export const minOfConstraint3MinNumberOfAssignments = 1;
 

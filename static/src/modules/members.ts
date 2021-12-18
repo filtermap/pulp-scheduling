@@ -1,13 +1,17 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import * as t from "io-ts";
 
 import { RootState } from "./store";
 
-export type Member = {
-  id: number;
-  term_id: number;
-  is_enabled: boolean;
-  name: string;
-};
+export const Member = t.type({
+  id: t.number,
+  term_id: t.number,
+  is_enabled: t.boolean,
+  name: t.string,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type Member = t.TypeOf<typeof Member>;
 
 export const adapter = createEntityAdapter<Member>();
 

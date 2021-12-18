@@ -3,15 +3,19 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
+import * as t from "io-ts";
 
 import { RootState } from "./store";
 
-export type Kinmu = {
-  id: number;
-  term_id: number;
-  is_enabled: boolean;
-  name: string;
-};
+export const Kinmu = t.type({
+  id: t.number,
+  term_id: t.number,
+  is_enabled: t.boolean,
+  name: t.string,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type Kinmu = t.TypeOf<typeof Kinmu>;
 
 export const adapter = createEntityAdapter<Kinmu>();
 

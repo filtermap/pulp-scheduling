@@ -1,7 +1,11 @@
+type Success = { result: unknown };
+
+type Error = { error: { code: number; message: string; data: unknown } };
+
 export async function sendJSONRPCRequest<T>(
   method: string,
   params: T[] | Record<string, unknown> = []
-): Promise<unknown> {
+): Promise<Success | Error> {
   const response = await fetch("/api", {
     method: "post",
     body: JSON.stringify({ method, params, jsonrpc: "2.0", id: 1 }),

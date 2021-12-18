@@ -3,18 +3,22 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
+import * as t from "io-ts";
 
 import { RootState } from "./store";
 
-export type Constraint10 = {
-  id: number;
-  term_id: number;
-  is_enabled: boolean;
-  member_id: number;
-  start_date_name: string;
-  stop_date_name: string;
-  kinmu_id: number;
-};
+export const Constraint10 = t.type({
+  id: t.number,
+  term_id: t.number,
+  is_enabled: t.boolean,
+  member_id: t.number,
+  start_date_name: t.string,
+  stop_date_name: t.string,
+  kinmu_id: t.number,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type Constraint10 = t.TypeOf<typeof Constraint10>;
 
 export const adapter = createEntityAdapter<Constraint10>();
 

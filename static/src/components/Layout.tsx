@@ -207,9 +207,10 @@ export default function Layout(): JSX.Element {
   });
   React.useEffect(() => {
     (async () => {
-      const { result } = (await utils.sendJSONRPCRequest("read_all")) as {
-        result: all.PlainAll;
-      };
+      const response = await utils.sendJSONRPCRequest("read_all");
+      if ("error" in response) throw new Error(response.error.message);
+      const { result } = response;
+      if (!all.PlainAll.is(result)) throw new Error("!all.PlainAll.is(result)");
       dispatch(all.replaceAll(result));
     })();
   }, [dispatch]);
