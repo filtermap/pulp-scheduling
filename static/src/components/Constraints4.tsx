@@ -22,7 +22,7 @@ import * as members from "../modules/members";
 
 import Constraint4 from "./Constraint4";
 import GridFrame from "./parts/GridFrame";
-import { lineThroughSx } from "./parts/lineThroughSx";
+import lineThroughSx from "./parts/lineThroughSx";
 
 type State = {
   creationDialogIsOpen: boolean;

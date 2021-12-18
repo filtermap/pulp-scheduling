@@ -23,7 +23,7 @@ import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
 
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import { lineThroughSx } from "./parts/lineThroughSx";
+import lineThroughSx from "./parts/lineThroughSx";
 
 type Props = {
   constraint6: constraints6.Constraint6;

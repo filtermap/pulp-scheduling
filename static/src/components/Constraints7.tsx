@@ -21,7 +21,7 @@ import * as kinmus from "../modules/kinmus";
 
 import Constraint7 from "./Constraint7";
 import GridFrame from "./parts/GridFrame";
-import { lineThroughSx } from "./parts/lineThroughSx";
+import lineThroughSx from "./parts/lineThroughSx";
 
 type State = {
   creationDialogIsOpen: boolean;

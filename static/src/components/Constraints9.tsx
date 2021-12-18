@@ -25,7 +25,7 @@ import * as utils from "../utils";
 
 import Constraint9 from "./Constraint9";
 import GridFrame from "./parts/GridFrame";
-import { lineThroughSx } from "./parts/lineThroughSx";
+import lineThroughSx from "./parts/lineThroughSx";
 
 type State = {
   creationDialogIsOpen: boolean;

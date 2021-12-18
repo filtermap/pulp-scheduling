@@ -26,7 +26,7 @@ import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import { lineThroughSx } from "./parts/lineThroughSx";
+import lineThroughSx from "./parts/lineThroughSx";
 
 type Props = {
   constraint1: constraints1.Constraint1;

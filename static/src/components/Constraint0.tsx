@@ -25,7 +25,7 @@ import * as kinmus from "../modules/kinmus";
 import * as utils from "../utils";
 
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import { lineThroughSx } from "./parts/lineThroughSx";
+import lineThroughSx from "./parts/lineThroughSx";
 
 type Props = {
   constraint0: constraints0.Constraint0;
