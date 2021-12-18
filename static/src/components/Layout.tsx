@@ -288,7 +288,7 @@ export default function Layout(): JSX.Element {
               variant="subtitle2"
               sx={{ marginLeft: 3 }}
             >
-              v0.2.0
+              v0.2.1
             </Typography>
           </Typography>
           <Button
