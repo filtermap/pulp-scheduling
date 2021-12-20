@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -24,7 +23,7 @@ import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
 
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import lineThroughSx from "./parts/lineThroughSx";
+import LineThrough from "./parts/LineThrough";
 
 type Props = {
   constraint3: constraints3.Constraint3;
@@ -139,19 +138,13 @@ function Constraint3(props: Props): JSX.Element {
     selectedMember.is_enabled && selectedKinmu.is_enabled;
   const title = (
     <>
-      <Box
-        component="span"
-        sx={{ ...(!selectedMember.is_enabled && lineThroughSx) }}
-      >
+      <LineThrough line={!selectedMember.is_enabled}>
         {selectedMember.name}
-      </Box>
+      </LineThrough>
       に
-      <Box
-        component="span"
-        sx={{ ...(!selectedKinmu.is_enabled && lineThroughSx) }}
-      >
+      <LineThrough line={!selectedKinmu.is_enabled}>
         {selectedKinmu.name}
-      </Box>
+      </LineThrough>
       を{props.constraint3.min_number_of_assignments}回以上割り当てる
     </>
   );
@@ -194,14 +187,9 @@ function Constraint3(props: Props): JSX.Element {
                 >
                   {membersInTerm.map((member) => (
                     <MenuItem key={member.id} value={member.id}>
-                      {
-                        <Box
-                          component="span"
-                          sx={{ ...(!member.is_enabled && lineThroughSx) }}
-                        >
-                          {member.name}
-                        </Box>
-                      }
+                      <LineThrough line={!member.is_enabled}>
+                        {member.name}
+                      </LineThrough>
                     </MenuItem>
                   ))}
                 </TextField>
@@ -216,14 +204,9 @@ function Constraint3(props: Props): JSX.Element {
                 >
                   {kinmusInTerm.map((kinmu) => (
                     <MenuItem key={kinmu.id} value={kinmu.id}>
-                      {
-                        <Box
-                          component="span"
-                          sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
-                        >
-                          {kinmu.name}
-                        </Box>
-                      }
+                      <LineThrough line={!kinmu.is_enabled}>
+                        {kinmu.name}
+                      </LineThrough>
                     </MenuItem>
                   ))}
                 </TextField>

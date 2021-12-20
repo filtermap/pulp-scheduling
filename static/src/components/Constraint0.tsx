@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -25,7 +24,7 @@ import * as kinmus from "../modules/kinmus";
 import * as utils from "../utils";
 
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import lineThroughSx from "./parts/lineThroughSx";
+import LineThrough from "./parts/LineThrough";
 
 type Props = {
   constraint0: constraints0.Constraint0;
@@ -117,13 +116,9 @@ function Constraint0(props: Props): JSX.Element {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const kinmu = selectedKinmuById[kinmu_id]!;
       return (
-        <Box
-          key={id}
-          component="span"
-          sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
-        >
+        <LineThrough key={id} line={!kinmu.is_enabled}>
           {kinmu.name}
-        </Box>
+        </LineThrough>
       );
     }),
     ", "
@@ -178,12 +173,9 @@ function Constraint0(props: Props): JSX.Element {
                     >
                       {kinmusInTerm.map((kinmu) => (
                         <MenuItem key={kinmu.id} value={kinmu.id}>
-                          <Box
-                            component="span"
-                            sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
-                          >
+                          <LineThrough line={!kinmu.is_enabled}>
                             {kinmu.name}
-                          </Box>
+                          </LineThrough>
                         </MenuItem>
                       ))}
                     </TextField>

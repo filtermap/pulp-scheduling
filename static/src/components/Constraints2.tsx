@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -25,6 +24,7 @@ import * as utils from "../utils";
 
 import Constraint2 from "./Constraint2";
 import GridFrame from "./parts/GridFrame";
+import LineThrough from "./parts/LineThrough";
 import lineThroughSx from "./parts/lineThroughSx";
 
 type State = {
@@ -358,12 +358,9 @@ function Constraints2(): JSX.Element {
                     >
                       {kinmusInTerm.map((kinmu) => (
                         <MenuItem key={kinmu.id} value={kinmu.id}>
-                          <Box
-                            component="span"
-                            sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
-                          >
+                          <LineThrough line={!kinmu.is_enabled}>
                             {kinmu.name}
-                          </Box>
+                          </LineThrough>
                         </MenuItem>
                       ))}
                     </TextField>
@@ -378,12 +375,9 @@ function Constraints2(): JSX.Element {
                     >
                       {groupsInTerm.map((group) => (
                         <MenuItem key={group.id} value={group.id}>
-                          <Box
-                            component="span"
-                            sx={{ ...(!group.is_enabled && lineThroughSx) }}
-                          >
+                          <LineThrough line={!group.is_enabled}>
                             {group.name}
-                          </Box>
+                          </LineThrough>
                         </MenuItem>
                       ))}
                     </TextField>

@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -23,7 +22,7 @@ import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
 
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import lineThroughSx from "./parts/lineThroughSx";
+import LineThrough from "./parts/LineThrough";
 
 type Props = {
   constraint7: constraints7.Constraint7;
@@ -114,12 +113,9 @@ function Constraint7(props: Props): JSX.Element {
   const relativesAreEnabled = selectedKinmu.is_enabled;
   const title = (
     <>
-      <Box
-        component="span"
-        sx={{ ...(!selectedKinmu.is_enabled && lineThroughSx) }}
-      >
+      <LineThrough line={!selectedKinmu.is_enabled}>
         {selectedKinmu.name}
-      </Box>
+      </LineThrough>
       の間隔日数を{props.constraint7.min_number_of_days}日以上にする
     </>
   );
@@ -162,12 +158,9 @@ function Constraint7(props: Props): JSX.Element {
                 >
                   {kinmusInTerm.map((kinmu) => (
                     <MenuItem key={kinmu.id} value={kinmu.id}>
-                      <Box
-                        component="span"
-                        sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
-                      >
+                      <LineThrough line={!kinmu.is_enabled}>
                         {kinmu.name}
-                      </Box>
+                      </LineThrough>
                     </MenuItem>
                   ))}
                 </TextField>

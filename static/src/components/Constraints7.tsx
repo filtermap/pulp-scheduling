@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -21,7 +20,7 @@ import * as kinmus from "../modules/kinmus";
 
 import Constraint7 from "./Constraint7";
 import GridFrame from "./parts/GridFrame";
-import lineThroughSx from "./parts/lineThroughSx";
+import LineThrough from "./parts/LineThrough";
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -194,12 +193,9 @@ function Constraints7(): JSX.Element {
                     >
                       {kinmusInTerm.map((kinmu) => (
                         <MenuItem key={kinmu.id} value={kinmu.id}>
-                          <Box
-                            component="span"
-                            sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
-                          >
+                          <LineThrough line={!kinmu.is_enabled}>
                             {kinmu.name}
-                          </Box>
+                          </LineThrough>
                         </MenuItem>
                       ))}
                     </TextField>

@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -26,6 +25,7 @@ import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
 import ExpandMoreButton from "./parts/ExpandMoreButton";
+import LineThrough from "./parts/LineThrough";
 import lineThroughSx from "./parts/lineThroughSx";
 
 type Props = {
@@ -202,33 +202,21 @@ function Constraint1(props: Props): JSX.Element {
     constraint1Group.is_enabled;
   const title = (
     <>
-      <Box
-        component="span"
-        sx={{ ...(!constraint1StartDateIsEnabled && lineThroughSx) }}
-      >
+      <LineThrough line={!constraint1StartDateIsEnabled}>
         {props.constraint1.start_date_name}
-      </Box>
+      </LineThrough>
       から
-      <Box
-        component="span"
-        sx={{ ...(!constraint1StopDateIsEnabled && lineThroughSx) }}
-      >
+      <LineThrough line={!constraint1StopDateIsEnabled}>
         {props.constraint1.stop_date_name}
-      </Box>
+      </LineThrough>
       までの
-      <Box
-        component="span"
-        sx={{ ...(!constraint1Kinmu.is_enabled && lineThroughSx) }}
-      >
+      <LineThrough line={!constraint1Kinmu.is_enabled}>
         {constraint1Kinmu.name}
-      </Box>
+      </LineThrough>
       に
-      <Box
-        component="span"
-        sx={{ ...(!constraint1Group.is_enabled && lineThroughSx) }}
-      >
+      <LineThrough line={!constraint1Group.is_enabled}>
         {constraint1Group.name}
-      </Box>
+      </LineThrough>
       から{props.constraint1.min_number_of_assignments}人以上の職員を割り当てる
     </>
   );
@@ -327,12 +315,9 @@ function Constraint1(props: Props): JSX.Element {
                 >
                   {kinmusInTerm.map((kinmu) => (
                     <MenuItem key={kinmu.id} value={kinmu.id}>
-                      <Box
-                        component="span"
-                        sx={{ ...(!kinmu.is_enabled && lineThroughSx) }}
-                      >
+                      <LineThrough line={!kinmu.is_enabled}>
                         {kinmu.name}
-                      </Box>
+                      </LineThrough>
                     </MenuItem>
                   ))}
                 </TextField>
@@ -347,12 +332,9 @@ function Constraint1(props: Props): JSX.Element {
                 >
                   {groupsInTerm.map((group) => (
                     <MenuItem key={group.id} value={group.id}>
-                      <Box
-                        component="span"
-                        sx={{ ...(!group.is_enabled && lineThroughSx) }}
-                      >
+                      <LineThrough line={!group.is_enabled}>
                         {group.name}
-                      </Box>
+                      </LineThrough>
                     </MenuItem>
                   ))}
                 </TextField>
