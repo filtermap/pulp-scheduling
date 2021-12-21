@@ -203,7 +203,7 @@ function Constraints6(): JSX.Element {
                     <TextField
                       label="連続日数上限"
                       type="number"
-                      defaultValue={state.newConstraint6MaxNumberOfDays}
+                      value={state.newConstraint6MaxNumberOfDays}
                       onChange={handleChangeNewConstraint6MaxNumberOfDays}
                       fullWidth={true}
                       inputProps={{

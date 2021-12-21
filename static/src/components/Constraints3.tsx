@@ -253,7 +253,7 @@ function Constraints3(): JSX.Element {
                     <TextField
                       label="割り当て数下限"
                       type="number"
-                      defaultValue={state.newConstraint3MinNumberOfAssignments}
+                      value={state.newConstraint3MinNumberOfAssignments}
                       onChange={
                         handleChangeNewConstraint3MinNumberOfAssignments
                       }

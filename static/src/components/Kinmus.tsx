@@ -127,7 +127,7 @@ function Kinmus(): JSX.Element {
             <Grid item={true} xs={12}>
               <TextField
                 label="勤務名"
-                defaultValue={state.newKinmuName}
+                value={state.newKinmuName}
                 onChange={handleChangeNewKinmuName}
                 fullWidth={true}
                 error={errorMessages.newKinmuName.length > 0}

@@ -202,7 +202,7 @@ function Constraints8(): JSX.Element {
                     <TextField
                       label="間隔日数下限"
                       type="number"
-                      defaultValue={state.newConstraint8MaxNumberOfDays}
+                      value={state.newConstraint8MaxNumberOfDays}
                       onChange={handleChangeNewConstraint8MaxNumberOfDays}
                       fullWidth={true}
                       inputProps={{

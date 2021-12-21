@@ -160,7 +160,7 @@ function Groups(): JSX.Element {
             <Grid item={true} xs={12}>
               <TextField
                 label="グループ名"
-                defaultValue={state.newGroupName}
+                value={state.newGroupName}
                 onChange={handleChangeNewGroupName}
                 fullWidth={true}
                 error={errorMessages.newGroupName.length > 0}

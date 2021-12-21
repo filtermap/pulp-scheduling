@@ -141,7 +141,7 @@ function Terms(): JSX.Element {
               <TextField
                 label="開始日"
                 type="date"
-                defaultValue={state.newTermStartDateName}
+                value={state.newTermStartDateName}
                 onChange={handleChangeNewTermStartDateName}
                 fullWidth={true}
                 InputLabelProps={{
@@ -163,7 +163,7 @@ function Terms(): JSX.Element {
               <TextField
                 label="終了日"
                 type="date"
-                defaultValue={state.newTermStopDateName}
+                value={state.newTermStopDateName}
                 onChange={handleChangeNewTermStopDateName}
                 fullWidth={true}
                 InputLabelProps={{

@@ -253,7 +253,7 @@ function Constraints4(): JSX.Element {
                     <TextField
                       label="割り当て数上限"
                       type="number"
-                      defaultValue={state.newConstraint4MaxNumberOfAssignments}
+                      value={state.newConstraint4MaxNumberOfAssignments}
                       onChange={
                         handleChangeNewConstraint4MaxNumberOfAssignments
                       }

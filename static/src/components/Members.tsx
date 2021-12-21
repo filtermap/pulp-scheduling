@@ -164,7 +164,7 @@ function Members(): JSX.Element {
             <Grid item={true} xs={12}>
               <TextField
                 label="職員名"
-                defaultValue={state.newMemberName}
+                value={state.newMemberName}
                 onChange={handleChangeNewMemberName}
                 fullWidth={true}
                 error={errorMessages.newMemberName.length > 0}

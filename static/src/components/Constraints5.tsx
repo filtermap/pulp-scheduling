@@ -203,7 +203,7 @@ function Constraints5(): JSX.Element {
                     <TextField
                       label="連続日数下限"
                       type="number"
-                      defaultValue={state.newConstraint5MinNumberOfDays}
+                      value={state.newConstraint5MinNumberOfDays}
                       onChange={handleChangeNewConstraint5MinNumberOfDays}
                       fullWidth={true}
                       inputProps={{
