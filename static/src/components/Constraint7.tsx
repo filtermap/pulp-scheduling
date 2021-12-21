@@ -170,7 +170,7 @@ function Constraint7(props: Props): JSX.Element {
                 <TextField
                   label="間隔日数下限"
                   type="number"
-                  defaultValue={props.constraint7.min_number_of_days}
+                  value={props.constraint7.min_number_of_days}
                   onChange={handleChangeConstraint7MinNumberOfDays}
                   fullWidth={true}
                   inputProps={{

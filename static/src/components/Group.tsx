@@ -196,7 +196,7 @@ function Group(props: Props): JSX.Element {
               <Grid item={true} xs={12}>
                 <TextField
                   label="グループ名"
-                  defaultValue={props.group.name}
+                  value={props.group.name}
                   onChange={handleChangeGroupName}
                   fullWidth={true}
                   error={errorMessages.groupName.length > 0}

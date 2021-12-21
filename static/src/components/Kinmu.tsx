@@ -259,7 +259,7 @@ function Kinmu(props: Props): JSX.Element {
               <Grid item={true} xs={12}>
                 <TextField
                   label="勤務名"
-                  defaultValue={props.kinmu.name}
+                  value={props.kinmu.name}
                   onChange={handleChangeKinmuName}
                   margin="normal"
                   error={errorMessages.kinmuName.length > 0}

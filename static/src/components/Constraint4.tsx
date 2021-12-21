@@ -211,7 +211,7 @@ function Constraint4(props: Props): JSX.Element {
                 <TextField
                   label="割り当て数上限"
                   type="number"
-                  defaultValue={props.constraint4.max_number_of_assignments}
+                  value={props.constraint4.max_number_of_assignments}
                   onChange={handleChangeConstraint4MaxNumberOfAssignments}
                   fullWidth={true}
                   inputProps={{

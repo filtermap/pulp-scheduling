@@ -217,7 +217,7 @@ function Term(props: Props): JSX.Element {
                 <TextField
                   label="開始日"
                   type="date"
-                  defaultValue={props.term.start_date_name}
+                  value={props.term.start_date_name}
                   onChange={handleChangeTermStartDateName}
                   fullWidth={true}
                   margin="normal"
@@ -238,7 +238,7 @@ function Term(props: Props): JSX.Element {
                 <TextField
                   label="終了日"
                   type="date"
-                  defaultValue={props.term.stop_date_name}
+                  value={props.term.stop_date_name}
                   onChange={handleChangeTermStopDateName}
                   fullWidth={true}
                   margin="normal"

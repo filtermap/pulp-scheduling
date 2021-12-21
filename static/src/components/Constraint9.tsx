@@ -245,7 +245,7 @@ function Constraint9(props: Props): JSX.Element {
                 <TextField
                   label="開始日"
                   type="date"
-                  defaultValue={props.constraint9.start_date_name}
+                  value={props.constraint9.start_date_name}
                   onChange={handleChangeConstraint9StartDateName}
                   fullWidth={true}
                   InputLabelProps={{
@@ -272,7 +272,7 @@ function Constraint9(props: Props): JSX.Element {
                 <TextField
                   label="終了日"
                   type="date"
-                  defaultValue={props.constraint9.stop_date_name}
+                  value={props.constraint9.stop_date_name}
                   onChange={handleChangeConstraint9StopDateName}
                   fullWidth={true}
                   InputLabelProps={{

@@ -229,7 +229,7 @@ function Member(props: Props): JSX.Element {
               <Grid item={true} xs={12}>
                 <TextField
                   label="職員名"
-                  defaultValue={props.member.name}
+                  value={props.member.name}
                   onChange={handleChangeMemberName}
                   fullWidth={true}
                   error={errorMessages.memberName.length > 0}
@@ -322,7 +322,7 @@ function Member(props: Props): JSX.Element {
               ))}
               {memberConstraints9.map((c) => (
                 <Typography key={`constraint9_${c.id}`}>
-                  <Constraint9Name constraint9={c} />の
+                  <Constraint9Name constraint9={c} />
                 </Typography>
               ))}
               {memberConstraints10.map((c) => (

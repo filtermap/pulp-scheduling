@@ -249,7 +249,7 @@ function Constraint1(props: Props): JSX.Element {
                 <TextField
                   label="開始日"
                   type="date"
-                  defaultValue={props.constraint1.start_date_name}
+                  value={props.constraint1.start_date_name}
                   onChange={handleChangeConstraint1StartDateName}
                   fullWidth={true}
                   InputLabelProps={{
@@ -276,7 +276,7 @@ function Constraint1(props: Props): JSX.Element {
                 <TextField
                   label="終了日"
                   type="date"
-                  defaultValue={props.constraint1.stop_date_name}
+                  value={props.constraint1.stop_date_name}
                   onChange={handleChangeConstraint1StopDateName}
                   fullWidth={true}
                   InputLabelProps={{
@@ -331,7 +331,7 @@ function Constraint1(props: Props): JSX.Element {
                 <TextField
                   label="割り当て職員数下限"
                   type="number"
-                  defaultValue={props.constraint1.min_number_of_assignments}
+                  value={props.constraint1.min_number_of_assignments}
                   onChange={handleChangeConstraint1MinNumberOfAssignments}
                   fullWidth={true}
                   inputProps={{

@@ -170,7 +170,7 @@ function Constraint5(props: Props): JSX.Element {
                 <TextField
                   label="連続日数下限"
                   type="number"
-                  defaultValue={props.constraint5.min_number_of_days}
+                  value={props.constraint5.min_number_of_days}
                   onChange={handleChangeConstraint5MinNumberOfDays}
                   fullWidth={true}
                   inputProps={{
