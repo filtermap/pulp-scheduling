@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { useImmer } from "use-immer";
 
 import * as constraints4 from "../modules/constraints4";
 import * as kinmus from "../modules/kinmus";
@@ -70,37 +71,38 @@ function Constraints4(): JSX.Element {
     }),
     [kinmusInTerm, membersInTerm]
   );
-  const [state, setState] = React.useState<State>(initialState);
-  React.useEffect(() => setState(initialState), [initialState]);
+  const [state, updateState] = useImmer<State>(initialState);
+  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const handleChangeNewConstraint4IsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint4IsEnabled: event.target.checked,
-    }));
+    updateState((state) => {
+      state.newConstraint4IsEnabled = event.target.checked;
+    });
   };
   const handleChangeNewConstraint4MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint4MemberId: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint4MemberId = parseInt(event.target.value, 10);
+    });
   };
   const handleChangeNewConstraint4KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint4KinmuId: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint4KinmuId = parseInt(event.target.value, 10);
+    });
   };
   const validate = (
     newConstraint4MaxNumberOfAssignments: number
@@ -118,13 +120,17 @@ function Constraints4(): JSX.Element {
   const handleChangeNewConstraint4MaxNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint4MaxNumberOfAssignments: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint4MaxNumberOfAssignments = parseInt(
+        event.target.value,
+        10
+      );
+    });
   };
   const handleClickCreateConstraint4 = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     dispatch(
       constraints4.add({
         term_id: termId,

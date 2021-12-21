@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { useImmer } from "use-immer";
 
 import * as constraints3 from "../modules/constraints3";
 import * as kinmus from "../modules/kinmus";
@@ -70,37 +71,38 @@ function Constraints3(): JSX.Element {
     }),
     [kinmusInTerm, membersInTerm]
   );
-  const [state, setState] = React.useState<State>(initialState);
-  React.useEffect(() => setState(initialState), [initialState]);
+  const [state, updateState] = useImmer<State>(initialState);
+  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const handleChangeNewConstraint3IsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint3IsEnabled: event.target.checked,
-    }));
+    updateState((state) => {
+      state.newConstraint3IsEnabled = event.target.checked;
+    });
   };
   const handleChangeNewConstraint3MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint3MemberId: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint3MemberId = parseInt(event.target.value, 10);
+    });
   };
   const handleChangeNewConstraint3KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint3KinmuId: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint3KinmuId = parseInt(event.target.value, 10);
+    });
   };
   const validate = (
     newConstraint3MinNumberOfAssignments: number
@@ -118,13 +120,17 @@ function Constraints3(): JSX.Element {
   const handleChangeNewConstraint3MinNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint3MinNumberOfAssignments: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint3MinNumberOfAssignments = parseInt(
+        event.target.value,
+        10
+      );
+    });
   };
   const handleClickCreateConstraint3 = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     dispatch(
       constraints3.add({
         term_id: termId,

@@ -16,6 +16,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useImmer } from "use-immer";
 
 import * as constraints3 from "../modules/constraints3";
 import { useAppSelector } from "../modules/hooks";
@@ -52,7 +53,7 @@ function Constraint3(props: Props): JSX.Element {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     (state) => kinmus.selectors.selectById(state, props.constraint3.kinmu_id)!
   );
-  const [state, setState] = React.useState<State>({
+  const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
@@ -63,7 +64,9 @@ function Constraint3(props: Props): JSX.Element {
     ({ term_id }) => term_id === props.constraint3.term_id
   );
   const handleClickExpand = () => {
-    setState((state) => ({ ...state, expanded: !state.expanded }));
+    updateState((state) => {
+      state.expanded = !state.expanded;
+    });
   };
   const handleChangeConstraint3IsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -127,13 +130,19 @@ function Constraint3(props: Props): JSX.Element {
     );
   };
   const handleClickOpenDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: true }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = true;
+    });
   };
   const handleCloseDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
   };
   const handleClickDeleteConstraint3 = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
     dispatch(constraints3.remove(props.constraint3.id));
   };
   const relativesAreEnabled =

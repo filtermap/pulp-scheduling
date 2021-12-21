@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { useImmer } from "use-immer";
 
 import * as constraints8 from "../modules/constraints8";
 import * as kinmus from "../modules/kinmus";
@@ -58,29 +59,31 @@ function Constraints8(): JSX.Element {
     }),
     [kinmusInTerm]
   );
-  const [state, setState] = React.useState<State>(initialState);
-  React.useEffect(() => setState(initialState), [initialState]);
+  const [state, updateState] = useImmer<State>(initialState);
+  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const handleChangeNewConstraint8IsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint8IsEnabled: event.target.checked,
-    }));
+    updateState((state) => {
+      state.newConstraint8IsEnabled = event.target.checked;
+    });
   };
   const handleChangeNewConstraint8KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint8KinmuId: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint8KinmuId = parseInt(event.target.value, 10);
+    });
   };
   const validate = (newConstraint8MaxNumberOfDays: number): ErrorMessages => {
     const errorMessages: ErrorMessages = {
@@ -96,13 +99,14 @@ function Constraints8(): JSX.Element {
   const handleChangeNewConstraint8MaxNumberOfDays = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint8MaxNumberOfDays: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint8MaxNumberOfDays = parseInt(event.target.value, 10);
+    });
   };
   const handleClickCreateConstraint8 = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     dispatch(
       constraints8.add({
         term_id: termId,

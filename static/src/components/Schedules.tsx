@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { useImmer } from "use-immer";
 
 import * as all from "../modules/all";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
@@ -187,9 +188,9 @@ function Schedules(): JSX.Element {
       type: FIRST,
     },
   };
-  const [state, setState] = React.useState<State>(initialState);
+  const [state, updateState] = useImmer<State>(initialState);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setState(initialState), [termId]);
+  React.useEffect(() => updateState(initialState), [termId]);
   const byTermId = ({ term_id }: { term_id: number }) => term_id === termId;
   const constraints0InTerm = selectedConstraints0.filter(byTermId);
   const constraint0IdsInTerm = new Set(constraints0InTerm.map(({ id }) => id));
@@ -220,70 +221,70 @@ function Schedules(): JSX.Element {
     schedules: selectedSchedules.filter(byTermId),
   };
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const handleClickSolve = async () => {
-    setState((state) => ({
-      ...state,
-      dialogState: {
+    updateState((state) => {
+      state.dialogState = {
         type: SOLVE_IN_PROGRESS,
-      },
-    }));
+      };
+    });
     const response = await utils.sendJSONRPCRequest("solve", [allInTerm]);
     if ("error" in response) {
-      setState((state) => ({
-        ...state,
-        dialogState: {
+      updateState((state) => {
+        state.dialogState = {
           errorMessage: response.error.message,
           type: UNSOLVED,
-        },
-      }));
+        };
+      });
       return;
     }
     const { result } = response;
-    setState((state) => ({
-      ...state,
-      dialogState: {
+    updateState((state) => {
+      state.dialogState = {
         newScheduleAssignments: result as all.NewAssignment[],
         type: SOLVED,
-      },
-    }));
+      };
+    });
   };
   const handleClickPursue = async () => {
-    setState((state) => ({
-      ...state,
-      dialogState: {
+    updateState((state) => {
+      state.dialogState = {
         type: PURSUE_IN_PROGRESS,
-      },
-    }));
+      };
+    });
     const response = await utils.sendJSONRPCRequest("pursue", [allInTerm]);
     if ("error" in response) {
-      setState((state) => ({
-        ...state,
-        dialogState: {
+      updateState((state) => {
+        state.dialogState = {
           errorMessage: response.error.message,
           type: UNPURSUED,
-        },
-      }));
+        };
+      });
       return;
     }
     const { result } = response;
     const { constraint } = result as {
       constraint: { id: number; type: string };
     };
-    setState((state) => ({
-      ...state,
-      dialogState: {
+    updateState((state) => {
+      state.dialogState = {
         constraint,
         type: PURSUED,
-      },
-    }));
+      };
+    });
   };
   const handleClickCreateSchedule = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     if (state.dialogState.type === SOLVED) {
       dispatch(
         all.createSchedule({

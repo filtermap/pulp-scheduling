@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { useImmer } from "use-immer";
 
 import * as constraints2 from "../modules/constraints2";
 import * as groups from "../modules/groups";
@@ -83,13 +84,17 @@ function Constraints2(): JSX.Element {
     }),
     [groupsInTerm, kinmusInTerm, selectedTerm]
   );
-  const [state, setState] = React.useState<State>(initialState);
-  // React.useEffect(() => setState(initialState), [initialState]);
+  const [state, updateState] = useImmer<State>(initialState);
+  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const validate = (
     newConstraint2StartDateName: string,
@@ -121,53 +126,52 @@ function Constraints2(): JSX.Element {
   const handleChangeNewConstraint2IsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint2IsEnabled: event.target.checked,
-    }));
+    updateState((state) => {
+      state.newConstraint2IsEnabled = event.target.checked;
+    });
   };
   const handleChangeNewConstraint2StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint2StartDateName: event.target.value,
-    }));
+    updateState((state) => {
+      state.newConstraint2StartDateName = event.target.value;
+    });
   };
   const handleChangeNewConstraint2StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint2StopDateName: event.target.value,
-    }));
+    updateState((state) => {
+      state.newConstraint2StopDateName = event.target.value;
+    });
   };
   const handleChangeNewConstraint2KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint2KinmuId: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint2KinmuId = parseInt(event.target.value, 10);
+    });
   };
   const handleChangeNewConstraint2GroupId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint2GroupId: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint2GroupId = parseInt(event.target.value, 10);
+    });
   };
   const handleChangeNewConstraint2MaxNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint2MaxNumberOfAssignments: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint2MaxNumberOfAssignments = parseInt(
+        event.target.value,
+        10
+      );
+    });
   };
   const handleClickCreateConstraint2 = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     dispatch(
       constraints2.add({
         term_id: termId,

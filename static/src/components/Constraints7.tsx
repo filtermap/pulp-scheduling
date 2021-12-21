@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { useImmer } from "use-immer";
 
 import * as constraints7 from "../modules/constraints7";
 import * as kinmus from "../modules/kinmus";
@@ -58,29 +59,31 @@ function Constraints7(): JSX.Element {
     }),
     [kinmusInTerm]
   );
-  const [state, setState] = React.useState<State>(initialState);
-  React.useEffect(() => setState(initialState), [initialState]);
+  const [state, updateState] = useImmer<State>(initialState);
+  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const handleChangeNewConstraint7IsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint7IsEnabled: event.target.checked,
-    }));
+    updateState((state) => {
+      state.newConstraint7IsEnabled = event.target.checked;
+    });
   };
   const handleChangeNewConstraint7KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint7KinmuId: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint7KinmuId = parseInt(event.target.value, 10);
+    });
   };
   const validate = (newConstraint7MinNumberOfDays: number): ErrorMessages => {
     const errorMessages: ErrorMessages = {
@@ -96,13 +99,14 @@ function Constraints7(): JSX.Element {
   const handleChangeNewConstraint7MinNumberOfDays = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint7MinNumberOfDays: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint7MinNumberOfDays = parseInt(event.target.value, 10);
+    });
   };
   const handleClickCreateConstraint7 = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     dispatch(
       constraints7.add({
         term_id: termId,

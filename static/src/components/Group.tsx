@@ -20,6 +20,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useImmer } from "use-immer";
 
 import * as all from "../modules/all";
 import * as constraints1 from "../modules/constraints1";
@@ -68,12 +69,14 @@ function Group(props: Props): JSX.Element {
   const constraints2InTerm = selectedConstraints2.filter(
     ({ term_id }) => term_id === props.group.term_id
   );
-  const [state, setState] = React.useState<State>({
+  const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
   const handleClickExpand = () => {
-    setState((state) => ({ ...state, expanded: !state.expanded }));
+    updateState((state) => {
+      state.expanded = !state.expanded;
+    });
   };
   const handleChangeGroupIsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -128,13 +131,19 @@ function Group(props: Props): JSX.Element {
     };
   };
   const handleClickOpenDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: true }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = true;
+    });
   };
   const handleCloseDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
   };
   const handleClickDeleteGroup = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
     dispatch(all.deleteGroup(props.group.id));
   };
   const groupMemberNames = utils.intersperse(

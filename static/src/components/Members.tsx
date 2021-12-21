@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { useImmer } from "use-immer";
 
 import * as all from "../modules/all";
 import * as groups from "../modules/groups";
@@ -60,21 +61,24 @@ function Members(): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [groupsInTerm]
   );
-  const [state, setState] = React.useState<State>(initialState);
-  React.useEffect(() => setState(initialState), [initialState]);
+  const [state, updateState] = useImmer<State>(initialState);
+  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const handleChangeNewMemberIsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newMemberIsEnabled: event.target.checked,
-    }));
+    updateState((state) => {
+      state.newMemberIsEnabled = event.target.checked;
+    });
   };
   const validate = (newMemberName: string): ErrorMessages => {
     const errorMessages: ErrorMessages = {
@@ -88,27 +92,29 @@ function Members(): JSX.Element {
   const handleChangeNewMemberName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newMemberName: event.target.value }));
+    updateState((state) => {
+      state.newMemberName = event.target.value;
+    });
   };
   const handleChangeNewGroupMember = (groupId: number) => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
-        setState((state) => ({
-          ...state,
-          newMemberGroupIds: state.newMemberGroupIds.concat(groupId),
-        }));
+        updateState((state) => {
+          state.newMemberGroupIds = state.newMemberGroupIds.concat(groupId);
+        });
         return;
       }
-      setState((state) => ({
-        ...state,
-        newMemberGroupIds: state.newMemberGroupIds.filter(
+      updateState((state) => {
+        state.newMemberGroupIds = state.newMemberGroupIds.filter(
           (group_id) => group_id !== groupId
-        ),
-      }));
+        );
+      });
     };
   };
   const handleClickCreateMember = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     dispatch(
       all.createMember({
         member: {

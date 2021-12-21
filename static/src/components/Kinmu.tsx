@@ -15,6 +15,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useImmer } from "use-immer";
 
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
@@ -80,7 +81,7 @@ function Kinmu(props: Props): JSX.Element {
   const selectedConstraints8 = useSelector(constraints8.selectors.selectAll);
   const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
-  const [state, setState] = React.useState<State>({
+  const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
@@ -128,7 +129,9 @@ function Kinmu(props: Props): JSX.Element {
     ({ term_id }) => term_id === props.kinmu.term_id
   );
   const handleClickExpand = () => {
-    setState((state) => ({ ...state, expanded: !state.expanded }));
+    updateState((state) => {
+      state.expanded = !state.expanded;
+    });
   };
   const handleChangeKinmuIsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -164,13 +167,19 @@ function Kinmu(props: Props): JSX.Element {
     );
   };
   const handleClickOpenDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: true }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = true;
+    });
   };
   const handleCloseDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
   };
   const handleClickDeleteKinmu = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
     dispatch(all.removeKinmu(props.kinmu.id));
   };
   const kinmuScheduleIds = new Set(

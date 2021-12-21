@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { useImmer } from "use-immer";
 
 import * as all from "../modules/all";
 import * as groups from "../modules/groups";
@@ -55,22 +56,25 @@ function Groups(): JSX.Element {
     newGroupName: "",
     newGroupMemberIds: [],
   };
-  const [state, setState] = React.useState<State>(initialState);
+  const [state, updateState] = useImmer<State>(initialState);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setState(initialState), [membersInTerm]);
+  React.useEffect(() => updateState(initialState), [membersInTerm]);
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const handleChangeNewGroupIsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newGroupIsEnabled: event.target.checked,
-    }));
+    updateState((state) => {
+      state.newGroupIsEnabled = event.target.checked;
+    });
   };
   const validate = (newGroupName: string): ErrorMessages => {
     const errorMessages: ErrorMessages = {
@@ -84,27 +88,29 @@ function Groups(): JSX.Element {
   const handleChangeNewGroupName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newGroupName: event.target.value }));
+    updateState((state) => {
+      state.newGroupName = event.target.value;
+    });
   };
   const handleChangeNewGroupMember = (memberId: number) => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
-        setState((state) => ({
-          ...state,
-          newGroupMemberIds: state.newGroupMemberIds.concat(memberId),
-        }));
+        updateState((state) => {
+          state.newGroupMemberIds.push(memberId);
+        });
         return;
       }
-      setState((state) => ({
-        ...state,
-        newGroupMemberIds: state.newGroupMemberIds.filter(
+      updateState((state) => {
+        state.newGroupMemberIds = state.newGroupMemberIds.filter(
           (member_id) => member_id !== memberId
-        ),
-      }));
+        );
+      });
     };
   };
   const handleClickCreateGroup = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     dispatch(
       all.addGroup({
         group: {

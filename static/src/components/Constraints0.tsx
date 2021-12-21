@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { useImmer } from "use-immer";
 
 import * as all from "../modules/all";
 import * as constraints0 from "../modules/constraints0";
@@ -53,65 +54,57 @@ function Constraints0(): JSX.Element {
     }),
     [kinmusInTerm]
   );
-  const [state, setState] = React.useState<State>(initialState);
-  React.useEffect(() => setState(initialState), [initialState]);
+  const [state, updateState] = useImmer<State>(initialState);
+  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const handleChangeNewConstraint0IsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint0IsEnabled: event.target.checked,
-    }));
+    updateState((state) => {
+      state.newConstraint0IsEnabled = event.target.checked;
+    });
   };
-  const handleClickCreateNewConstraint0Constraint0Kinmu = (id: number) => {
+  const handleClickCreateNewConstraint0Constraint0Kinmu = (index: number) => {
     return () => {
-      const newConstraint0Constraint0KinmuKinmuIds = [
-        ...state.newConstraint0Constraint0KinmuKinmuIds,
-      ];
-      newConstraint0Constraint0KinmuKinmuIds.splice(id, 0, kinmusInTerm[0].id);
-      setState((state) => ({
-        ...state,
-        newConstraint0Constraint0KinmuKinmuIds,
-      }));
+      updateState((state) => {
+        state.newConstraint0Constraint0KinmuKinmuIds.splice(
+          index,
+          0,
+          kinmusInTerm[0].id
+        );
+      });
     };
   };
-  const handleChangeNewConstraint0Constraint0KinmuKinmuId = (
-    newConstraint0Constraint0KinmuKinmuIdsIndex: number
-  ) => {
+  const handleChangeNewConstraint0Constraint0KinmuKinmuId = (index: number) => {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      setState((state) => ({
-        ...state,
-        newConstraint0Constraint0KinmuKinmuIds:
-          state.newConstraint0Constraint0KinmuKinmuIds.map((kinmuId, index) => {
-            if (index !== newConstraint0Constraint0KinmuKinmuIdsIndex) {
-              return kinmuId;
-            }
-            return parseInt(event.target.value, 10);
-          }),
-      }));
+      updateState((state) => {
+        state.newConstraint0Constraint0KinmuKinmuIds[index] = parseInt(
+          event.target.value,
+          10
+        );
+      });
     };
   };
-  const handleClickDeleteNewConstraint0Constraint0Kinmu = (
-    newConstraint0Constraint0KinmuKinmuIdsId: number
-  ) => {
+  const handleClickDeleteNewConstraint0Constraint0Kinmu = (index: number) => {
     return () => {
-      setState((state) => ({
-        ...state,
-        newConstraint0Constraint0KinmuKinmuIds:
-          state.newConstraint0Constraint0KinmuKinmuIds.filter(
-            (_, id) => id !== newConstraint0Constraint0KinmuKinmuIdsId
-          ),
-      }));
+      updateState((state) => {
+        state.newConstraint0Constraint0KinmuKinmuIds.splice(index, 1);
+      });
     };
   };
   const handleClickCreateConstraint0 = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     dispatch(
       all.createConstraint0({
         constraint0: {
@@ -208,15 +201,15 @@ function Constraints0(): JSX.Element {
                     </Button>
                   </Grid>
                   {state.newConstraint0Constraint0KinmuKinmuIds.map(
-                    (kinmuId, id) => (
-                      <React.Fragment key={`${id}-${kinmuId}`}>
+                    (kinmuId, index) => (
+                      <React.Fragment key={`${index}-${kinmuId}`}>
                         <Grid item={true} xs={12}>
                           <TextField
                             select={true}
-                            label={`勤務${id + 1}`}
+                            label={`勤務${index + 1}`}
                             value={kinmuId}
                             onChange={handleChangeNewConstraint0Constraint0KinmuKinmuId(
-                              id
+                              index
                             )}
                             fullWidth={true}
                           >
@@ -233,7 +226,7 @@ function Constraints0(): JSX.Element {
                             <Button
                               size="small"
                               onClick={handleClickDeleteNewConstraint0Constraint0Kinmu(
-                                id
+                                index
                               )}
                             >
                               削除
@@ -244,7 +237,7 @@ function Constraints0(): JSX.Element {
                           <Button
                             size="small"
                             onClick={handleClickCreateNewConstraint0Constraint0Kinmu(
-                              id + 1
+                              index + 1
                             )}
                           >
                             追加

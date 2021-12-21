@@ -11,6 +11,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useImmer } from "use-immer";
 
 import * as terms from "../modules/terms";
 import * as utils from "../utils";
@@ -34,22 +35,28 @@ function Terms(): JSX.Element {
   const dispatch = useDispatch();
   const selectedTerms = useSelector(terms.selectors.selectAll);
   const todayString = utils.dateToString(new Date());
-  const [state, setState] = React.useState<State>({
+  const [state, updateState] = useImmer<State>({
     creationDialogIsOpen: false,
     newTermIsEnabled: true,
     newTermStartDateName: todayString,
     newTermStopDateName: todayString,
   });
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const handleChangeNewTerm1IsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newTermIsEnabled: event.target.checked }));
+    updateState((state) => {
+      state.newTermIsEnabled = event.target.checked;
+    });
   };
   const validate = (
     newTermStartDateName: string,
@@ -70,21 +77,21 @@ function Terms(): JSX.Element {
   const handleChangeNewTermStartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newTermStartDateName: event.target.value,
-    }));
+    updateState((state) => {
+      state.newTermStartDateName = event.target.value;
+    });
   };
   const handleChangeNewTermStopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newTermStopDateName: event.target.value,
-    }));
+    updateState((state) => {
+      state.newTermStopDateName = event.target.value;
+    });
   };
   const handleClickCreateTerm = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     dispatch(
       terms.add({
         is_enabled: state.newTermIsEnabled,

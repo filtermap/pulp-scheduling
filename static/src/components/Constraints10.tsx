@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { useImmer } from "use-immer";
 
 import * as constraints10 from "../modules/constraints10";
 import { useAppSelector } from "../modules/hooks";
@@ -80,29 +81,31 @@ function Constraints10(): JSX.Element {
     }),
     [kinmusInTerm, membersInTerm, selectedTerm]
   );
-  const [state, setState] = React.useState<State>(initialState);
-  React.useEffect(() => setState(initialState), [initialState]);
+  const [state, updateState] = useImmer<State>(initialState);
+  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const handleChangeNewConstraint10IsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint10IsEnabled: event.target.checked,
-    }));
+    updateState((state) => {
+      state.newConstraint10IsEnabled = event.target.checked;
+    });
   };
   const handleChangeNewConstraint10MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint10MemberId: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint10MemberId = parseInt(event.target.value, 10);
+    });
   };
   const validate = (
     newConstraint10StartDateName: string,
@@ -127,29 +130,28 @@ function Constraints10(): JSX.Element {
   const handleChangeNewConstraint10StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint10StartDateName: event.target.value,
-    }));
+    updateState((state) => {
+      state.newConstraint10StartDateName = event.target.value;
+    });
   };
   const handleChangeNewConstraint10StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint10StopDateName: event.target.value,
-    }));
+    updateState((state) => {
+      state.newConstraint10StopDateName = event.target.value;
+    });
   };
   const handleChangeNewConstraint10KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newConstraint10KinmuId: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.newConstraint10KinmuId = parseInt(event.target.value, 10);
+    });
   };
   const handleClickCreateConstraint10 = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     dispatch(
       constraints10.add({
         term_id: termId,

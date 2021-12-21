@@ -16,6 +16,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useImmer } from "use-immer";
 
 import * as all from "../modules/all";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
@@ -42,7 +43,7 @@ function Constraint0(props: Props): JSX.Element {
   );
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
-  const [state, setState] = React.useState<State>({
+  const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
@@ -50,7 +51,9 @@ function Constraint0(props: Props): JSX.Element {
     ({ term_id }) => term_id === props.constraint0.term_id
   );
   const handleClickExpand = () => {
-    setState((state) => ({ ...state, expanded: !state.expanded }));
+    updateState((state) => {
+      state.expanded = !state.expanded;
+    });
   };
   const handleChangeConstraint0IsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -96,13 +99,19 @@ function Constraint0(props: Props): JSX.Element {
     };
   };
   const handleClickOpenDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: true }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = true;
+    });
   };
   const handleCloseDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
   };
   const handleClickDeleteConstraint0 = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
     dispatch(all.removeConstraint0(props.constraint0.id));
   };
   const constraint0Constraint0Kinmus = selectedConstraint0Kinmus

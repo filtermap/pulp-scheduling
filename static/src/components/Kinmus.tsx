@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { useImmer } from "use-immer";
 
 import * as kinmus from "../modules/kinmus";
 
@@ -39,25 +40,28 @@ function Kinmus(): JSX.Element {
     newKinmuIsEnabled: true,
     newKinmuName: "",
   };
-  const [state, setState] = React.useState<State>(initialState);
+  const [state, updateState] = useImmer<State>(initialState);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => setState(initialState), [termId]);
+  React.useEffect(() => updateState(initialState), [termId]);
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === termId
   );
   const handleClickOpenCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: true }));
+    updateState((state) => {
+      state.creationDialogIsOpen = true;
+    });
   };
   const handleCloseCreationDialog = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
   };
   const handleChangeNewKinmuIsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({
-      ...state,
-      newKinmuIsEnabled: event.target.checked,
-    }));
+    updateState((state) => {
+      state.newKinmuIsEnabled = event.target.checked;
+    });
   };
   const validate = (newKinmuName: string): ErrorMessages => {
     const errorMessages: ErrorMessages = {
@@ -71,10 +75,14 @@ function Kinmus(): JSX.Element {
   const handleChangeNewKinmuName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setState((state) => ({ ...state, newKinmuName: event.target.value }));
+    updateState((state) => {
+      state.newKinmuName = event.target.value;
+    });
   };
   const handleClickCreateKinmu = () => {
-    setState((state) => ({ ...state, creationDialogIsOpen: false }));
+    updateState((state) => {
+      state.creationDialogIsOpen = false;
+    });
     dispatch(
       kinmus.add({
         term_id: termId,

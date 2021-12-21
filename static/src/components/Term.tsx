@@ -17,6 +17,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useImmer } from "use-immer";
 
 import * as all from "../modules/all";
 import * as terms from "../modules/terms";
@@ -67,10 +68,12 @@ function Term(props: Props): JSX.Element {
     }),
     [initialSelectedTermId]
   );
-  const [state, setState] = React.useState<State>(initialState);
-  React.useEffect(() => setState(initialState), [initialState]);
+  const [state, updateState] = useImmer<State>(initialState);
+  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickExpand = () => {
-    setState((state) => ({ ...state, expanded: !state.expanded }));
+    updateState((state) => {
+      state.expanded = !state.expanded;
+    });
   };
   const handleChangeTermIsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -125,19 +128,24 @@ function Term(props: Props): JSX.Element {
     );
   };
   const handleClickOpenImportDataDialog = () => {
-    setState((state) => ({ ...state, importDataDialogIsOpen: true }));
+    updateState((state) => {
+      state.importDataDialogIsOpen = true;
+    });
   };
   const handleClickCloseImportDataDialog = () => {
-    setState((state) => ({ ...state, importDataDialogIsOpen: false }));
+    updateState((state) => {
+      state.importDataDialogIsOpen = false;
+    });
   };
   const handleChangeTermId = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState((state) => ({
-      ...state,
-      selectedTermId: parseInt(event.target.value, 10),
-    }));
+    updateState((state) => {
+      state.selectedTermId = parseInt(event.target.value, 10);
+    });
   };
   const handleClickImportData = () => {
-    setState((state) => ({ ...state, importDataDialogIsOpen: false }));
+    updateState((state) => {
+      state.importDataDialogIsOpen = false;
+    });
     dispatch(
       all.importData({
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -147,13 +155,19 @@ function Term(props: Props): JSX.Element {
     );
   };
   const handleClickOpenDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: true }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = true;
+    });
   };
   const handleCloseDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
   };
   const handleClickDeleteTerm = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
     dispatch(all.removeTerm(props.term.id));
   };
   const errorMessages = validate(

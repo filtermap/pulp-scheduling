@@ -20,6 +20,7 @@ import Typography from "@mui/material/Typography";
 import * as iconv from "iconv-lite";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useImmer } from "use-immer";
 
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
@@ -59,7 +60,7 @@ function Schedule(props: Props): JSX.Element {
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
-  const [state, setState] = React.useState<State>({
+  const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
   });
@@ -73,16 +74,24 @@ function Schedule(props: Props): JSX.Element {
     ({ term_id }) => term_id === props.schedule.term_id
   );
   const handleClickExpand = () => {
-    setState((state) => ({ ...state, expanded: !state.expanded }));
+    updateState((state) => {
+      state.expanded = !state.expanded;
+    });
   };
   const handleClickOpenDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: true }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = true;
+    });
   };
   const handleCloseDeletionDialog = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
   };
   const handleClickDeleteSchedule = () => {
-    setState((state) => ({ ...state, deletionDialogIsOpen: false }));
+    updateState((state) => {
+      state.deletionDialogIsOpen = false;
+    });
     dispatch(all.removeSchedule(props.schedule.id));
   };
   const handleClickExportToCSV = async () => {

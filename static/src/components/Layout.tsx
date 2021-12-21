@@ -23,6 +23,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { ActionCreators } from "redux-undo";
+import { useImmer } from "use-immer";
 
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
@@ -96,11 +97,13 @@ function ListItemLink(props: { to: string; primary: string }) {
 }
 
 function TermListItems(props: { term: terms.Term }) {
-  const [state, setState] = React.useState<{ isOpen: boolean }>({
+  const [state, updateState] = useImmer<{ isOpen: boolean }>({
     isOpen: false,
   });
   const handleClickTerm = () =>
-    setState((state) => ({ ...state, isOpen: !state.isOpen }));
+    updateState((state) => {
+      state.isOpen = !state.isOpen;
+    });
   return (
     <>
       <ListItem button={true} onClick={handleClickTerm}>
@@ -200,7 +203,7 @@ export default function Layout(): JSX.Element {
   const viewportIsWide = useMediaQuery(theme.breakpoints.up("md"), {
     noSsr: true,
   });
-  const [state, setState] = React.useState<State>({
+  const [state, updateState] = useImmer<State>({
     drawerIsOpen: viewportIsWide,
   });
   React.useEffect(() => {
@@ -213,7 +216,9 @@ export default function Layout(): JSX.Element {
     })();
   }, [dispatch]);
   const handleDrawerToggle = () => {
-    setState((state) => ({ ...state, drawerIsOpen: !state.drawerIsOpen }));
+    updateState((state) => {
+      state.drawerIsOpen = !state.drawerIsOpen;
+    });
   };
   const handleClickUndo = () => {
     dispatch(ActionCreators.undo());
