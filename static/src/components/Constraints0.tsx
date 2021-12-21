@@ -106,7 +106,7 @@ function Constraints0(): JSX.Element {
       state.creationDialogIsOpen = false;
     });
     dispatch(
-      all.createConstraint0({
+      all.addConstraint0({
         constraint0: {
           term_id: termId,
           is_enabled: state.newConstraint0IsEnabled,

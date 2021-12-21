@@ -116,7 +116,7 @@ function Members(): JSX.Element {
       state.creationDialogIsOpen = false;
     });
     dispatch(
-      all.createMember({
+      all.addMember({
         member: {
           term_id: termId,
           is_enabled: state.newMemberIsEnabled,

@@ -553,7 +553,7 @@ const all = createSlice({
       constraints9.adapter.addMany(state.constraints9, copiedConstraints9);
       constraints10.adapter.addMany(state.constraints10, copiedConstraints10);
     },
-    createMember: (
+    addMember: (
       state,
       action: PayloadAction<{
         member: {
@@ -607,7 +607,7 @@ const all = createSlice({
         }))
       );
     },
-    createConstraint0: (
+    addConstraint0: (
       state,
       action: PayloadAction<{
         constraint0: {
@@ -635,7 +635,7 @@ const all = createSlice({
         }))
       );
     },
-    createSchedule: (
+    addSchedule: (
       state,
       action: PayloadAction<{
         schedule: {
@@ -830,7 +830,7 @@ const all = createSlice({
       schedules.adapter.removeMany(state.schedules, deleted_schedule_ids);
       assignments.adapter.removeMany(state.assignments, deleted_assignment_ids);
     },
-    deleteGroup: (state, action: PayloadAction<number>) => {
+    removeGroup: (state, action: PayloadAction<number>) => {
       groups.adapter.removeOne(state.groups, action.payload);
       constraints1.adapter.removeMany(
         state.constraints1,
@@ -992,13 +992,13 @@ const all = createSlice({
 export const {
   replaceAll,
   importData,
-  createMember,
+  addMember,
   addGroup,
-  createConstraint0,
-  createSchedule,
+  addConstraint0,
+  addSchedule,
   removeTerm,
   removeMember,
-  deleteGroup,
+  removeGroup,
   removeKinmu,
   removeConstraint0,
   removeConstraint0Kinmu,

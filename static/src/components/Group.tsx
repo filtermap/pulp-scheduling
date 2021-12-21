@@ -144,7 +144,7 @@ function Group(props: Props): JSX.Element {
     updateState((state) => {
       state.deletionDialogIsOpen = false;
     });
-    dispatch(all.deleteGroup(props.group.id));
+    dispatch(all.removeGroup(props.group.id));
   };
   const groupMemberNames = utils.intersperse(
     groupMembersInTerm

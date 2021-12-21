@@ -287,7 +287,7 @@ function Schedules(): JSX.Element {
     });
     if (state.dialogState.type === SOLVED) {
       dispatch(
-        all.createSchedule({
+        all.addSchedule({
           schedule: {
             term_id: termId,
           },
