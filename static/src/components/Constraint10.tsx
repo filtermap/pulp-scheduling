@@ -24,8 +24,10 @@ import * as members from "../modules/members";
 import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
+import Constraint10Name from "./names/Constraint10Name";
+import KinmuName from "./names/KinmuName";
+import MemberName from "./names/MemberName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import LineThrough from "./parts/LineThrough";
 import lineThroughSx from "./parts/lineThroughSx";
 
 type Props = {
@@ -183,26 +185,7 @@ function Constraint10(props: Props): JSX.Element {
     constraint10StartDateIsEnabled &&
     constraint10StopDateIsEnabled &&
     selectedKinmu.is_enabled;
-  const title = (
-    <>
-      <LineThrough line={!selectedMember.is_enabled}>
-        {selectedMember.name}
-      </LineThrough>
-      の
-      <LineThrough line={!constraint10StartDateIsEnabled}>
-        {props.constraint10.start_date_name}
-      </LineThrough>
-      から
-      <LineThrough line={!constraint10StopDateIsEnabled}>
-        {props.constraint10.stop_date_name}
-      </LineThrough>
-      までに
-      <LineThrough line={!selectedKinmu.is_enabled}>
-        {selectedKinmu.name}
-      </LineThrough>
-      を割り当てない
-    </>
-  );
+  const title = <Constraint10Name constraint10={props.constraint10} />;
   const errorMessages = validate(
     props.constraint10.start_date_name,
     props.constraint10.stop_date_name
@@ -245,9 +228,7 @@ function Constraint10(props: Props): JSX.Element {
                 >
                   {membersInTerm.map((member) => (
                     <MenuItem key={member.id} value={member.id}>
-                      <LineThrough line={!member.is_enabled}>
-                        {member.name}
-                      </LineThrough>
+                      <MemberName member={member} />
                     </MenuItem>
                   ))}
                 </TextField>
@@ -316,9 +297,7 @@ function Constraint10(props: Props): JSX.Element {
                 >
                   {kinmusInTerm.map((kinmu) => (
                     <MenuItem key={kinmu.id} value={kinmu.id}>
-                      <LineThrough line={!kinmu.is_enabled}>
-                        {kinmu.name}
-                      </LineThrough>
+                      <KinmuName kinmu={kinmu} />
                     </MenuItem>
                   ))}
                 </TextField>

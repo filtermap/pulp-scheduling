@@ -39,6 +39,19 @@ import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
 import Schedule from "./Schedule";
+import Constraint0Name from "./names/Constraint0Name";
+import Constraint10Name from "./names/Constraint10Name";
+import Constraint1Name from "./names/Constraint1Name";
+import Constraint2Name from "./names/Constraint2Name";
+import Constraint3Name from "./names/Constraint3Name";
+import Constraint4Name from "./names/Constraint4Name";
+import Constraint5Name from "./names/Constraint5Name";
+import Constraint6Name from "./names/Constraint6Name";
+import Constraint7Name from "./names/Constraint7Name";
+import Constraint8Name from "./names/Constraint8Name";
+import Constraint9Name from "./names/Constraint9Name";
+import KinmuName from "./names/KinmuName";
+import MemberName from "./names/MemberName";
 import GridFrame from "./parts/GridFrame";
 import StickyLeftTableCell from "./parts/StickyLeftTableCell";
 import StickyLeftTopTableCell from "./parts/StickyLeftTopTableCell";
@@ -131,9 +144,7 @@ function Schedules(): JSX.Element {
   const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
   const selectedConstraints10 = useSelector(constraints10.selectors.selectAll);
   const selectedSchedules = useSelector(schedules.selectors.selectAll);
-  const selectedMemberById = useSelector(members.selectors.selectEntities);
   const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
-  const selectedGroupById = useSelector(groups.selectors.selectEntities);
   const selectedConstraint0ById = useSelector(
     constraints0.selectors.selectEntities
   );
@@ -365,20 +376,22 @@ function Schedules(): JSX.Element {
                     return (
                       <TableRow key={member.id}>
                         <StickyLeftTableCell size="small">
-                          {member.name}
+                          <MemberName member={member} />
                         </StickyLeftTableCell>
                         {newScheduleDateNames.map((date_name) => (
                           <TableCell size="small" key={date_name}>
-                            {
-                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                              selectedKinmuById[
+                            <KinmuName
+                              kinmu={
                                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                newScheduleMemberAssignments.find(
-                                  (assignment) =>
-                                    assignment.date_name === date_name
-                                )!.kinmu_id
-                              ]!.name
-                            }
+                                selectedKinmuById[
+                                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                  newScheduleMemberAssignments.find(
+                                    (assignment) =>
+                                      assignment.date_name === date_name
+                                  )!.kinmu_id
+                                ]!
+                              }
+                            />
                           </TableCell>
                         ))}
                       </TableRow>
@@ -455,106 +468,57 @@ function Schedules(): JSX.Element {
             case "Constraint0": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint0 = selectedConstraint0ById[constraint.id]!;
-              const constraint0Constraint0Kinmus = allInTerm.constraint0_kinmus
-                .filter(
-                  ({ constraint0_id }) => constraint0_id === constraint0.id
-                )
-                .sort((a, b) => a.sequence_number - b.sequence_number);
-              const constraint0Constraint0KinmuKinmus =
-                constraint0Constraint0Kinmus.map(
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  ({ kinmu_id }) => selectedKinmuById[kinmu_id]!
-                );
-              return constraint0Constraint0KinmuKinmus
-                .map((kinmu) => kinmu.name)
-                .join(", ");
+              return <Constraint0Name constraint0={constraint0} />;
             }
             case "Constraint1": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint1 = selectedConstraint1ById[constraint.id]!;
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const constraint1Kinmu = selectedKinmuById[constraint1.kinmu_id]!;
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const constraint1Group = selectedGroupById[constraint1.group_id]!;
-              return `${constraint1.start_date_name}から${constraint1.stop_date_name}までの${constraint1Kinmu.name}に${constraint1Group.name}から${constraint1.min_number_of_assignments}人以上の職員を割り当てる`;
+              return <Constraint1Name constraint1={constraint1} />;
             }
             case "Constraint2": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint2 = selectedConstraint2ById[constraint.id]!;
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const constraint2Kinmu = selectedKinmuById[constraint2.kinmu_id]!;
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const constraint2Group = selectedGroupById[constraint2.group_id]!;
-              return `${constraint2.start_date_name}から${constraint2.stop_date_name}までの${constraint2Kinmu.name}に${constraint2Group.name}から${constraint2.max_number_of_assignments}人以下の職員を割り当てる`;
+              return <Constraint2Name constraint2={constraint2} />;
             }
             case "Constraint3": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint3 = selectedConstraint3ById[constraint.id]!;
-              const constraint3Member =
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                selectedMemberById[constraint3.member_id]!;
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const constraint3Kinmu = selectedKinmuById[constraint3.kinmu_id]!;
-              return `${constraint3Member.name}に${constraint3Kinmu.name}を${constraint3.min_number_of_assignments}回以上割り当てる`;
+              return <Constraint3Name constraint3={constraint3} />;
             }
             case "Constraint4": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint4 = selectedConstraint4ById[constraint.id]!;
-              const constraint4Member =
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                selectedMemberById[constraint4.member_id]!;
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const constraint4Kinmu = selectedKinmuById[constraint4.kinmu_id]!;
-              return `${constraint4Member.name}に${constraint4Kinmu.name}を${constraint4.max_number_of_assignments}回以下割り当てる`;
+              return <Constraint4Name constraint4={constraint4} />;
             }
             case "Constraint5": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint5 = selectedConstraint5ById[constraint.id]!;
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const constraint5Kinmu = selectedKinmuById[constraint5.kinmu_id]!;
-              return `${constraint5Kinmu.name}の連続日数を${constraint5.min_number_of_days}日以上にする`;
+              return <Constraint5Name constraint5={constraint5} />;
             }
             case "Constraint6": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint6 = selectedConstraint6ById[constraint.id]!;
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const constraint6Kinmu = selectedKinmuById[constraint6.kinmu_id]!;
-              return `${constraint6Kinmu.name}の連続日数を${constraint6.max_number_of_days}日以下にする`;
+              return <Constraint6Name constraint6={constraint6} />;
             }
             case "Constraint7": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint7 = selectedConstraint7ById[constraint.id]!;
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const constraint7Kinmu = selectedKinmuById[constraint7.kinmu_id]!;
-              return `${constraint7Kinmu.name}の間隔日数を${constraint7.min_number_of_days}日以上にする`;
+              return <Constraint7Name constraint7={constraint7} />;
             }
             case "Constraint8": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint8 = selectedConstraint8ById[constraint.id]!;
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const constraint8Kinmu = selectedKinmuById[constraint8.kinmu_id]!;
-              return `${constraint8Kinmu.name}の間隔日数を${constraint8.max_number_of_days}日以下にする`;
+              return <Constraint8Name constraint8={constraint8} />;
             }
             case "Constraint9": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint9 = selectedConstraint9ById[constraint.id]!;
-              const constraint9Member =
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                selectedMemberById[constraint9.member_id]!;
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              const constraint9Kinmu = selectedKinmuById[constraint9.kinmu_id]!;
-              return `${constraint9Member.name}の${constraint9.start_date_name}から${constraint9.stop_date_name}までに${constraint9Kinmu.name}を割り当てる`;
+              return <Constraint9Name constraint9={constraint9} />;
             }
             case "Constraint10": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint10 = selectedConstraint10ById[constraint.id]!;
-              const constraint10Member =
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                selectedMemberById[constraint10.member_id]!;
-              const constraint10Kinmu =
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                selectedKinmuById[constraint10.kinmu_id]!;
-              return `${constraint10Member.name}の${constraint10.start_date_name}から${constraint10.stop_date_name}までに${constraint10Kinmu.name}を割り当てない`;
+              return <Constraint10Name constraint10={constraint10} />;
             }
           }
           return "";

@@ -21,10 +21,10 @@ import * as all from "../modules/all";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as constraints0 from "../modules/constraints0";
 import * as kinmus from "../modules/kinmus";
-import * as utils from "../utils";
 
+import Constraint0Name from "./names/Constraint0Name";
+import KinmuName from "./names/KinmuName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import LineThrough from "./parts/LineThrough";
 
 type Props = {
   constraint0: constraints0.Constraint0;
@@ -111,18 +111,7 @@ function Constraint0(props: Props): JSX.Element {
   const relativesAreEnabled = constraint0Constraint0Kinmus.every(
     ({ kinmu_id }) => selectedKinmuById[kinmu_id]?.is_enabled
   );
-  const title = utils.intersperse(
-    constraint0Constraint0Kinmus.map(({ id, kinmu_id }) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const kinmu = selectedKinmuById[kinmu_id]!;
-      return (
-        <LineThrough key={id} line={!kinmu.is_enabled}>
-          {kinmu.name}
-        </LineThrough>
-      );
-    }),
-    ", "
-  );
+  const title = <Constraint0Name constraint0={props.constraint0} />;
   return (
     <>
       <Card>
@@ -173,9 +162,7 @@ function Constraint0(props: Props): JSX.Element {
                     >
                       {kinmusInTerm.map((kinmu) => (
                         <MenuItem key={kinmu.id} value={kinmu.id}>
-                          <LineThrough line={!kinmu.is_enabled}>
-                            {kinmu.name}
-                          </LineThrough>
+                          <KinmuName kinmu={kinmu} />
                         </MenuItem>
                       ))}
                     </TextField>

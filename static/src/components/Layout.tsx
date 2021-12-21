@@ -63,6 +63,7 @@ import Kinmus from "./Kinmus";
 import Members from "./Members";
 import Schedules from "./Schedules";
 import Terms from "./Terms";
+import TermName from "./names/TermName";
 import RotationalExpandMore from "./parts/RotationalExpandMore";
 
 const drawerWidth = 240;
@@ -103,9 +104,7 @@ function TermListItems(props: { term: terms.Term }) {
   return (
     <>
       <ListItem button={true} onClick={handleClickTerm}>
-        <ListItemText
-          primary={`${props.term.start_date_name}から${props.term.stop_date_name}まで`}
-        />
+        <ListItemText primary={<TermName term={props.term} />} />
         <RotationalExpandMore expanded={state.isOpen} />
       </ListItem>
       <Collapse in={state.isOpen}>

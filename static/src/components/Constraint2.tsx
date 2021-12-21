@@ -24,8 +24,10 @@ import * as kinmus from "../modules/kinmus";
 import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
+import Constraint2Name from "./names/Constraint2Name";
+import GroupName from "./names/GroupName";
+import KinmuName from "./names/KinmuName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import LineThrough from "./parts/LineThrough";
 import lineThroughSx from "./parts/lineThroughSx";
 
 type Props = {
@@ -200,26 +202,7 @@ function Constraint2(props: Props): JSX.Element {
     constraint2StopDateIsEnabled &&
     constraint2Kinmu.is_enabled &&
     constraint2Group.is_enabled;
-  const title = (
-    <>
-      <LineThrough line={!constraint2StartDateIsEnabled}>
-        {props.constraint2.start_date_name}
-      </LineThrough>
-      から
-      <LineThrough line={!constraint2StopDateIsEnabled}>
-        {props.constraint2.stop_date_name}
-      </LineThrough>
-      までの
-      <LineThrough line={!constraint2Kinmu.is_enabled}>
-        {constraint2Kinmu.name}
-      </LineThrough>
-      に
-      <LineThrough line={!constraint2Group.is_enabled}>
-        {constraint2Group.name}
-      </LineThrough>
-      から{props.constraint2.max_number_of_assignments}人以下の職員を割り当てる
-    </>
-  );
+  const title = <Constraint2Name constraint2={props.constraint2} />;
   const errorMessages = validate(
     props.constraint2.start_date_name,
     props.constraint2.stop_date_name,
@@ -315,9 +298,7 @@ function Constraint2(props: Props): JSX.Element {
                 >
                   {kinmusInTerm.map((kinmu) => (
                     <MenuItem key={kinmu.id} value={kinmu.id}>
-                      <LineThrough line={!kinmu.is_enabled}>
-                        {kinmu.name}
-                      </LineThrough>
+                      <KinmuName kinmu={kinmu} />
                     </MenuItem>
                   ))}
                 </TextField>
@@ -332,9 +313,7 @@ function Constraint2(props: Props): JSX.Element {
                 >
                   {groupsInTerm.map((group) => (
                     <MenuItem key={group.id} value={group.id}>
-                      <LineThrough line={!group.is_enabled}>
-                        {group.name}
-                      </LineThrough>
+                      <GroupName group={group} />
                     </MenuItem>
                   ))}
                 </TextField>

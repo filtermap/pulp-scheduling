@@ -22,6 +22,7 @@ import * as all from "../modules/all";
 import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
+import TermName from "./names/TermName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
 
 type Props = {
@@ -155,7 +156,6 @@ function Term(props: Props): JSX.Element {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
     dispatch(all.removeTerm(props.term.id));
   };
-  const title = `${props.term.start_date_name}から${props.term.stop_date_name}まで`;
   const errorMessages = validate(
     props.term.start_date_name,
     props.term.stop_date_name
@@ -179,7 +179,7 @@ function Term(props: Props): JSX.Element {
               size="large"
             />
           }
-          title={title}
+          title={<TermName term={props.term} />}
           titleTypographyProps={{
             variant: "h5",
           }}
@@ -288,7 +288,9 @@ function Term(props: Props): JSX.Element {
                 <DialogContentText>
                   この期間に他の期間からデータと条件をインポートします
                 </DialogContentText>
-                <Typography>{title}</Typography>
+                <Typography>
+                  <TermName term={props.term} />
+                </Typography>
               </Grid>
               <Grid item={true} xs={12}>
                 <TextField
@@ -298,17 +300,11 @@ function Term(props: Props): JSX.Element {
                   onChange={handleChangeTermId}
                   fullWidth={true}
                 >
-                  {selectableTerms.map(
-                    ({ id, start_date_name, stop_date_name }) => (
-                      <MenuItem key={id} value={id}>
-                        {
-                          <span>
-                            {`${start_date_name}から${stop_date_name}まで`}
-                          </span>
-                        }
-                      </MenuItem>
-                    )
-                  )}
+                  {selectableTerms.map((term) => (
+                    <MenuItem key={term.id} value={term.id}>
+                      <TermName term={term} />
+                    </MenuItem>
+                  ))}
                 </TextField>
               </Grid>
               <Grid item={true} xs={12}>
@@ -348,7 +344,9 @@ function Term(props: Props): JSX.Element {
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
               <DialogContentText>この期間を削除します</DialogContentText>
-              <Typography>{title}</Typography>
+              <Typography>
+                <TermName term={props.term} />
+              </Typography>
             </Grid>
             <Grid item={true} xs={12}>
               <DialogContentText>

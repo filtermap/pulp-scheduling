@@ -21,8 +21,9 @@ import * as constraints8 from "../modules/constraints8";
 import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
 
+import Constraint8Name from "./names/Constraint8Name";
+import KinmuName from "./names/KinmuName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import LineThrough from "./parts/LineThrough";
 
 type Props = {
   constraint8: constraints8.Constraint8;
@@ -112,14 +113,7 @@ function Constraint8(props: Props): JSX.Element {
     dispatch(constraints8.remove(props.constraint8.id));
   };
   const relativesAreEnabled = selectedKinmu.is_enabled;
-  const title = (
-    <>
-      <LineThrough line={!selectedKinmu.is_enabled}>
-        {selectedKinmu.name}
-      </LineThrough>
-      の間隔日数を{props.constraint8.max_number_of_days}日以下にする
-    </>
-  );
+  const title = <Constraint8Name constraint8={props.constraint8} />;
   const errorMessages = validate(props.constraint8.max_number_of_days);
   return (
     <>
@@ -159,9 +153,7 @@ function Constraint8(props: Props): JSX.Element {
                 >
                   {kinmusInTerm.map((kinmu) => (
                     <MenuItem key={kinmu.id} value={kinmu.id}>
-                      <LineThrough line={!kinmu.is_enabled}>
-                        {kinmu.name}
-                      </LineThrough>
+                      <KinmuName kinmu={kinmu} />
                     </MenuItem>
                   ))}
                 </TextField>

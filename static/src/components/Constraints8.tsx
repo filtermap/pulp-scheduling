@@ -19,8 +19,8 @@ import * as constraints8 from "../modules/constraints8";
 import * as kinmus from "../modules/kinmus";
 
 import Constraint8 from "./Constraint8";
+import KinmuName from "./names/KinmuName";
 import GridFrame from "./parts/GridFrame";
-import LineThrough from "./parts/LineThrough";
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -193,9 +193,7 @@ function Constraints8(): JSX.Element {
                     >
                       {kinmusInTerm.map((kinmu) => (
                         <MenuItem key={kinmu.id} value={kinmu.id}>
-                          <LineThrough line={!kinmu.is_enabled}>
-                            {kinmu.name}
-                          </LineThrough>
+                          <KinmuName kinmu={kinmu} />
                         </MenuItem>
                       ))}
                     </TextField>

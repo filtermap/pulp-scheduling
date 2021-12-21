@@ -29,9 +29,17 @@ import * as constraints4 from "../modules/constraints4";
 import * as constraints9 from "../modules/constraints9";
 import * as group_members from "../modules/group_members";
 import * as groups from "../modules/groups";
-import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
+import * as schedules from "../modules/schedules";
+import * as utils from "../utils";
 
+import Constraint10Name from "./names/Constraint10Name";
+import Constraint3Name from "./names/Constraint3Name";
+import Constraint4Name from "./names/Constraint4Name";
+import Constraint9Name from "./names/Constraint9Name";
+import GroupName from "./names/GroupName";
+import MemberName from "./names/MemberName";
+import ScheduleName from "./names/ScheduleName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
 
 type Props = {
@@ -50,6 +58,7 @@ type ErrorMessages = {
 function Member(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const selectedAssignments = useSelector(assignments.selectors.selectAll);
+  const selectedSchedules = useSelector(schedules.selectors.selectAll);
   const selectedConstraints10 = useSelector(constraints10.selectors.selectAll);
   const selectedConstraints3 = useSelector(constraints3.selectors.selectAll);
   const selectedConstraints4 = useSelector(constraints4.selectors.selectAll);
@@ -57,7 +66,6 @@ function Member(props: Props): JSX.Element {
   const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
   const selectedGroups = useSelector(groups.selectors.selectAll);
   const selectedGroupById = useSelector(groups.selectors.selectEntities);
-  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const [state, setState] = React.useState<State>({
     deletionDialogIsOpen: false,
     expanded: false,
@@ -148,12 +156,22 @@ function Member(props: Props): JSX.Element {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
     dispatch(all.removeMember(props.member.id));
   };
-  const memberScheduleIds = Array.from(
-    new Set(
-      assignmentsInTerm
-        .filter(({ member_id }) => member_id === props.member.id)
-        .map(({ schedule_id }) => schedule_id)
-    )
+  const memberGroupNames = utils.intersperse(
+    groupMembersInTerm
+      .filter((group_member) => group_member.member_id === props.member.id)
+      .map(({ id, group_id }) => (
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        <GroupName key={id} group={selectedGroupById[group_id]!} />
+      )),
+    ", "
+  );
+  const memberScheduleIds = new Set(
+    assignmentsInTerm
+      .filter(({ member_id }) => member_id === props.member.id)
+      .map(({ schedule_id }) => schedule_id)
+  );
+  const memberSchedules = selectedSchedules.filter(({ id }) =>
+    memberScheduleIds.has(id)
   );
   const memberConstraints3 = constraints3InTerm.filter(
     (c) => c.member_id === props.member.id
@@ -187,17 +205,11 @@ function Member(props: Props): JSX.Element {
               size="large"
             />
           }
-          title={props.member.name}
+          title={<MemberName member={props.member} />}
           titleTypographyProps={{
             variant: "h5",
           }}
-          subheader={groupMembersInTerm
-            .filter(
-              (group_member) => group_member.member_id === props.member.id
-            )
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .map(({ group_id }) => selectedGroupById[group_id]!.name)
-            .join(", ")}
+          subheader={memberGroupNames}
           subheaderTypographyProps={{
             variant: "body2",
           }}
@@ -228,7 +240,7 @@ function Member(props: Props): JSX.Element {
                     {groupsInTerm.map((group) => (
                       <FormControlLabel
                         key={group.id}
-                        label={group.name}
+                        label={<GroupName group={group} />}
                         control={
                           <Checkbox
                             checked={groupMembersInTerm.some(
@@ -265,27 +277,21 @@ function Member(props: Props): JSX.Element {
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
               <DialogContentText>この職員を削除します</DialogContentText>
-              <Typography>{props.member.name}</Typography>
-              <Typography variant="caption">
-                {groupMembersInTerm
-                  .filter(
-                    (group_member) => group_member.member_id === props.member.id
-                  )
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  .map(({ group_id }) => selectedGroupById[group_id]!.name)
-                  .join(", ")}
+              <Typography>
+                <MemberName member={props.member} />
               </Typography>
+              <Typography variant="caption">{memberGroupNames}</Typography>
             </Grid>
             <Grid item={true} xs={12}>
-              {memberScheduleIds.length > 0 && (
+              {memberSchedules.length > 0 && (
                 <DialogContentText>
                   以下の勤務表の割り当ても削除されます
                 </DialogContentText>
               )}
-              {memberScheduleIds.map((schedule_id) => (
-                <Typography
-                  key={schedule_id}
-                >{`勤務表${schedule_id}`}</Typography>
+              {memberSchedules.map((schedule) => (
+                <Typography key={schedule.id}>
+                  <ScheduleName schedule={schedule} />
+                </Typography>
               ))}
             </Grid>
             <Grid item={true} xs={12}>
@@ -296,36 +302,24 @@ function Member(props: Props): JSX.Element {
                 <DialogContentText>以下の条件も削除されます</DialogContentText>
               )}
               {memberConstraints3.map((c) => (
-                <Typography key={`constraint3_${c.id}`}>{`${
-                  props.member.name
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                }に${selectedKinmuById[c.kinmu_id]!.name}を${
-                  c.min_number_of_assignments
-                }回以上割り当てる`}</Typography>
+                <Typography key={`constraint3_${c.id}`}>
+                  <Constraint3Name constraint3={c} />
+                </Typography>
               ))}
               {memberConstraints4.map((c) => (
-                <Typography key={`constraint4_${c.id}`}>{`${
-                  props.member.name
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                }に${selectedKinmuById[c.kinmu_id]!.name}を${
-                  c.max_number_of_assignments
-                }回以下割り当てる`}</Typography>
+                <Typography key={`constraint4_${c.id}`}>
+                  <Constraint4Name constraint4={c} />
+                </Typography>
               ))}
               {memberConstraints9.map((c) => (
-                <Typography key={`constraint9_${c.id}`}>{`${
-                  props.member.name
-                }の${c.start_date_name}から${c.stop_date_name}までに${
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  selectedKinmuById[c.kinmu_id]!.name
-                }を割り当てる`}</Typography>
+                <Typography key={`constraint9_${c.id}`}>
+                  <Constraint9Name constraint9={c} />の
+                </Typography>
               ))}
               {memberConstraints10.map((c) => (
-                <Typography key={`constraint10_${c.id}`}>{`${
-                  props.member.name
-                }の${c.start_date_name}から${c.stop_date_name}までに${
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  selectedKinmuById[c.kinmu_id]!.name
-                }を割り当てない`}</Typography>
+                <Typography key={`constraint10_${c.id}`}>
+                  <Constraint10Name constraint10={c} />
+                </Typography>
               ))}
             </Grid>
           </Grid>

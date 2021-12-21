@@ -23,8 +23,9 @@ import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
 import Constraint2 from "./Constraint2";
+import GroupName from "./names/GroupName";
+import KinmuName from "./names/KinmuName";
 import GridFrame from "./parts/GridFrame";
-import LineThrough from "./parts/LineThrough";
 import lineThroughSx from "./parts/lineThroughSx";
 
 type State = {
@@ -358,9 +359,7 @@ function Constraints2(): JSX.Element {
                     >
                       {kinmusInTerm.map((kinmu) => (
                         <MenuItem key={kinmu.id} value={kinmu.id}>
-                          <LineThrough line={!kinmu.is_enabled}>
-                            {kinmu.name}
-                          </LineThrough>
+                          <KinmuName kinmu={kinmu} />
                         </MenuItem>
                       ))}
                     </TextField>
@@ -375,9 +374,7 @@ function Constraints2(): JSX.Element {
                     >
                       {groupsInTerm.map((group) => (
                         <MenuItem key={group.id} value={group.id}>
-                          <LineThrough line={!group.is_enabled}>
-                            {group.name}
-                          </LineThrough>
+                          <GroupName group={group} />
                         </MenuItem>
                       ))}
                     </TextField>

@@ -22,8 +22,10 @@ import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
 
+import Constraint3Name from "./names/Constraint3Name";
+import KinmuName from "./names/KinmuName";
+import MemberName from "./names/MemberName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import LineThrough from "./parts/LineThrough";
 
 type Props = {
   constraint3: constraints3.Constraint3;
@@ -136,18 +138,7 @@ function Constraint3(props: Props): JSX.Element {
   };
   const relativesAreEnabled =
     selectedMember.is_enabled && selectedKinmu.is_enabled;
-  const title = (
-    <>
-      <LineThrough line={!selectedMember.is_enabled}>
-        {selectedMember.name}
-      </LineThrough>
-      に
-      <LineThrough line={!selectedKinmu.is_enabled}>
-        {selectedKinmu.name}
-      </LineThrough>
-      を{props.constraint3.min_number_of_assignments}回以上割り当てる
-    </>
-  );
+  const title = <Constraint3Name constraint3={props.constraint3} />;
   const errorMessages = validate(props.constraint3.min_number_of_assignments);
   return (
     <>
@@ -187,9 +178,7 @@ function Constraint3(props: Props): JSX.Element {
                 >
                   {membersInTerm.map((member) => (
                     <MenuItem key={member.id} value={member.id}>
-                      <LineThrough line={!member.is_enabled}>
-                        {member.name}
-                      </LineThrough>
+                      <MemberName member={member} />
                     </MenuItem>
                   ))}
                 </TextField>
@@ -204,9 +193,7 @@ function Constraint3(props: Props): JSX.Element {
                 >
                   {kinmusInTerm.map((kinmu) => (
                     <MenuItem key={kinmu.id} value={kinmu.id}>
-                      <LineThrough line={!kinmu.is_enabled}>
-                        {kinmu.name}
-                      </LineThrough>
+                      <KinmuName kinmu={kinmu} />
                     </MenuItem>
                   ))}
                 </TextField>

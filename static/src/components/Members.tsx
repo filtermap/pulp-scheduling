@@ -22,6 +22,7 @@ import * as groups from "../modules/groups";
 import * as members from "../modules/members";
 
 import Member from "./Member";
+import GroupName from "./names/GroupName";
 import GridFrame from "./parts/GridFrame";
 
 type State = {
@@ -183,7 +184,7 @@ function Members(): JSX.Element {
                   {groupsInTerm.map((group) => (
                     <FormControlLabel
                       key={group.id}
-                      label={group.name}
+                      label={<GroupName group={group} />}
                       control={
                         <Checkbox
                           checked={state.newMemberGroupIds.some(

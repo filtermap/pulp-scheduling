@@ -21,8 +21,9 @@ import * as constraints5 from "../modules/constraints5";
 import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
 
+import Constraint5Name from "./names/Constraint5Name";
+import KinmuName from "./names/KinmuName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import LineThrough from "./parts/LineThrough";
 
 type Props = {
   constraint5: constraints5.Constraint5;
@@ -111,14 +112,7 @@ function Constraint5(props: Props): JSX.Element {
     dispatch(constraints5.remove(props.constraint5.id));
   };
   const relativesAreEnabled = selectedKinmu.is_enabled;
-  const title = (
-    <>
-      <LineThrough line={!selectedKinmu.is_enabled}>
-        {selectedKinmu.name}
-      </LineThrough>
-      の連続日数を{props.constraint5.min_number_of_days}日以上にする
-    </>
-  );
+  const title = <Constraint5Name constraint5={props.constraint5} />;
   const errorMessages = validate(props.constraint5.min_number_of_days);
   return (
     <>
@@ -158,9 +152,7 @@ function Constraint5(props: Props): JSX.Element {
                 >
                   {kinmusInTerm.map((kinmu) => (
                     <MenuItem key={kinmu.id} value={kinmu.id}>
-                      <LineThrough line={!kinmu.is_enabled}>
-                        {kinmu.name}
-                      </LineThrough>
+                      <KinmuName kinmu={kinmu} />
                     </MenuItem>
                   ))}
                 </TextField>

@@ -26,9 +26,13 @@ import * as constraints1 from "../modules/constraints1";
 import * as constraints2 from "../modules/constraints2";
 import * as group_members from "../modules/group_members";
 import * as groups from "../modules/groups";
-import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
+import * as utils from "../utils";
 
+import Constraint1Name from "./names/Constraint1Name";
+import Constraint2Name from "./names/Constraint2Name";
+import GroupName from "./names/GroupName";
+import MemberName from "./names/MemberName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
 
 type Props = {
@@ -51,7 +55,6 @@ function Group(props: Props): JSX.Element {
   const selectedConstraints1 = useSelector(constraints1.selectors.selectAll);
   const selectedConstraints2 = useSelector(constraints2.selectors.selectAll);
   const selectedMemberById = useSelector(members.selectors.selectEntities);
-  const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === props.group.term_id
   );
@@ -134,6 +137,15 @@ function Group(props: Props): JSX.Element {
     setState((state) => ({ ...state, deletionDialogIsOpen: false }));
     dispatch(all.deleteGroup(props.group.id));
   };
+  const groupMemberNames = utils.intersperse(
+    groupMembersInTerm
+      .filter((group_member) => group_member.group_id === props.group.id)
+      .map(({ id, member_id }) => (
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        <MemberName key={id} member={selectedMemberById[member_id]!} />
+      )),
+    ", "
+  );
   const groupConstraints1 = constraints1InTerm.filter(
     (c) => c.group_id === props.group.id
   );
@@ -160,15 +172,11 @@ function Group(props: Props): JSX.Element {
               size="large"
             />
           }
-          title={props.group.name}
+          title={<GroupName group={props.group} />}
           titleTypographyProps={{
             variant: "h5",
           }}
-          subheader={groupMembersInTerm
-            .filter((group_member) => group_member.group_id === props.group.id)
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            .map(({ member_id }) => selectedMemberById[member_id]!.name)
-            .join(", ")}
+          subheader={groupMemberNames}
           subheaderTypographyProps={{
             variant: "body2",
           }}
@@ -199,7 +207,7 @@ function Group(props: Props): JSX.Element {
                     {membersInTerm.map((member) => (
                       <FormControlLabel
                         key={member.id}
-                        label={member.name}
+                        label={<MemberName member={member} />}
                         control={
                           <Checkbox
                             checked={groupMembersInTerm.some(
@@ -236,16 +244,10 @@ function Group(props: Props): JSX.Element {
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
               <DialogContentText>このグループを削除します</DialogContentText>
-              <Typography>{props.group.name}</Typography>
-              <Typography variant="caption">
-                {groupMembersInTerm
-                  .filter(
-                    (group_member) => group_member.group_id === props.group.id
-                  )
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  .map(({ member_id }) => selectedMemberById[member_id]!.name)
-                  .join(", ")}
+              <Typography>
+                <GroupName group={props.group} />
               </Typography>
+              <Typography variant="caption">{groupMemberNames}</Typography>
             </Grid>
             <Grid item={true} xs={12}>
               {(groupConstraints1.length > 0 ||
@@ -253,24 +255,14 @@ function Group(props: Props): JSX.Element {
                 <DialogContentText>以下の条件も削除されます</DialogContentText>
               )}
               {groupConstraints1.map((c) => (
-                <Typography key={`constraint1_${c.id}`}>{`${
-                  c.start_date_name
-                }から${c.stop_date_name}までの${
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  selectedKinmuById[c.kinmu_id]!.name
-                }に${props.group.name}から${
-                  c.min_number_of_assignments
-                }人以上の職員を割り当てる`}</Typography>
+                <Typography key={`constraint1_${c.id}`}>
+                  <Constraint1Name constraint1={c} />
+                </Typography>
               ))}
               {groupConstraints2.map((c) => (
-                <Typography key={`constraint2_${c.id}`}>{`${
-                  c.start_date_name
-                }から${c.stop_date_name}までの${
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  selectedKinmuById[c.kinmu_id]!.name
-                }に${props.group.name}から${
-                  c.max_number_of_assignments
-                }人以下の職員を割り当てる`}</Typography>
+                <Typography key={`constraint2_${c.id}`}>
+                  <Constraint2Name constraint2={c} />
+                </Typography>
               ))}
             </Grid>
           </Grid>

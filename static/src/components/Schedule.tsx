@@ -28,6 +28,9 @@ import * as members from "../modules/members";
 import * as schedules from "../modules/schedules";
 import * as utils from "../utils";
 
+import KinmuName from "./names/KinmuName";
+import MemberName from "./names/MemberName";
+import ScheduleName from "./names/ScheduleName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
 import StickyLeftTableCell from "./parts/StickyLeftTableCell";
 import StickyLeftTopTableCell from "./parts/StickyLeftTopTableCell";
@@ -124,7 +127,7 @@ function Schedule(props: Props): JSX.Element {
               />
             </>
           }
-          title={`勤務表${props.schedule.id}`}
+          title={<ScheduleName schedule={props.schedule} />}
         />
         <Collapse in={state.expanded} timeout="auto" unmountOnExit={true}>
           <CardContent sx={{ padding: 0 }}>
@@ -155,20 +158,22 @@ function Schedule(props: Props): JSX.Element {
                         return (
                           <TableRow key={member.id}>
                             <StickyLeftTableCell size="small">
-                              {member.name}
+                              <MemberName member={member} />
                             </StickyLeftTableCell>
                             {schedule_date_names.map((date_name) => (
                               <TableCell size="small" key={date_name}>
-                                {
-                                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                  selectedKinmuById[
+                                <KinmuName
+                                  kinmu={
                                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                    schedule_member_assignments.find(
-                                      (assignment) =>
-                                        assignment.date_name === date_name
-                                    )!.kinmu_id
-                                  ]!.name
-                                }
+                                    selectedKinmuById[
+                                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                      schedule_member_assignments.find(
+                                        (assignment) =>
+                                          assignment.date_name === date_name
+                                      )!.kinmu_id
+                                    ]!
+                                  }
+                                />
                               </TableCell>
                             ))}
                           </TableRow>
@@ -199,7 +204,9 @@ function Schedule(props: Props): JSX.Element {
         <DialogTitle>勤務表の削除</DialogTitle>
         <DialogContent>
           <DialogContentText>この勤務表を削除します</DialogContentText>
-          <Typography>{`勤務表${props.schedule.id}`}</Typography>
+          <Typography>
+            <ScheduleName schedule={props.schedule} />
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteSchedule}>

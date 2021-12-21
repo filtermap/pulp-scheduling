@@ -23,8 +23,9 @@ import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
 import Constraint10 from "./Constraint10";
+import KinmuName from "./names/KinmuName";
+import MemberName from "./names/MemberName";
 import GridFrame from "./parts/GridFrame";
-import LineThrough from "./parts/LineThrough";
 import lineThroughSx from "./parts/lineThroughSx";
 
 type State = {
@@ -277,9 +278,7 @@ function Constraints10(): JSX.Element {
                     >
                       {membersInTerm.map((member) => (
                         <MenuItem key={member.id} value={member.id}>
-                          <LineThrough line={!member.is_enabled}>
-                            {member.name}
-                          </LineThrough>
+                          <MemberName member={member} />
                         </MenuItem>
                       ))}
                     </TextField>
@@ -354,9 +353,7 @@ function Constraints10(): JSX.Element {
                     >
                       {kinmusInTerm.map((kinmu) => (
                         <MenuItem key={kinmu.id} value={kinmu.id}>
-                          <LineThrough line={!kinmu.is_enabled}>
-                            {kinmu.name}
-                          </LineThrough>
+                          <KinmuName kinmu={kinmu} />
                         </MenuItem>
                       ))}
                     </TextField>
