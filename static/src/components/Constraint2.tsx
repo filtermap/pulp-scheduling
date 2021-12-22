@@ -38,6 +38,11 @@ type Props = {
 type State = {
   expanded: boolean;
   deletionDialogIsOpen: boolean;
+  changes: {
+    start_date_name: string;
+    stop_date_name: string;
+    max_number_of_assignments: number;
+  };
 };
 
 type ErrorMessages = {
@@ -59,7 +64,27 @@ function Constraint2(props: Props): JSX.Element {
   const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
+    changes: {
+      start_date_name: props.constraint2.start_date_name,
+      stop_date_name: props.constraint2.stop_date_name,
+      max_number_of_assignments: props.constraint2.max_number_of_assignments,
+    },
   });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.changes.start_date_name = props.constraint2.start_date_name;
+        state.changes.stop_date_name = props.constraint2.stop_date_name;
+        state.changes.max_number_of_assignments =
+          props.constraint2.max_number_of_assignments;
+      }),
+    [
+      props.constraint2.max_number_of_assignments,
+      props.constraint2.start_date_name,
+      props.constraint2.stop_date_name,
+      updateState,
+    ]
+  );
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.constraint2.term_id
   );
@@ -113,11 +138,16 @@ function Constraint2(props: Props): JSX.Element {
   const handleChangeConstraint2StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.start_date_name = event.target.value;
+    });
+  };
+  const handleBlurConstraint2StartDateName = () => {
     dispatch(
       constraints2.update({
         id: props.constraint2.id,
         changes: {
-          start_date_name: event.target.value,
+          start_date_name: state.changes.start_date_name,
         },
       })
     );
@@ -125,11 +155,16 @@ function Constraint2(props: Props): JSX.Element {
   const handleChangeConstraint2StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.stop_date_name = event.target.value;
+    });
+  };
+  const handleBlurConstraint2StopDateName = () => {
     dispatch(
       constraints2.update({
         id: props.constraint2.id,
         changes: {
-          stop_date_name: event.target.value,
+          stop_date_name: state.changes.stop_date_name,
         },
       })
     );
@@ -161,11 +196,19 @@ function Constraint2(props: Props): JSX.Element {
   const handleChangeConstraint2MaxNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.max_number_of_assignments = parseInt(
+        event.target.value,
+        10
+      );
+    });
+  };
+  const handleBlurConstraint2MaxNumberOfAssignments = () => {
     dispatch(
       constraints2.update({
         id: props.constraint2.id,
         changes: {
-          max_number_of_assignments: parseInt(event.target.value, 10),
+          max_number_of_assignments: state.changes.max_number_of_assignments,
         },
       })
     );
@@ -249,8 +292,9 @@ function Constraint2(props: Props): JSX.Element {
                 <TextField
                   label="開始日"
                   type="date"
-                  value={props.constraint2.start_date_name}
+                  value={state.changes.start_date_name}
                   onChange={handleChangeConstraint2StartDateName}
+                  onBlur={handleBlurConstraint2StartDateName}
                   fullWidth={true}
                   InputLabelProps={{
                     shrink: true,
@@ -276,8 +320,9 @@ function Constraint2(props: Props): JSX.Element {
                 <TextField
                   label="終了日"
                   type="date"
-                  value={props.constraint2.stop_date_name}
+                  value={state.changes.stop_date_name}
                   onChange={handleChangeConstraint2StopDateName}
+                  onBlur={handleBlurConstraint2StopDateName}
                   fullWidth={true}
                   InputLabelProps={{
                     shrink: true,
@@ -331,8 +376,9 @@ function Constraint2(props: Props): JSX.Element {
                 <TextField
                   label="割り当て職員数上限"
                   type="number"
-                  value={props.constraint2.max_number_of_assignments}
+                  value={state.changes.max_number_of_assignments}
                   onChange={handleChangeConstraint2MaxNumberOfAssignments}
+                  onBlur={handleBlurConstraint2MaxNumberOfAssignments}
                   fullWidth={true}
                   inputProps={{
                     min: constraints2.minOfConstraint2MaxNumberOfAssignments,

@@ -33,6 +33,9 @@ type Props = {
 type State = {
   expanded: boolean;
   deletionDialogIsOpen: boolean;
+  changes: {
+    min_number_of_days: number;
+  };
 };
 
 type ErrorMessages = {
@@ -48,7 +51,17 @@ function Constraint5(props: Props): JSX.Element {
   const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
+    changes: {
+      min_number_of_days: props.constraint5.min_number_of_days,
+    },
   });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.changes.min_number_of_days = props.constraint5.min_number_of_days;
+      }),
+    [props.constraint5.min_number_of_days, updateState]
+  );
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.constraint5.term_id
   );
@@ -95,11 +108,16 @@ function Constraint5(props: Props): JSX.Element {
   const handleChangeConstraint5MinNumberOfDays = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.min_number_of_days = parseInt(event.target.value, 10);
+    });
+  };
+  const handleBlurConstraint5MinNumberOfDays = () => {
     dispatch(
       constraints5.update({
         id: props.constraint5.id,
         changes: {
-          min_number_of_days: parseInt(event.target.value, 10),
+          min_number_of_days: state.changes.min_number_of_days,
         },
       })
     );
@@ -170,8 +188,9 @@ function Constraint5(props: Props): JSX.Element {
                 <TextField
                   label="連続日数下限"
                   type="number"
-                  value={props.constraint5.min_number_of_days}
+                  value={state.changes.min_number_of_days}
                   onChange={handleChangeConstraint5MinNumberOfDays}
+                  onBlur={handleBlurConstraint5MinNumberOfDays}
                   fullWidth={true}
                   inputProps={{
                     min: constraints5.minOfConstraint5MinNumberOfDays,

@@ -35,6 +35,10 @@ type State = {
   selectedTermId: number | undefined;
   importDataDialogIsOpen: boolean;
   deletionDialogIsOpen: boolean;
+  changes: {
+    start_date_name: string;
+    stop_date_name: string;
+  };
 };
 
 type ErrorMessages = {
@@ -59,17 +63,30 @@ function Term(props: Props): JSX.Element {
         : undefined,
     [selectableTerms]
   );
-  const initialState = React.useMemo(
-    () => ({
-      importDataDialogIsOpen: false,
-      selectedTermId: initialSelectedTermId,
-      deletionDialogIsOpen: false,
-      expanded: false,
-    }),
-    [initialSelectedTermId]
+  const [state, updateState] = useImmer<State>({
+    importDataDialogIsOpen: false,
+    selectedTermId: initialSelectedTermId,
+    deletionDialogIsOpen: false,
+    expanded: false,
+    changes: {
+      start_date_name: props.term.start_date_name,
+      stop_date_name: props.term.stop_date_name,
+    },
+  });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.selectedTermId = initialSelectedTermId;
+        state.changes.start_date_name = props.term.start_date_name;
+        state.changes.stop_date_name = props.term.stop_date_name;
+      }),
+    [
+      initialSelectedTermId,
+      props.term.start_date_name,
+      props.term.stop_date_name,
+      updateState,
+    ]
   );
-  const [state, updateState] = useImmer<State>(initialState);
-  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickExpand = () => {
     updateState((state) => {
       state.expanded = !state.expanded;
@@ -106,11 +123,16 @@ function Term(props: Props): JSX.Element {
   const handleChangeTermStartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.start_date_name = event.target.value;
+    });
+  };
+  const handleBlurTermStartDateName = () => {
     dispatch(
       terms.update({
         id: props.term.id,
         changes: {
-          start_date_name: event.target.value,
+          start_date_name: state.changes.start_date_name,
         },
       })
     );
@@ -118,11 +140,16 @@ function Term(props: Props): JSX.Element {
   const handleChangeTermStopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.stop_date_name = event.target.value;
+    });
+  };
+  const handleBlurTermStopDateName = () => {
     dispatch(
       terms.update({
         id: props.term.id,
         changes: {
-          stop_date_name: event.target.value,
+          stop_date_name: state.changes.stop_date_name,
         },
       })
     );
@@ -217,8 +244,9 @@ function Term(props: Props): JSX.Element {
                 <TextField
                   label="開始日"
                   type="date"
-                  value={props.term.start_date_name}
+                  value={state.changes.start_date_name}
                   onChange={handleChangeTermStartDateName}
+                  onBlur={handleBlurTermStartDateName}
                   fullWidth={true}
                   margin="normal"
                   InputLabelProps={{
@@ -238,8 +266,9 @@ function Term(props: Props): JSX.Element {
                 <TextField
                   label="終了日"
                   type="date"
-                  value={props.term.stop_date_name}
+                  value={state.changes.stop_date_name}
                   onChange={handleChangeTermStopDateName}
+                  onBlur={handleBlurTermStopDateName}
                   fullWidth={true}
                   margin="normal"
                   InputLabelProps={{

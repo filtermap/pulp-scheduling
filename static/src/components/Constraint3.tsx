@@ -35,6 +35,9 @@ type Props = {
 type State = {
   expanded: boolean;
   deletionDialogIsOpen: boolean;
+  changes: {
+    min_number_of_assignments: number;
+  };
 };
 
 type ErrorMessages = {
@@ -56,7 +59,18 @@ function Constraint3(props: Props): JSX.Element {
   const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
+    changes: {
+      min_number_of_assignments: props.constraint3.min_number_of_assignments,
+    },
   });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.changes.min_number_of_assignments =
+          props.constraint3.min_number_of_assignments;
+      }),
+    [props.constraint3.min_number_of_assignments, updateState]
+  );
   const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === props.constraint3.term_id
   );
@@ -120,11 +134,19 @@ function Constraint3(props: Props): JSX.Element {
   const handleChangeConstraint3MinNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.min_number_of_assignments = parseInt(
+        event.target.value,
+        10
+      );
+    });
+  };
+  const handleBlurConstraint3MinNumberOfAssignments = () => {
     dispatch(
       constraints3.update({
         id: props.constraint3.id,
         changes: {
-          min_number_of_assignments: parseInt(event.target.value, 10),
+          min_number_of_assignments: state.changes.min_number_of_assignments,
         },
       })
     );
@@ -211,8 +233,9 @@ function Constraint3(props: Props): JSX.Element {
                 <TextField
                   label="割り当て数下限"
                   type="number"
-                  value={props.constraint3.min_number_of_assignments}
+                  value={state.changes.min_number_of_assignments}
                   onChange={handleChangeConstraint3MinNumberOfAssignments}
+                  onBlur={handleBlurConstraint3MinNumberOfAssignments}
                   fullWidth={true}
                   inputProps={{
                     min: constraints3.minOfConstraint3MinNumberOfAssignments,

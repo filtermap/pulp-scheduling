@@ -56,6 +56,9 @@ type Props = {
 type State = {
   deletionDialogIsOpen: boolean;
   expanded: boolean;
+  changes: {
+    name: string;
+  };
 };
 
 type ErrorMessages = {
@@ -84,7 +87,17 @@ function Kinmu(props: Props): JSX.Element {
   const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
+    changes: {
+      name: props.kinmu.name,
+    },
   });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.changes.name = props.kinmu.name;
+      }),
+    [props.kinmu.name, updateState]
+  );
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.kinmu.term_id
   );
@@ -157,11 +170,16 @@ function Kinmu(props: Props): JSX.Element {
   const handleChangeKinmuName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.name = event.target.value;
+    });
+  };
+  const handleBlurKinmuName = () => {
     dispatch(
       kinmus.update({
         id: props.kinmu.id,
         changes: {
-          name: event.target.value,
+          name: state.changes.name,
         },
       })
     );
@@ -259,8 +277,9 @@ function Kinmu(props: Props): JSX.Element {
               <Grid item={true} xs={12}>
                 <TextField
                   label="勤務名"
-                  value={props.kinmu.name}
+                  value={state.changes.name}
                   onChange={handleChangeKinmuName}
+                  onBlur={handleBlurKinmuName}
                   margin="normal"
                   error={errorMessages.kinmuName.length > 0}
                   FormHelperTextProps={{

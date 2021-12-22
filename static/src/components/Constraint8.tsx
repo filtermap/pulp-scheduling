@@ -33,6 +33,9 @@ type Props = {
 type State = {
   expanded: boolean;
   deletionDialogIsOpen: boolean;
+  changes: {
+    max_number_of_days: number;
+  };
 };
 
 type ErrorMessages = {
@@ -49,7 +52,17 @@ function Constraint8(props: Props): JSX.Element {
   const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
+    changes: {
+      max_number_of_days: props.constraint8.max_number_of_days,
+    },
   });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.changes.max_number_of_days = props.constraint8.max_number_of_days;
+      }),
+    [props.constraint8.max_number_of_days, updateState]
+  );
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.constraint8.term_id
   );
@@ -96,11 +109,16 @@ function Constraint8(props: Props): JSX.Element {
   const handleChangeConstraint8MaxNumberOfDays = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.max_number_of_days = parseInt(event.target.value, 10);
+    });
+  };
+  const handleBlurConstraint8MaxNumberOfDays = () => {
     dispatch(
       constraints8.update({
         id: props.constraint8.id,
         changes: {
-          max_number_of_days: parseInt(event.target.value, 10),
+          max_number_of_days: state.changes.max_number_of_days,
         },
       })
     );
@@ -171,8 +189,9 @@ function Constraint8(props: Props): JSX.Element {
                 <TextField
                   label="間隔日数上限"
                   type="number"
-                  value={props.constraint8.max_number_of_days}
+                  value={state.changes.max_number_of_days}
                   onChange={handleChangeConstraint8MaxNumberOfDays}
+                  onBlur={handleBlurConstraint8MaxNumberOfDays}
                   fullWidth={true}
                   inputProps={{
                     min: constraints8.minOfConstraint8MaxNumberOfDays,

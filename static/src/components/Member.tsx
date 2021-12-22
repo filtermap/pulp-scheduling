@@ -50,6 +50,9 @@ type Props = {
 type State = {
   expanded: boolean;
   deletionDialogIsOpen: boolean;
+  changes: {
+    name: string;
+  };
 };
 
 type ErrorMessages = {
@@ -70,7 +73,17 @@ function Member(props: Props): JSX.Element {
   const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
+    changes: {
+      name: props.member.name,
+    },
   });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.changes.name = props.member.name;
+      }),
+    [props.member.name, updateState]
+  );
   const groupMembersInTerm = selectedGroupMembers.filter(
     ({ member_id }) => member_id === props.member.id
   );
@@ -121,11 +134,16 @@ function Member(props: Props): JSX.Element {
   const handleChangeMemberName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.name = event.target.value;
+    });
+  };
+  const handleBlurMemberName = () => {
     dispatch(
       members.update({
         id: props.member.id,
         changes: {
-          name: event.target.value,
+          name: state.changes.name,
         },
       })
     );
@@ -229,8 +247,9 @@ function Member(props: Props): JSX.Element {
               <Grid item={true} xs={12}>
                 <TextField
                   label="職員名"
-                  value={props.member.name}
+                  value={state.changes.name}
                   onChange={handleChangeMemberName}
+                  onBlur={handleBlurMemberName}
                   fullWidth={true}
                   error={errorMessages.memberName.length > 0}
                   FormHelperTextProps={{

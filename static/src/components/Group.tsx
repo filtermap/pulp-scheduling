@@ -43,6 +43,9 @@ type Props = {
 type State = {
   expanded: boolean;
   deletionDialogIsOpen: boolean;
+  changes: {
+    name: string;
+  };
 };
 
 type ErrorMessages = {
@@ -72,7 +75,17 @@ function Group(props: Props): JSX.Element {
   const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
+    changes: {
+      name: props.group.name,
+    },
   });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.changes.name = props.group.name;
+      }),
+    [props.group.name, updateState]
+  );
   const handleClickExpand = () => {
     updateState((state) => {
       state.expanded = !state.expanded;
@@ -102,11 +115,16 @@ function Group(props: Props): JSX.Element {
   const handleChangeGroupName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.name = event.target.value;
+    });
+  };
+  const handleBlurGroupName = () => {
     dispatch(
       groups.update({
         id: props.group.id,
         changes: {
-          name: event.target.value,
+          name: state.changes.name,
         },
       })
     );
@@ -196,8 +214,9 @@ function Group(props: Props): JSX.Element {
               <Grid item={true} xs={12}>
                 <TextField
                   label="グループ名"
-                  value={props.group.name}
+                  value={state.changes.name}
                   onChange={handleChangeGroupName}
+                  onBlur={handleBlurGroupName}
                   fullWidth={true}
                   error={errorMessages.groupName.length > 0}
                   FormHelperTextProps={{

@@ -38,6 +38,11 @@ type Props = {
 type State = {
   expanded: boolean;
   deletionDialogIsOpen: boolean;
+  changes: {
+    start_date_name: string;
+    stop_date_name: string;
+    min_number_of_assignments: number;
+  };
 };
 
 type ErrorMessages = {
@@ -59,7 +64,27 @@ function Constraint1(props: Props): JSX.Element {
   const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
+    changes: {
+      start_date_name: props.constraint1.start_date_name,
+      stop_date_name: props.constraint1.stop_date_name,
+      min_number_of_assignments: props.constraint1.min_number_of_assignments,
+    },
   });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.changes.start_date_name = props.constraint1.start_date_name;
+        state.changes.stop_date_name = props.constraint1.stop_date_name;
+        state.changes.min_number_of_assignments =
+          props.constraint1.min_number_of_assignments;
+      }),
+    [
+      props.constraint1.min_number_of_assignments,
+      props.constraint1.start_date_name,
+      props.constraint1.stop_date_name,
+      updateState,
+    ]
+  );
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === props.constraint1.term_id
   );
@@ -113,11 +138,16 @@ function Constraint1(props: Props): JSX.Element {
   const handleChangeConstraint1StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.start_date_name = event.target.value;
+    });
+  };
+  const handleBlurConstraint1StartDateName = () => {
     dispatch(
       constraints1.update({
         id: props.constraint1.id,
         changes: {
-          start_date_name: event.target.value,
+          start_date_name: state.changes.start_date_name,
         },
       })
     );
@@ -125,11 +155,16 @@ function Constraint1(props: Props): JSX.Element {
   const handleChangeConstraint1StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.stop_date_name = event.target.value;
+    });
+  };
+  const handleBlurConstraint1StopDateName = () => {
     dispatch(
       constraints1.update({
         id: props.constraint1.id,
         changes: {
-          stop_date_name: event.target.value,
+          stop_date_name: state.changes.stop_date_name,
         },
       })
     );
@@ -161,11 +196,19 @@ function Constraint1(props: Props): JSX.Element {
   const handleChangeConstraint1MinNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.min_number_of_assignments = parseInt(
+        event.target.value,
+        10
+      );
+    });
+  };
+  const handleBlurConstraint1MinNumberOfAssignments = () => {
     dispatch(
       constraints1.update({
         id: props.constraint1.id,
         changes: {
-          min_number_of_assignments: parseInt(event.target.value, 10),
+          min_number_of_assignments: state.changes.min_number_of_assignments,
         },
       })
     );
@@ -249,8 +292,9 @@ function Constraint1(props: Props): JSX.Element {
                 <TextField
                   label="開始日"
                   type="date"
-                  value={props.constraint1.start_date_name}
+                  value={state.changes.start_date_name}
                   onChange={handleChangeConstraint1StartDateName}
+                  onBlur={handleBlurConstraint1StartDateName}
                   fullWidth={true}
                   InputLabelProps={{
                     shrink: true,
@@ -276,8 +320,9 @@ function Constraint1(props: Props): JSX.Element {
                 <TextField
                   label="終了日"
                   type="date"
-                  value={props.constraint1.stop_date_name}
+                  value={state.changes.stop_date_name}
                   onChange={handleChangeConstraint1StopDateName}
+                  onBlur={handleBlurConstraint1StopDateName}
                   fullWidth={true}
                   InputLabelProps={{
                     shrink: true,
@@ -331,8 +376,9 @@ function Constraint1(props: Props): JSX.Element {
                 <TextField
                   label="割り当て職員数下限"
                   type="number"
-                  value={props.constraint1.min_number_of_assignments}
+                  value={state.changes.min_number_of_assignments}
                   onChange={handleChangeConstraint1MinNumberOfAssignments}
+                  onBlur={handleBlurConstraint1MinNumberOfAssignments}
                   fullWidth={true}
                   inputProps={{
                     min: constraints1.minOfConstraint1MinNumberOfAssignments,

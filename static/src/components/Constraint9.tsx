@@ -38,6 +38,10 @@ type Props = {
 type State = {
   expanded: boolean;
   deletionDialogIsOpen: boolean;
+  changes: {
+    start_date_name: string;
+    stop_date_name: string;
+  };
 };
 
 type ErrorMessages = {
@@ -64,7 +68,23 @@ function Constraint9(props: Props): JSX.Element {
   const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
+    changes: {
+      start_date_name: props.constraint9.start_date_name,
+      stop_date_name: props.constraint9.stop_date_name,
+    },
   });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.changes.start_date_name = props.constraint9.start_date_name;
+        state.changes.stop_date_name = props.constraint9.stop_date_name;
+      }),
+    [
+      props.constraint9.start_date_name,
+      props.constraint9.stop_date_name,
+      updateState,
+    ]
+  );
   const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === props.constraint9.term_id
   );
@@ -123,11 +143,16 @@ function Constraint9(props: Props): JSX.Element {
   const handleChangeConstraint9StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.start_date_name = event.target.value;
+    });
+  };
+  const handleBlurConstraint9StartDateName = () => {
     dispatch(
       constraints9.update({
         id: props.constraint9.id,
         changes: {
-          start_date_name: event.target.value,
+          start_date_name: state.changes.start_date_name,
         },
       })
     );
@@ -135,11 +160,16 @@ function Constraint9(props: Props): JSX.Element {
   const handleChangeConstraint9StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.stop_date_name = event.target.value;
+    });
+  };
+  const handleBlurConstraint9StopDateName = () => {
     dispatch(
       constraints9.update({
         id: props.constraint9.id,
         changes: {
-          stop_date_name: event.target.value,
+          stop_date_name: state.changes.stop_date_name,
         },
       })
     );
@@ -245,8 +275,9 @@ function Constraint9(props: Props): JSX.Element {
                 <TextField
                   label="開始日"
                   type="date"
-                  value={props.constraint9.start_date_name}
+                  value={state.changes.start_date_name}
                   onChange={handleChangeConstraint9StartDateName}
+                  onBlur={handleBlurConstraint9StartDateName}
                   fullWidth={true}
                   InputLabelProps={{
                     shrink: true,
@@ -272,8 +303,9 @@ function Constraint9(props: Props): JSX.Element {
                 <TextField
                   label="終了日"
                   type="date"
-                  value={props.constraint9.stop_date_name}
+                  value={state.changes.stop_date_name}
                   onChange={handleChangeConstraint9StopDateName}
+                  onBlur={handleBlurConstraint9StopDateName}
                   fullWidth={true}
                   InputLabelProps={{
                     shrink: true,

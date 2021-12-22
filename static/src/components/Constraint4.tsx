@@ -35,6 +35,9 @@ type Props = {
 type State = {
   expanded: boolean;
   deletionDialogIsOpen: boolean;
+  changes: {
+    max_number_of_assignments: number;
+  };
 };
 
 type ErrorMessages = {
@@ -56,7 +59,18 @@ function Constraint4(props: Props): JSX.Element {
   const [state, updateState] = useImmer<State>({
     deletionDialogIsOpen: false,
     expanded: false,
+    changes: {
+      max_number_of_assignments: props.constraint4.max_number_of_assignments,
+    },
   });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.changes.max_number_of_assignments =
+          props.constraint4.max_number_of_assignments;
+      }),
+    [props.constraint4.max_number_of_assignments, updateState]
+  );
   const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === props.constraint4.term_id
   );
@@ -120,11 +134,19 @@ function Constraint4(props: Props): JSX.Element {
   const handleChangeConstraint4MaxNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    updateState((state) => {
+      state.changes.max_number_of_assignments = parseInt(
+        event.target.value,
+        10
+      );
+    });
+  };
+  const handleBlurConstraint4MaxNumberOfAssignments = () => {
     dispatch(
       constraints4.update({
         id: props.constraint4.id,
         changes: {
-          max_number_of_assignments: parseInt(event.target.value, 10),
+          max_number_of_assignments: state.changes.max_number_of_assignments,
         },
       })
     );
@@ -211,8 +233,9 @@ function Constraint4(props: Props): JSX.Element {
                 <TextField
                   label="割り当て数上限"
                   type="number"
-                  value={props.constraint4.max_number_of_assignments}
+                  value={state.changes.max_number_of_assignments}
                   onChange={handleChangeConstraint4MaxNumberOfAssignments}
+                  onBlur={handleBlurConstraint4MaxNumberOfAssignments}
                   fullWidth={true}
                   inputProps={{
                     min: constraints4.minOfConstraint4MaxNumberOfAssignments,
