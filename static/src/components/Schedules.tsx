@@ -189,8 +189,15 @@ function Schedules(): JSX.Element {
     },
   };
   const [state, updateState] = useImmer<State>(initialState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => updateState(initialState), [termId]);
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.dialogState = {
+          type: FIRST,
+        };
+      }),
+    [termId, updateState]
+  );
   const byTermId = ({ term_id }: { term_id: number }) => term_id === termId;
   const constraints0InTerm = selectedConstraints0.filter(byTermId);
   const constraint0IdsInTerm = new Set(constraints0InTerm.map(({ id }) => id));

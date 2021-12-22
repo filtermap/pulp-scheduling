@@ -45,23 +45,24 @@ function Constraints6(): JSX.Element {
   const constraints6InTerm = selectedConstraints6.filter(
     ({ term_id }) => term_id === termId
   );
-  const kinmusInTerm = React.useMemo(
-    () => selectedKinmus.filter(({ term_id }) => term_id === termId),
-    [selectedKinmus, termId]
+  const kinmusInTerm = selectedKinmus.filter(
+    ({ term_id }) => term_id === termId
   );
-  const initialState = React.useMemo(
-    () => ({
-      creationDialogIsOpen: false,
-      newConstraint6IsEnabled: true,
-      newConstraint6KinmuId:
-        kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined,
-      newConstraint6MaxNumberOfDays:
-        constraints6.minOfConstraint6MaxNumberOfDays,
-    }),
-    [kinmusInTerm]
+  const newConstraint6KinmuId =
+    kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
+  const [state, updateState] = useImmer<State>({
+    creationDialogIsOpen: false,
+    newConstraint6IsEnabled: true,
+    newConstraint6KinmuId,
+    newConstraint6MaxNumberOfDays: constraints6.minOfConstraint6MaxNumberOfDays,
+  });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.newConstraint6KinmuId = newConstraint6KinmuId;
+      }),
+    [newConstraint6KinmuId, updateState]
   );
-  const [state, updateState] = useImmer<State>(initialState);
-  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
       state.creationDialogIsOpen = true;

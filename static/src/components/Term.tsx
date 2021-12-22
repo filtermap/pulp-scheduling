@@ -49,23 +49,16 @@ type ErrorMessages = {
 function Term(props: Props): JSX.Element {
   const dispatch = useDispatch();
   const selectedTerms = useSelector(terms.selectors.selectAll);
-  const selectableTerms = React.useMemo(
-    () =>
-      selectedTerms.filter(
-        (term) => term.id !== props.term.id && term.is_enabled
-      ),
-    [props.term.id, selectedTerms]
+  const selectableTerms = selectedTerms.filter(
+    (term) => term.id !== props.term.id && term.is_enabled
   );
-  const initialSelectedTermId = React.useMemo(
-    () =>
-      selectableTerms.length > 0
-        ? selectableTerms[selectableTerms.length - 1].id
-        : undefined,
-    [selectableTerms]
-  );
+  const selectedTermId =
+    selectableTerms.length > 0
+      ? selectableTerms[selectableTerms.length - 1].id
+      : undefined;
   const [state, updateState] = useImmer<State>({
     importDataDialogIsOpen: false,
-    selectedTermId: initialSelectedTermId,
+    selectedTermId,
     deletionDialogIsOpen: false,
     expanded: false,
     changes: {
@@ -76,12 +69,12 @@ function Term(props: Props): JSX.Element {
   React.useEffect(
     () =>
       updateState((state) => {
-        state.selectedTermId = initialSelectedTermId;
+        state.selectedTermId = selectedTermId;
         state.changes.start_date_name = props.term.start_date_name;
         state.changes.stop_date_name = props.term.stop_date_name;
       }),
     [
-      initialSelectedTermId,
+      selectedTermId,
       props.term.start_date_name,
       props.term.stop_date_name,
       updateState,

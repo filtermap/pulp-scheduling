@@ -45,17 +45,24 @@ function Constraints0(): JSX.Element {
     () => selectedKinmus.filter(({ term_id }) => term_id === termId),
     [selectedKinmus, termId]
   );
-  const initialState = React.useMemo(
-    () => ({
-      creationDialogIsOpen: false,
-      newConstraint0Constraint0KinmuKinmuIds:
-        kinmusInTerm.length > 0 ? [kinmusInTerm[0].id, kinmusInTerm[0].id] : [],
-      newConstraint0IsEnabled: true,
-    }),
+  const newConstraint0Constraint0KinmuKinmuIds = React.useMemo(
+    () =>
+      kinmusInTerm.length > 0 ? [kinmusInTerm[0].id, kinmusInTerm[0].id] : [],
     [kinmusInTerm]
   );
-  const [state, updateState] = useImmer<State>(initialState);
-  React.useEffect(() => updateState(initialState), [initialState, updateState]);
+  const [state, updateState] = useImmer<State>({
+    creationDialogIsOpen: false,
+    newConstraint0Constraint0KinmuKinmuIds,
+    newConstraint0IsEnabled: true,
+  });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.newConstraint0Constraint0KinmuKinmuIds =
+          newConstraint0Constraint0KinmuKinmuIds;
+      }),
+    [newConstraint0Constraint0KinmuKinmuIds, updateState]
+  );
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
       state.creationDialogIsOpen = true;

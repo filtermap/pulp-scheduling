@@ -47,22 +47,22 @@ function Members(): JSX.Element {
   const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === termId
   );
-  const groupsInTerm = React.useMemo(
-    () => selectedGroups.filter(({ term_id }) => term_id === termId),
-    [selectedGroups, termId]
+  const groupsInTerm = selectedGroups.filter(
+    ({ term_id }) => term_id === termId
   );
-  const initialState = React.useMemo(
-    () => ({
-      creationDialogIsOpen: false,
-      newMemberGroupIds: [],
-      newMemberIsEnabled: true,
-      newMemberName: "",
-    }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [groupsInTerm]
+  const [state, updateState] = useImmer<State>({
+    creationDialogIsOpen: false,
+    newMemberGroupIds: [],
+    newMemberIsEnabled: true,
+    newMemberName: "",
+  });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.newMemberGroupIds = [];
+      }),
+    [groupsInTerm, updateState]
   );
-  const [state, updateState] = useImmer<State>(initialState);
-  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
       state.creationDialogIsOpen = true;

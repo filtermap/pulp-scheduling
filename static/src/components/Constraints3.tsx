@@ -50,29 +50,32 @@ function Constraints3(): JSX.Element {
   const constraints3InTerm = selectedConstraints3.filter(
     ({ term_id }) => term_id === termId
   );
-  const membersInTerm = React.useMemo(
-    () => selectedMembers.filter(({ term_id }) => term_id === termId),
-    [selectedMembers, termId]
+  const membersInTerm = selectedMembers.filter(
+    ({ term_id }) => term_id === termId
   );
-  const kinmusInTerm = React.useMemo(
-    () => selectedKinmus.filter(({ term_id }) => term_id === termId),
-    [selectedKinmus, termId]
+  const kinmusInTerm = selectedKinmus.filter(
+    ({ term_id }) => term_id === termId
   );
-  const initialState = React.useMemo(
-    () => ({
-      creationDialogIsOpen: false,
-      newConstraint3IsEnabled: true,
-      newConstraint3KinmuId:
-        kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined,
-      newConstraint3MemberId:
-        membersInTerm.length > 0 ? membersInTerm[0].id : undefined,
-      newConstraint3MinNumberOfAssignments:
-        constraints3.minOfConstraint3MinNumberOfAssignments,
-    }),
-    [kinmusInTerm, membersInTerm]
+  const newConstraint3KinmuId =
+    kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
+  const newConstraint3MemberId =
+    membersInTerm.length > 0 ? membersInTerm[0].id : undefined;
+  const [state, updateState] = useImmer<State>({
+    creationDialogIsOpen: false,
+    newConstraint3IsEnabled: true,
+    newConstraint3KinmuId,
+    newConstraint3MemberId,
+    newConstraint3MinNumberOfAssignments:
+      constraints3.minOfConstraint3MinNumberOfAssignments,
+  });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.newConstraint3KinmuId = newConstraint3KinmuId;
+        state.newConstraint3MemberId = newConstraint3MemberId;
+      }),
+    [newConstraint3KinmuId, newConstraint3MemberId, updateState]
   );
-  const [state, updateState] = useImmer<State>(initialState);
-  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
       state.creationDialogIsOpen = true;

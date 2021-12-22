@@ -60,29 +60,42 @@ function Constraints10(): JSX.Element {
   const constraints10InTerm = selectedConstraints10.filter(
     ({ term_id }) => term_id === termId
   );
-  const membersInTerm = React.useMemo(
-    () => selectedMembers.filter(({ term_id }) => term_id === termId),
-    [selectedMembers, termId]
+  const membersInTerm = selectedMembers.filter(
+    ({ term_id }) => term_id === termId
   );
-  const kinmusInTerm = React.useMemo(
-    () => selectedKinmus.filter(({ term_id }) => term_id === termId),
-    [selectedKinmus, termId]
+  const kinmusInTerm = selectedKinmus.filter(
+    ({ term_id }) => term_id === termId
   );
-  const initialState = React.useMemo(
-    () => ({
-      creationDialogIsOpen: false,
-      newConstraint10IsEnabled: true,
-      newConstraint10KinmuId:
-        kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined,
-      newConstraint10MemberId:
-        membersInTerm.length > 0 ? membersInTerm[0].id : undefined,
-      newConstraint10StartDateName: selectedTerm.start_date_name,
-      newConstraint10StopDateName: selectedTerm.stop_date_name,
-    }),
-    [kinmusInTerm, membersInTerm, selectedTerm]
+  const newConstraint10KinmuId =
+    kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
+  const newConstraint10MemberId =
+    membersInTerm.length > 0 ? membersInTerm[0].id : undefined;
+  const newConstraint10StartDateName = selectedTerm.start_date_name;
+  const newConstraint10StopDateName = selectedTerm.stop_date_name;
+  const [state, updateState] = useImmer<State>({
+    creationDialogIsOpen: false,
+    newConstraint10IsEnabled: true,
+    newConstraint10KinmuId,
+    newConstraint10MemberId,
+    newConstraint10StartDateName,
+    newConstraint10StopDateName,
+  });
+  React.useEffect(
+    () =>
+      updateState((state) => {
+        state.newConstraint10KinmuId = newConstraint10KinmuId;
+        state.newConstraint10MemberId = newConstraint10MemberId;
+        state.newConstraint10StartDateName = newConstraint10StartDateName;
+        state.newConstraint10StopDateName = newConstraint10StopDateName;
+      }),
+    [
+      newConstraint10KinmuId,
+      newConstraint10MemberId,
+      newConstraint10StartDateName,
+      newConstraint10StopDateName,
+      updateState,
+    ]
   );
-  const [state, updateState] = useImmer<State>(initialState);
-  React.useEffect(() => updateState(initialState), [initialState, updateState]);
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
       state.creationDialogIsOpen = true;

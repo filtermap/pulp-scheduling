@@ -35,14 +35,11 @@ function Kinmus(): JSX.Element {
   const termId = parseInt(termIdName!, 10);
   const dispatch = useDispatch();
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
-  const initialState = {
+  const [state, updateState] = useImmer<State>({
     creationDialogIsOpen: false,
     newKinmuIsEnabled: true,
     newKinmuName: "",
-  };
-  const [state, updateState] = useImmer<State>(initialState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => updateState(initialState), [termId]);
+  });
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === termId
   );
