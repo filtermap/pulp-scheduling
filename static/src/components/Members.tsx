@@ -47,8 +47,9 @@ function Members(): JSX.Element {
   const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === termId
   );
-  const groupsInTerm = selectedGroups.filter(
-    ({ term_id }) => term_id === termId
+  const groupsInTerm = React.useMemo(
+    () => selectedGroups.filter(({ term_id }) => term_id === termId),
+    [selectedGroups, termId]
   );
   const [state, updateState] = useImmer<State>({
     creationDialogIsOpen: false,
