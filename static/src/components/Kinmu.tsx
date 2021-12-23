@@ -162,9 +162,8 @@ const Kinmu = (props: Props): JSX.Element => {
     const errorMessages: ErrorMessages = {
       kinmuName: [],
     };
-    if (kinmuName === "") {
+    if (kinmuName === "")
       errorMessages.kinmuName.push("勤務名を入力してください");
-    }
     return errorMessages;
   };
   const handleChangeKinmuName = (

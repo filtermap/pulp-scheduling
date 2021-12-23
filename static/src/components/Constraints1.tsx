@@ -127,21 +127,18 @@ const Constraints1 = (): JSX.Element => {
       newConstraint1StartDateName: [],
       newConstraint1StopDateName: [],
     };
-    if (!utils.stringToDate(newConstraint1StartDateName)) {
+    if (!utils.stringToDate(newConstraint1StartDateName))
       errorMessages.newConstraint1StartDateName.push(
         "開始日の形式が正しくありません"
       );
-    }
-    if (!utils.stringToDate(newConstraint1StopDateName)) {
+    if (!utils.stringToDate(newConstraint1StopDateName))
       errorMessages.newConstraint1StopDateName.push(
         "終了日の形式が正しくありません"
       );
-    }
-    if (isNaN(newConstraint1MinNumberOfAssignments)) {
+    if (isNaN(newConstraint1MinNumberOfAssignments))
       errorMessages.newConstraint1MinNumberOfAssignments.push(
         "割り当て職員数下限の形式が正しくありません"
       );
-    }
     return errorMessages;
   };
   const handleChangeNewConstraint1StartDateName = (

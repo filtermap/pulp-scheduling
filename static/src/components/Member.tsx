@@ -126,9 +126,8 @@ const Member = (props: Props): JSX.Element => {
     const errorMessages: ErrorMessages = {
       memberName: [],
     };
-    if (memberName === "") {
+    if (memberName === "")
       errorMessages.memberName.push("職員名を入力してください");
-    }
     return errorMessages;
   };
   const handleChangeMemberName = (

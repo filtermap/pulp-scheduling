@@ -124,11 +124,10 @@ const Constraint4 = (props: Props): JSX.Element => {
     const errorMessages: ErrorMessages = {
       constraint4MaxNumberOfAssignments: [],
     };
-    if (isNaN(constraint4MaxNumberOfAssignments)) {
+    if (isNaN(constraint4MaxNumberOfAssignments))
       errorMessages.constraint4MaxNumberOfAssignments.push(
         "割り当て数上限の形式が正しくありません"
       );
-    }
     return errorMessages;
   };
   const handleChangeConstraint4MaxNumberOfAssignments = (

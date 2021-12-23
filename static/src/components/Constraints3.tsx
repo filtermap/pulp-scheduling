@@ -113,11 +113,10 @@ const Constraints3 = (): JSX.Element => {
     const errorMessages: ErrorMessages = {
       newConstraint3MinNumberOfAssignments: [],
     };
-    if (isNaN(newConstraint3MinNumberOfAssignments)) {
+    if (isNaN(newConstraint3MinNumberOfAssignments))
       errorMessages.newConstraint3MinNumberOfAssignments.push(
         "割り当て数下限の形式が正しくありません"
       );
-    }
     return errorMessages;
   };
   const handleChangeNewConstraint3MinNumberOfAssignments = (

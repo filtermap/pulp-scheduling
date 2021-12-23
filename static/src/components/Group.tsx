@@ -107,9 +107,8 @@ const Group = (props: Props): JSX.Element => {
     const errorMessages: ErrorMessages = {
       groupName: [],
     };
-    if (groupName === "") {
+    if (groupName === "")
       errorMessages.groupName.push("グループ名を入力してください");
-    }
     return errorMessages;
   };
   const handleChangeGroupName = (

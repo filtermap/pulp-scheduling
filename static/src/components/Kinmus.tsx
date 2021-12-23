@@ -64,9 +64,8 @@ const Kinmus = (): JSX.Element => {
     const errorMessages: ErrorMessages = {
       newKinmuName: [],
     };
-    if (newKinmuName === "") {
+    if (newKinmuName === "")
       errorMessages.newKinmuName.push("勤務名を入力してください");
-    }
     return errorMessages;
   };
   const handleChangeNewKinmuName = (

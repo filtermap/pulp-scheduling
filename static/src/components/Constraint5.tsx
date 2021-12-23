@@ -99,11 +99,10 @@ const Constraint5 = (props: Props): JSX.Element => {
     const errorMessages: ErrorMessages = {
       constraint5MinNumberOfDays: [],
     };
-    if (isNaN(constraint5MinNumberOfDays)) {
+    if (isNaN(constraint5MinNumberOfDays))
       errorMessages.constraint5MinNumberOfDays.push(
         "連続日数下限の形式が正しくありません"
       );
-    }
     return errorMessages;
   };
   const handleChangeConstraint5MinNumberOfDays = (

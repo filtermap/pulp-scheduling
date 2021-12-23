@@ -91,11 +91,10 @@ const Constraints7 = (): JSX.Element => {
     const errorMessages: ErrorMessages = {
       newConstraint7MinNumberOfDays: [],
     };
-    if (isNaN(newConstraint7MinNumberOfDays)) {
+    if (isNaN(newConstraint7MinNumberOfDays))
       errorMessages.newConstraint7MinNumberOfDays.push(
         "間隔日数下限の形式が正しくありません"
       );
-    }
     return errorMessages;
   };
   const handleChangeNewConstraint7MinNumberOfDays = (

@@ -128,16 +128,14 @@ const Constraints10 = (): JSX.Element => {
       newConstraint10StartDateName: [],
       newConstraint10StopDateName: [],
     };
-    if (!utils.stringToDate(newConstraint10StartDateName)) {
+    if (!utils.stringToDate(newConstraint10StartDateName))
       errorMessages.newConstraint10StartDateName.push(
         "開始日の形式が正しくありません"
       );
-    }
-    if (!utils.stringToDate(newConstraint10StopDateName)) {
+    if (!utils.stringToDate(newConstraint10StopDateName))
       errorMessages.newConstraint10StopDateName.push(
         "終了日の形式が正しくありません"
       );
-    }
     return errorMessages;
   };
   const handleChangeNewConstraint10StartDateName = (

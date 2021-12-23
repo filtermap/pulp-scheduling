@@ -105,12 +105,10 @@ const Term = (props: Props): JSX.Element => {
       termStartDateName: [],
       termStopDateName: [],
     };
-    if (!utils.stringToDate(termStartDateName)) {
+    if (!utils.stringToDate(termStartDateName))
       errorMessages.termStartDateName.push("開始日の形式が正しくありません");
-    }
-    if (!utils.stringToDate(termStopDateName)) {
+    if (!utils.stringToDate(termStopDateName))
       errorMessages.termStopDateName.push("終了日の形式が正しくありません");
-    }
     return errorMessages;
   };
   const handleChangeTermStartDateName = (

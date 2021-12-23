@@ -85,9 +85,8 @@ const Groups = (): JSX.Element => {
     const errorMessages: ErrorMessages = {
       newGroupName: [],
     };
-    if (newGroupName === "") {
+    if (newGroupName === "")
       errorMessages.newGroupName.push("グループ名を入力してください");
-    }
     return errorMessages;
   };
   const handleChangeNewGroupName = (

@@ -66,12 +66,10 @@ const Terms = (): JSX.Element => {
       newTermStartDateName: [],
       newTermStopDateName: [],
     };
-    if (!utils.stringToDate(newTermStartDateName)) {
+    if (!utils.stringToDate(newTermStartDateName))
       errorMessages.newTermStartDateName.push("開始日の形式が正しくありません");
-    }
-    if (!utils.stringToDate(newTermStopDateName)) {
+    if (!utils.stringToDate(newTermStopDateName))
       errorMessages.newTermStopDateName.push("終了日の形式が正しくありません");
-    }
     return errorMessages;
   };
   const handleChangeNewTermStartDateName = (

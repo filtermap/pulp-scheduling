@@ -72,6 +72,10 @@
         }
       ],
       "arrow-body-style": "error",
+      "curly": [
+        "error",
+        "multi"
+      ],
       "import/order": [
         "error",
         {

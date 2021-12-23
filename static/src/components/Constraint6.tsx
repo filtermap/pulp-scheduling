@@ -99,11 +99,10 @@ const Constraint6 = (props: Props): JSX.Element => {
     const errorMessages: ErrorMessages = {
       constraint6MaxNumberOfDays: [],
     };
-    if (isNaN(constraint6MaxNumberOfDays)) {
+    if (isNaN(constraint6MaxNumberOfDays))
       errorMessages.constraint6MaxNumberOfDays.push(
         "連続日数上限の形式が正しくありません"
       );
-    }
     return errorMessages;
   };
   const handleChangeConstraint6MaxNumberOfDays = (

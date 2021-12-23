@@ -291,7 +291,7 @@ const Schedules = (): JSX.Element => {
     updateState((state) => {
       state.creationDialogIsOpen = false;
     });
-    if (state.dialogState.type === SOLVED) {
+    if (state.dialogState.type === SOLVED)
       dispatch(
         all.addSchedule({
           new_assignments: state.dialogState.newScheduleAssignments,
@@ -300,7 +300,6 @@ const Schedules = (): JSX.Element => {
           },
         })
       );
-    }
   };
   const dialog = () => {
     switch (state.dialogState.type) {
