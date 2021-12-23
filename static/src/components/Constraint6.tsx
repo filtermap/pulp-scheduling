@@ -42,7 +42,7 @@ type ErrorMessages = {
   constraint6MaxNumberOfDays: string[];
 };
 
-function Constraint6(props: Props): JSX.Element {
+const Constraint6 = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const selectedKinmu = useAppSelector(
@@ -241,6 +241,6 @@ function Constraint6(props: Props): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Constraint6;

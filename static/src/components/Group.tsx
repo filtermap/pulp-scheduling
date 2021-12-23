@@ -52,7 +52,7 @@ type ErrorMessages = {
   groupName: string[];
 };
 
-function Group(props: Props): JSX.Element {
+const Group = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
@@ -306,6 +306,6 @@ function Group(props: Props): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Group;

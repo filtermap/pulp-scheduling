@@ -44,7 +44,7 @@ type ErrorMessages = {
   constraint4MaxNumberOfAssignments: string[];
 };
 
-function Constraint4(props: Props): JSX.Element {
+const Constraint4 = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
@@ -287,6 +287,6 @@ function Constraint4(props: Props): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Constraint4;

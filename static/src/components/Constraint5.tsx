@@ -41,7 +41,8 @@ type State = {
 type ErrorMessages = {
   constraint5MinNumberOfDays: string[];
 };
-function Constraint5(props: Props): JSX.Element {
+
+const Constraint5 = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const selectedKinmu = useAppSelector(
@@ -240,6 +241,6 @@ function Constraint5(props: Props): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Constraint5;

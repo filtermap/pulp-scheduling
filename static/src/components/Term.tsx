@@ -46,7 +46,7 @@ type ErrorMessages = {
   termStopDateName: string[];
 };
 
-function Term(props: Props): JSX.Element {
+const Term = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedTerms = useSelector(terms.selectors.selectAll);
   const selectableTerms = selectedTerms.filter(
@@ -402,6 +402,6 @@ function Term(props: Props): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Term;

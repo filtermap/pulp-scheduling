@@ -14,7 +14,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import Layout from "./components/Layout";
 import * as store from "./modules/store";
 
-function App(): JSX.Element {
+const App = (): JSX.Element => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const theme = createTheme({
     palette: {
@@ -35,6 +35,6 @@ function App(): JSX.Element {
       </ThemeProvider>
     </StyledEngineProvider>
   );
-}
+};
 
 export default App;

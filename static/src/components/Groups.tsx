@@ -36,7 +36,8 @@ type State = {
 type ErrorMessages = {
   newGroupName: string[];
 };
-function Groups(): JSX.Element {
+
+const Groups = (): JSX.Element => {
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -224,6 +225,6 @@ function Groups(): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Groups;

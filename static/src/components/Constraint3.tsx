@@ -44,7 +44,7 @@ type ErrorMessages = {
   constraint3MinNumberOfAssignments: string[];
 };
 
-function Constraint3(props: Props): JSX.Element {
+const Constraint3 = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
@@ -287,6 +287,6 @@ function Constraint3(props: Props): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Constraint3;

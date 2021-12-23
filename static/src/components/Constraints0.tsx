@@ -30,7 +30,7 @@ type State = {
   newConstraint0Constraint0KinmuKinmuIds: number[];
 };
 
-function Constraints0(): JSX.Element {
+const Constraints0 = (): JSX.Element => {
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -269,6 +269,6 @@ function Constraints0(): JSX.Element {
       )}
     </>
   );
-}
+};
 
 export default Constraints0;

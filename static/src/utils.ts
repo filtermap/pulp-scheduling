@@ -2,20 +2,20 @@ type Success = { result: unknown };
 
 type Error = { error: { code: number; message: string; data: unknown } };
 
-export async function sendJSONRPCRequest<T>(
+export const sendJSONRPCRequest = async <T>(
   method: string,
   params: T[] | Record<string, unknown> = []
-): Promise<Success | Error> {
+): Promise<Success | Error> => {
   const response = await fetch("/api", {
     body: JSON.stringify({ id: 1, jsonrpc: "2.0", method, params }),
     method: "post",
   });
   return await response.json();
-}
+};
 
 const dateStringPattern = /^(\d{4})-(\d{1,2})-(\d{1,2})$/;
 
-export function stringToDate(dateString: string): Date | null {
+export const stringToDate = (dateString: string): Date | null => {
   const match = dateString.match(dateStringPattern);
   if (!match) {
     return null;
@@ -26,20 +26,20 @@ export function stringToDate(dateString: string): Date | null {
     parseInt(month, 10) - 1,
     parseInt(day, 10)
   );
-}
+};
 
-export function dateToString(date: Date): string {
+export const dateToString = (date: Date): string => {
   const year = date.getFullYear();
   const month = `${date.getMonth() + 1}`.padStart(2, "0");
   const day = `${date.getDate()}`.padStart(2, "0");
   return `${year}-${month}-${day}`;
-}
+};
 
-export function intersperse<T, U>(array: T[], separator: U): (T | U)[] {
+export const intersperse = <T, U>(array: T[], separator: U): (T | U)[] => {
   return array
     .reduce<(T | U)[]>(
       (accumulator, current) => [...accumulator, separator, current],
       []
     )
     .slice(1);
-}
+};

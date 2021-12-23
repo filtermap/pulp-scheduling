@@ -34,7 +34,7 @@ type ErrorMessages = {
   newConstraint6MaxNumberOfDays: string[];
 };
 
-function Constraints6(): JSX.Element {
+const Constraints6 = (): JSX.Element => {
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -250,6 +250,6 @@ function Constraints6(): JSX.Element {
       )}
     </>
   );
-}
+};
 
 export default Constraints6;

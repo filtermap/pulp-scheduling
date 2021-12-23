@@ -73,17 +73,17 @@ type State = {
   drawerIsOpen: boolean;
 };
 
-function ListItemLink(props: { to: string; primary: string }) {
+const ListItemLink = (props: { to: string; primary: string }) => {
   const { primary, to } = props;
   const location = useLocation();
+  const Link = React.useCallback(
+    (itemProps, ref) => <RouterLink to={to} ref={ref} {...itemProps} />,
+    [to]
+  );
   const renderLink = React.useMemo(
     () =>
-      React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(
-        function Link(itemProps, ref) {
-          return <RouterLink to={to} ref={ref} {...itemProps} />;
-        }
-      ),
-    [to]
+      React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(Link),
+    [Link]
   );
   return (
     <ListItem
@@ -94,9 +94,9 @@ function ListItemLink(props: { to: string; primary: string }) {
       <ListItemText primary={primary} />
     </ListItem>
   );
-}
+};
 
-function TermListItems(props: { term: terms.Term }) {
+const TermListItems = (props: { term: terms.Term }) => {
   const [state, updateState] = useImmer<{ isOpen: boolean }>({
     isOpen: false,
   });
@@ -170,9 +170,9 @@ function TermListItems(props: { term: terms.Term }) {
       </Collapse>
     </>
   );
-}
+};
 
-export default function Layout(): JSX.Element {
+const Layout = (): JSX.Element => {
   const dispatch = useDispatch();
   const selectedFutureExists = useAppSelector(
     (state) => state.future.length > 0
@@ -418,4 +418,6 @@ export default function Layout(): JSX.Element {
       </Box>
     </Box>
   );
-}
+};
+
+export default Layout;

@@ -91,17 +91,17 @@ const initialState: All = {
   terms: terms.adapter.getInitialState(),
 };
 
-function maxId<T extends { id: number }>(array: T[]): number {
+const maxId = <T extends { id: number }>(array: T[]): number => {
   return Math.max(0, ...array.map(({ id }) => id));
-}
+};
 
 // TODO: think more meaningfull function name
-function doubleItemsByKey<T extends { id: number }>(
+const doubleItemsByKey = <T extends { id: number }>(
   array: T[],
   keyOfItem: keyof T,
   fromValue: T[keyof T],
   toValue: T[keyof T]
-): { copied: T[]; idMap: Map<number, number> } {
+): { copied: T[]; idMap: Map<number, number> } => {
   return array.reduce<{
     copied: T[];
     idMap: Map<number, number>;
@@ -120,7 +120,7 @@ function doubleItemsByKey<T extends { id: number }>(
     },
     { copied: [], idMap: new Map(), lastId: maxId(array) }
   );
-}
+};
 
 export type NewAssignment = {
   date_name: string;

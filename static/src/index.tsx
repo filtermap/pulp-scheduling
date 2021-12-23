@@ -7,13 +7,13 @@ import "ts-polyfill/lib/es2017-object";
 import "ts-polyfill/lib/es2017-string";
 import App from "./App";
 
-function main() {
+const main = () => {
   ReactDOM.render(
     <React.StrictMode>
       <App />
     </React.StrictMode>,
     document.getElementById("root") as HTMLElement
   );
-}
+};
 
 main();

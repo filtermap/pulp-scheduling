@@ -49,7 +49,7 @@ type ErrorMessages = {
   constraint10StopDateName: string[];
 };
 
-function Constraint10(props: Props): JSX.Element {
+const Constraint10 = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
@@ -376,6 +376,6 @@ function Constraint10(props: Props): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Constraint10;

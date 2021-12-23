@@ -59,7 +59,7 @@ type ErrorMessages = {
   memberName: string[];
 };
 
-function Member(props: Props): JSX.Element {
+const Member = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedAssignments = useSelector(assignments.selectors.selectAll);
   const selectedSchedules = useSelector(schedules.selectors.selectAll);
@@ -84,26 +84,26 @@ function Member(props: Props): JSX.Element {
       }),
     [props.member.name, updateState]
   );
-  const groupMembersInTerm = selectedGroupMembers.filter(
+  const memberGroupMembers = selectedGroupMembers.filter(
     ({ member_id }) => member_id === props.member.id
   );
   const groupsInTerm = selectedGroups.filter(
     ({ term_id }) => term_id === props.member.term_id
   );
-  const assignmentsInTerm = selectedAssignments.filter(
+  const memberAssignments = selectedAssignments.filter(
     ({ member_id }) => member_id === props.member.id
   );
-  const constraints3InTerm = selectedConstraints3.filter(
-    ({ term_id }) => term_id === props.member.term_id
+  const memberConstraints3 = selectedConstraints3.filter(
+    ({ member_id }) => member_id === props.member.id
   );
-  const constraints4InTerm = selectedConstraints4.filter(
-    ({ term_id }) => term_id === props.member.term_id
+  const memberConstraints4 = selectedConstraints4.filter(
+    ({ member_id }) => member_id === props.member.id
   );
-  const constraints9InTerm = selectedConstraints9.filter(
-    ({ term_id }) => term_id === props.member.term_id
+  const memberConstraints9 = selectedConstraints9.filter(
+    ({ member_id }) => member_id === props.member.id
   );
-  const constraints10InTerm = selectedConstraints10.filter(
-    ({ term_id }) => term_id === props.member.term_id
+  const memberConstraints10 = selectedConstraints10.filter(
+    ({ member_id }) => member_id === props.member.id
   );
   const handleClickExpand = () => {
     updateState((state) => {
@@ -184,33 +184,17 @@ function Member(props: Props): JSX.Element {
     dispatch(all.removeMember(props.member.id));
   };
   const memberGroupNames = utils.intersperse(
-    groupMembersInTerm
-      .filter((group_member) => group_member.member_id === props.member.id)
-      .map(({ id, group_id }) => (
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        <GroupName key={id} group={selectedGroupById[group_id]!} />
-      )),
+    memberGroupMembers.map(({ id, group_id }) => (
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      <GroupName key={id} group={selectedGroupById[group_id]!} />
+    )),
     ", "
   );
   const memberScheduleIds = new Set(
-    assignmentsInTerm
-      .filter(({ member_id }) => member_id === props.member.id)
-      .map(({ schedule_id }) => schedule_id)
+    memberAssignments.map(({ schedule_id }) => schedule_id)
   );
   const memberSchedules = selectedSchedules.filter(({ id }) =>
     memberScheduleIds.has(id)
-  );
-  const memberConstraints3 = constraints3InTerm.filter(
-    (c) => c.member_id === props.member.id
-  );
-  const memberConstraints4 = constraints4InTerm.filter(
-    (c) => c.member_id === props.member.id
-  );
-  const memberConstraints9 = constraints9InTerm.filter(
-    (c) => c.member_id === props.member.id
-  );
-  const memberConstraints10 = constraints10InTerm.filter(
-    (c) => c.member_id === props.member.id
   );
   const errorMessages = validate(props.member.name);
   return (
@@ -271,7 +255,7 @@ function Member(props: Props): JSX.Element {
                         label={<GroupName group={group} />}
                         control={
                           <Checkbox
-                            checked={groupMembersInTerm.some(
+                            checked={memberGroupMembers.some(
                               (group_member) =>
                                 group_member.group_id === group.id &&
                                 group_member.member_id === props.member.id
@@ -310,46 +294,46 @@ function Member(props: Props): JSX.Element {
               </Typography>
               <Typography variant="caption">{memberGroupNames}</Typography>
             </Grid>
-            <Grid item={true} xs={12}>
-              {memberSchedules.length > 0 && (
+            {memberSchedules.length > 0 && (
+              <Grid item={true} xs={12}>
                 <DialogContentText>
                   以下の勤務表の割り当ても削除されます
                 </DialogContentText>
-              )}
-              {memberSchedules.map((schedule) => (
-                <Typography key={schedule.id}>
-                  <ScheduleName schedule={schedule} />
-                </Typography>
-              ))}
-            </Grid>
-            <Grid item={true} xs={12}>
-              {(memberConstraints3.length > 0 ||
-                memberConstraints4.length > 0 ||
-                memberConstraints9.length > 0 ||
-                memberConstraints10.length > 0) && (
+                {memberSchedules.map((schedule) => (
+                  <Typography key={schedule.id}>
+                    <ScheduleName schedule={schedule} />
+                  </Typography>
+                ))}
+              </Grid>
+            )}
+            {(memberConstraints3.length > 0 ||
+              memberConstraints4.length > 0 ||
+              memberConstraints9.length > 0 ||
+              memberConstraints10.length > 0) && (
+              <Grid item={true} xs={12}>
                 <DialogContentText>以下の条件も削除されます</DialogContentText>
-              )}
-              {memberConstraints3.map((c) => (
-                <Typography key={`constraint3_${c.id}`}>
-                  <Constraint3Name constraint3={c} />
-                </Typography>
-              ))}
-              {memberConstraints4.map((c) => (
-                <Typography key={`constraint4_${c.id}`}>
-                  <Constraint4Name constraint4={c} />
-                </Typography>
-              ))}
-              {memberConstraints9.map((c) => (
-                <Typography key={`constraint9_${c.id}`}>
-                  <Constraint9Name constraint9={c} />
-                </Typography>
-              ))}
-              {memberConstraints10.map((c) => (
-                <Typography key={`constraint10_${c.id}`}>
-                  <Constraint10Name constraint10={c} />
-                </Typography>
-              ))}
-            </Grid>
+                {memberConstraints3.map((c) => (
+                  <Typography key={`constraint3_${c.id}`}>
+                    <Constraint3Name constraint3={c} />
+                  </Typography>
+                ))}
+                {memberConstraints4.map((c) => (
+                  <Typography key={`constraint4_${c.id}`}>
+                    <Constraint4Name constraint4={c} />
+                  </Typography>
+                ))}
+                {memberConstraints9.map((c) => (
+                  <Typography key={`constraint9_${c.id}`}>
+                    <Constraint9Name constraint9={c} />
+                  </Typography>
+                ))}
+                {memberConstraints10.map((c) => (
+                  <Typography key={`constraint10_${c.id}`}>
+                    <Constraint10Name constraint10={c} />
+                  </Typography>
+                ))}
+              </Grid>
+            )}
           </Grid>
         </DialogContent>
         <DialogActions>
@@ -363,6 +347,6 @@ function Member(props: Props): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Member;

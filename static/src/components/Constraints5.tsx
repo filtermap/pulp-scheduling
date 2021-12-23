@@ -34,7 +34,7 @@ type ErrorMessages = {
   newConstraint5MinNumberOfDays: string[];
 };
 
-function Constraints5(): JSX.Element {
+const Constraints5 = (): JSX.Element => {
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -250,6 +250,6 @@ function Constraints5(): JSX.Element {
       )}
     </>
   );
-}
+};
 
 export default Constraints5;

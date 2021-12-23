@@ -46,15 +46,15 @@ type State = {
   deletionDialogIsOpen: boolean;
 };
 
-function sortDateNames(dateNames: string[]): string[] {
+const sortDateNames = (dateNames: string[]): string[] => {
   return [...dateNames].sort(
     (a, b) =>
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       utils.stringToDate(a)!.getTime() - utils.stringToDate(b)!.getTime()
   );
-}
+};
 
-function Schedule(props: Props): JSX.Element {
+const Schedule = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedAssignments = useSelector(assignments.selectors.selectAll);
   const selectedMembers = useSelector(members.selectors.selectAll);
@@ -228,6 +228,6 @@ function Schedule(props: Props): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Schedule;

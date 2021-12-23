@@ -31,7 +31,7 @@ type ErrorMessages = {
   newTermStopDateName: string[];
 };
 
-function Terms(): JSX.Element {
+const Terms = (): JSX.Element => {
   const dispatch = useDispatch();
   const selectedTerms = useSelector(terms.selectors.selectAll);
   const todayString = utils.dateToString(new Date());
@@ -205,6 +205,6 @@ function Terms(): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Terms;

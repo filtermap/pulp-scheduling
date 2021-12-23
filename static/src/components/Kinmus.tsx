@@ -29,7 +29,7 @@ type ErrorMessages = {
   newKinmuName: string[];
 };
 
-function Kinmus(): JSX.Element {
+const Kinmus = (): JSX.Element => {
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -164,6 +164,6 @@ function Kinmus(): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Kinmus;

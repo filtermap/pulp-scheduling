@@ -65,7 +65,7 @@ type ErrorMessages = {
   kinmuName: string[];
 };
 
-function Kinmu(props: Props): JSX.Element {
+const Kinmu = (props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedAssignments = useSelector(assignments.selectors.selectAll);
   const selectedSchedules = useSelector(schedules.selectors.selectAll);
@@ -410,6 +410,6 @@ function Kinmu(props: Props): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Kinmu;

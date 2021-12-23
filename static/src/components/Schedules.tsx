@@ -115,15 +115,15 @@ type State = {
   dialogState: DialogState;
 };
 
-function sortDateNames(dateNames: string[]): string[] {
+const sortDateNames = (dateNames: string[]): string[] => {
   return [...dateNames].sort(
     (a, b) =>
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       utils.stringToDate(a)!.getTime() - utils.stringToDate(b)!.getTime()
   );
-}
+};
 
-function Schedules(): JSX.Element {
+const Schedules = (): JSX.Element => {
   const dispatch = useDispatch();
   const selectedGroups = useSelector(groups.selectors.selectAll);
   const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
@@ -602,6 +602,6 @@ function Schedules(): JSX.Element {
       {dialog()}
     </>
   );
-}
+};
 
 export default Schedules;

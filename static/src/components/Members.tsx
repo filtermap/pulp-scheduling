@@ -37,7 +37,7 @@ type ErrorMessages = {
   newMemberName: string[];
 };
 
-function Members(): JSX.Element {
+const Members = (): JSX.Element => {
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -225,6 +225,6 @@ function Members(): JSX.Element {
       </Dialog>
     </>
   );
-}
+};
 
 export default Members;
