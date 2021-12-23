@@ -6,9 +6,11 @@ import lineThroughSx from "./lineThroughSx";
 
 type Props = BoxProps & { line: boolean };
 
-const LineThrough = styled((props: Props) => {
-  const { line, ...other } = props;
-  return <Box component="span" {...other} />;
-})(({ line }) => ({ ...(line && lineThroughSx) }));
+const LineThrough = React.memo(
+  styled((props: Props) => {
+    const { line, ...other } = props;
+    return <Box component="span" {...other} />;
+  })(({ line }) => ({ ...(line && lineThroughSx) }))
+);
 
 export default LineThrough;

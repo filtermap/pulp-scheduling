@@ -14,7 +14,8 @@ type Props = {
   constraint10: Constraint10;
 };
 
-const Constraint10Name = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraint10Name = React.memo((props: Props): JSX.Element => {
   const selectedMember = useAppSelector(
     (state) =>
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -59,6 +60,6 @@ const Constraint10Name = (props: Props): JSX.Element => {
       を割り当てない
     </>
   );
-};
+});
 
 export default Constraint10Name;

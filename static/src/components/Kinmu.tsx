@@ -65,7 +65,8 @@ type ErrorMessages = {
   kinmuName: string[];
 };
 
-const Kinmu = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Kinmu = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedAssignments = useSelector(assignments.selectors.selectAll);
   const selectedSchedules = useSelector(schedules.selectors.selectAll);
@@ -409,6 +410,6 @@ const Kinmu = (props: Props): JSX.Element => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Kinmu;

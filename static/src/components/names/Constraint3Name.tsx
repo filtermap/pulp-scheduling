@@ -11,7 +11,8 @@ type Props = {
   constraint3: Constraint3;
 };
 
-const Constraint3Name = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraint3Name = React.memo((props: Props): JSX.Element => {
   const selectedKinmu = useAppSelector(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     (state) => kinmus.selectors.selectById(state, props.constraint3.kinmu_id)!
@@ -27,6 +28,6 @@ const Constraint3Name = (props: Props): JSX.Element => {
       {props.constraint3.min_number_of_assignments}回以上割り当てる
     </>
   );
-};
+});
 
 export default Constraint3Name;

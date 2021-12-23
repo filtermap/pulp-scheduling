@@ -43,7 +43,8 @@ type ErrorMessages = {
   newConstraint10StopDateName: string[];
 };
 
-const Constraints10 = (): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraints10 = React.memo((): JSX.Element => {
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -393,6 +394,6 @@ const Constraints10 = (): JSX.Element => {
       )}
     </>
   );
-};
+});
 
 export default Constraints10;

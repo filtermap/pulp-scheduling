@@ -11,7 +11,8 @@ type Props = {
   constraint0: Constraint0;
 };
 
-const Constraint0Name = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraint0Name = React.memo((props: Props): JSX.Element => {
   const selectedConstraint0Kinmus = useSelector(
     constraint0_kinmus.selectors.selectAll
   );
@@ -30,6 +31,6 @@ const Constraint0Name = (props: Props): JSX.Element => {
       )}
     </>
   );
-};
+});
 
 export default Constraint0Name;

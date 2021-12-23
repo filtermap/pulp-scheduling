@@ -10,14 +10,16 @@ interface RotationalExpandMoreProps extends SvgIconProps {
   expanded: boolean;
 }
 
-const RotationalExpandMore = styled((props: RotationalExpandMoreProps) => {
-  const { expanded, ...other } = props;
-  return <ExpandMore {...other} />;
-})(({ theme, expanded }) => ({
-  transform: !expanded ? "rotate(0deg)" : "rotate(180deg)",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
+const RotationalExpandMore = React.memo(
+  styled((props: RotationalExpandMoreProps) => {
+    const { expanded, ...other } = props;
+    return <ExpandMore {...other} />;
+  })(({ theme, expanded }) => ({
+    transform: !expanded ? "rotate(0deg)" : "rotate(180deg)",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest,
+    }),
+  }))
+);
 
 export default RotationalExpandMore;

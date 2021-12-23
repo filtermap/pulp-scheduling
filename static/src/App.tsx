@@ -14,7 +14,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import Layout from "./components/Layout";
 import * as store from "./modules/store";
 
-const App = (): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const App = React.memo((): JSX.Element => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const theme = createTheme({
     palette: {
@@ -35,6 +36,6 @@ const App = (): JSX.Element => {
       </ThemeProvider>
     </StyledEngineProvider>
   );
-};
+});
 
 export default App;

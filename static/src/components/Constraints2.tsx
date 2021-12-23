@@ -45,7 +45,8 @@ type ErrorMessages = {
   newConstraint2MaxNumberOfAssignments: string[];
 };
 
-const Constraints2 = (): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraints2 = React.memo((): JSX.Element => {
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -443,6 +444,6 @@ const Constraints2 = (): JSX.Element => {
       )}
     </>
   );
-};
+});
 
 export default Constraints2;

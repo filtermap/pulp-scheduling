@@ -9,7 +9,8 @@ type Props = {
   constraint6: Constraint6;
 };
 
-const Constraint6Name = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraint6Name = React.memo((props: Props): JSX.Element => {
   const selectedKinmu = useAppSelector(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     (state) => kinmus.selectors.selectById(state, props.constraint6.kinmu_id)!
@@ -20,6 +21,6 @@ const Constraint6Name = (props: Props): JSX.Element => {
       の連続日数を{props.constraint6.max_number_of_days}日以下にする
     </>
   );
-};
+});
 
 export default Constraint6Name;

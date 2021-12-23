@@ -14,7 +14,8 @@ type Props = {
   constraint2: Constraint2;
 };
 
-const Constraint2Name = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraint2Name = React.memo((props: Props): JSX.Element => {
   const selectedTerm = useAppSelector(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     (state) => terms.selectors.selectById(state, props.constraint2.term_id)!
@@ -58,6 +59,6 @@ const Constraint2Name = (props: Props): JSX.Element => {
       から{props.constraint2.max_number_of_assignments}人以下の職員を割り当てる
     </>
   );
-};
+});
 
 export default Constraint2Name;

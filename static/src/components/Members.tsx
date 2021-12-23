@@ -37,7 +37,8 @@ type ErrorMessages = {
   newMemberName: string[];
 };
 
-const Members = (): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Members = React.memo((): JSX.Element => {
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -223,6 +224,6 @@ const Members = (): JSX.Element => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Members;

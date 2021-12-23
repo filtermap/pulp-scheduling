@@ -46,7 +46,8 @@ type ErrorMessages = {
   termStopDateName: string[];
 };
 
-const Term = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Term = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedTerms = useSelector(terms.selectors.selectAll);
   const selectableTerms = selectedTerms.filter(
@@ -400,6 +401,6 @@ const Term = (props: Props): JSX.Element => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Term;

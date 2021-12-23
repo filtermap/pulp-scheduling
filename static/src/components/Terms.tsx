@@ -31,7 +31,8 @@ type ErrorMessages = {
   newTermStopDateName: string[];
 };
 
-const Terms = (): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Terms = React.memo((): JSX.Element => {
   const dispatch = useDispatch();
   const selectedTerms = useSelector(terms.selectors.selectAll);
   const todayString = utils.dateToString(new Date());
@@ -203,6 +204,6 @@ const Terms = (): JSX.Element => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Terms;

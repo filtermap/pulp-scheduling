@@ -5,8 +5,13 @@ import LineThrough from "../parts/LineThrough";
 
 type Props = { member: Member };
 
-const MemberName = (props: Props): JSX.Element => (
-  <LineThrough line={!props.member.is_enabled}>{props.member.name}</LineThrough>
+// eslint-disable-next-line react/display-name
+const MemberName = React.memo(
+  (props: Props): JSX.Element => (
+    <LineThrough line={!props.member.is_enabled}>
+      {props.member.name}
+    </LineThrough>
+  )
 );
 
 export default MemberName;

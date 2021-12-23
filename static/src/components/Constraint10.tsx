@@ -49,7 +49,8 @@ type ErrorMessages = {
   constraint10StopDateName: string[];
 };
 
-const Constraint10 = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraint10 = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
@@ -374,6 +375,6 @@ const Constraint10 = (props: Props): JSX.Element => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Constraint10;

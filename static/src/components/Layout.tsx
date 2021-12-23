@@ -73,10 +73,12 @@ type State = {
   drawerIsOpen: boolean;
 };
 
-const ListItemLink = (props: { to: string; primary: string }) => {
+// eslint-disable-next-line react/display-name
+const ListItemLink = React.memo((props: { to: string; primary: string }) => {
   const { primary, to } = props;
   const location = useLocation();
   const Link = React.useCallback(
+    // eslint-disable-next-line react-memo/require-memo
     (itemProps, ref) => <RouterLink to={to} ref={ref} {...itemProps} />,
     [to]
   );
@@ -94,9 +96,10 @@ const ListItemLink = (props: { to: string; primary: string }) => {
       <ListItemText primary={primary} />
     </ListItem>
   );
-};
+});
 
-const TermListItems = (props: { term: terms.Term }) => {
+// eslint-disable-next-line react/display-name
+const TermListItems = React.memo((props: { term: terms.Term }) => {
   const [state, updateState] = useImmer<{ isOpen: boolean }>({
     isOpen: false,
   });
@@ -170,9 +173,10 @@ const TermListItems = (props: { term: terms.Term }) => {
       </Collapse>
     </>
   );
-};
+});
 
-const Layout = (): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Layout = React.memo((): JSX.Element => {
   const dispatch = useDispatch();
   const selectedFutureExists = useAppSelector(
     (state) => state.future.length > 0
@@ -418,6 +422,6 @@ const Layout = (): JSX.Element => {
       </Box>
     </Box>
   );
-};
+});
 
 export default Layout;

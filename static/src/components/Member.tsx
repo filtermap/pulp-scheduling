@@ -59,7 +59,8 @@ type ErrorMessages = {
   memberName: string[];
 };
 
-const Member = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Member = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedAssignments = useSelector(assignments.selectors.selectAll);
   const selectedSchedules = useSelector(schedules.selectors.selectAll);
@@ -345,6 +346,6 @@ const Member = (props: Props): JSX.Element => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Member;

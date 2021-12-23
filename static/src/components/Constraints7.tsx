@@ -34,7 +34,8 @@ type ErrorMessages = {
   newConstraint7MinNumberOfDays: string[];
 };
 
-const Constraints7 = (): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraints7 = React.memo((): JSX.Element => {
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -249,6 +250,6 @@ const Constraints7 = (): JSX.Element => {
       )}
     </>
   );
-};
+});
 
 export default Constraints7;

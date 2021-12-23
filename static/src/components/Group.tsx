@@ -52,7 +52,8 @@ type ErrorMessages = {
   groupName: string[];
 };
 
-const Group = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Group = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
@@ -304,6 +305,6 @@ const Group = (props: Props): JSX.Element => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Group;

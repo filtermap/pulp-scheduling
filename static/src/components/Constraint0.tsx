@@ -36,7 +36,8 @@ type State = {
   deletionDialogIsOpen: boolean;
 };
 
-const Constraint0 = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraint0 = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedConstraint0Kinmus = useSelector(
     constraint0_kinmus.selectors.selectAll
@@ -228,6 +229,6 @@ const Constraint0 = (props: Props): JSX.Element => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Constraint0;

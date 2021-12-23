@@ -42,7 +42,8 @@ type ErrorMessages = {
   constraint8MaxNumberOfDays: string[];
 };
 
-const Constraint8 = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraint8 = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const selectedKinmu = useAppSelector(
@@ -240,6 +241,6 @@ const Constraint8 = (props: Props): JSX.Element => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Constraint8;

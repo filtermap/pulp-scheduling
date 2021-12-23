@@ -10,13 +10,16 @@ interface ExpandMoreButtonProps extends IconButtonProps {
   expanded: boolean;
 }
 
-const ExpandMoreButton = (props: ExpandMoreButtonProps): JSX.Element => {
-  const { expanded, ...other } = props;
-  return (
-    <IconButton {...other}>
-      <RotationalExpandMore expanded={expanded} />
-    </IconButton>
-  );
-};
+// eslint-disable-next-line react/display-name
+const ExpandMoreButton = React.memo(
+  (props: ExpandMoreButtonProps): JSX.Element => {
+    const { expanded, ...other } = props;
+    return (
+      <IconButton {...other}>
+        <RotationalExpandMore expanded={expanded} />
+      </IconButton>
+    );
+  }
+);
 
 export default ExpandMoreButton;

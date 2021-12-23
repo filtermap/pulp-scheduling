@@ -53,7 +53,8 @@ const sortDateNames = (dateNames: string[]): string[] =>
       utils.stringToDate(a)!.getTime() - utils.stringToDate(b)!.getTime()
   );
 
-const Schedule = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Schedule = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedAssignments = useSelector(assignments.selectors.selectAll);
   const selectedMembers = useSelector(members.selectors.selectAll);
@@ -227,6 +228,6 @@ const Schedule = (props: Props): JSX.Element => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Schedule;

@@ -9,7 +9,8 @@ type Props = {
   constraint5: Constraint5;
 };
 
-const Constraint5Name = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraint5Name = React.memo((props: Props): JSX.Element => {
   const selectedKinmu = useAppSelector(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     (state) => kinmus.selectors.selectById(state, props.constraint5.kinmu_id)!
@@ -20,6 +21,6 @@ const Constraint5Name = (props: Props): JSX.Element => {
       の連続日数を{props.constraint5.min_number_of_days}日以上にする
     </>
   );
-};
+});
 
 export default Constraint5Name;

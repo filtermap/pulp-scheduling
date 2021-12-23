@@ -51,7 +51,8 @@ type ErrorMessages = {
   constraint2MaxNumberOfAssignments: string[];
 };
 
-const Constraint2 = (props: Props): JSX.Element => {
+// eslint-disable-next-line react/display-name
+const Constraint2 = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedGroups = useSelector(groups.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
@@ -429,6 +430,6 @@ const Constraint2 = (props: Props): JSX.Element => {
       </Dialog>
     </>
   );
-};
+});
 
 export default Constraint2;
