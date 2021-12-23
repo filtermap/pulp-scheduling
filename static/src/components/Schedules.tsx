@@ -115,13 +115,12 @@ type State = {
   dialogState: DialogState;
 };
 
-const sortDateNames = (dateNames: string[]): string[] => {
-  return [...dateNames].sort(
+const sortDateNames = (dateNames: string[]): string[] =>
+  [...dateNames].sort(
     (a, b) =>
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       utils.stringToDate(a)!.getTime() - utils.stringToDate(b)!.getTime()
   );
-};
 
 const Schedules = (): JSX.Element => {
   const dispatch = useDispatch();

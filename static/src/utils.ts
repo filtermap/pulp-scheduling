@@ -35,11 +35,10 @@ export const dateToString = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-export const intersperse = <T, U>(array: T[], separator: U): (T | U)[] => {
-  return array
+export const intersperse = <T, U>(array: T[], separator: U): (T | U)[] =>
+  array
     .reduce<(T | U)[]>(
       (accumulator, current) => [...accumulator, separator, current],
       []
     )
     .slice(1);
-};

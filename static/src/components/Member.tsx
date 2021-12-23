@@ -148,8 +148,8 @@ const Member = (props: Props): JSX.Element => {
       })
     );
   };
-  const handleChangeGroupMember = (groupId: number) => {
-    return (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeGroupMember =
+    (groupId: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
         dispatch(
           group_members.add({
@@ -166,7 +166,6 @@ const Member = (props: Props): JSX.Element => {
         })
       );
     };
-  };
   const handleClickOpenDeletionDialog = () => {
     updateState((state) => {
       state.deletionDialogIsOpen = true;

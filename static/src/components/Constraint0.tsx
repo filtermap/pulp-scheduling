@@ -67,22 +67,19 @@ const Constraint0 = (props: Props): JSX.Element => {
       })
     );
   };
-  const handleClickCreateConstraint0Kinmu = (sequence_number: number) => {
-    return () => {
-      const kinmu_id = kinmusInTerm[0].id;
-      dispatch(
-        constraint0_kinmus.add({
-          constraint0_id: props.constraint0.id,
-          kinmu_id,
-          sequence_number,
-        })
-      );
-    };
+  const handleClickCreateConstraint0Kinmu = (sequence_number: number) => () => {
+    const kinmu_id = kinmusInTerm[0].id;
+    dispatch(
+      constraint0_kinmus.add({
+        constraint0_id: props.constraint0.id,
+        kinmu_id,
+        sequence_number,
+      })
+    );
   };
-  const handleChangeConstraint0KinmuKinmuId = (
-    constraint0_kinmu_id: number
-  ) => {
-    return (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeConstraint0KinmuKinmuId =
+    (constraint0_kinmu_id: number) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       dispatch(
         constraint0_kinmus.update({
           changes: {
@@ -92,12 +89,10 @@ const Constraint0 = (props: Props): JSX.Element => {
         })
       );
     };
-  };
-  const handleClickDeleteConstraint0Kinmu = (constraint0_kinmu_id: number) => {
-    return () => {
+  const handleClickDeleteConstraint0Kinmu =
+    (constraint0_kinmu_id: number) => () => {
       dispatch(all.removeConstraint0Kinmu(constraint0_kinmu_id));
     };
-  };
   const handleClickOpenDeletionDialog = () => {
     updateState((state) => {
       state.deletionDialogIsOpen = true;

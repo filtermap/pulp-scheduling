@@ -80,8 +80,8 @@ const Constraints0 = (): JSX.Element => {
       state.newConstraint0IsEnabled = event.target.checked;
     });
   };
-  const handleClickCreateNewConstraint0Constraint0Kinmu = (index: number) => {
-    return () => {
+  const handleClickCreateNewConstraint0Constraint0Kinmu =
+    (index: number) => () => {
       updateState((state) => {
         state.newConstraint0Constraint0KinmuKinmuIds.splice(
           index,
@@ -90,9 +90,8 @@ const Constraints0 = (): JSX.Element => {
         );
       });
     };
-  };
-  const handleChangeNewConstraint0Constraint0KinmuKinmuId = (index: number) => {
-    return (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeNewConstraint0Constraint0KinmuKinmuId =
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
       updateState((state) => {
         state.newConstraint0Constraint0KinmuKinmuIds[index] = parseInt(
           event.target.value,
@@ -100,14 +99,12 @@ const Constraints0 = (): JSX.Element => {
         );
       });
     };
-  };
-  const handleClickDeleteNewConstraint0Constraint0Kinmu = (index: number) => {
-    return () => {
+  const handleClickDeleteNewConstraint0Constraint0Kinmu =
+    (index: number) => () => {
       updateState((state) => {
         state.newConstraint0Constraint0KinmuKinmuIds.splice(index, 1);
       });
     };
-  };
   const handleClickCreateConstraint0 = () => {
     updateState((state) => {
       state.creationDialogIsOpen = false;

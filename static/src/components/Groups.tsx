@@ -97,8 +97,8 @@ const Groups = (): JSX.Element => {
       state.newGroupName = event.target.value;
     });
   };
-  const handleChangeNewGroupMember = (memberId: number) => {
-    return (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeNewGroupMember =
+    (memberId: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
         updateState((state) => {
           state.newGroupMemberIds.push(memberId);
@@ -111,7 +111,6 @@ const Groups = (): JSX.Element => {
         );
       });
     };
-  };
   const handleClickCreateGroup = () => {
     updateState((state) => {
       state.creationDialogIsOpen = false;

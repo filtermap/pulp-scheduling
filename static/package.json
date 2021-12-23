@@ -71,6 +71,7 @@
           "ts-ignore": "allow-with-description"
         }
       ],
+      "arrow-body-style": "error",
       "import/order": [
         "error",
         {

@@ -22,10 +22,10 @@ const Constraint0Name = (props: Props): JSX.Element => {
   return (
     <>
       {utils.intersperse(
-        constraint0Constraint0Kinmus.map(({ id, kinmu_id }) => {
+        constraint0Constraint0Kinmus.map(({ id, kinmu_id }) => (
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          return <KinmuName key={id} kinmu={selectedKinmuById[kinmu_id]!} />;
-        }),
+          <KinmuName key={id} kinmu={selectedKinmuById[kinmu_id]!} />
+        )),
         ", "
       )}
     </>
