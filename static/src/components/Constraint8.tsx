@@ -50,11 +50,11 @@ function Constraint8(props: Props): JSX.Element {
     (state) => kinmus.selectors.selectById(state, props.constraint8.kinmu_id)!
   );
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
       max_number_of_days: props.constraint8.max_number_of_days,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -76,10 +76,10 @@ function Constraint8(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints8.update({
-        id: props.constraint8.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.constraint8.id,
       })
     );
   };
@@ -88,10 +88,10 @@ function Constraint8(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints8.update({
-        id: props.constraint8.id,
         changes: {
           kinmu_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint8.id,
       })
     );
   };
@@ -116,10 +116,10 @@ function Constraint8(props: Props): JSX.Element {
   const handleBlurConstraint8MaxNumberOfDays = () => {
     dispatch(
       constraints8.update({
-        id: props.constraint8.id,
         changes: {
           max_number_of_days: state.changes.max_number_of_days,
         },
+        id: props.constraint8.id,
       })
     );
   };

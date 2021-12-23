@@ -5,9 +5,9 @@ import { RootState } from "./store";
 
 export const Group = t.type({
   id: t.number,
-  term_id: t.number,
   is_enabled: t.boolean,
   name: t.string,
+  term_id: t.number,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -20,8 +20,8 @@ export const selectors = adapter.getSelectors<RootState>(
 );
 
 const groups = createSlice({
-  name: "groups",
   initialState: adapter.getInitialState(),
+  name: "groups",
   reducers: {
     update: adapter.updateOne,
   },

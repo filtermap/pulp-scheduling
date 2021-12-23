@@ -188,15 +188,15 @@ function Constraints1(): JSX.Element {
     });
     dispatch(
       constraints1.add({
-        term_id: termId,
-        is_enabled: state.newConstraint1IsEnabled,
-        start_date_name: state.newConstraint1StartDateName,
-        stop_date_name: state.newConstraint1StopDateName,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        kinmu_id: state.newConstraint1KinmuId!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         group_id: state.newConstraint1GroupId!,
+        is_enabled: state.newConstraint1IsEnabled,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        kinmu_id: state.newConstraint1KinmuId!,
         min_number_of_assignments: state.newConstraint1MinNumberOfAssignments,
+        start_date_name: state.newConstraint1StartDateName,
+        stop_date_name: state.newConstraint1StopDateName,
+        term_id: termId,
       })
     );
   };

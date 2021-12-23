@@ -115,8 +115,8 @@ function Constraints0(): JSX.Element {
     dispatch(
       all.addConstraint0({
         constraint0: {
-          term_id: termId,
           is_enabled: state.newConstraint0IsEnabled,
+          term_id: termId,
         },
         kinmu_ids: state.newConstraint0Constraint0KinmuKinmuIds,
       })

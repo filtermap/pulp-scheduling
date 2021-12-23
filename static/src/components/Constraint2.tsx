@@ -62,13 +62,13 @@ function Constraint2(props: Props): JSX.Element {
   const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const selectedGroupById = useSelector(groups.selectors.selectEntities);
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
+      max_number_of_assignments: props.constraint2.max_number_of_assignments,
       start_date_name: props.constraint2.start_date_name,
       stop_date_name: props.constraint2.stop_date_name,
-      max_number_of_assignments: props.constraint2.max_number_of_assignments,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -101,10 +101,10 @@ function Constraint2(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints2.update({
-        id: props.constraint2.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.constraint2.id,
       })
     );
   };
@@ -145,10 +145,10 @@ function Constraint2(props: Props): JSX.Element {
   const handleBlurConstraint2StartDateName = () => {
     dispatch(
       constraints2.update({
-        id: props.constraint2.id,
         changes: {
           start_date_name: state.changes.start_date_name,
         },
+        id: props.constraint2.id,
       })
     );
   };
@@ -162,10 +162,10 @@ function Constraint2(props: Props): JSX.Element {
   const handleBlurConstraint2StopDateName = () => {
     dispatch(
       constraints2.update({
-        id: props.constraint2.id,
         changes: {
           stop_date_name: state.changes.stop_date_name,
         },
+        id: props.constraint2.id,
       })
     );
   };
@@ -174,10 +174,10 @@ function Constraint2(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints2.update({
-        id: props.constraint2.id,
         changes: {
           kinmu_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint2.id,
       })
     );
   };
@@ -186,10 +186,10 @@ function Constraint2(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints2.update({
-        id: props.constraint2.id,
         changes: {
           group_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint2.id,
       })
     );
   };
@@ -206,10 +206,10 @@ function Constraint2(props: Props): JSX.Element {
   const handleBlurConstraint2MaxNumberOfAssignments = () => {
     dispatch(
       constraints2.update({
-        id: props.constraint2.id,
         changes: {
           max_number_of_assignments: state.changes.max_number_of_assignments,
         },
+        id: props.constraint2.id,
       })
     );
   };

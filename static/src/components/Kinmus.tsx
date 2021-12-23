@@ -82,9 +82,9 @@ function Kinmus(): JSX.Element {
     });
     dispatch(
       kinmus.add({
-        term_id: termId,
         is_enabled: state.newKinmuIsEnabled,
         name: state.newKinmuName,
+        term_id: termId,
       })
     );
   };

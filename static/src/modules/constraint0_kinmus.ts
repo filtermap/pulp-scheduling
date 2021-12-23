@@ -9,10 +9,10 @@ import * as t from "io-ts";
 import { RootState } from "./store";
 
 export const Constraint0Kinmu = t.type({
-  id: t.number,
   constraint0_id: t.number,
-  sequence_number: t.number,
+  id: t.number,
   kinmu_id: t.number,
+  sequence_number: t.number,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -25,8 +25,8 @@ export const selectors = adapter.getSelectors<RootState>(
 );
 
 const constraint0_kinmus = createSlice({
-  name: "constraint0_kinmus",
   initialState: adapter.getInitialState(),
+  name: "constraint0_kinmus",
   reducers: {
     add: (
       state,
@@ -45,10 +45,10 @@ const constraint0_kinmus = createSlice({
             c.sequence_number >= action.payload.sequence_number
         )
         .map((c) => ({
-          id: c.id,
           changes: {
             sequence_number: c.sequence_number + 1,
           },
+          id: c.id,
         }));
       adapter.updateMany(state, updatedConstraint0Kinmus);
       adapter.addOne(state, {

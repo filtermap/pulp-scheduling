@@ -228,14 +228,11 @@ export default function Layout(): JSX.Element {
   };
   const writeAll = () => {
     const plainAll: all.PlainAll = {
-      terms: selectedTerms,
-      members: selectedMembers,
-      kinmus: selectedKinmus,
-      groups: selectedGroups,
-      group_members: selectedGroupMembers,
-      constraints0: selectedConstraints0,
+      assignments: selectedAssignments,
       constraint0_kinmus: selectedConstraint0Kinmus,
+      constraints0: selectedConstraints0,
       constraints1: selectedConstraints1,
+      constraints10: selectedConstraints10,
       constraints2: selectedConstraints2,
       constraints3: selectedConstraints3,
       constraints4: selectedConstraints4,
@@ -244,9 +241,12 @@ export default function Layout(): JSX.Element {
       constraints7: selectedConstraints7,
       constraints8: selectedConstraints8,
       constraints9: selectedConstraints9,
-      constraints10: selectedConstraints10,
+      group_members: selectedGroupMembers,
+      groups: selectedGroups,
+      kinmus: selectedKinmus,
+      members: selectedMembers,
       schedules: selectedSchedules,
-      assignments: selectedAssignments,
+      terms: selectedTerms,
     };
     utils.sendJSONRPCRequest("write_all", [plainAll]);
   };
@@ -318,11 +318,11 @@ export default function Layout(): JSX.Element {
         variant="persistent"
         open={state.drawerIsOpen}
         sx={{
-          flexShrink: 0,
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: drawerWidth,
           },
+          flexShrink: 0,
         }}
       >
         <Toolbar
@@ -350,14 +350,14 @@ export default function Layout(): JSX.Element {
         sx={(theme) => ({
           flexGrow: 1,
           transition: theme.transitions.create(["margin", "width"], {
-            easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
+            easing: theme.transitions.easing.sharp,
           }),
           ...(state.drawerIsOpen && {
             marginLeft: `${drawerWidth}px`,
             transition: theme.transitions.create(["margin", "width"], {
-              easing: theme.transitions.easing.easeOut,
               duration: theme.transitions.duration.enteringScreen,
+              easing: theme.transitions.easing.easeOut,
             }),
             width: `calc(100% - ${drawerWidth}px)`,
           }),

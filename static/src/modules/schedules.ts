@@ -18,8 +18,8 @@ export const selectors = adapter.getSelectors<RootState>(
 );
 
 const schedules = createSlice({
-  name: "schedules",
   initialState: adapter.getInitialState(),
+  name: "schedules",
   reducers: {},
 });
 

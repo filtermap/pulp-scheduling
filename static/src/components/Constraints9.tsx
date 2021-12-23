@@ -167,14 +167,14 @@ function Constraints9(): JSX.Element {
     });
     dispatch(
       constraints9.add({
-        term_id: termId,
         is_enabled: state.newConstraint9IsEnabled,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        kinmu_id: state.newConstraint9KinmuId!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         member_id: state.newConstraint9MemberId!,
         start_date_name: state.newConstraint9StartDateName,
         stop_date_name: state.newConstraint9StopDateName,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        kinmu_id: state.newConstraint9KinmuId!,
+        term_id: termId,
       })
     );
   };

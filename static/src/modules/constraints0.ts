@@ -5,8 +5,8 @@ import { RootState } from "./store";
 
 export const Constraint0 = t.type({
   id: t.number,
-  term_id: t.number,
   is_enabled: t.boolean,
+  term_id: t.number,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -19,8 +19,8 @@ export const selectors = adapter.getSelectors<RootState>(
 );
 
 const constraints0 = createSlice({
-  name: "constraints0",
   initialState: adapter.getInitialState(),
+  name: "constraints0",
   reducers: {
     update: adapter.updateOne,
   },

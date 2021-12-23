@@ -57,11 +57,11 @@ function Constraint4(props: Props): JSX.Element {
     (state) => kinmus.selectors.selectById(state, props.constraint4.kinmu_id)!
   );
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
       max_number_of_assignments: props.constraint4.max_number_of_assignments,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -87,10 +87,10 @@ function Constraint4(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints4.update({
-        id: props.constraint4.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.constraint4.id,
       })
     );
   };
@@ -99,10 +99,10 @@ function Constraint4(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints4.update({
-        id: props.constraint4.id,
         changes: {
           member_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint4.id,
       })
     );
   };
@@ -111,10 +111,10 @@ function Constraint4(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints4.update({
-        id: props.constraint4.id,
         changes: {
           kinmu_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint4.id,
       })
     );
   };
@@ -144,10 +144,10 @@ function Constraint4(props: Props): JSX.Element {
   const handleBlurConstraint4MaxNumberOfAssignments = () => {
     dispatch(
       constraints4.update({
-        id: props.constraint4.id,
         changes: {
           max_number_of_assignments: state.changes.max_number_of_assignments,
         },
+        id: props.constraint4.id,
       })
     );
   };

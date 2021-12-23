@@ -204,18 +204,12 @@ function Schedules(): JSX.Element {
   const groupsInTerm = selectedGroups.filter(byTermId);
   const groupIdsInTerm = new Set(groupsInTerm.map(({ id }) => id));
   const allInTerm = {
-    terms: selectedTerms.filter(({ id }) => id === termId),
-    members: selectedMembers.filter(byTermId),
-    kinmus: selectedKinmus.filter(byTermId),
-    groups: groupsInTerm,
-    group_members: selectedGroupMembers.filter(({ group_id }) =>
-      groupIdsInTerm.has(group_id)
-    ),
-    constraints0: constraints0InTerm,
     constraint0_kinmus: selectedConstraint0Kinmus.filter(({ constraint0_id }) =>
       constraint0IdsInTerm.has(constraint0_id)
     ),
+    constraints0: constraints0InTerm,
     constraints1: selectedConstraints1.filter(byTermId),
+    constraints10: selectedConstraints10.filter(byTermId),
     constraints2: selectedConstraints2.filter(byTermId),
     constraints3: selectedConstraints3.filter(byTermId),
     constraints4: selectedConstraints4.filter(byTermId),
@@ -224,8 +218,14 @@ function Schedules(): JSX.Element {
     constraints7: selectedConstraints7.filter(byTermId),
     constraints8: selectedConstraints8.filter(byTermId),
     constraints9: selectedConstraints9.filter(byTermId),
-    constraints10: selectedConstraints10.filter(byTermId),
+    group_members: selectedGroupMembers.filter(({ group_id }) =>
+      groupIdsInTerm.has(group_id)
+    ),
+    groups: groupsInTerm,
+    kinmus: selectedKinmus.filter(byTermId),
+    members: selectedMembers.filter(byTermId),
     schedules: selectedSchedules.filter(byTermId),
+    terms: selectedTerms.filter(({ id }) => id === termId),
   };
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
@@ -295,10 +295,10 @@ function Schedules(): JSX.Element {
     if (state.dialogState.type === SOLVED) {
       dispatch(
         all.addSchedule({
+          new_assignments: state.dialogState.newScheduleAssignments,
           schedule: {
             term_id: termId,
           },
-          new_assignments: state.dialogState.newScheduleAssignments,
         })
       );
     }

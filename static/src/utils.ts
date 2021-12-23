@@ -7,8 +7,8 @@ export async function sendJSONRPCRequest<T>(
   params: T[] | Record<string, unknown> = []
 ): Promise<Success | Error> {
   const response = await fetch("/api", {
+    body: JSON.stringify({ id: 1, jsonrpc: "2.0", method, params }),
     method: "post",
-    body: JSON.stringify({ method, params, jsonrpc: "2.0", id: 1 }),
   });
   return await response.json();
 }

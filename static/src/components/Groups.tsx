@@ -53,8 +53,8 @@ function Groups(): JSX.Element {
   const [state, updateState] = useImmer<State>({
     creationDialogIsOpen: false,
     newGroupIsEnabled: true,
-    newGroupName: "",
     newGroupMemberIds: [],
+    newGroupName: "",
   });
   React.useEffect(
     () =>
@@ -118,9 +118,9 @@ function Groups(): JSX.Element {
     dispatch(
       all.addGroup({
         group: {
-          term_id: termId,
           is_enabled: state.newGroupIsEnabled,
           name: state.newGroupName,
+          term_id: termId,
         },
         member_ids: state.newGroupMemberIds,
       })

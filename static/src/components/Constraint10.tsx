@@ -67,12 +67,12 @@ function Constraint10(props: Props): JSX.Element {
     (state) => kinmus.selectors.selectById(state, props.constraint10.kinmu_id)!
   );
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
       start_date_name: props.constraint10.start_date_name,
       stop_date_name: props.constraint10.stop_date_name,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -102,10 +102,10 @@ function Constraint10(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints10.update({
-        id: props.constraint10.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.constraint10.id,
       })
     );
   };
@@ -114,10 +114,10 @@ function Constraint10(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints10.update({
-        id: props.constraint10.id,
         changes: {
           member_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint10.id,
       })
     );
   };
@@ -151,10 +151,10 @@ function Constraint10(props: Props): JSX.Element {
   const handleBlurConstraint10StartDateName = () => {
     dispatch(
       constraints10.update({
-        id: props.constraint10.id,
         changes: {
           start_date_name: state.changes.start_date_name,
         },
+        id: props.constraint10.id,
       })
     );
   };
@@ -168,10 +168,10 @@ function Constraint10(props: Props): JSX.Element {
   const handleBlurConstraint10StopDateName = () => {
     dispatch(
       constraints10.update({
-        id: props.constraint10.id,
         changes: {
           stop_date_name: state.changes.stop_date_name,
         },
+        id: props.constraint10.id,
       })
     );
   };
@@ -180,10 +180,10 @@ function Constraint10(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints10.update({
-        id: props.constraint10.id,
         changes: {
           kinmu_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint10.id,
       })
     );
   };

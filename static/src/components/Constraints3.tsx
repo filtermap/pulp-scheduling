@@ -136,13 +136,13 @@ function Constraints3(): JSX.Element {
     });
     dispatch(
       constraints3.add({
-        term_id: termId,
         is_enabled: state.newConstraint3IsEnabled,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        member_id: state.newConstraint3MemberId!,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         kinmu_id: state.newConstraint3KinmuId!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        member_id: state.newConstraint3MemberId!,
         min_number_of_assignments: state.newConstraint3MinNumberOfAssignments,
+        term_id: termId,
       })
     );
   };

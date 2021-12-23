@@ -4,11 +4,11 @@ import * as t from "io-ts";
 import { RootState } from "./store";
 
 export const Assignment = t.type({
-  id: t.number,
-  schedule_id: t.number,
   date_name: t.string,
-  member_id: t.number,
+  id: t.number,
   kinmu_id: t.number,
+  member_id: t.number,
+  schedule_id: t.number,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -21,8 +21,8 @@ export const selectors = adapter.getSelectors<RootState>(
 );
 
 const assignments = createSlice({
-  name: "assignments",
   initialState: adapter.getInitialState(),
+  name: "assignments",
   reducers: {},
 });
 

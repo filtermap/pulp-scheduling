@@ -50,11 +50,11 @@ function Constraint6(props: Props): JSX.Element {
     (state) => kinmus.selectors.selectById(state, props.constraint6.kinmu_id)!
   );
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
       max_number_of_days: props.constraint6.max_number_of_days,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -76,10 +76,10 @@ function Constraint6(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints6.update({
-        id: props.constraint6.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.constraint6.id,
       })
     );
   };
@@ -88,10 +88,10 @@ function Constraint6(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints6.update({
-        id: props.constraint6.id,
         changes: {
           kinmu_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint6.id,
       })
     );
   };
@@ -116,10 +116,10 @@ function Constraint6(props: Props): JSX.Element {
   const handleBlurConstraint6MaxNumberOfDays = () => {
     dispatch(
       constraints6.update({
-        id: props.constraint6.id,
         changes: {
           max_number_of_days: state.changes.max_number_of_days,
         },
+        id: props.constraint6.id,
       })
     );
   };

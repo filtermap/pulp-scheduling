@@ -49,11 +49,11 @@ function Constraint5(props: Props): JSX.Element {
     (state) => kinmus.selectors.selectById(state, props.constraint5.kinmu_id)!
   );
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
       min_number_of_days: props.constraint5.min_number_of_days,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -75,10 +75,10 @@ function Constraint5(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints5.update({
-        id: props.constraint5.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.constraint5.id,
       })
     );
   };
@@ -87,10 +87,10 @@ function Constraint5(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints5.update({
-        id: props.constraint5.id,
         changes: {
           kinmu_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint5.id,
       })
     );
   };
@@ -115,10 +115,10 @@ function Constraint5(props: Props): JSX.Element {
   const handleBlurConstraint5MinNumberOfDays = () => {
     dispatch(
       constraints5.update({
-        id: props.constraint5.id,
         changes: {
           min_number_of_days: state.changes.min_number_of_days,
         },
+        id: props.constraint5.id,
       })
     );
   };

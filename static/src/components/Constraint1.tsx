@@ -62,13 +62,13 @@ function Constraint1(props: Props): JSX.Element {
   const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const selectedGroupById = useSelector(groups.selectors.selectEntities);
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
+      min_number_of_assignments: props.constraint1.min_number_of_assignments,
       start_date_name: props.constraint1.start_date_name,
       stop_date_name: props.constraint1.stop_date_name,
-      min_number_of_assignments: props.constraint1.min_number_of_assignments,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -101,10 +101,10 @@ function Constraint1(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints1.update({
-        id: props.constraint1.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.constraint1.id,
       })
     );
   };
@@ -145,10 +145,10 @@ function Constraint1(props: Props): JSX.Element {
   const handleBlurConstraint1StartDateName = () => {
     dispatch(
       constraints1.update({
-        id: props.constraint1.id,
         changes: {
           start_date_name: state.changes.start_date_name,
         },
+        id: props.constraint1.id,
       })
     );
   };
@@ -162,10 +162,10 @@ function Constraint1(props: Props): JSX.Element {
   const handleBlurConstraint1StopDateName = () => {
     dispatch(
       constraints1.update({
-        id: props.constraint1.id,
         changes: {
           stop_date_name: state.changes.stop_date_name,
         },
+        id: props.constraint1.id,
       })
     );
   };
@@ -174,10 +174,10 @@ function Constraint1(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints1.update({
-        id: props.constraint1.id,
         changes: {
           kinmu_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint1.id,
       })
     );
   };
@@ -186,10 +186,10 @@ function Constraint1(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints1.update({
-        id: props.constraint1.id,
         changes: {
           group_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint1.id,
       })
     );
   };
@@ -206,10 +206,10 @@ function Constraint1(props: Props): JSX.Element {
   const handleBlurConstraint1MinNumberOfAssignments = () => {
     dispatch(
       constraints1.update({
-        id: props.constraint1.id,
         changes: {
           min_number_of_assignments: state.changes.min_number_of_assignments,
         },
+        id: props.constraint1.id,
       })
     );
   };

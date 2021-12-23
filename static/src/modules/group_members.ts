@@ -8,8 +8,8 @@ import * as t from "io-ts";
 import { RootState } from "./store";
 
 export const GroupMember = t.type({
-  id: t.number,
   group_id: t.number,
+  id: t.number,
   member_id: t.number,
 });
 
@@ -23,8 +23,8 @@ export const selectors = adapter.getSelectors<RootState>(
 );
 
 const group_members = createSlice({
-  name: "group_members",
   initialState: adapter.getInitialState(),
+  name: "group_members",
   reducers: {
     add: (
       state,

@@ -71,11 +71,11 @@ function Member(props: Props): JSX.Element {
   const selectedGroups = useSelector(groups.selectors.selectAll);
   const selectedGroupById = useSelector(groups.selectors.selectEntities);
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
       name: props.member.name,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -115,10 +115,10 @@ function Member(props: Props): JSX.Element {
   ) => {
     dispatch(
       members.update({
-        id: props.member.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.member.id,
       })
     );
   };
@@ -141,10 +141,10 @@ function Member(props: Props): JSX.Element {
   const handleBlurMemberName = () => {
     dispatch(
       members.update({
-        id: props.member.id,
         changes: {
           name: state.changes.name,
         },
+        id: props.member.id,
       })
     );
   };

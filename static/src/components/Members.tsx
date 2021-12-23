@@ -118,12 +118,12 @@ function Members(): JSX.Element {
     });
     dispatch(
       all.addMember({
+        group_ids: state.newMemberGroupIds,
         member: {
-          term_id: termId,
           is_enabled: state.newMemberIsEnabled,
           name: state.newMemberName,
+          term_id: termId,
         },
-        group_ids: state.newMemberGroupIds,
       })
     );
   };

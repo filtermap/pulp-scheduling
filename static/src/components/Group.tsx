@@ -73,11 +73,11 @@ function Group(props: Props): JSX.Element {
     ({ term_id }) => term_id === props.group.term_id
   );
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
       name: props.group.name,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -96,10 +96,10 @@ function Group(props: Props): JSX.Element {
   ) => {
     dispatch(
       groups.update({
-        id: props.group.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.group.id,
       })
     );
   };
@@ -122,10 +122,10 @@ function Group(props: Props): JSX.Element {
   const handleBlurGroupName = () => {
     dispatch(
       groups.update({
-        id: props.group.id,
         changes: {
           name: state.changes.name,
         },
+        id: props.group.id,
       })
     );
   };

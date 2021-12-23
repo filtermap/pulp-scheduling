@@ -57,11 +57,11 @@ function Constraint3(props: Props): JSX.Element {
     (state) => kinmus.selectors.selectById(state, props.constraint3.kinmu_id)!
   );
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
       min_number_of_assignments: props.constraint3.min_number_of_assignments,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -87,10 +87,10 @@ function Constraint3(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints3.update({
-        id: props.constraint3.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.constraint3.id,
       })
     );
   };
@@ -99,10 +99,10 @@ function Constraint3(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints3.update({
-        id: props.constraint3.id,
         changes: {
           member_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint3.id,
       })
     );
   };
@@ -111,10 +111,10 @@ function Constraint3(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints3.update({
-        id: props.constraint3.id,
         changes: {
           kinmu_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint3.id,
       })
     );
   };
@@ -144,10 +144,10 @@ function Constraint3(props: Props): JSX.Element {
   const handleBlurConstraint3MinNumberOfAssignments = () => {
     dispatch(
       constraints3.update({
-        id: props.constraint3.id,
         changes: {
           min_number_of_assignments: state.changes.min_number_of_assignments,
         },
+        id: props.constraint3.id,
       })
     );
   };

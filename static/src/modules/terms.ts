@@ -24,8 +24,8 @@ export const selectors = adapter.getSelectors<RootState>(
 );
 
 const terms = createSlice({
-  name: "terms",
   initialState: adapter.getInitialState(),
+  name: "terms",
   reducers: {
     add: (
       state,

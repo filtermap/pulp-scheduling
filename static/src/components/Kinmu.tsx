@@ -85,11 +85,11 @@ function Kinmu(props: Props): JSX.Element {
   const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
       name: props.kinmu.name,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -151,10 +151,10 @@ function Kinmu(props: Props): JSX.Element {
   ) => {
     dispatch(
       kinmus.update({
-        id: props.kinmu.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.kinmu.id,
       })
     );
   };
@@ -177,10 +177,10 @@ function Kinmu(props: Props): JSX.Element {
   const handleBlurKinmuName = () => {
     dispatch(
       kinmus.update({
-        id: props.kinmu.id,
         changes: {
           name: state.changes.name,
         },
+        id: props.kinmu.id,
       })
     );
   };

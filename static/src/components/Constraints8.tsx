@@ -111,11 +111,11 @@ function Constraints8(): JSX.Element {
     });
     dispatch(
       constraints8.add({
-        term_id: termId,
         is_enabled: state.newConstraint8IsEnabled,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         kinmu_id: state.newConstraint8KinmuId!,
         max_number_of_days: state.newConstraint8MaxNumberOfDays,
+        term_id: termId,
       })
     );
   };

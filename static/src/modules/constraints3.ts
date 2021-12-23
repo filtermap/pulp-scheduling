@@ -9,11 +9,11 @@ import { RootState } from "./store";
 
 export const Constraint3 = t.type({
   id: t.number,
-  term_id: t.number,
   is_enabled: t.boolean,
-  member_id: t.number,
   kinmu_id: t.number,
+  member_id: t.number,
   min_number_of_assignments: t.number,
+  term_id: t.number,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -28,8 +28,8 @@ export const selectors = adapter.getSelectors<RootState>(
 );
 
 const constraints3 = createSlice({
-  name: "constraints3",
   initialState: adapter.getInitialState(),
+  name: "constraints3",
   reducers: {
     add: (
       state,
@@ -45,8 +45,8 @@ const constraints3 = createSlice({
         ...action.payload,
         id: Math.max(0, ...(state.ids as number[])) + 1,
       }),
-    update: adapter.updateOne,
     remove: adapter.removeOne,
+    update: adapter.updateOne,
   },
 });
 

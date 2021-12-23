@@ -64,9 +64,9 @@ function Constraints4(): JSX.Element {
     creationDialogIsOpen: false,
     newConstraint4IsEnabled: true,
     newConstraint4KinmuId,
-    newConstraint4MemberId,
     newConstraint4MaxNumberOfAssignments:
       constraints4.minOfConstraint4MaxNumberOfAssignments,
+    newConstraint4MemberId,
   });
   React.useEffect(
     () =>
@@ -136,13 +136,13 @@ function Constraints4(): JSX.Element {
     });
     dispatch(
       constraints4.add({
-        term_id: termId,
         is_enabled: state.newConstraint4IsEnabled,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        member_id: state.newConstraint4MemberId!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         kinmu_id: state.newConstraint4KinmuId!,
         max_number_of_assignments: state.newConstraint4MaxNumberOfAssignments,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        member_id: state.newConstraint4MemberId!,
+        term_id: termId,
       })
     );
   };

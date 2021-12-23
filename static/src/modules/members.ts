@@ -5,9 +5,9 @@ import { RootState } from "./store";
 
 export const Member = t.type({
   id: t.number,
-  term_id: t.number,
   is_enabled: t.boolean,
   name: t.string,
+  term_id: t.number,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -20,8 +20,8 @@ export const selectors = adapter.getSelectors<RootState>(
 );
 
 const members = createSlice({
-  name: "members",
   initialState: adapter.getInitialState(),
+  name: "members",
   reducers: {
     update: adapter.updateOne,
   },

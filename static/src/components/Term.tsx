@@ -57,14 +57,14 @@ function Term(props: Props): JSX.Element {
       ? selectableTerms[selectableTerms.length - 1].id
       : undefined;
   const [state, updateState] = useImmer<State>({
-    importDataDialogIsOpen: false,
-    selectedTermId,
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
       start_date_name: props.term.start_date_name,
       stop_date_name: props.term.stop_date_name,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
+    importDataDialogIsOpen: false,
+    selectedTermId,
   });
   React.useEffect(
     () =>
@@ -90,10 +90,10 @@ function Term(props: Props): JSX.Element {
   ) => {
     dispatch(
       terms.update({
-        id: props.term.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.term.id,
       })
     );
   };
@@ -123,10 +123,10 @@ function Term(props: Props): JSX.Element {
   const handleBlurTermStartDateName = () => {
     dispatch(
       terms.update({
-        id: props.term.id,
         changes: {
           start_date_name: state.changes.start_date_name,
         },
+        id: props.term.id,
       })
     );
   };
@@ -140,10 +140,10 @@ function Term(props: Props): JSX.Element {
   const handleBlurTermStopDateName = () => {
     dispatch(
       terms.update({
-        id: props.term.id,
         changes: {
           stop_date_name: state.changes.stop_date_name,
         },
+        id: props.term.id,
       })
     );
   };

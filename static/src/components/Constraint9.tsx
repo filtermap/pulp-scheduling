@@ -66,12 +66,12 @@ function Constraint9(props: Props): JSX.Element {
     (state) => kinmus.selectors.selectById(state, props.constraint9.kinmu_id)!
   );
   const [state, updateState] = useImmer<State>({
-    deletionDialogIsOpen: false,
-    expanded: false,
     changes: {
       start_date_name: props.constraint9.start_date_name,
       stop_date_name: props.constraint9.stop_date_name,
     },
+    deletionDialogIsOpen: false,
+    expanded: false,
   });
   React.useEffect(
     () =>
@@ -101,10 +101,10 @@ function Constraint9(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints9.update({
-        id: props.constraint9.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.constraint9.id,
       })
     );
   };
@@ -113,10 +113,10 @@ function Constraint9(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints9.update({
-        id: props.constraint9.id,
         changes: {
           member_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint9.id,
       })
     );
   };
@@ -150,10 +150,10 @@ function Constraint9(props: Props): JSX.Element {
   const handleBlurConstraint9StartDateName = () => {
     dispatch(
       constraints9.update({
-        id: props.constraint9.id,
         changes: {
           start_date_name: state.changes.start_date_name,
         },
+        id: props.constraint9.id,
       })
     );
   };
@@ -167,10 +167,10 @@ function Constraint9(props: Props): JSX.Element {
   const handleBlurConstraint9StopDateName = () => {
     dispatch(
       constraints9.update({
-        id: props.constraint9.id,
         changes: {
           stop_date_name: state.changes.stop_date_name,
         },
+        id: props.constraint9.id,
       })
     );
   };
@@ -179,10 +179,10 @@ function Constraint9(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints9.update({
-        id: props.constraint9.id,
         changes: {
           kinmu_id: parseInt(event.target.value, 10),
         },
+        id: props.constraint9.id,
       })
     );
   };

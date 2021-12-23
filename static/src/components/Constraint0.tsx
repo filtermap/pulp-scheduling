@@ -60,10 +60,10 @@ function Constraint0(props: Props): JSX.Element {
   ) => {
     dispatch(
       constraints0.update({
-        id: props.constraint0.id,
         changes: {
           is_enabled: event.target.checked,
         },
+        id: props.constraint0.id,
       })
     );
   };
@@ -73,8 +73,8 @@ function Constraint0(props: Props): JSX.Element {
       dispatch(
         constraint0_kinmus.add({
           constraint0_id: props.constraint0.id,
-          sequence_number,
           kinmu_id,
+          sequence_number,
         })
       );
     };
@@ -85,10 +85,10 @@ function Constraint0(props: Props): JSX.Element {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
       dispatch(
         constraint0_kinmus.update({
-          id: constraint0_kinmu_id,
           changes: {
             kinmu_id: parseInt(event.target.value, 10),
           },
+          id: constraint0_kinmu_id,
         })
       );
     };
