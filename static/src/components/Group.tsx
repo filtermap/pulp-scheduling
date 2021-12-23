@@ -120,6 +120,7 @@ const Group = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurGroupName = () => {
+    if (state.changes.name === props.group.name) return;
     dispatch(
       groups.update({
         changes: {

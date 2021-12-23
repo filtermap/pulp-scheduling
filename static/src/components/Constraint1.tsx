@@ -141,6 +141,8 @@ const Constraint1 = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurConstraint1StartDateName = () => {
+    if (state.changes.start_date_name === props.constraint1.start_date_name)
+      return;
     dispatch(
       constraints1.update({
         changes: {
@@ -158,6 +160,8 @@ const Constraint1 = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurConstraint1StopDateName = () => {
+    if (state.changes.stop_date_name === props.constraint1.stop_date_name)
+      return;
     dispatch(
       constraints1.update({
         changes: {
@@ -202,6 +206,11 @@ const Constraint1 = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurConstraint1MinNumberOfAssignments = () => {
+    if (
+      state.changes.min_number_of_assignments ===
+      props.constraint1.min_number_of_assignments
+    )
+      return;
     dispatch(
       constraints1.update({
         changes: {

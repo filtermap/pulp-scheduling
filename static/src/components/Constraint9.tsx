@@ -147,6 +147,8 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurConstraint9StartDateName = () => {
+    if (state.changes.start_date_name === props.constraint9.start_date_name)
+      return;
     dispatch(
       constraints9.update({
         changes: {
@@ -164,6 +166,8 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurConstraint9StopDateName = () => {
+    if (state.changes.stop_date_name === props.constraint9.stop_date_name)
+      return;
     dispatch(
       constraints9.update({
         changes: {

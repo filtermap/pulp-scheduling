@@ -141,6 +141,8 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurConstraint2StartDateName = () => {
+    if (state.changes.start_date_name === props.constraint2.start_date_name)
+      return;
     dispatch(
       constraints2.update({
         changes: {
@@ -158,14 +160,15 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurConstraint2StopDateName = () => {
-    dispatch(
-      constraints2.update({
-        changes: {
-          stop_date_name: state.changes.stop_date_name,
-        },
-        id: props.constraint2.id,
-      })
-    );
+    if (state.changes.stop_date_name === props.constraint2.stop_date_name)
+      dispatch(
+        constraints2.update({
+          changes: {
+            stop_date_name: state.changes.stop_date_name,
+          },
+          id: props.constraint2.id,
+        })
+      );
   };
   const handleChangeConstraint2KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -202,6 +205,11 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurConstraint2MaxNumberOfAssignments = () => {
+    if (
+      state.changes.max_number_of_assignments ===
+      props.constraint2.max_number_of_assignments
+    )
+      return;
     dispatch(
       constraints2.update({
         changes: {

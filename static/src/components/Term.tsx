@@ -120,6 +120,7 @@ const Term = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurTermStartDateName = () => {
+    if (state.changes.start_date_name === props.term.start_date_name) return;
     dispatch(
       terms.update({
         changes: {
@@ -137,6 +138,7 @@ const Term = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurTermStopDateName = () => {
+    if (state.changes.stop_date_name === props.term.stop_date_name) return;
     dispatch(
       terms.update({
         changes: {

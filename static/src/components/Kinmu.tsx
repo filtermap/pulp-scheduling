@@ -175,6 +175,7 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurKinmuName = () => {
+    if (state.changes.name === props.kinmu.name) return;
     dispatch(
       kinmus.update({
         changes: {

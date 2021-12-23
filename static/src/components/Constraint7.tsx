@@ -114,6 +114,10 @@ const Constraint7 = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurConstraint7MinNumberOfDays = () => {
+    if (
+      state.changes.min_number_of_days === props.constraint7.min_number_of_days
+    )
+      return;
     dispatch(
       constraints7.update({
         changes: {

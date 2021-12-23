@@ -142,6 +142,11 @@ const Constraint4 = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurConstraint4MaxNumberOfAssignments = () => {
+    if (
+      state.changes.max_number_of_assignments ===
+      props.constraint4.max_number_of_assignments
+    )
+      return;
     dispatch(
       constraints4.update({
         changes: {

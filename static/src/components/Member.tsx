@@ -139,6 +139,7 @@ const Member = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurMemberName = () => {
+    if (state.changes.name === props.member.name) return;
     dispatch(
       members.update({
         changes: {

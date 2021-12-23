@@ -114,6 +114,10 @@ const Constraint8 = React.memo((props: Props): JSX.Element => {
     });
   };
   const handleBlurConstraint8MaxNumberOfDays = () => {
+    if (
+      state.changes.max_number_of_days === props.constraint8.max_number_of_days
+    )
+      return;
     dispatch(
       constraints8.update({
         changes: {
