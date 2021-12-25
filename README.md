@@ -48,9 +48,11 @@ zip ファイルを解凍してください。 (Unzip the file.)
 
 - [Git for Windows](https://gitforwindows.org/)
 - [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-- [Node.js, npm](https://nodejs.org/en/download/)
-- [Yarn](https://classic.yarnpkg.com/en/docs/install#windows-stable)
+- [Node v16.13.1 (LTS)](https://nodejs.org/en/blog/release/v16.13.1/)
+- [Yarn 1.22.17](https://classic.yarnpkg.com/en/docs/install#windows-stable)
 - Windows 10 or later
+
+This app intends to be built with [Microsoft Windows Server 2022 Datacenter](https://github.com/actions/virtual-environments/blob/main/images/win/Windows2022-Readme.md#installed-software).
 
 ### パッケージなどのインストール (Install dependencies)
 
