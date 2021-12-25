@@ -1042,7 +1042,7 @@ def solve(all_):
         problem += constraint
     for constraint in constraints["optional"]:
         problem += constraint
-    problem.solve(pulp.solvers.PULP_CBC_CMD(msg=True))
+    problem.solve(pulp.PULP_CBC_CMD(msg=True))
     status = pulp.LpStatus[problem.status]
     print("Status:", status)
     if status != "Optimal":

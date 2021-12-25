@@ -1,13 +1,15 @@
 name: pulp-scheduling
+channels:
+  - defaults
 dependencies:
-  - pip=19.1.1=py36_0
-  - python=3.6.8=h9f7ef89_7
+  - pip=21.2.4=py39haa95532_0
+  - python=3.9.7=h6244533_1
   - pip:
-    - black==19.3b0
-    - flask==1.0.3
-    - json-rpc==1.12.1
-    - mypy==0.701
-    - psutil==5.6.2
-    - pulp==1.6.10
-    - pyinstaller==3.4
-    - tornado==5.1.1
+    - black==21.12b0
+    - flask==2.0.2
+    - json-rpc==1.13.0
+    - mypy==0.930
+    - psutil==5.8.0
+    - pulp==2.6.0
+    - pyinstaller==4.7
+    - tornado==6.1
