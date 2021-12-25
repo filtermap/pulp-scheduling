@@ -58,7 +58,7 @@ This app intends to be built with [Microsoft Windows Server 2022 Datacenter](htt
 
 Miniconda に同梱されている Anaconda Prompt を起動して以下のコマンドを実行します。 (Execute commands below with Anaconda Prompt.)
 
-```sh
+```bat
 git clone https://github.com/filtermap/pulp-scheduling.git
 cd pulp-scheduling
 conda env create
@@ -70,15 +70,13 @@ cd ..
 
 ### 実行 (Run)
 
-```sh
-# at the root directory of pulp-scheduling
+```bat
 python main.py
 ```
 
 ### ビルド (Build)
 
-```sh
-# at the root directory of pulp-scheduling
+```bat
 python build.py
 ```
 
