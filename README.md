@@ -4,6 +4,8 @@
 
 ![Demo video](demo.gif?raw=true)
 
+Windows 上で動作します。 (This app runs on Windows.)
+
 このアプリは開発中です。 (This is still in development.)
 
 改良等のご要望がありましたら是非[メール](mailto:reducefiltermap@gmail.com)や[Twitter](https://twitter.com/filtermap)でお問い合わせください。
