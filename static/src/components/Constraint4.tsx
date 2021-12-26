@@ -261,7 +261,7 @@ const Constraint4 = React.memo((props: Props): JSX.Element => {
               </Grid>
             </Grid>
           </CardContent>
-          <CardActions>
+          <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
               削除
             </Button>
