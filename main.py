@@ -2,7 +2,6 @@ import multiprocessing
 import os
 import signal
 import subprocess
-import sys
 import webbrowser
 import psutil
 import tkinter
