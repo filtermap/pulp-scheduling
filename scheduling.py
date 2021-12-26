@@ -1044,7 +1044,6 @@ def solve(all_):
         problem += constraint
     problem.solve(pulp.PULP_CBC_CMD(msg=False))
     status = pulp.LpStatus[problem.status]
-    print("Status:", status)
     if status != "Optimal":
         raise UnsolvedException(status)
     return x_to_new_assignments(
@@ -1070,7 +1069,6 @@ def pursue(all_):
             problem += constraints["optional"][i]
         problem.solve(pulp.PULP_CBC_CMD(msg=False))
         status = pulp.LpStatus[problem.status]
-        print("Status:", status)
         if status != "Optimal":
             return True
         return False
