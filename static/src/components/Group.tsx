@@ -59,19 +59,22 @@ const Group = React.memo((props: Props): JSX.Element => {
   const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
   const selectedConstraints1 = useSelector(constraints1.selectors.selectAll);
   const selectedConstraints2 = useSelector(constraints2.selectors.selectAll);
-  const selectedMemberById = useSelector(members.selectors.selectEntities);
   const membersInTerm = selectedMembers.filter(
     ({ term_id }) => term_id === props.group.term_id
   );
-  const memberIdsInTerm = new Set(membersInTerm.map(({ id }) => id));
-  const groupMembersInTerm = selectedGroupMembers.filter(({ member_id }) =>
-    memberIdsInTerm.has(member_id)
+  const groupGroupMemberMemberIds = new Set(
+    selectedGroupMembers
+      .filter(({ group_id }) => group_id === props.group.id)
+      .map(({ member_id }) => member_id)
   );
-  const constraints1InTerm = selectedConstraints1.filter(
-    ({ term_id }) => term_id === props.group.term_id
+  const groupMembers = membersInTerm.filter(({ id }) =>
+    groupGroupMemberMemberIds.has(id)
   );
-  const constraints2InTerm = selectedConstraints2.filter(
-    ({ term_id }) => term_id === props.group.term_id
+  const groupConstraints1 = selectedConstraints1.filter(
+    ({ group_id }) => group_id === props.group.id
+  );
+  const groupConstraints2 = selectedConstraints2.filter(
+    ({ group_id }) => group_id === props.group.id
   );
   const [state, updateState] = useImmer<State>({
     changes: {
@@ -165,19 +168,10 @@ const Group = React.memo((props: Props): JSX.Element => {
     dispatch(all.removeGroup(props.group.id));
   };
   const groupMemberNames = utils.intersperse(
-    groupMembersInTerm
-      .filter((group_member) => group_member.group_id === props.group.id)
-      .map(({ id, member_id }) => (
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        <MemberName key={id} member={selectedMemberById[member_id]!} />
-      )),
+    groupMembers.map((member) => (
+      <MemberName key={member.id} member={member} />
+    )),
     ", "
-  );
-  const groupConstraints1 = constraints1InTerm.filter(
-    (c) => c.group_id === props.group.id
-  );
-  const groupConstraints2 = constraints2InTerm.filter(
-    (c) => c.group_id === props.group.id
   );
   const errorMessages = validate(props.group.name);
   return (
@@ -238,11 +232,7 @@ const Group = React.memo((props: Props): JSX.Element => {
                         label={<MemberName member={member} />}
                         control={
                           <Checkbox
-                            checked={groupMembersInTerm.some(
-                              (group_member) =>
-                                group_member.group_id === props.group.id &&
-                                group_member.member_id === member.id
-                            )}
+                            checked={groupGroupMemberMemberIds.has(member.id)}
                             onChange={handleChangeGroupMember(member.id)}
                             color="primary"
                           />

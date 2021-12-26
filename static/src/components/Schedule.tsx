@@ -64,14 +64,23 @@ const Schedule = React.memo((props: Props): JSX.Element => {
     deletionDialogIsOpen: false,
     expanded: false,
   });
-  const assignmentsInTerm = selectedAssignments.filter(
+  const scheduleAssignments = selectedAssignments.filter(
     ({ schedule_id }) => schedule_id === props.schedule.id
   );
-  const membersInTerm = selectedMembers.filter(
-    ({ term_id }) => term_id === props.schedule.term_id
+  const scheduleDateNames = sortDateNames(
+    Array.from(new Set(scheduleAssignments.map(({ date_name }) => date_name)))
   );
-  const kinmusInTerm = selectedKinmus.filter(
-    ({ term_id }) => term_id === props.schedule.term_id
+  const scheduleAssignmentMemberIds = new Set(
+    scheduleAssignments.map(({ member_id }) => member_id)
+  );
+  const scheduleMembers = selectedMembers.filter(({ id }) =>
+    scheduleAssignmentMemberIds.has(id)
+  );
+  const scheduleAssignmentKinmuIds = new Set(
+    scheduleAssignments.map(({ kinmu_id }) => kinmu_id)
+  );
+  const scheduleKinmus = selectedKinmus.filter(({ id }) =>
+    scheduleAssignmentKinmuIds.has(id)
   );
   const handleClickExpand = () => {
     updateState((state) => {
@@ -95,13 +104,10 @@ const Schedule = React.memo((props: Props): JSX.Element => {
     dispatch(all.removeSchedule(props.schedule.id));
   };
   const handleClickExportToCSV = async () => {
-    const assignments_by_schedule_id = assignmentsInTerm.filter(
-      (assignment) => assignment.schedule_id === props.schedule.id
-    );
     const response = await utils.sendJSONRPCRequest("download_csv", [
-      assignments_by_schedule_id,
-      membersInTerm,
-      kinmusInTerm,
+      scheduleAssignments,
+      scheduleMembers,
+      scheduleKinmus,
     ]);
     if ("error" in response) throw new Error(response.error.message);
     const csv = iconv.encode(response.result as string, "Shift_JIS");
@@ -110,18 +116,6 @@ const Schedule = React.memo((props: Props): JSX.Element => {
     a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
     a.click();
   };
-  const schedule_assignments = assignmentsInTerm.filter(
-    (assignment) => assignment.schedule_id === props.schedule.id
-  );
-  const schedule_date_names = sortDateNames(
-    Array.from(new Set(schedule_assignments.map(({ date_name }) => date_name)))
-  );
-  const schedule_member_ids = Array.from(
-    new Set(schedule_assignments.map(({ member_id }) => member_id))
-  );
-  const schedule_members = membersInTerm.filter(({ id }) =>
-    schedule_member_ids.includes(id)
-  );
   return (
     <>
       <Card>
@@ -151,7 +145,7 @@ const Schedule = React.memo((props: Props): JSX.Element => {
                         <StickyLeftTopTableCell size="small">
                           \
                         </StickyLeftTopTableCell>
-                        {schedule_date_names.map((date_name) => (
+                        {scheduleDateNames.map((date_name) => (
                           <StickyTopTableCell key={date_name} size="small">
                             {date_name}
                           </StickyTopTableCell>
@@ -159,24 +153,23 @@ const Schedule = React.memo((props: Props): JSX.Element => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {schedule_members.map((member) => {
-                        const schedule_member_assignments =
-                          schedule_assignments.filter(
-                            (assignment) => assignment.member_id === member.id
-                          );
+                      {scheduleMembers.map((member) => {
+                        const assignments = scheduleAssignments.filter(
+                          (assignment) => assignment.member_id === member.id
+                        );
                         return (
                           <TableRow key={member.id}>
                             <StickyLeftTableCell size="small">
                               <MemberName member={member} />
                             </StickyLeftTableCell>
-                            {schedule_date_names.map((date_name) => (
+                            {scheduleDateNames.map((date_name) => (
                               <TableCell size="small" key={date_name}>
                                 <KinmuName
                                   kinmu={
                                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                     selectedKinmuById[
                                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                      schedule_member_assignments.find(
+                                      assignments.find(
                                         (assignment) =>
                                           assignment.date_name === date_name
                                       )!.kinmu_id

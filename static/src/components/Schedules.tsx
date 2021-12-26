@@ -346,11 +346,11 @@ const Schedules = React.memo((): JSX.Element => {
             new Set(newScheduleAssignments.map(({ date_name }) => date_name))
           )
         );
-        const newScheduleMemberIds = Array.from(
-          new Set(newScheduleAssignments.map(({ member_id }) => member_id))
+        const newScheduleMemberIds = new Set(
+          newScheduleAssignments.map(({ member_id }) => member_id)
         );
         const newScheduleMembers = allInTerm.members.filter(({ id }) =>
-          newScheduleMemberIds.includes(id)
+          newScheduleMemberIds.has(id)
         );
         return (
           <Dialog
@@ -376,10 +376,9 @@ const Schedules = React.memo((): JSX.Element => {
                 </TableHead>
                 <TableBody>
                   {newScheduleMembers.map((member) => {
-                    const newScheduleMemberAssignments =
-                      newScheduleAssignments.filter(
-                        (assignment) => assignment.member_id === member.id
-                      );
+                    const assignments = newScheduleAssignments.filter(
+                      (assignment) => assignment.member_id === member.id
+                    );
                     return (
                       <TableRow key={member.id}>
                         <StickyLeftTableCell size="small">
@@ -392,7 +391,7 @@ const Schedules = React.memo((): JSX.Element => {
                                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                 selectedKinmuById[
                                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                  newScheduleMemberAssignments.find(
+                                  assignments.find(
                                     (assignment) =>
                                       assignment.date_name === date_name
                                   )!.kinmu_id

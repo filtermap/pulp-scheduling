@@ -84,7 +84,6 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
   const selectedConstraints7 = useSelector(constraints7.selectors.selectAll);
   const selectedConstraints8 = useSelector(constraints8.selectors.selectAll);
   const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
-  const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const [state, updateState] = useImmer<State>({
     changes: {
       name: props.kinmu.name,
@@ -99,48 +98,52 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
       }),
     [props.kinmu.name, updateState]
   );
-  const kinmusInTerm = selectedKinmus.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuScheduleIds = new Set(
+    selectedAssignments
+      .filter(({ kinmu_id }) => kinmu_id === props.kinmu.id)
+      .map(({ schedule_id }) => schedule_id)
   );
-  const kinmuIdsInTerm = new Set(kinmusInTerm.map(({ id }) => id));
-  const assignmentsInTerm = selectedAssignments.filter(({ kinmu_id }) =>
-    kinmuIdsInTerm.has(kinmu_id)
+  const kinmuSchedules = selectedSchedules.filter(({ id }) =>
+    kinmuScheduleIds.has(id)
   );
-  const constraint0KinmusInTerm = selectedConstraint0Kinmus.filter(
-    ({ kinmu_id }) => kinmuIdsInTerm.has(kinmu_id)
+  const kinmuConstraint0Kinmus = selectedConstraint0Kinmus.filter(
+    ({ kinmu_id }) => kinmu_id === props.kinmu.id
   );
-  const constraints0InTerm = selectedConstraints0.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuConstraint0Ids = new Set(
+    kinmuConstraint0Kinmus.map(({ constraint0_id }) => constraint0_id)
   );
-  const constraints1InTerm = selectedConstraints1.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuConstraints0 = selectedConstraints0.filter(({ id }) =>
+    kinmuConstraint0Ids.has(id)
   );
-  const constraints2InTerm = selectedConstraints2.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuConstraints1 = selectedConstraints1.filter(
+    ({ kinmu_id }) => kinmu_id === props.kinmu.id
   );
-  const constraints3InTerm = selectedConstraints3.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuConstraints2 = selectedConstraints2.filter(
+    ({ kinmu_id }) => kinmu_id === props.kinmu.id
   );
-  const constraints4InTerm = selectedConstraints4.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuConstraints3 = selectedConstraints3.filter(
+    ({ kinmu_id }) => kinmu_id === props.kinmu.id
   );
-  const constraints5InTerm = selectedConstraints5.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuConstraints4 = selectedConstraints4.filter(
+    ({ kinmu_id }) => kinmu_id === props.kinmu.id
   );
-  const constraints6InTerm = selectedConstraints6.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuConstraints5 = selectedConstraints5.filter(
+    ({ kinmu_id }) => kinmu_id === props.kinmu.id
   );
-  const constraints7InTerm = selectedConstraints7.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuConstraints6 = selectedConstraints6.filter(
+    ({ kinmu_id }) => kinmu_id === props.kinmu.id
   );
-  const constraints8InTerm = selectedConstraints8.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuConstraints7 = selectedConstraints7.filter(
+    ({ kinmu_id }) => kinmu_id === props.kinmu.id
   );
-  const constraints9InTerm = selectedConstraints9.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuConstraints8 = selectedConstraints8.filter(
+    ({ kinmu_id }) => kinmu_id === props.kinmu.id
   );
-  const constraints10InTerm = selectedConstraints10.filter(
-    ({ term_id }) => term_id === props.kinmu.term_id
+  const kinmuConstraints9 = selectedConstraints9.filter(
+    ({ kinmu_id }) => kinmu_id === props.kinmu.id
+  );
+  const kinmuConstraints10 = selectedConstraints10.filter(
+    ({ kinmu_id }) => kinmu_id === props.kinmu.id
   );
   const handleClickExpand = () => {
     updateState((state) => {
@@ -201,52 +204,6 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
     });
     dispatch(all.removeKinmu(props.kinmu.id));
   };
-  const kinmuScheduleIds = new Set(
-    assignmentsInTerm
-      .filter(({ kinmu_id }) => kinmu_id === props.kinmu.id)
-      .map(({ schedule_id }) => schedule_id)
-  );
-  const kinmuSchedules = selectedSchedules.filter(({ id }) =>
-    kinmuScheduleIds.has(id)
-  );
-  const kinmuConstraint0Ids = new Set(
-    constraint0KinmusInTerm
-      .filter(({ kinmu_id }) => kinmu_id === props.kinmu.id)
-      .map(({ constraint0_id }) => constraint0_id)
-  );
-  const kinmuConstraints0 = constraints0InTerm.filter(({ id }) =>
-    kinmuConstraint0Ids.has(id)
-  );
-  const kinmuConstraints1 = constraints1InTerm.filter(
-    (c) => c.kinmu_id === props.kinmu.id
-  );
-  const kinmuConstraints2 = constraints2InTerm.filter(
-    (c) => c.kinmu_id === props.kinmu.id
-  );
-  const kinmuConstraints3 = constraints3InTerm.filter(
-    (c) => c.kinmu_id === props.kinmu.id
-  );
-  const kinmuConstraints4 = constraints4InTerm.filter(
-    (c) => c.kinmu_id === props.kinmu.id
-  );
-  const kinmuConstraints5 = constraints5InTerm.filter(
-    (c) => c.kinmu_id === props.kinmu.id
-  );
-  const kinmuConstraints6 = constraints6InTerm.filter(
-    (c) => c.kinmu_id === props.kinmu.id
-  );
-  const kinmuConstraints7 = constraints7InTerm.filter(
-    (c) => c.kinmu_id === props.kinmu.id
-  );
-  const kinmuConstraints8 = constraints8InTerm.filter(
-    (c) => c.kinmu_id === props.kinmu.id
-  );
-  const kinmuConstraints9 = constraints9InTerm.filter(
-    (c) => c.kinmu_id === props.kinmu.id
-  );
-  const kinmuConstraints10 = constraints10InTerm.filter(
-    (c) => c.kinmu_id === props.kinmu.id
-  );
   const errorMessages = validate(props.kinmu.name);
   return (
     <>

@@ -193,9 +193,7 @@ const Groups = React.memo((): JSX.Element => {
                       label={<MemberName member={member} />}
                       control={
                         <Checkbox
-                          checked={state.newGroupMemberIds.some(
-                            (member_id) => member_id === member.id
-                          )}
+                          checked={state.newGroupMemberIds.includes(member.id)}
                           onChange={handleChangeNewGroupMember(member.id)}
                           color="primary"
                         />

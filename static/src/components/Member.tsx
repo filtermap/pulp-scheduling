@@ -70,7 +70,6 @@ const Member = React.memo((props: Props): JSX.Element => {
   const selectedConstraints9 = useSelector(constraints9.selectors.selectAll);
   const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
   const selectedGroups = useSelector(groups.selectors.selectAll);
-  const selectedGroupById = useSelector(groups.selectors.selectEntities);
   const [state, updateState] = useImmer<State>({
     changes: {
       name: props.member.name,
@@ -85,11 +84,16 @@ const Member = React.memo((props: Props): JSX.Element => {
       }),
     [props.member.name, updateState]
   );
-  const memberGroupMembers = selectedGroupMembers.filter(
-    ({ member_id }) => member_id === props.member.id
-  );
   const groupsInTerm = selectedGroups.filter(
     ({ term_id }) => term_id === props.member.term_id
+  );
+  const memberGroupMemberGroupIds = new Set(
+    selectedGroupMembers
+      .filter(({ member_id }) => member_id === props.member.id)
+      .map(({ group_id }) => group_id)
+  );
+  const memberGroups = groupsInTerm.filter(({ id }) =>
+    memberGroupMemberGroupIds.has(id)
   );
   const memberAssignments = selectedAssignments.filter(
     ({ member_id }) => member_id === props.member.id
@@ -105,6 +109,16 @@ const Member = React.memo((props: Props): JSX.Element => {
   );
   const memberConstraints10 = selectedConstraints10.filter(
     ({ member_id }) => member_id === props.member.id
+  );
+  const memberGroupNames = utils.intersperse(
+    memberGroups.map((group) => <GroupName key={group.id} group={group} />),
+    ", "
+  );
+  const memberScheduleIds = new Set(
+    memberAssignments.map(({ schedule_id }) => schedule_id)
+  );
+  const memberSchedules = selectedSchedules.filter(({ id }) =>
+    memberScheduleIds.has(id)
   );
   const handleClickExpand = () => {
     updateState((state) => {
@@ -183,19 +197,6 @@ const Member = React.memo((props: Props): JSX.Element => {
     });
     dispatch(all.removeMember(props.member.id));
   };
-  const memberGroupNames = utils.intersperse(
-    memberGroupMembers.map(({ id, group_id }) => (
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      <GroupName key={id} group={selectedGroupById[group_id]!} />
-    )),
-    ", "
-  );
-  const memberScheduleIds = new Set(
-    memberAssignments.map(({ schedule_id }) => schedule_id)
-  );
-  const memberSchedules = selectedSchedules.filter(({ id }) =>
-    memberScheduleIds.has(id)
-  );
   const errorMessages = validate(props.member.name);
   return (
     <>
@@ -255,11 +256,7 @@ const Member = React.memo((props: Props): JSX.Element => {
                         label={<GroupName group={group} />}
                         control={
                           <Checkbox
-                            checked={memberGroupMembers.some(
-                              (group_member) =>
-                                group_member.group_id === group.id &&
-                                group_member.member_id === props.member.id
-                            )}
+                            checked={memberGroupMemberGroupIds.has(group.id)}
                             onChange={handleChangeGroupMember(group.id)}
                             color="primary"
                           />
