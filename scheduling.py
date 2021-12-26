@@ -1068,7 +1068,7 @@ def pursue(all_):
             problem += constraint
         for i in range(index + 1):
             problem += constraints["optional"][i]
-        problem.solve(pulp.solvers.PULP_CBC_CMD(msg=False))
+        problem.solve(pulp.PULP_CBC_CMD(msg=False))
         status = pulp.LpStatus[problem.status]
         print("Status:", status)
         if status != "Optimal":
