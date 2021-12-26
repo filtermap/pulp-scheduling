@@ -82,7 +82,7 @@ if __name__ == "__main__":
         processes.append(development_static_process)
 
     root = tkinter.Tk()
-    root.title("scheduling")
+    root.title("pulp-scheduling")
 
     def terminate_all():
         for process in processes:

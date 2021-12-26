@@ -23,7 +23,7 @@ exe = EXE(
     a.binaries,
     a.zipfiles,
     a.datas,
-    name="scheduling",
+    name="pulp-scheduling",
     debug=False,
     strip=False,
     upx=True,

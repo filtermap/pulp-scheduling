@@ -18,7 +18,7 @@ Windows 上で動作します。 (This app runs on Windows.)
 
 zip ファイルを解凍してください。 (Unzip the file.)
 
-解凍後のフォルダの中にある scheduling.exe を実行してください。 (Execute scheduling.exe in the unzipped folder.)
+解凍後のフォルダの中にある pulp-scheduling.exe を実行してください。 (Execute pulp-scheduling.exe in the unzipped folder.)
 
 ## 設定可能な勤務条件 (Available constraints)
 
