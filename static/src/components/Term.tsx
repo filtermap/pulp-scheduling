@@ -223,18 +223,6 @@ const Term = React.memo((props: Props): JSX.Element => {
           <CardContent>
             <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={props.term.is_enabled}
-                      onChange={handleChangeTermIsEnabled}
-                      color="primary"
-                    />
-                  }
-                  label="有効"
-                />
-              </Grid>
-              <Grid item={true} xs={12}>
                 <TextField
                   label="開始日"
                   type="date"
