@@ -381,6 +381,7 @@ const Layout = React.memo((): JSX.Element => {
       >
         <Toolbar />
         <Routes>
+          <Route path="/" element={<Terms />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/terms/:termIdName/schedules" element={<Schedules />} />
           <Route path="/terms/:termIdName/members" element={<Members />} />
