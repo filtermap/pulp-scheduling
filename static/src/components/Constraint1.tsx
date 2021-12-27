@@ -119,14 +119,28 @@ const Constraint1 = React.memo((props: Props): JSX.Element => {
       constraint1StartDateName: [],
       constraint1StopDateName: [],
     };
-    if (!utils.stringToDate(constraint1StartDateName))
+    const constraint1StartDate = utils.stringToDate(constraint1StartDateName);
+    const constraint1StopDate = utils.stringToDate(constraint1StopDateName);
+    if (!constraint1StartDate)
       errorMessages.constraint1StartDateName.push(
         "開始日の形式が正しくありません"
       );
-    if (!utils.stringToDate(constraint1StopDateName))
+    if (!constraint1StopDate)
       errorMessages.constraint1StopDateName.push(
         "終了日の形式が正しくありません"
       );
+    if (
+      constraint1StartDate &&
+      constraint1StopDate &&
+      constraint1StartDate > constraint1StopDate
+    ) {
+      errorMessages.constraint1StartDateName.push(
+        "開始日には終了日より過去の日付を入力してください"
+      );
+      errorMessages.constraint1StopDateName.push(
+        "終了日には開始日より未来の日付を入力してください"
+      );
+    }
     if (isNaN(constraint1MinNumberOfAssignments))
       errorMessages.constraint1MinNumberOfAssignments.push(
         "割り当て職員数下限の形式が正しくありません"
@@ -252,6 +266,11 @@ const Constraint1 = React.memo((props: Props): JSX.Element => {
     !constraint1StopDate || !termStopDate
       ? false
       : constraint1StopDate <= termStopDate;
+  const constraint1StartDateAndStopDateAreEnabled =
+    (constraint1StartDate &&
+      constraint1StopDate &&
+      constraint1StartDate <= constraint1StopDate) ||
+    false;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const constraint1Kinmu = selectedKinmuById[props.constraint1.kinmu_id]!;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -259,6 +278,7 @@ const Constraint1 = React.memo((props: Props): JSX.Element => {
   const relativesAreEnabled =
     constraint1StartDateIsEnabled &&
     constraint1StopDateIsEnabled &&
+    constraint1StartDateAndStopDateAreEnabled &&
     constraint1Kinmu.is_enabled &&
     constraint1Group.is_enabled;
   const title = <Constraint1Name constraint1={props.constraint1} />;

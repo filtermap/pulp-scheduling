@@ -68,10 +68,24 @@ const Terms = React.memo((): JSX.Element => {
       newTermStartDateName: [],
       newTermStopDateName: [],
     };
-    if (!utils.stringToDate(newTermStartDateName))
+    const newTermStartDate = utils.stringToDate(newTermStartDateName);
+    const newTermStopDate = utils.stringToDate(newTermStopDateName);
+    if (!newTermStartDate)
       errorMessages.newTermStartDateName.push("開始日の形式が正しくありません");
-    if (!utils.stringToDate(newTermStopDateName))
+    if (!newTermStopDate)
       errorMessages.newTermStopDateName.push("終了日の形式が正しくありません");
+    if (
+      newTermStartDate &&
+      newTermStopDate &&
+      newTermStartDate > newTermStopDate
+    ) {
+      errorMessages.newTermStartDateName.push(
+        "開始日には終了日より過去の日付を入力してください"
+      );
+      errorMessages.newTermStopDateName.push(
+        "終了日には開始日より未来の日付を入力してください"
+      );
+    }
     return errorMessages;
   };
   const handleChangeNewTermStartDateName = (
@@ -100,6 +114,19 @@ const Terms = React.memo((): JSX.Element => {
       })
     );
   };
+  const newTermStartDate = utils.stringToDate(state.newTermStartDateName);
+  const newTermStopDate = utils.stringToDate(state.newTermStopDateName);
+  const newTermStartDateIsEnabled = !!newTermStartDate;
+  const newTermStopDateIsEnabled = !!newTermStopDate;
+  const newTermStartDateAndStopDateAreEnabled =
+    (newTermStartDate &&
+      newTermStopDate &&
+      newTermStartDate <= newTermStopDate) ||
+    false;
+  const relativesAreEnabled =
+    newTermStartDateIsEnabled &&
+    newTermStopDateIsEnabled &&
+    newTermStartDateAndStopDateAreEnabled;
   const errorMessages = validate(
     state.newTermStartDateName,
     state.newTermStopDateName
@@ -134,7 +161,8 @@ const Terms = React.memo((): JSX.Element => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={state.newTermIsEnabled}
+                    checked={state.newTermIsEnabled && relativesAreEnabled}
+                    disabled={!relativesAreEnabled}
                     onChange={handleChangeNewTerm1IsEnabled}
                     color="primary"
                   />

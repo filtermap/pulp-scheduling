@@ -122,14 +122,32 @@ const Constraints2 = React.memo((): JSX.Element => {
       newConstraint2StartDateName: [],
       newConstraint2StopDateName: [],
     };
-    if (!utils.stringToDate(newConstraint2StartDateName))
+    const newConstraint2StartDate = utils.stringToDate(
+      newConstraint2StartDateName
+    );
+    const newConstraint2StopDate = utils.stringToDate(
+      newConstraint2StopDateName
+    );
+    if (!newConstraint2StartDate)
       errorMessages.newConstraint2StartDateName.push(
         "開始日の形式が正しくありません"
       );
-    if (!utils.stringToDate(newConstraint2StopDateName))
+    if (!newConstraint2StopDate)
       errorMessages.newConstraint2StopDateName.push(
         "終了日の形式が正しくありません"
       );
+    if (
+      newConstraint2StartDate &&
+      newConstraint2StopDate &&
+      newConstraint2StartDate > newConstraint2StopDate
+    ) {
+      errorMessages.newConstraint2StartDateName.push(
+        "開始日には終了日より過去の日付を入力してください"
+      );
+      errorMessages.newConstraint2StopDateName.push(
+        "開始日には終了日より未来の日付を入力してください"
+      );
+    }
     if (isNaN(newConstraint2MaxNumberOfAssignments))
       errorMessages.newConstraint2MaxNumberOfAssignments.push(
         "割り当て職員数上限の形式が正しくありません"
@@ -261,6 +279,11 @@ const Constraints2 = React.memo((): JSX.Element => {
             !newConstraint2StopDate || !termStopDate
               ? false
               : newConstraint2StopDate <= termStopDate;
+          const newConstraint2StartDateAndStopDateAreEnabled =
+            (newConstraint2StartDate &&
+              newConstraint2StopDate &&
+              newConstraint2StartDate <= newConstraint2StopDate) ||
+            false;
           const newConstraint2Kinmu =
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             selectedKinmuById[state.newConstraint2KinmuId]!;
@@ -270,6 +293,7 @@ const Constraints2 = React.memo((): JSX.Element => {
           const relativesAreEnabled =
             newConstraint2StartDateIsEnabled &&
             newConstraint2StopDateIsEnabled &&
+            newConstraint2StartDateAndStopDateAreEnabled &&
             newConstraint2Kinmu.is_enabled &&
             newConstraint2Group.is_enabled;
           const errorMessages = validate(

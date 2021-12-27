@@ -9,7 +9,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
@@ -106,10 +105,20 @@ const Term = React.memo((props: Props): JSX.Element => {
       termStartDateName: [],
       termStopDateName: [],
     };
-    if (!utils.stringToDate(termStartDateName))
+    const termStartDate = utils.stringToDate(termStartDateName);
+    const termStopDate = utils.stringToDate(termStopDateName);
+    if (!termStartDate)
       errorMessages.termStartDateName.push("開始日の形式が正しくありません");
-    if (!utils.stringToDate(termStopDateName))
+    if (!termStopDate)
       errorMessages.termStopDateName.push("終了日の形式が正しくありません");
+    if (termStartDate && termStopDate && termStartDate > termStopDate) {
+      errorMessages.termStartDateName.push(
+        "開始日には終了日より過去の日付を入力してください"
+      );
+      errorMessages.termStopDateName.push(
+        "終了日には開始日より未来の日付を入力してください"
+      );
+    }
     return errorMessages;
   };
   const handleChangeTermStartDateName = (
@@ -191,6 +200,16 @@ const Term = React.memo((props: Props): JSX.Element => {
     });
     dispatch(all.removeTerm(props.term.id));
   };
+  const termStartDate = utils.stringToDate(props.term.start_date_name);
+  const termStartDateIsEnabled = !!termStartDate;
+  const termStopDate = utils.stringToDate(props.term.stop_date_name);
+  const termStopDateIsEnabled = !!termStopDate;
+  const termStartDateAndStopDateAreEnabled =
+    (termStartDate && termStopDate && termStartDate <= termStopDate) || false;
+  const relativesAreEnabled =
+    termStartDateIsEnabled &&
+    termStopDateIsEnabled &&
+    termStartDateAndStopDateAreEnabled;
   const errorMessages = validate(
     props.term.start_date_name,
     props.term.stop_date_name
@@ -201,7 +220,8 @@ const Term = React.memo((props: Props): JSX.Element => {
         <CardHeader
           avatar={
             <Switch
-              checked={props.term.is_enabled}
+              checked={props.term.is_enabled && relativesAreEnabled}
+              disabled={!relativesAreEnabled}
               onChange={handleChangeTermIsEnabled}
               color="primary"
             />

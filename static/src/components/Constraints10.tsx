@@ -130,14 +130,32 @@ const Constraints10 = React.memo((): JSX.Element => {
       newConstraint10StartDateName: [],
       newConstraint10StopDateName: [],
     };
-    if (!utils.stringToDate(newConstraint10StartDateName))
+    const newConstraint10StartDate = utils.stringToDate(
+      newConstraint10StartDateName
+    );
+    const newConstraint10StopDate = utils.stringToDate(
+      newConstraint10StopDateName
+    );
+    if (!newConstraint10StartDate)
       errorMessages.newConstraint10StartDateName.push(
         "開始日の形式が正しくありません"
       );
-    if (!utils.stringToDate(newConstraint10StopDateName))
+    if (!newConstraint10StopDate)
       errorMessages.newConstraint10StopDateName.push(
         "終了日の形式が正しくありません"
       );
+    if (
+      newConstraint10StartDate &&
+      newConstraint10StopDate &&
+      newConstraint10StartDate > newConstraint10StopDate
+    ) {
+      errorMessages.newConstraint10StartDateName.push(
+        "開始日には終了日より過去の日付を入力してください"
+      );
+      errorMessages.newConstraint10StopDateName.push(
+        "終了日には開始日より未来の日付を入力してください"
+      );
+    }
     return errorMessages;
   };
   const handleChangeNewConstraint10StartDateName = (
@@ -243,6 +261,11 @@ const Constraints10 = React.memo((): JSX.Element => {
             !newConstraint10StopDate || !termStopDate
               ? false
               : newConstraint10StopDate <= termStopDate;
+          const newConstraint10StartDateAndStopDateAreEnabled =
+            (newConstraint10StartDate &&
+              newConstraint10StopDate &&
+              newConstraint10StartDate <= newConstraint10StopDate) ||
+            false;
           const newConstraint10Kinmu =
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             selectedKinmuById[state.newConstraint10KinmuId]!;
@@ -250,6 +273,7 @@ const Constraints10 = React.memo((): JSX.Element => {
             newConstraint10Member.is_enabled &&
             newConstraint10StartDateIsEnabled &&
             newConstraint10StopDateIsEnabled &&
+            newConstraint10StartDateAndStopDateAreEnabled &&
             newConstraint10Kinmu.is_enabled;
           const errorMessages = validate(
             state.newConstraint10StartDateName,

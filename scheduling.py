@@ -626,7 +626,13 @@ def write_all(all):
 def select_enabled(all_):
     members = [member for member in all_["members"] if member["is_enabled"]]
     member_ids = [member["id"] for member in members]
-    terms = all_["terms"]
+    terms = [
+        term
+        for term in all_["terms"]
+        if term["is_enabled"]
+        and utils.str_to_date(term["start_date_name"])
+        <= utils.str_to_date(term["stop_date_name"])
+    ]
     groups = [group for group in all_["groups"] if group["is_enabled"]]
     group_ids = [group["id"] for group in groups]
     group_members = [
@@ -658,7 +664,9 @@ def select_enabled(all_):
         for constraint in all_["constraints1"]
         if constraint["is_enabled"]
         and all(
-            utils.str_to_date(term["start_date_name"])
+            utils.str_to_date(constraint["start_date_name"])
+            <= utils.str_to_date(constraint["stop_date_name"])
+            and utils.str_to_date(term["start_date_name"])
             <= utils.str_to_date(constraint["start_date_name"])
             and utils.str_to_date(constraint["stop_date_name"])
             <= utils.str_to_date(term["stop_date_name"])
@@ -672,7 +680,9 @@ def select_enabled(all_):
         for constraint in all_["constraints2"]
         if constraint["is_enabled"]
         and all(
-            utils.str_to_date(term["start_date_name"])
+            utils.str_to_date(constraint["start_date_name"])
+            <= utils.str_to_date(constraint["stop_date_name"])
+            and utils.str_to_date(term["start_date_name"])
             <= utils.str_to_date(constraint["start_date_name"])
             and utils.str_to_date(constraint["stop_date_name"])
             <= utils.str_to_date(term["stop_date_name"])
@@ -720,7 +730,9 @@ def select_enabled(all_):
         for constraint in all_["constraints9"]
         if constraint["is_enabled"]
         and all(
-            utils.str_to_date(term["start_date_name"])
+            utils.str_to_date(constraint["start_date_name"])
+            <= utils.str_to_date(constraint["stop_date_name"])
+            and utils.str_to_date(term["start_date_name"])
             <= utils.str_to_date(constraint["start_date_name"])
             and utils.str_to_date(constraint["stop_date_name"])
             <= utils.str_to_date(term["stop_date_name"])
@@ -734,7 +746,9 @@ def select_enabled(all_):
         for constraint in all_["constraints10"]
         if constraint["is_enabled"]
         and all(
-            utils.str_to_date(term["start_date_name"])
+            utils.str_to_date(constraint["start_date_name"])
+            <= utils.str_to_date(constraint["stop_date_name"])
+            and utils.str_to_date(term["start_date_name"])
             <= utils.str_to_date(constraint["start_date_name"])
             and utils.str_to_date(constraint["stop_date_name"])
             <= utils.str_to_date(term["stop_date_name"])

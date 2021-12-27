@@ -129,14 +129,28 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
       constraint9StartDateName: [],
       constraint9StopDateName: [],
     };
-    if (!utils.stringToDate(constraint9StartDateName))
+    const constraint9StartDate = utils.stringToDate(constraint9StartDateName);
+    const constraint9StopDate = utils.stringToDate(constraint9StopDateName);
+    if (!constraint9StartDate)
       errorMessages.constraint9StartDateName.push(
         "開始日の形式が正しくありません"
       );
-    if (!utils.stringToDate(constraint9StopDateName))
+    if (!constraint9StopDate)
       errorMessages.constraint9StopDateName.push(
         "終了日の形式が正しくありません"
       );
+    if (
+      constraint9StartDate &&
+      constraint9StopDate &&
+      constraint9StartDate > constraint9StopDate
+    ) {
+      errorMessages.constraint9StartDateName.push(
+        "開始日には終了日より過去の日付を入力してください"
+      );
+      errorMessages.constraint9StopDateName.push(
+        "終了日には開始日より未来の日付を入力してください"
+      );
+    }
     return errorMessages;
   };
   const handleChangeConstraint9StartDateName = (
@@ -221,10 +235,16 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
     !constraint9StopDate || !termStopDate
       ? false
       : constraint9StopDate <= termStopDate;
+  const constraint9StartDateAndStopDateAreEnabled =
+    (constraint9StartDate &&
+      constraint9StopDate &&
+      constraint9StartDate <= constraint9StopDate) ||
+    false;
   const relativesAreEnabled =
     selectedMember.is_enabled &&
     constraint9StartDateIsEnabled &&
     constraint9StopDateIsEnabled &&
+    constraint9StartDateAndStopDateAreEnabled &&
     selectedKinmu.is_enabled;
   const title = <Constraint9Name constraint9={props.constraint9} />;
   const errorMessages = validate(
