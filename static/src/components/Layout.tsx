@@ -21,6 +21,7 @@ import {
   Route,
   Routes,
   useLocation,
+  useMatch,
 } from "react-router-dom";
 import { ActionCreators } from "redux-undo";
 import { useImmer } from "use-immer";
@@ -100,9 +101,20 @@ const ListItemLink = React.memo((props: { to: string; primary: string }) => {
 
 // eslint-disable-next-line react/display-name
 const TermListItems = React.memo((props: { term: terms.Term }) => {
+  const params = useMatch("/terms/:termIdName/*")?.params;
   const [state, updateState] = useImmer<{ isOpen: boolean }>({
     isOpen: false,
   });
+  React.useEffect(() => {
+    if (!params) return;
+    const { termIdName } = params;
+    if (!termIdName) return;
+    const termId = parseInt(termIdName);
+    if (termId !== props.term.id) return;
+    updateState((state) => {
+      state.isOpen = true;
+    });
+  }, [props.term.id, params, updateState]);
   const handleClickTerm = () =>
     updateState((state) => {
       state.isOpen = !state.isOpen;
