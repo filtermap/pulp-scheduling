@@ -56,9 +56,8 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedGroups = useSelector(groups.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
-  const selectedTerm = useAppSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    (state) => terms.selectors.selectById(state, props.constraint2.term_id)!
+  const selectedTerm = useAppSelector((state) =>
+    terms.selectors.selectById(state, props.constraint2.term_id)
   );
   const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const selectedGroupById = useSelector(groups.selectors.selectEntities);
@@ -252,7 +251,8 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
   const constraint2StartDate = utils.stringToDate(
     props.constraint2.start_date_name
   );
-  const termStartDate = utils.stringToDate(selectedTerm.start_date_name);
+  const termStartDate =
+    selectedTerm && utils.stringToDate(selectedTerm.start_date_name);
   const constraint2StartDateIsEnabled =
     !constraint2StartDate || !termStartDate
       ? false
@@ -260,7 +260,8 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
   const constraint2StopDate = utils.stringToDate(
     props.constraint2.stop_date_name
   );
-  const termStopDate = utils.stringToDate(selectedTerm.stop_date_name);
+  const termStopDate =
+    selectedTerm && utils.stringToDate(selectedTerm.stop_date_name);
   const constraint2StopDateIsEnabled =
     !constraint2StopDate || !termStopDate
       ? false
@@ -270,16 +271,14 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
       constraint2StopDate &&
       constraint2StartDate <= constraint2StopDate) ||
     false;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const constraint2Kinmu = selectedKinmuById[props.constraint2.kinmu_id]!;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const constraint2Group = selectedGroupById[props.constraint2.group_id]!;
+  const constraint2Kinmu = selectedKinmuById[props.constraint2.kinmu_id];
+  const constraint2Group = selectedGroupById[props.constraint2.group_id];
   const relativesAreEnabled =
     constraint2StartDateIsEnabled &&
     constraint2StopDateIsEnabled &&
     constraint2StartDateAndStopDateAreEnabled &&
-    constraint2Kinmu.is_enabled &&
-    constraint2Group.is_enabled;
+    constraint2Kinmu?.is_enabled &&
+    constraint2Group?.is_enabled;
   const title = <Constraint2Name constraint2={props.constraint2} />;
   const errorMessages = validate(
     props.constraint2.start_date_name,

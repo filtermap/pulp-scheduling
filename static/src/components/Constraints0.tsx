@@ -161,13 +161,11 @@ const Constraints0 = React.memo((): JSX.Element => {
         (() => {
           const newConstraint0Constraint0KinmuKinmus =
             state.newConstraint0Constraint0KinmuKinmuIds.map(
-              (kinmu_id) =>
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                selectedKinmuById[kinmu_id]!
+              (kinmu_id) => selectedKinmuById[kinmu_id]
             );
           const relativesAreEnabled =
             newConstraint0Constraint0KinmuKinmus.every(
-              ({ is_enabled }) => is_enabled
+              (kinmu) => kinmu?.is_enabled
             );
           return (
             <Dialog

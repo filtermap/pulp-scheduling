@@ -54,17 +54,14 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
-  const selectedMember = useAppSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    (state) => members.selectors.selectById(state, props.constraint9.member_id)!
+  const selectedMember = useAppSelector((state) =>
+    members.selectors.selectById(state, props.constraint9.member_id)
   );
-  const selectedTerm = useAppSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    (state) => terms.selectors.selectById(state, props.constraint9.term_id)!
+  const selectedTerm = useAppSelector((state) =>
+    terms.selectors.selectById(state, props.constraint9.term_id)
   );
-  const selectedKinmu = useAppSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    (state) => kinmus.selectors.selectById(state, props.constraint9.kinmu_id)!
+  const selectedKinmu = useAppSelector((state) =>
+    kinmus.selectors.selectById(state, props.constraint9.kinmu_id)
   );
   const [state, updateState] = useImmer<State>({
     changes: {
@@ -222,7 +219,8 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
   const constraint9StartDate = utils.stringToDate(
     props.constraint9.start_date_name
   );
-  const termStartDate = utils.stringToDate(selectedTerm.start_date_name);
+  const termStartDate =
+    selectedTerm && utils.stringToDate(selectedTerm.start_date_name);
   const constraint9StartDateIsEnabled =
     !constraint9StartDate || !termStartDate
       ? false
@@ -230,7 +228,8 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
   const constraint9StopDate = utils.stringToDate(
     props.constraint9.stop_date_name
   );
-  const termStopDate = utils.stringToDate(selectedTerm.stop_date_name);
+  const termStopDate =
+    selectedTerm && utils.stringToDate(selectedTerm.stop_date_name);
   const constraint9StopDateIsEnabled =
     !constraint9StopDate || !termStopDate
       ? false
@@ -241,11 +240,11 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
       constraint9StartDate <= constraint9StopDate) ||
     false;
   const relativesAreEnabled =
-    selectedMember.is_enabled &&
+    selectedMember?.is_enabled &&
     constraint9StartDateIsEnabled &&
     constraint9StopDateIsEnabled &&
     constraint9StartDateAndStopDateAreEnabled &&
-    selectedKinmu.is_enabled;
+    selectedKinmu?.is_enabled;
   const title = <Constraint9Name constraint9={props.constraint9} />;
   const errorMessages = validate(
     props.constraint9.start_date_name,

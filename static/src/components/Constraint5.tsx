@@ -46,9 +46,8 @@ type ErrorMessages = {
 const Constraint5 = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
-  const selectedKinmu = useAppSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    (state) => kinmus.selectors.selectById(state, props.constraint5.kinmu_id)!
+  const selectedKinmu = useAppSelector((state) =>
+    kinmus.selectors.selectById(state, props.constraint5.kinmu_id)
   );
   const [state, updateState] = useImmer<State>({
     changes: {
@@ -143,7 +142,7 @@ const Constraint5 = React.memo((props: Props): JSX.Element => {
     });
     dispatch(constraints5.remove(props.constraint5.id));
   };
-  const relativesAreEnabled = selectedKinmu.is_enabled;
+  const relativesAreEnabled = selectedKinmu?.is_enabled;
   const title = <Constraint5Name constraint5={props.constraint5} />;
   const errorMessages = validate(props.constraint5.min_number_of_days);
   return (

@@ -33,8 +33,8 @@ import lineThroughSx from "./parts/lineThroughSx";
 type State = {
   creationDialogIsOpen: boolean;
   newConstraint2IsEnabled: boolean;
-  newConstraint2StartDateName: string;
-  newConstraint2StopDateName: string;
+  newConstraint2StartDateName: string | undefined;
+  newConstraint2StopDateName: string | undefined;
   newConstraint2KinmuId: number | undefined;
   newConstraint2GroupId: number | undefined;
   newConstraint2MaxNumberOfAssignments: number;
@@ -55,9 +55,8 @@ const Constraints2 = React.memo((): JSX.Element => {
   const selectedConstraints2 = useSelector(constraints2.selectors.selectAll);
   const selectedGroups = useSelector(groups.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
-  const selectedTerm = useAppSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    (state) => terms.selectors.selectById(state, termId)!
+  const selectedTerm = useAppSelector((state) =>
+    terms.selectors.selectById(state, termId)
   );
   const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
   const selectedGroupById = useSelector(groups.selectors.selectEntities);
@@ -74,8 +73,8 @@ const Constraints2 = React.memo((): JSX.Element => {
     groupsInTerm.length > 0 ? groupsInTerm[0].id : undefined;
   const newConstraint2KinmuId =
     kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
-  const newConstraint2StartDateName = selectedTerm.start_date_name;
-  const newConstraint2StopDateName = selectedTerm.stop_date_name;
+  const newConstraint2StartDateName = selectedTerm?.start_date_name;
+  const newConstraint2StopDateName = selectedTerm?.stop_date_name;
   const [state, updateState] = useImmer<State>({
     creationDialogIsOpen: false,
     newConstraint2GroupId,
@@ -113,8 +112,8 @@ const Constraints2 = React.memo((): JSX.Element => {
     });
   };
   const validate = (
-    newConstraint2StartDateName: string,
-    newConstraint2StopDateName: string,
+    newConstraint2StartDateName: string | undefined,
+    newConstraint2StopDateName: string | undefined,
     newConstraint2MaxNumberOfAssignments: number
   ): ErrorMessages => {
     const errorMessages: ErrorMessages = {
@@ -122,12 +121,12 @@ const Constraints2 = React.memo((): JSX.Element => {
       newConstraint2StartDateName: [],
       newConstraint2StopDateName: [],
     };
-    const newConstraint2StartDate = utils.stringToDate(
-      newConstraint2StartDateName
-    );
-    const newConstraint2StopDate = utils.stringToDate(
-      newConstraint2StopDateName
-    );
+    const newConstraint2StartDate =
+      newConstraint2StartDateName &&
+      utils.stringToDate(newConstraint2StartDateName);
+    const newConstraint2StopDate =
+      newConstraint2StopDateName &&
+      utils.stringToDate(newConstraint2StopDateName);
     if (!newConstraint2StartDate)
       errorMessages.newConstraint2StartDateName.push(
         "開始日の形式が正しくありません"
@@ -211,8 +210,10 @@ const Constraints2 = React.memo((): JSX.Element => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         kinmu_id: state.newConstraint2KinmuId!,
         max_number_of_assignments: state.newConstraint2MaxNumberOfAssignments,
-        start_date_name: state.newConstraint2StartDateName,
-        stop_date_name: state.newConstraint2StopDateName,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        start_date_name: state.newConstraint2StartDateName!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        stop_date_name: state.newConstraint2StopDateName!,
         term_id: termId,
       })
     );
@@ -261,20 +262,20 @@ const Constraints2 = React.memo((): JSX.Element => {
         </Dialog>
       ) : (
         (() => {
-          const newConstraint2StartDate = utils.stringToDate(
-            state.newConstraint2StartDateName
-          );
-          const termStartDate = utils.stringToDate(
-            selectedTerm.start_date_name
-          );
+          const newConstraint2StartDate =
+            state.newConstraint2StartDateName &&
+            utils.stringToDate(state.newConstraint2StartDateName);
+          const termStartDate =
+            selectedTerm && utils.stringToDate(selectedTerm.start_date_name);
           const newConstraint2StartDateIsEnabled =
             !newConstraint2StartDate || !termStartDate
               ? false
               : termStartDate <= newConstraint2StartDate;
-          const newConstraint2StopDate = utils.stringToDate(
-            state.newConstraint2StopDateName
-          );
-          const termStopDate = utils.stringToDate(selectedTerm.stop_date_name);
+          const newConstraint2StopDate =
+            state.newConstraint2StopDateName &&
+            utils.stringToDate(state.newConstraint2StopDateName);
+          const termStopDate =
+            selectedTerm && utils.stringToDate(selectedTerm.stop_date_name);
           const newConstraint2StopDateIsEnabled =
             !newConstraint2StopDate || !termStopDate
               ? false
@@ -285,17 +286,15 @@ const Constraints2 = React.memo((): JSX.Element => {
               newConstraint2StartDate <= newConstraint2StopDate) ||
             false;
           const newConstraint2Kinmu =
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            selectedKinmuById[state.newConstraint2KinmuId]!;
+            selectedKinmuById[state.newConstraint2KinmuId];
           const newConstraint2Group =
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            selectedGroupById[state.newConstraint2GroupId]!;
+            selectedGroupById[state.newConstraint2GroupId];
           const relativesAreEnabled =
             newConstraint2StartDateIsEnabled &&
             newConstraint2StopDateIsEnabled &&
             newConstraint2StartDateAndStopDateAreEnabled &&
-            newConstraint2Kinmu.is_enabled &&
-            newConstraint2Group.is_enabled;
+            newConstraint2Kinmu?.is_enabled &&
+            newConstraint2Group?.is_enabled;
           const errorMessages = validate(
             state.newConstraint2StartDateName,
             state.newConstraint2StopDateName,

@@ -159,9 +159,8 @@ const Constraints8 = React.memo((): JSX.Element => {
       ) : (
         (() => {
           const newConstraint8Kinmu =
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            selectedKinmuById[state.newConstraint8KinmuId]!;
-          const relativesAreEnabled = newConstraint8Kinmu.is_enabled;
+            selectedKinmuById[state.newConstraint8KinmuId];
+          const relativesAreEnabled = newConstraint8Kinmu?.is_enabled;
           const errorMessages = validate(state.newConstraint8MaxNumberOfDays);
           return (
             <Dialog

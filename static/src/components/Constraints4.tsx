@@ -192,13 +192,11 @@ const Constraints4 = React.memo((): JSX.Element => {
       ) : (
         (() => {
           const newConstraint4Member =
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            selectedMemberById[state.newConstraint4MemberId]!;
+            selectedMemberById[state.newConstraint4MemberId];
           const newConstraint4Kinmu =
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            selectedKinmuById[state.newConstraint4KinmuId]!;
+            selectedKinmuById[state.newConstraint4KinmuId];
           const relativesAreEnabled =
-            newConstraint4Member.is_enabled && newConstraint4Kinmu.is_enabled;
+            newConstraint4Member?.is_enabled && newConstraint4Kinmu?.is_enabled;
           const errorMessages = validate(
             state.newConstraint4MaxNumberOfAssignments
           );

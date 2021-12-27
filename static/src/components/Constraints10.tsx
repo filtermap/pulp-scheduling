@@ -34,8 +34,8 @@ type State = {
   creationDialogIsOpen: boolean;
   newConstraint10IsEnabled: boolean;
   newConstraint10MemberId: number | undefined;
-  newConstraint10StartDateName: string;
-  newConstraint10StopDateName: string;
+  newConstraint10StartDateName: string | undefined;
+  newConstraint10StopDateName: string | undefined;
   newConstraint10KinmuId: number | undefined;
 };
 
@@ -53,9 +53,8 @@ const Constraints10 = React.memo((): JSX.Element => {
   const selectedConstraints10 = useSelector(constraints10.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const selectedMembers = useSelector(members.selectors.selectAll);
-  const selectedTerm = useAppSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    (state) => terms.selectors.selectById(state, termId)!
+  const selectedTerm = useAppSelector((state) =>
+    terms.selectors.selectById(state, termId)
   );
   const selectedMemberById = useSelector(members.selectors.selectEntities);
   const selectedKinmuById = useSelector(kinmus.selectors.selectEntities);
@@ -72,8 +71,8 @@ const Constraints10 = React.memo((): JSX.Element => {
     kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
   const newConstraint10MemberId =
     membersInTerm.length > 0 ? membersInTerm[0].id : undefined;
-  const newConstraint10StartDateName = selectedTerm.start_date_name;
-  const newConstraint10StopDateName = selectedTerm.stop_date_name;
+  const newConstraint10StartDateName = selectedTerm?.start_date_name;
+  const newConstraint10StopDateName = selectedTerm?.stop_date_name;
   const [state, updateState] = useImmer<State>({
     creationDialogIsOpen: false,
     newConstraint10IsEnabled: true,
@@ -123,19 +122,19 @@ const Constraints10 = React.memo((): JSX.Element => {
     });
   };
   const validate = (
-    newConstraint10StartDateName: string,
-    newConstraint10StopDateName: string
+    newConstraint10StartDateName: string | undefined,
+    newConstraint10StopDateName: string | undefined
   ): ErrorMessages => {
     const errorMessages: ErrorMessages = {
       newConstraint10StartDateName: [],
       newConstraint10StopDateName: [],
     };
-    const newConstraint10StartDate = utils.stringToDate(
-      newConstraint10StartDateName
-    );
-    const newConstraint10StopDate = utils.stringToDate(
-      newConstraint10StopDateName
-    );
+    const newConstraint10StartDate =
+      newConstraint10StartDateName &&
+      utils.stringToDate(newConstraint10StartDateName);
+    const newConstraint10StopDate =
+      newConstraint10StopDateName &&
+      utils.stringToDate(newConstraint10StopDateName);
     if (!newConstraint10StartDate)
       errorMessages.newConstraint10StartDateName.push(
         "開始日の形式が正しくありません"
@@ -190,8 +189,10 @@ const Constraints10 = React.memo((): JSX.Element => {
         kinmu_id: state.newConstraint10KinmuId!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         member_id: state.newConstraint10MemberId!,
-        start_date_name: state.newConstraint10StartDateName,
-        stop_date_name: state.newConstraint10StopDateName,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        start_date_name: state.newConstraint10StartDateName!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        stop_date_name: state.newConstraint10StopDateName!,
         term_id: termId,
       })
     );
@@ -241,22 +242,21 @@ const Constraints10 = React.memo((): JSX.Element => {
       ) : (
         (() => {
           const newConstraint10Member =
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            selectedMemberById[state.newConstraint10MemberId]!;
-          const newConstraint10StartDate = utils.stringToDate(
-            state.newConstraint10StartDateName
-          );
-          const termStartDate = utils.stringToDate(
-            selectedTerm.start_date_name
-          );
+            selectedMemberById[state.newConstraint10MemberId];
+          const newConstraint10StartDate =
+            state.newConstraint10StartDateName &&
+            utils.stringToDate(state.newConstraint10StartDateName);
+          const termStartDate =
+            selectedTerm && utils.stringToDate(selectedTerm.start_date_name);
           const newConstraint10StartDateIsEnabled =
             !newConstraint10StartDate || !termStartDate
               ? false
               : termStartDate <= newConstraint10StartDate;
-          const newConstraint10StopDate = utils.stringToDate(
-            state.newConstraint10StopDateName
-          );
-          const termStopDate = utils.stringToDate(selectedTerm.stop_date_name);
+          const newConstraint10StopDate =
+            state.newConstraint10StopDateName &&
+            utils.stringToDate(state.newConstraint10StopDateName);
+          const termStopDate =
+            selectedTerm && utils.stringToDate(selectedTerm.stop_date_name);
           const newConstraint10StopDateIsEnabled =
             !newConstraint10StopDate || !termStopDate
               ? false
@@ -267,14 +267,13 @@ const Constraints10 = React.memo((): JSX.Element => {
               newConstraint10StartDate <= newConstraint10StopDate) ||
             false;
           const newConstraint10Kinmu =
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            selectedKinmuById[state.newConstraint10KinmuId]!;
+            selectedKinmuById[state.newConstraint10KinmuId];
           const relativesAreEnabled =
-            newConstraint10Member.is_enabled &&
+            newConstraint10Member?.is_enabled &&
             newConstraint10StartDateIsEnabled &&
             newConstraint10StopDateIsEnabled &&
             newConstraint10StartDateAndStopDateAreEnabled &&
-            newConstraint10Kinmu.is_enabled;
+            newConstraint10Kinmu?.is_enabled;
           const errorMessages = validate(
             state.newConstraint10StartDateName,
             state.newConstraint10StopDateName

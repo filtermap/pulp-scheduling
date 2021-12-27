@@ -192,13 +192,11 @@ const Constraints3 = React.memo((): JSX.Element => {
       ) : (
         (() => {
           const newConstraint3Member =
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            selectedMemberById[state.newConstraint3MemberId]!;
+            selectedMemberById[state.newConstraint3MemberId];
           const newConstraint3Kinmu =
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            selectedKinmuById[state.newConstraint3KinmuId]!;
+            selectedKinmuById[state.newConstraint3KinmuId];
           const relativesAreEnabled =
-            newConstraint3Member.is_enabled && newConstraint3Kinmu.is_enabled;
+            newConstraint3Member?.is_enabled && newConstraint3Kinmu?.is_enabled;
           const errorMessages = validate(
             state.newConstraint3MinNumberOfAssignments
           );

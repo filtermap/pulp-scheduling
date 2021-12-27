@@ -49,13 +49,11 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
   const dispatch = useDispatch();
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
-  const selectedMember = useAppSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    (state) => members.selectors.selectById(state, props.constraint3.member_id)!
+  const selectedMember = useAppSelector((state) =>
+    members.selectors.selectById(state, props.constraint3.member_id)
   );
-  const selectedKinmu = useAppSelector(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    (state) => kinmus.selectors.selectById(state, props.constraint3.kinmu_id)!
+  const selectedKinmu = useAppSelector((state) =>
+    kinmus.selectors.selectById(state, props.constraint3.kinmu_id)
   );
   const [state, updateState] = useImmer<State>({
     changes: {
@@ -173,7 +171,7 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
     dispatch(constraints3.remove(props.constraint3.id));
   };
   const relativesAreEnabled =
-    selectedMember.is_enabled && selectedKinmu.is_enabled;
+    selectedMember?.is_enabled && selectedKinmu?.is_enabled;
   const title = <Constraint3Name constraint3={props.constraint3} />;
   const errorMessages = validate(props.constraint3.min_number_of_assignments);
   return (
