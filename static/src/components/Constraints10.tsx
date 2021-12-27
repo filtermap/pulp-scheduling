@@ -26,6 +26,7 @@ import * as utils from "../utils";
 import Constraint10 from "./Constraint10";
 import KinmuName from "./names/KinmuName";
 import MemberName from "./names/MemberName";
+import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 import lineThroughSx from "./parts/lineThroughSx";
 
@@ -183,9 +184,6 @@ const Constraints10 = React.memo((): JSX.Element => {
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           職員の期間に割り当てない勤務
         </Typography>
-        <Button size="small" onClick={handleClickOpenCreationDialog}>
-          追加
-        </Button>
       </Toolbar>
       <GridFrame>
         <Grid container={true} spacing={1}>
@@ -196,6 +194,7 @@ const Constraints10 = React.memo((): JSX.Element => {
           ))}
         </Grid>
       </GridFrame>
+      <FloatingAddButton onClick={handleClickOpenCreationDialog} />
       {state.newConstraint10MemberId === undefined ||
       state.newConstraint10KinmuId === undefined ? (
         <Dialog

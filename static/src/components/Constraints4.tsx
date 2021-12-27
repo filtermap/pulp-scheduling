@@ -23,6 +23,7 @@ import * as members from "../modules/members";
 import Constraint4 from "./Constraint4";
 import KinmuName from "./names/KinmuName";
 import MemberName from "./names/MemberName";
+import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 
 type State = {
@@ -152,9 +153,6 @@ const Constraints4 = React.memo((): JSX.Element => {
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           職員の勤務の割り当て数の上限
         </Typography>
-        <Button size="small" onClick={handleClickOpenCreationDialog}>
-          追加
-        </Button>
       </Toolbar>
       <GridFrame>
         <Grid container={true} spacing={1}>
@@ -165,6 +163,7 @@ const Constraints4 = React.memo((): JSX.Element => {
           ))}
         </Grid>
       </GridFrame>
+      <FloatingAddButton onClick={handleClickOpenCreationDialog} />
       {state.newConstraint4MemberId === undefined ||
       state.newConstraint4KinmuId === undefined ? (
         <Dialog

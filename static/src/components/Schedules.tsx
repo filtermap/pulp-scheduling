@@ -53,6 +53,7 @@ import Constraint8Name from "./names/Constraint8Name";
 import Constraint9Name from "./names/Constraint9Name";
 import KinmuName from "./names/KinmuName";
 import MemberName from "./names/MemberName";
+import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 import StickyLeftTableCell from "./parts/StickyLeftTableCell";
 import StickyLeftTopTableCell from "./parts/StickyLeftTopTableCell";
@@ -584,9 +585,6 @@ const Schedules = React.memo((): JSX.Element => {
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           勤務表
         </Typography>
-        <Button size="small" onClick={handleClickOpenCreationDialog}>
-          追加
-        </Button>
       </Toolbar>
       <GridFrame>
         <Grid container={true} spacing={1}>
@@ -597,6 +595,7 @@ const Schedules = React.memo((): JSX.Element => {
           ))}
         </Grid>
       </GridFrame>
+      <FloatingAddButton onClick={handleClickOpenCreationDialog} />
       {dialog()}
     </>
   );

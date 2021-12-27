@@ -21,6 +21,7 @@ import * as kinmus from "../modules/kinmus";
 
 import Constraint6 from "./Constraint6";
 import KinmuName from "./names/KinmuName";
+import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 
 type State = {
@@ -125,9 +126,6 @@ const Constraints6 = React.memo((): JSX.Element => {
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           勤務の連続日数の上限
         </Typography>
-        <Button size="small" onClick={handleClickOpenCreationDialog}>
-          追加
-        </Button>
       </Toolbar>
       <GridFrame>
         <Grid container={true} spacing={1}>
@@ -138,6 +136,7 @@ const Constraints6 = React.memo((): JSX.Element => {
           ))}
         </Grid>
       </GridFrame>
+      <FloatingAddButton onClick={handleClickOpenCreationDialog} />
       {state.newConstraint6KinmuId === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}

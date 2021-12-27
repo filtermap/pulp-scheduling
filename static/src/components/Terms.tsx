@@ -17,6 +17,7 @@ import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
 import Term from "./Term";
+import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 
 type State = {
@@ -109,9 +110,6 @@ const Terms = React.memo((): JSX.Element => {
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           期間
         </Typography>
-        <Button size="small" onClick={handleClickOpenCreationDialog}>
-          追加
-        </Button>
       </Toolbar>
       <GridFrame>
         <Grid container={true} spacing={1}>
@@ -122,6 +120,7 @@ const Terms = React.memo((): JSX.Element => {
           ))}
         </Grid>
       </GridFrame>
+      <FloatingAddButton onClick={handleClickOpenCreationDialog} />
       <Dialog
         onClose={handleCloseCreationDialog}
         open={state.creationDialogIsOpen}

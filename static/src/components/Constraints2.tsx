@@ -26,6 +26,7 @@ import * as utils from "../utils";
 import Constraint2 from "./Constraint2";
 import GroupName from "./names/GroupName";
 import KinmuName from "./names/KinmuName";
+import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 import lineThroughSx from "./parts/lineThroughSx";
 
@@ -204,9 +205,6 @@ const Constraints2 = React.memo((): JSX.Element => {
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           期間の勤務にグループから割り当てる職員数の上限
         </Typography>
-        <Button size="small" onClick={handleClickOpenCreationDialog}>
-          追加
-        </Button>
       </Toolbar>
       <GridFrame>
         <Grid container={true} spacing={1}>
@@ -217,6 +215,7 @@ const Constraints2 = React.memo((): JSX.Element => {
           ))}
         </Grid>
       </GridFrame>
+      <FloatingAddButton onClick={handleClickOpenCreationDialog} />
       {state.newConstraint2KinmuId === undefined ||
       state.newConstraint2GroupId === undefined ? (
         <Dialog

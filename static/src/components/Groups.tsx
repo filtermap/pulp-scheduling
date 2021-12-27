@@ -24,6 +24,7 @@ import * as members from "../modules/members";
 
 import Group from "./Group";
 import MemberName from "./names/MemberName";
+import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 
 type State = {
@@ -133,9 +134,6 @@ const Groups = React.memo((): JSX.Element => {
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           グループ
         </Typography>
-        <Button size="small" onClick={handleClickOpenCreationDialog}>
-          追加
-        </Button>
       </Toolbar>
       <GridFrame>
         <Grid container={true} spacing={1}>
@@ -146,6 +144,7 @@ const Groups = React.memo((): JSX.Element => {
           ))}
         </Grid>
       </GridFrame>
+      <FloatingAddButton onClick={handleClickOpenCreationDialog} />
       <Dialog
         onClose={handleCloseCreationDialog}
         open={state.creationDialogIsOpen}
