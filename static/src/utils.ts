@@ -15,9 +15,9 @@ export const sendJSONRPCRequest = async <T>(
 
 const dateStringPattern = /^(\d{4})-(\d{1,2})-(\d{1,2})$/;
 
-export const stringToDate = (dateString: string): Date | null => {
+export const stringToDate = (dateString: string): Date | undefined => {
   const match = dateString.match(dateStringPattern);
-  if (!match) return null;
+  if (!match) return;
   const [, year, month, day] = match;
   return new Date(
     parseInt(year, 10),
