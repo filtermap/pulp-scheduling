@@ -14,7 +14,7 @@ Windows 上で動作します。 (This app runs on Windows.)
 
 下記のリンクから zip ファイルをダウンロードしてください。 (Download the zipped file from the link below.)
 
-[https://github.com/filtermap/pulp-scheduling/releases/download/v0.2.1/pulp-scheduling-v0.2.1.zip](https://github.com/filtermap/pulp-scheduling/releases/download/v0.2.1/pulp-scheduling-v0.2.1.zip)
+[https://github.com/filtermap/pulp-scheduling/releases/download/v0.2.2/pulp-scheduling-v0.2.2.zip](https://github.com/filtermap/pulp-scheduling/releases/download/v0.2.2/pulp-scheduling-v0.2.2.zip)
 
 zip ファイルを解凍してください。 (Unzip the file.)
 
@@ -88,7 +88,7 @@ python build.py
 
 ## バージョン (Version)
 
-0.2.1
+0.2.2
 
 ## お問い合わせ (Contact)
 

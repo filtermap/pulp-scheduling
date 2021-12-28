@@ -307,7 +307,7 @@ const Layout = React.memo((): JSX.Element => {
               variant="subtitle2"
               sx={{ marginLeft: 3 }}
             >
-              v0.2.1
+              v0.2.2
             </Typography>
           </Typography>
           <Button

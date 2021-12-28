@@ -2,7 +2,7 @@ import os
 import shutil
 import subprocess
 
-version = "v0.2.1"
+version = "v0.2.2"
 
 project_root_directory = os.path.dirname(os.path.abspath(__file__))
 

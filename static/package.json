@@ -43,7 +43,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "readme": "marked ../README.md --gfm -o ../pulp-scheduling-v0.2.1/README.html",
+    "readme": "marked ../README.md --gfm -o ../pulp-scheduling-v0.2.2/README.html",
     "format": "prettier . --check",
     "format:fix": "prettier . --write",
     "lint": "eslint ./src/**/*.{ts,tsx}",
