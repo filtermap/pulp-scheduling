@@ -1,0 +1,8 @@
+black==21.12b0
+Flask==2.0.2
+json-rpc==1.13.0
+mypy==0.930
+psutil==5.8.0
+PuLP @ git+https://github.com/filtermap/pulp@98dffc06062d92aad161a9a4411a215bb13f3128
+pyinstaller==4.7
+tornado==6.1
