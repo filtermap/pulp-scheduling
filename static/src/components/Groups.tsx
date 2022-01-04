@@ -138,7 +138,7 @@ const Groups = React.memo((): JSX.Element => {
       <GridFrame>
         <Grid container={true} spacing={1}>
           {groupsInTerm.map((group) => (
-            <Grid key={group.id} item={true} xs={12}>
+            <Grid key={group.id} item={true} xs={12} id={`group-${group.id}`}>
               <Group group={group} />
             </Grid>
           ))}

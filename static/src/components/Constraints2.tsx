@@ -228,7 +228,7 @@ const Constraints2 = React.memo((): JSX.Element => {
       <GridFrame>
         <Grid container={true} spacing={1}>
           {constraints2InTerm.map((c) => (
-            <Grid key={c.id} item={true} xs={12}>
+            <Grid key={c.id} item={true} xs={12} id={`constraint2-${c.id}`}>
               <Constraint2 constraint2={c} />
             </Grid>
           ))}

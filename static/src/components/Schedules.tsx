@@ -589,7 +589,12 @@ const Schedules = React.memo((): JSX.Element => {
       <GridFrame>
         <Grid container={true} spacing={1}>
           {allInTerm.schedules.map((schedule) => (
-            <Grid key={schedule.id} item={true} xs={12}>
+            <Grid
+              key={schedule.id}
+              item={true}
+              xs={12}
+              id={`schedule-${schedule.id}`}
+            >
               <Schedule schedule={schedule} />
             </Grid>
           ))}

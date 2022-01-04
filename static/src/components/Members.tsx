@@ -138,7 +138,12 @@ const Members = React.memo((): JSX.Element => {
       <GridFrame>
         <Grid container={true} spacing={1}>
           {membersInTerm.map((member) => (
-            <Grid key={member.id} item={true} xs={12}>
+            <Grid
+              key={member.id}
+              item={true}
+              xs={12}
+              id={`member-${member.id}`}
+            >
               <Member member={member} />
             </Grid>
           ))}

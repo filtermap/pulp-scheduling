@@ -100,7 +100,7 @@ const Kinmus = React.memo((): JSX.Element => {
       <GridFrame>
         <Grid container={true} spacing={1}>
           {kinmusInTerm.map((kinmu) => (
-            <Grid key={kinmu.id} item={true} xs={12}>
+            <Grid key={kinmu.id} item={true} xs={12} id={`kinmu-${kinmu.id}`}>
               <Kinmu kinmu={kinmu} />
             </Grid>
           ))}
