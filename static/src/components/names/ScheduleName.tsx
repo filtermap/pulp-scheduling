@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
 
 import type { Schedule } from "../../modules/schedules";
 
@@ -10,3 +11,14 @@ const ScheduleName = React.memo(
 );
 
 export default ScheduleName;
+
+// eslint-disable-next-line react/display-name
+export const ScheduleNameLink = React.memo(
+  (props: Props): JSX.Element => (
+    <Link
+      to={`/terms/${props.schedule.term_id}/schedules#schedule-${props.schedule.id}`}
+    >
+      <ScheduleName schedule={props.schedule} />
+    </Link>
+  )
+);
