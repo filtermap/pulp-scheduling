@@ -34,19 +34,19 @@ import * as constraints9 from "../modules/constraints9";
 import * as kinmus from "../modules/kinmus";
 import * as schedules from "../modules/schedules";
 
-import Constraint0Name from "./names/Constraint0Name";
-import Constraint10Name from "./names/Constraint10Name";
-import Constraint1Name from "./names/Constraint1Name";
-import Constraint2Name from "./names/Constraint2Name";
-import Constraint3Name from "./names/Constraint3Name";
-import Constraint4Name from "./names/Constraint4Name";
-import Constraint5Name from "./names/Constraint5Name";
-import Constraint6Name from "./names/Constraint6Name";
-import Constraint7Name from "./names/Constraint7Name";
-import Constraint8Name from "./names/Constraint8Name";
-import Constraint9Name from "./names/Constraint9Name";
+import { Constraint0NameLink } from "./names/Constraint0Name";
+import { Constraint10NameLink } from "./names/Constraint10Name";
+import { Constraint1NameLink } from "./names/Constraint1Name";
+import { Constraint2NameLink } from "./names/Constraint2Name";
+import { Constraint3NameLink } from "./names/Constraint3Name";
+import { Constraint4NameLink } from "./names/Constraint4Name";
+import { Constraint5NameLink } from "./names/Constraint5Name";
+import { Constraint6NameLink } from "./names/Constraint6Name";
+import { Constraint7NameLink } from "./names/Constraint7Name";
+import { Constraint8NameLink } from "./names/Constraint8Name";
+import { Constraint9NameLink } from "./names/Constraint9Name";
 import KinmuName from "./names/KinmuName";
-import ScheduleName from "./names/ScheduleName";
+import { ScheduleNameLink } from "./names/ScheduleName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
 
 type Props = {
@@ -281,7 +281,7 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
               )}
               {kinmuSchedules.map((schedule) => (
                 <Typography key={schedule.id}>
-                  <ScheduleName schedule={schedule} />
+                  <ScheduleNameLink schedule={schedule} />
                 </Typography>
               ))}
             </Grid>
@@ -301,57 +301,57 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
               )}
               {kinmuConstraints0.map((c) => (
                 <Typography key={`constraint0_${c.id}`}>
-                  <Constraint0Name constraint0={c} />
+                  <Constraint0NameLink constraint0={c} />
                 </Typography>
               ))}
               {kinmuConstraints1.map((c) => (
                 <Typography key={`constraint1_${c.id}`}>
-                  <Constraint1Name constraint1={c} />
+                  <Constraint1NameLink constraint1={c} />
                 </Typography>
               ))}
               {kinmuConstraints2.map((c) => (
                 <Typography key={`constraint2_${c.id}`}>
-                  <Constraint2Name constraint2={c} />
+                  <Constraint2NameLink constraint2={c} />
                 </Typography>
               ))}
               {kinmuConstraints3.map((c) => (
                 <Typography key={`constraint3_${c.id}`}>
-                  <Constraint3Name constraint3={c} />
+                  <Constraint3NameLink constraint3={c} />
                 </Typography>
               ))}
               {kinmuConstraints4.map((c) => (
                 <Typography key={`constraint4_${c.id}`}>
-                  <Constraint4Name constraint4={c} />
+                  <Constraint4NameLink constraint4={c} />
                 </Typography>
               ))}
               {kinmuConstraints5.map((c) => (
                 <Typography key={`constraint5_${c.id}`}>
-                  <Constraint5Name constraint5={c} />
+                  <Constraint5NameLink constraint5={c} />
                 </Typography>
               ))}
               {kinmuConstraints6.map((c) => (
                 <Typography key={`constraint6_${c.id}`}>
-                  <Constraint6Name constraint6={c} />
+                  <Constraint6NameLink constraint6={c} />
                 </Typography>
               ))}
               {kinmuConstraints7.map((c) => (
                 <Typography key={`constraint7_${c.id}`}>
-                  <Constraint7Name constraint7={c} />
+                  <Constraint7NameLink constraint7={c} />
                 </Typography>
               ))}
               {kinmuConstraints8.map((c) => (
                 <Typography key={`constraint8_${c.id}`}>
-                  <Constraint8Name constraint8={c} />
+                  <Constraint8NameLink constraint8={c} />
                 </Typography>
               ))}
               {kinmuConstraints9.map((c) => (
                 <Typography key={`constraint9_${c.id}`}>
-                  <Constraint9Name constraint9={c} />
+                  <Constraint9NameLink constraint9={c} />
                 </Typography>
               ))}
               {kinmuConstraints10.map((c) => (
                 <Typography key={`constraint10_${c.id}`}>
-                  <Constraint10Name constraint10={c} />
+                  <Constraint10NameLink constraint10={c} />
                 </Typography>
               ))}
             </Grid>

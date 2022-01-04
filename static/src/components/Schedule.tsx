@@ -29,8 +29,8 @@ import * as members from "../modules/members";
 import * as schedules from "../modules/schedules";
 import * as utils from "../utils";
 
-import KinmuName from "./names/KinmuName";
-import MemberName from "./names/MemberName";
+import { KinmuNameLink } from "./names/KinmuName";
+import { MemberNameLink } from "./names/MemberName";
 import ScheduleName from "./names/ScheduleName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
 import StickyLeftTableCell from "./parts/StickyLeftTableCell";
@@ -160,11 +160,11 @@ const Schedule = React.memo((props: Props): JSX.Element => {
                         return (
                           <TableRow key={member.id}>
                             <StickyLeftTableCell size="small">
-                              <MemberName member={member} />
+                              <MemberNameLink member={member} />
                             </StickyLeftTableCell>
                             {scheduleDateNames.map((date_name) => (
                               <TableCell size="small" key={date_name}>
-                                <KinmuName
+                                <KinmuNameLink
                                   kinmu={
                                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                     selectedKinmuById[

@@ -40,19 +40,19 @@ import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
 import Schedule from "./Schedule";
-import Constraint0Name from "./names/Constraint0Name";
-import Constraint10Name from "./names/Constraint10Name";
-import Constraint1Name from "./names/Constraint1Name";
-import Constraint2Name from "./names/Constraint2Name";
-import Constraint3Name from "./names/Constraint3Name";
-import Constraint4Name from "./names/Constraint4Name";
-import Constraint5Name from "./names/Constraint5Name";
-import Constraint6Name from "./names/Constraint6Name";
-import Constraint7Name from "./names/Constraint7Name";
-import Constraint8Name from "./names/Constraint8Name";
-import Constraint9Name from "./names/Constraint9Name";
-import KinmuName from "./names/KinmuName";
-import MemberName from "./names/MemberName";
+import { Constraint0NameLink } from "./names/Constraint0Name";
+import { Constraint10NameLink } from "./names/Constraint10Name";
+import { Constraint1NameLink } from "./names/Constraint1Name";
+import { Constraint2NameLink } from "./names/Constraint2Name";
+import { Constraint3NameLink } from "./names/Constraint3Name";
+import { Constraint4NameLink } from "./names/Constraint4Name";
+import { Constraint5NameLink } from "./names/Constraint5Name";
+import { Constraint6NameLink } from "./names/Constraint6Name";
+import { Constraint7NameLink } from "./names/Constraint7Name";
+import { Constraint8NameLink } from "./names/Constraint8Name";
+import { Constraint9NameLink } from "./names/Constraint9Name";
+import { KinmuNameLink } from "./names/KinmuName";
+import { MemberNameLink } from "./names/MemberName";
 import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 import StickyLeftTableCell from "./parts/StickyLeftTableCell";
@@ -383,11 +383,11 @@ const Schedules = React.memo((): JSX.Element => {
                     return (
                       <TableRow key={member.id}>
                         <StickyLeftTableCell size="small">
-                          <MemberName member={member} />
+                          <MemberNameLink member={member} />
                         </StickyLeftTableCell>
                         {newScheduleDateNames.map((date_name) => (
                           <TableCell size="small" key={date_name}>
-                            <KinmuName
+                            <KinmuNameLink
                               kinmu={
                                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                 selectedKinmuById[
@@ -475,57 +475,57 @@ const Schedules = React.memo((): JSX.Element => {
             case "Constraint0": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint0 = selectedConstraint0ById[constraint.id]!;
-              return <Constraint0Name constraint0={constraint0} />;
+              return <Constraint0NameLink constraint0={constraint0} />;
             }
             case "Constraint1": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint1 = selectedConstraint1ById[constraint.id]!;
-              return <Constraint1Name constraint1={constraint1} />;
+              return <Constraint1NameLink constraint1={constraint1} />;
             }
             case "Constraint2": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint2 = selectedConstraint2ById[constraint.id]!;
-              return <Constraint2Name constraint2={constraint2} />;
+              return <Constraint2NameLink constraint2={constraint2} />;
             }
             case "Constraint3": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint3 = selectedConstraint3ById[constraint.id]!;
-              return <Constraint3Name constraint3={constraint3} />;
+              return <Constraint3NameLink constraint3={constraint3} />;
             }
             case "Constraint4": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint4 = selectedConstraint4ById[constraint.id]!;
-              return <Constraint4Name constraint4={constraint4} />;
+              return <Constraint4NameLink constraint4={constraint4} />;
             }
             case "Constraint5": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint5 = selectedConstraint5ById[constraint.id]!;
-              return <Constraint5Name constraint5={constraint5} />;
+              return <Constraint5NameLink constraint5={constraint5} />;
             }
             case "Constraint6": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint6 = selectedConstraint6ById[constraint.id]!;
-              return <Constraint6Name constraint6={constraint6} />;
+              return <Constraint6NameLink constraint6={constraint6} />;
             }
             case "Constraint7": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint7 = selectedConstraint7ById[constraint.id]!;
-              return <Constraint7Name constraint7={constraint7} />;
+              return <Constraint7NameLink constraint7={constraint7} />;
             }
             case "Constraint8": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint8 = selectedConstraint8ById[constraint.id]!;
-              return <Constraint8Name constraint8={constraint8} />;
+              return <Constraint8NameLink constraint8={constraint8} />;
             }
             case "Constraint9": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint9 = selectedConstraint9ById[constraint.id]!;
-              return <Constraint9Name constraint9={constraint9} />;
+              return <Constraint9NameLink constraint9={constraint9} />;
             }
             case "Constraint10": {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               const constraint10 = selectedConstraint10ById[constraint.id]!;
-              return <Constraint10Name constraint10={constraint10} />;
+              return <Constraint10NameLink constraint10={constraint10} />;
             }
           }
           return "";

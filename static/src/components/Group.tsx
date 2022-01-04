@@ -30,10 +30,10 @@ import * as groups from "../modules/groups";
 import * as members from "../modules/members";
 import * as utils from "../utils";
 
-import Constraint1Name from "./names/Constraint1Name";
-import Constraint2Name from "./names/Constraint2Name";
+import { Constraint1NameLink } from "./names/Constraint1Name";
+import { Constraint2NameLink } from "./names/Constraint2Name";
 import GroupName from "./names/GroupName";
-import MemberName from "./names/MemberName";
+import MemberName, { MemberNameLink } from "./names/MemberName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
 
 type Props = {
@@ -169,7 +169,7 @@ const Group = React.memo((props: Props): JSX.Element => {
   };
   const groupMemberNames = utils.intersperse(
     groupMembers.map((member) => (
-      <MemberName key={member.id} member={member} />
+      <MemberNameLink key={member.id} member={member} />
     )),
     ", "
   );
@@ -274,12 +274,12 @@ const Group = React.memo((props: Props): JSX.Element => {
               )}
               {groupConstraints1.map((c) => (
                 <Typography key={`constraint1_${c.id}`}>
-                  <Constraint1Name constraint1={c} />
+                  <Constraint1NameLink constraint1={c} />
                 </Typography>
               ))}
               {groupConstraints2.map((c) => (
                 <Typography key={`constraint2_${c.id}`}>
-                  <Constraint2Name constraint2={c} />
+                  <Constraint2NameLink constraint2={c} />
                 </Typography>
               ))}
             </Grid>

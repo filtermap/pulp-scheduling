@@ -34,13 +34,13 @@ import * as members from "../modules/members";
 import * as schedules from "../modules/schedules";
 import * as utils from "../utils";
 
-import Constraint10Name from "./names/Constraint10Name";
-import Constraint3Name from "./names/Constraint3Name";
-import Constraint4Name from "./names/Constraint4Name";
-import Constraint9Name from "./names/Constraint9Name";
-import GroupName from "./names/GroupName";
+import { Constraint10NameLink } from "./names/Constraint10Name";
+import { Constraint3NameLink } from "./names/Constraint3Name";
+import { Constraint4NameLink } from "./names/Constraint4Name";
+import { Constraint9NameLink } from "./names/Constraint9Name";
+import GroupName, { GroupNameLink } from "./names/GroupName";
 import MemberName from "./names/MemberName";
-import ScheduleName from "./names/ScheduleName";
+import { ScheduleNameLink } from "./names/ScheduleName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
 
 type Props = {
@@ -111,7 +111,7 @@ const Member = React.memo((props: Props): JSX.Element => {
     ({ member_id }) => member_id === props.member.id
   );
   const memberGroupNames = utils.intersperse(
-    memberGroups.map((group) => <GroupName key={group.id} group={group} />),
+    memberGroups.map((group) => <GroupNameLink key={group.id} group={group} />),
     ", "
   );
   const memberScheduleIds = new Set(
@@ -298,7 +298,7 @@ const Member = React.memo((props: Props): JSX.Element => {
                 </DialogContentText>
                 {memberSchedules.map((schedule) => (
                   <Typography key={schedule.id}>
-                    <ScheduleName schedule={schedule} />
+                    <ScheduleNameLink schedule={schedule} />
                   </Typography>
                 ))}
               </Grid>
@@ -311,22 +311,22 @@ const Member = React.memo((props: Props): JSX.Element => {
                 <DialogContentText>以下の条件も削除されます</DialogContentText>
                 {memberConstraints3.map((c) => (
                   <Typography key={`constraint3_${c.id}`}>
-                    <Constraint3Name constraint3={c} />
+                    <Constraint3NameLink constraint3={c} />
                   </Typography>
                 ))}
                 {memberConstraints4.map((c) => (
                   <Typography key={`constraint4_${c.id}`}>
-                    <Constraint4Name constraint4={c} />
+                    <Constraint4NameLink constraint4={c} />
                   </Typography>
                 ))}
                 {memberConstraints9.map((c) => (
                   <Typography key={`constraint9_${c.id}`}>
-                    <Constraint9Name constraint9={c} />
+                    <Constraint9NameLink constraint9={c} />
                   </Typography>
                 ))}
                 {memberConstraints10.map((c) => (
                   <Typography key={`constraint10_${c.id}`}>
-                    <Constraint10Name constraint10={c} />
+                    <Constraint10NameLink constraint10={c} />
                   </Typography>
                 ))}
               </Grid>
