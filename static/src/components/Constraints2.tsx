@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useImmer } from "use-immer";
 
+import { useHashFragment } from "../hooks/useHashFragment";
+import { usePosition } from "../hooks/usePosition";
 import * as constraints2 from "../modules/constraints2";
 import * as groups from "../modules/groups";
 import { useAppSelector } from "../modules/hooks";
@@ -48,6 +50,8 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Constraints2 = React.memo((): JSX.Element => {
+  const [position, ref] = usePosition();
+  useHashFragment(position?.top);
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -226,7 +230,7 @@ const Constraints2 = React.memo((): JSX.Element => {
         </Typography>
       </Toolbar>
       <GridFrame>
-        <Grid container={true} spacing={1}>
+        <Grid container={true} spacing={1} ref={ref}>
           {constraints2InTerm.map((c) => (
             <Grid key={c.id} item={true} xs={12} id={`constraint2-${c.id}`}>
               <Constraint2 constraint2={c} />

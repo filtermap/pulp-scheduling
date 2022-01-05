@@ -18,6 +18,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
 
+import { useHashFragment } from "../hooks/useHashFragment";
+import { usePosition } from "../hooks/usePosition";
 import * as all from "../modules/all";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as constraints0 from "../modules/constraints0";
@@ -125,6 +127,8 @@ const sortDateNames = (dateNames: string[]): string[] =>
 
 // eslint-disable-next-line react/display-name
 const Schedules = React.memo((): JSX.Element => {
+  const [position, ref] = usePosition();
+  useHashFragment(position?.top);
   const dispatch = useDispatch();
   const selectedGroups = useSelector(groups.selectors.selectAll);
   const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
@@ -587,7 +591,7 @@ const Schedules = React.memo((): JSX.Element => {
         </Typography>
       </Toolbar>
       <GridFrame>
-        <Grid container={true} spacing={1}>
+        <Grid container={true} spacing={1} ref={ref}>
           {allInTerm.schedules.map((schedule) => (
             <Grid
               key={schedule.id}

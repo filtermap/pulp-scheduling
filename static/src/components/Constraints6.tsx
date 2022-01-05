@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useImmer } from "use-immer";
 
+import { useHashFragment } from "../hooks/useHashFragment";
+import { usePosition } from "../hooks/usePosition";
 import * as constraints6 from "../modules/constraints6";
 import * as kinmus from "../modules/kinmus";
 
@@ -37,6 +39,8 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Constraints6 = React.memo((): JSX.Element => {
+  const [position, ref] = usePosition();
+  useHashFragment(position?.top);
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -128,7 +132,7 @@ const Constraints6 = React.memo((): JSX.Element => {
         </Typography>
       </Toolbar>
       <GridFrame>
-        <Grid container={true} spacing={1}>
+        <Grid container={true} spacing={1} ref={ref}>
           {constraints6InTerm.map((c) => (
             <Grid key={c.id} item={true} xs={12} id={`constraint6-${c.id}`}>
               <Constraint6 constraint6={c} />

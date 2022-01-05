@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useImmer } from "use-immer";
 
+import { useHashFragment } from "../hooks/useHashFragment";
+import { usePosition } from "../hooks/usePosition";
 import * as kinmus from "../modules/kinmus";
 
 import Kinmu from "./Kinmu";
@@ -32,6 +34,8 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Kinmus = React.memo((): JSX.Element => {
+  const [position, ref] = usePosition();
+  useHashFragment(position?.top);
   const { termIdName } = useParams();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const termId = parseInt(termIdName!, 10);
@@ -98,7 +102,7 @@ const Kinmus = React.memo((): JSX.Element => {
         </Typography>
       </Toolbar>
       <GridFrame>
-        <Grid container={true} spacing={1}>
+        <Grid container={true} spacing={1} ref={ref}>
           {kinmusInTerm.map((kinmu) => (
             <Grid key={kinmu.id} item={true} xs={12} id={`kinmu-${kinmu.id}`}>
               <Kinmu kinmu={kinmu} />
