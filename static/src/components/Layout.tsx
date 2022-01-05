@@ -109,7 +109,7 @@ const TermListItems = React.memo((props: { term: terms.Term }) => {
     if (!params) return;
     const { termIdName } = params;
     if (!termIdName) return;
-    const termId = parseInt(termIdName);
+    const termId = parseInt(termIdName, 10);
     if (termId !== props.term.id) return;
     updateState((state) => {
       state.isOpen = true;
