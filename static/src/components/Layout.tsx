@@ -102,8 +102,8 @@ const ListItemLink = React.memo((props: { to: string; primary: string }) => {
 // eslint-disable-next-line react/display-name
 const TermListItems = React.memo((props: { term: terms.Term }) => {
   const params = useMatch("/terms/:termIdName/*")?.params;
-  const [state, updateState] = useImmer<{ isOpen: boolean }>({
-    isOpen: false,
+  const [state, updateState] = useImmer<{ expanded: boolean }>({
+    expanded: false,
   });
   React.useEffect(() => {
     if (!params) return;
@@ -112,20 +112,20 @@ const TermListItems = React.memo((props: { term: terms.Term }) => {
     const termId = parseInt(termIdName, 10);
     if (termId !== props.term.id) return;
     updateState((state) => {
-      state.isOpen = true;
+      state.expanded = true;
     });
   }, [props.term.id, params, updateState]);
   const handleClickTerm = () =>
     updateState((state) => {
-      state.isOpen = !state.isOpen;
+      state.expanded = !state.expanded;
     });
   return (
     <>
       <ListItem button={true} onClick={handleClickTerm}>
         <ListItemText primary={<TermName term={props.term} />} />
-        <RotationalExpandMore expanded={state.isOpen} />
+        <RotationalExpandMore expanded={state.expanded} />
       </ListItem>
-      <Collapse in={state.isOpen}>
+      <Collapse in={state.expanded}>
         <List component="div" disablePadding>
           <ListItemLink
             to={`/terms/${props.term.id}/schedules`}
