@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 
+import { m } from "../../messages";
 import type { Constraint2 } from "../../modules/constraints2";
 import * as groups from "../../modules/groups";
 import { useAppSelector } from "../../modules/hooks";
@@ -53,11 +54,12 @@ const Constraint2Name = React.memo(
     return (
       <>
         <LineThrough line={!constraint2StartDateIsEnabled}>
-          {props.constraint2.start_date_name}
+          {props.constraint2.start_date_name ||
+            m["（arg0未入力）"](m["開始日"])}
         </LineThrough>
         から
         <LineThrough line={!constraint2StopDateIsEnabled}>
-          {props.constraint2.stop_date_name}
+          {props.constraint2.stop_date_name || m["（arg0未入力）"](m["終了日"])}
         </LineThrough>
         までの
         {props.isInLink ? (

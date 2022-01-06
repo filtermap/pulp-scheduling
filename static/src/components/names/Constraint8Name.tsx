@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 
+import { m } from "../../messages";
 import type { Constraint8 } from "../../modules/constraints8";
 import { useAppSelector } from "../../modules/hooks";
 import * as kinmus from "../../modules/kinmus";
@@ -28,7 +29,10 @@ const Constraint8Name = React.memo(
         ) : (
           <KinmuNameLink kinmu={selectedKinmu} />
         )}
-        の間隔日数を{props.constraint8.max_number_of_days}日以下にする
+        の間隔日数を
+        {props.constraint8.max_number_of_days ||
+          m["（arg0未入力）"](m["間隔日数上限"])}
+        日以下にする
       </>
     );
   }

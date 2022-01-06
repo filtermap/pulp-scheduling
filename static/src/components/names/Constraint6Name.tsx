@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 
+import { m } from "../../messages";
 import type { Constraint6 } from "../../modules/constraints6";
 import { useAppSelector } from "../../modules/hooks";
 import * as kinmus from "../../modules/kinmus";
@@ -28,7 +29,10 @@ const Constraint6Name = React.memo(
         ) : (
           <KinmuNameLink kinmu={selectedKinmu} />
         )}
-        の連続日数を{props.constraint6.max_number_of_days}日以下にする
+        の連続日数を
+        {props.constraint6.max_number_of_days ||
+          m["（arg0未入力）"](m["連続日数上限"])}
+        日以下にする
       </>
     );
   }

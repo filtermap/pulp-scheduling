@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 
+import { m } from "../../messages";
 import type { Constraint5 } from "../../modules/constraints5";
 import { useAppSelector } from "../../modules/hooks";
 import * as kinmus from "../../modules/kinmus";
@@ -28,7 +29,10 @@ const Constraint5Name = React.memo(
         ) : (
           <KinmuNameLink kinmu={selectedKinmu} />
         )}
-        の連続日数を{props.constraint5.min_number_of_days}日以上にする
+        の連続日数を
+        {props.constraint5.min_number_of_days ||
+          m["（arg0未入力）"](m["連続日数下限"])}
+        日以上にする
       </>
     );
   }

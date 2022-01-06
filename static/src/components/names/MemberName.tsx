@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 
+import { m } from "../../messages";
 import type { Member } from "../../modules/members";
 import LineThrough from "../parts/LineThrough";
 
@@ -10,7 +11,7 @@ type Props = { member: Member };
 const MemberName = React.memo(
   (props: Props): JSX.Element => (
     <LineThrough line={!props.member.is_enabled}>
-      {props.member.name}
+      {props.member.name || m["（arg0未入力）"](m["職員名"])}
     </LineThrough>
   )
 );

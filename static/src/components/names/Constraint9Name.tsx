@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 
+import { m } from "../../messages";
 import type { Constraint9 } from "../../modules/constraints9";
 import { useAppSelector } from "../../modules/hooks";
 import * as kinmus from "../../modules/kinmus";
@@ -60,11 +61,12 @@ const Constraint9Name = React.memo(
         )}
         の
         <LineThrough line={!constraint9StartDateIsEnabled}>
-          {props.constraint9.start_date_name}
+          {props.constraint9.start_date_name ||
+            m["（arg0未入力）"](m["開始日"])}
         </LineThrough>
         から
         <LineThrough line={!constraint9StopDateIsEnabled}>
-          {props.constraint9.stop_date_name}
+          {props.constraint9.stop_date_name || m["（arg0未入力）"](m["終了日"])}
         </LineThrough>
         までに
         {props.isInLink ? (

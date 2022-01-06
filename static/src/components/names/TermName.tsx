@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { m } from "../../messages";
 import type { Term } from "../../modules/terms";
 
 type Props = { term: Term };
@@ -8,7 +9,8 @@ type Props = { term: Term };
 const TermName = React.memo(
   (props: Props): JSX.Element => (
     <>
-      {props.term.start_date_name}から{props.term.stop_date_name}まで
+      {props.term.start_date_name || m["（arg0未入力）"](m["開始日"])}から
+      {props.term.stop_date_name || m["（arg0未入力）"](m["終了日"])}まで
     </>
   )
 );

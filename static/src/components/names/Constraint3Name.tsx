@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 
+import { m } from "../../messages";
 import type { Constraint3 } from "../../modules/constraints3";
 import { useAppSelector } from "../../modules/hooks";
 import * as kinmus from "../../modules/kinmus";
@@ -41,7 +42,10 @@ const Constraint3Name = React.memo(
         ) : (
           <KinmuNameLink kinmu={selectedKinmu} />
         )}
-        を{props.constraint3.min_number_of_assignments}回以上割り当てる
+        を
+        {props.constraint3.min_number_of_assignments ||
+          m["（arg0未入力）"](m["割り当て数下限"])}
+        回以上割り当てる
       </>
     );
   }
