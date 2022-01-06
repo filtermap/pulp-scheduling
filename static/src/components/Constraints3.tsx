@@ -18,6 +18,7 @@ import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
+import { m } from "../messages";
 import * as constraints3 from "../modules/constraints3";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
@@ -121,7 +122,7 @@ const Constraints3 = React.memo((): JSX.Element => {
     };
     if (isNaN(newConstraint3MinNumberOfAssignments))
       errorMessages.newConstraint3MinNumberOfAssignments.push(
-        "割り当て数下限の形式が正しくありません"
+        m["arg0の形式が正しくありません"](m["割り当て数下限"])
       );
     return errorMessages;
   };
@@ -155,7 +156,7 @@ const Constraints3 = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          職員の勤務の割り当て数の下限
+          {m["職員の勤務の割り当て数の下限"]}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -177,19 +178,19 @@ const Constraints3 = React.memo((): JSX.Element => {
           maxWidth="md"
         >
           <DialogTitle>
-            職員の勤務の割り当て数の下限を追加できません
+            {m["arg0を追加できません"](m["職員の勤務の割り当て数の下限"])}
           </DialogTitle>
           <DialogContent>
             {state.newConstraint3MemberId === undefined && (
-              <DialogContentText>職員がいません</DialogContentText>
+              <DialogContentText>{m["職員がいません"]}</DialogContentText>
             )}
             {state.newConstraint3KinmuId === undefined && (
-              <DialogContentText>勤務がありません</DialogContentText>
+              <DialogContentText>{m["勤務がありません"]}</DialogContentText>
             )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
-              閉じる
+              {m["閉じる"]}
             </Button>
           </DialogActions>
         </Dialog>
@@ -211,7 +212,9 @@ const Constraints3 = React.memo((): JSX.Element => {
               fullWidth={true}
               maxWidth="md"
             >
-              <DialogTitle>職員の勤務の割り当て数の下限の追加</DialogTitle>
+              <DialogTitle>
+                {m["arg0の追加"](m["職員の勤務の割り当て数の下限"])}
+              </DialogTitle>
               <DialogContent>
                 <Grid container={true} spacing={1}>
                   <Grid item={true} xs={12}>
@@ -226,13 +229,13 @@ const Constraints3 = React.memo((): JSX.Element => {
                           color="primary"
                         />
                       }
-                      label="有効"
+                      label={m["有効"]}
                     />
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label="職員"
+                      label={m["職員"]}
                       value={state.newConstraint3MemberId}
                       onChange={handleChangeNewConstraint3MemberId}
                       fullWidth={true}
@@ -247,7 +250,7 @@ const Constraints3 = React.memo((): JSX.Element => {
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label="勤務"
+                      label={m["勤務"]}
                       value={state.newConstraint3KinmuId}
                       onChange={handleChangeNewConstraint3KinmuId}
                       fullWidth={true}
@@ -261,7 +264,7 @@ const Constraints3 = React.memo((): JSX.Element => {
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label="割り当て数下限"
+                      label={m["割り当て数下限"]}
                       type="number"
                       value={state.newConstraint3MinNumberOfAssignments}
                       onChange={
@@ -296,10 +299,10 @@ const Constraints3 = React.memo((): JSX.Element => {
                   )}
                   onClick={handleClickCreateConstraint3}
                 >
-                  追加
+                  {m["追加"]}
                 </Button>
                 <Button color="primary" onClick={handleCloseCreationDialog}>
-                  閉じる
+                  {m["閉じる"]}
                 </Button>
               </DialogActions>
             </Dialog>

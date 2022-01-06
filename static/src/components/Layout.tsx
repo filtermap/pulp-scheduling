@@ -26,6 +26,7 @@ import {
 import { ActionCreators } from "redux-undo";
 import { useImmer } from "use-immer";
 
+import { m } from "../messages";
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
@@ -129,57 +130,63 @@ const TermListItems = React.memo((props: { term: terms.Term }) => {
         <List component="div" disablePadding>
           <ListItemLink
             to={`/terms/${props.term.id}/schedules`}
-            primary="勤務表"
+            primary={m["勤務表"]}
           />
-          <ListItemLink to={`/terms/${props.term.id}/members`} primary="職員" />
-          <ListItemLink to={`/terms/${props.term.id}/kinmus`} primary="勤務" />
+          <ListItemLink
+            to={`/terms/${props.term.id}/members`}
+            primary={m["職員"]}
+          />
+          <ListItemLink
+            to={`/terms/${props.term.id}/kinmus`}
+            primary={m["勤務"]}
+          />
           <ListItemLink
             to={`/terms/${props.term.id}/groups`}
-            primary="グループ"
+            primary={m["グループ"]}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints0`}
-            primary="連続禁止勤務並び"
+            primary={m["連続禁止勤務並び"]}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints1`}
-            primary="期間の勤務にグループから割り当てる職員数の下限"
+            primary={m["期間の勤務にグループから割り当てる職員数の下限"]}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints2`}
-            primary="期間の勤務にグループから割り当てる職員数の上限"
+            primary={m["期間の勤務にグループから割り当てる職員数の上限"]}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints3`}
-            primary="職員の勤務の割り当て数の下限"
+            primary={m["職員の勤務の割り当て数の下限"]}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints4`}
-            primary="職員の勤務の割り当て数の上限"
+            primary={m["職員の勤務の割り当て数の上限"]}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints5`}
-            primary="勤務の連続日数の下限"
+            primary={m["勤務の連続日数の下限"]}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints6`}
-            primary="勤務の連続日数の上限"
+            primary={m["勤務の連続日数の上限"]}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints7`}
-            primary="勤務の間隔日数の下限"
+            primary={m["勤務の間隔日数の下限"]}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints8`}
-            primary="勤務の間隔日数の上限"
+            primary={m["勤務の間隔日数の上限"]}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints9`}
-            primary="職員の期間に割り当てる勤務"
+            primary={m["職員の期間に割り当てる勤務"]}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints10`}
-            primary="職員の期間に割り当てない勤務"
+            primary={m["職員の期間に割り当てない勤務"]}
           />
         </List>
       </Collapse>
@@ -301,13 +308,13 @@ const Layout = React.memo((): JSX.Element => {
             noWrap={true}
             sx={{ flexGrow: 1 }}
           >
-            pulp-scheduling
+            {m["pulp-scheduling"]}
             <Typography
               component="span"
               variant="subtitle2"
               sx={{ marginLeft: 3 }}
             >
-              v0.2.2
+              {m["version"]}
             </Typography>
           </Typography>
           <Button
@@ -315,17 +322,17 @@ const Layout = React.memo((): JSX.Element => {
             onClick={handleClickUndo}
             disabled={!selectedPastExists}
           >
-            元に戻す
+            {m["元に戻す"]}
           </Button>
           <Button
             color="inherit"
             onClick={handleClickRedo}
             disabled={!selectedFutureExists}
           >
-            やり直す
+            {m["やり直す"]}
           </Button>
           <Button color="inherit" onClick={writeAll}>
-            保存
+            {m["保存"]}
           </Button>
         </Toolbar>
       </AppBar>
@@ -354,7 +361,7 @@ const Layout = React.memo((): JSX.Element => {
           </IconButton>
         </Toolbar>
         <List component="div" disablePadding>
-          <ListItemLink to="/terms" primary="期間" />
+          <ListItemLink to="/terms" primary={m["期間"]} />
           {selectedTerms
             .filter(({ is_enabled }) => is_enabled)
             .map((term) => (

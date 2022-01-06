@@ -18,6 +18,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
+import { m } from "../messages";
 import * as constraints8 from "../modules/constraints8";
 import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
@@ -101,7 +102,7 @@ const Constraint8 = React.memo((props: Props): JSX.Element => {
     };
     if (isNaN(constraint8MaxNumberOfDays))
       errorMessages.constraint8MaxNumberOfDays.push(
-        "間隔日数上限の形式が正しくありません"
+        m["arg0の形式が正しくありません"](m["間隔日数上限"])
       );
     return errorMessages;
   };
@@ -176,7 +177,7 @@ const Constraint8 = React.memo((props: Props): JSX.Element => {
               <Grid item={true} xs={12}>
                 <TextField
                   select={true}
-                  label="勤務"
+                  label={m["勤務"]}
                   value={props.constraint8.kinmu_id}
                   onChange={handleChangeConstraint8KinmuId}
                   fullWidth={true}
@@ -190,7 +191,7 @@ const Constraint8 = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <TextField
-                  label="間隔日数上限"
+                  label={m["間隔日数上限"]}
                   type="number"
                   value={state.changes.max_number_of_days}
                   onChange={handleChangeConstraint8MaxNumberOfDays}
@@ -215,7 +216,7 @@ const Constraint8 = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              削除
+              {m["削除"]}
             </Button>
           </CardActions>
         </Collapse>
@@ -226,19 +227,19 @@ const Constraint8 = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>勤務の間隔日数の上限の削除</DialogTitle>
+        <DialogTitle>{m["arg0の削除"](m["勤務の間隔日数の上限"])}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            この勤務の間隔日数の上限を削除します
+            {m["このarg0を削除します"](m["勤務の間隔日数の上限"])}
           </DialogContentText>
           <Typography>{title}</Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteConstraint8}>
-            削除
+            {m["削除"]}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            閉じる
+            {m["閉じる"]}
           </Button>
         </DialogActions>
       </Dialog>

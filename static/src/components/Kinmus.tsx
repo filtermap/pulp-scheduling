@@ -16,6 +16,7 @@ import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
+import { m } from "../messages";
 import * as kinmus from "../modules/kinmus";
 
 import Kinmu from "./Kinmu";
@@ -71,7 +72,7 @@ const Kinmus = React.memo((): JSX.Element => {
       newKinmuName: [],
     };
     if (newKinmuName === "")
-      errorMessages.newKinmuName.push("勤務名を入力してください");
+      errorMessages.newKinmuName.push(m["arg0を入力してください"](m["勤務名"]));
     return errorMessages;
   };
   const handleChangeNewKinmuName = (
@@ -98,7 +99,7 @@ const Kinmus = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          勤務
+          {m["勤務"]}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -117,7 +118,7 @@ const Kinmus = React.memo((): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>勤務の追加</DialogTitle>
+        <DialogTitle>{m["arg0の追加"](m["勤務"])}</DialogTitle>
         <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
@@ -129,12 +130,12 @@ const Kinmus = React.memo((): JSX.Element => {
                     color="primary"
                   />
                 }
-                label="有効"
+                label={m["有効"]}
               />
             </Grid>
             <Grid item={true} xs={12}>
               <TextField
-                label="勤務名"
+                label={m["勤務名"]}
                 value={state.newKinmuName}
                 onChange={handleChangeNewKinmuName}
                 fullWidth={true}
@@ -158,10 +159,10 @@ const Kinmus = React.memo((): JSX.Element => {
             )}
             onClick={handleClickCreateKinmu}
           >
-            追加
+            {m["追加"]}
           </Button>
           <Button color="primary" onClick={handleCloseCreationDialog}>
-            閉じる
+            {m["閉じる"]}
           </Button>
         </DialogActions>
       </Dialog>

@@ -22,6 +22,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
+import { m } from "../messages";
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
 import * as constraints10 from "../modules/constraints10";
@@ -142,7 +143,7 @@ const Member = React.memo((props: Props): JSX.Element => {
       memberName: [],
     };
     if (memberName === "")
-      errorMessages.memberName.push("職員名を入力してください");
+      errorMessages.memberName.push(m["arg0を入力してください"](m["職員名"]));
     return errorMessages;
   };
   const handleChangeMemberName = (
@@ -231,7 +232,7 @@ const Member = React.memo((props: Props): JSX.Element => {
             <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
                 <TextField
-                  label="職員名"
+                  label={m["職員名"]}
                   value={state.changes.name}
                   onChange={handleChangeMemberName}
                   onBlur={handleBlurMemberName}
@@ -248,7 +249,7 @@ const Member = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <FormControl fullWidth={true}>
-                  <FormLabel>職員が所属するグループ</FormLabel>
+                  <FormLabel>{m["職員が所属するグループ"]}</FormLabel>
                   <FormGroup>
                     {groupsInTerm.map((group) => (
                       <FormControlLabel
@@ -270,7 +271,7 @@ const Member = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              削除
+              {m["削除"]}
             </Button>
           </CardActions>
         </Collapse>
@@ -281,11 +282,13 @@ const Member = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>職員の削除</DialogTitle>
+        <DialogTitle>{m["arg0の削除"](m["職員"])}</DialogTitle>
         <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
-              <DialogContentText>この職員を削除します</DialogContentText>
+              <DialogContentText>
+                {m["このarg0を削除します"](m["職員"])}
+              </DialogContentText>
               <Typography>
                 <MemberName member={props.member} />
               </Typography>
@@ -294,7 +297,7 @@ const Member = React.memo((props: Props): JSX.Element => {
             {memberSchedules.length > 0 && (
               <Grid item={true} xs={12}>
                 <DialogContentText>
-                  以下の勤務表の割り当ても削除されます
+                  {m["以下の勤務表の割り当ても削除されます"]}
                 </DialogContentText>
                 {memberSchedules.map((schedule) => (
                   <Typography key={schedule.id}>
@@ -308,7 +311,9 @@ const Member = React.memo((props: Props): JSX.Element => {
               memberConstraints9.length > 0 ||
               memberConstraints10.length > 0) && (
               <Grid item={true} xs={12}>
-                <DialogContentText>以下の条件も削除されます</DialogContentText>
+                <DialogContentText>
+                  {m["以下の条件も削除されます"]}
+                </DialogContentText>
                 {memberConstraints3.map((c) => (
                   <Typography key={`constraint3_${c.id}`}>
                     <Constraint3NameLink constraint3={c} />
@@ -335,10 +340,10 @@ const Member = React.memo((props: Props): JSX.Element => {
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteMember}>
-            削除
+            {m["削除"]}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            閉じる
+            {m["閉じる"]}
           </Button>
         </DialogActions>
       </Dialog>

@@ -18,6 +18,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
+import { m } from "../messages";
 import * as constraints9 from "../modules/constraints9";
 import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
@@ -130,11 +131,11 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
     const constraint9StopDate = utils.stringToDate(constraint9StopDateName);
     if (!constraint9StartDate)
       errorMessages.constraint9StartDateName.push(
-        "開始日の形式が正しくありません"
+        m["arg0の形式が正しくありません"](m["開始日"])
       );
     if (!constraint9StopDate)
       errorMessages.constraint9StopDateName.push(
-        "終了日の形式が正しくありません"
+        m["arg0の形式が正しくありません"](m["終了日"])
       );
     if (
       constraint9StartDate &&
@@ -142,10 +143,16 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
       constraint9StartDate > constraint9StopDate
     ) {
       errorMessages.constraint9StartDateName.push(
-        "開始日には終了日より過去の日付を入力してください"
+        m["arg0にはarg1より過去の日付を入力してください"](
+          m["開始日"],
+          m["終了日"]
+        )
       );
       errorMessages.constraint9StopDateName.push(
-        "終了日には開始日より未来の日付を入力してください"
+        m["arg0にはarg1より未来の日付を入力してください"](
+          m["終了日"],
+          m["開始日"]
+        )
       );
     }
     return errorMessages;
@@ -281,7 +288,7 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
               <Grid item={true} xs={12}>
                 <TextField
                   select={true}
-                  label="職員"
+                  label={m["職員"]}
                   value={props.constraint9.member_id}
                   onChange={handleChangeConstraint9MemberId}
                   fullWidth={true}
@@ -295,7 +302,7 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <TextField
-                  label="開始日"
+                  label={m["開始日"]}
                   type="date"
                   value={state.changes.start_date_name}
                   onChange={handleChangeConstraint9StartDateName}
@@ -323,7 +330,7 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <TextField
-                  label="終了日"
+                  label={m["終了日"]}
                   type="date"
                   value={state.changes.stop_date_name}
                   onChange={handleChangeConstraint9StopDateName}
@@ -350,7 +357,7 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
               <Grid item={true} xs={12}>
                 <TextField
                   select={true}
-                  label="勤務"
+                  label={m["勤務"]}
                   value={props.constraint9.kinmu_id}
                   onChange={handleChangeConstraint9KinmuId}
                   fullWidth={true}
@@ -366,7 +373,7 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              削除
+              {m["削除"]}
             </Button>
           </CardActions>
         </Collapse>
@@ -377,19 +384,21 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>職員の期間に割り当てる勤務の削除</DialogTitle>
+        <DialogTitle>
+          {m["arg0の削除"](m["職員の期間に割り当てる勤務"])}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            この職員の期間に割り当てる勤務を削除します
+            {m["このarg0を削除します"](m["職員の期間に割り当てる勤務"])}
           </DialogContentText>
           <Typography>{title}</Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteConstraint9}>
-            削除
+            {m["削除"]}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            閉じる
+            {m["閉じる"]}
           </Button>
         </DialogActions>
       </Dialog>

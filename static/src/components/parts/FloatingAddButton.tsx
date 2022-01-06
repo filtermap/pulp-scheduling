@@ -3,6 +3,8 @@ import Fab, { FabProps } from "@mui/material/Fab";
 import { styled } from "@mui/material/styles";
 import * as React from "react";
 
+import { m } from "../../messages";
+
 // React Fab component - MUI
 // https://mui.com/components/floating-action-button/
 
@@ -27,7 +29,7 @@ const FloatingAddButton = React.memo(
   (props: FloatingAddButtonProps): JSX.Element => (
     <CorneredFab variant="extended" color="primary" aria-label="add" {...props}>
       <AddWithMargin />
-      追加
+      {m["追加"]}
     </CorneredFab>
   )
 );

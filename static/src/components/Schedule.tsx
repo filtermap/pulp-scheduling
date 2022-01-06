@@ -22,6 +22,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
+import { m } from "../messages";
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
 import * as kinmus from "../modules/kinmus";
@@ -112,7 +113,7 @@ const Schedule = React.memo((props: Props): JSX.Element => {
     if ("error" in response) throw new Error(response.error.message);
     const csv = iconv.encode(response.result as string, "Shift_JIS");
     const a = document.createElement("a");
-    a.download = `勤務表${props.schedule.id}.csv`;
+    a.download = `${m["勤務表arg0"](props.schedule.id)}.csv`;
     a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
     a.click();
   };
@@ -189,10 +190,10 @@ const Schedule = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              削除
+              {m["削除"]}
             </Button>
             <Button size="small" onClick={handleClickExportToCSV}>
-              CSV出力
+              {m["CSV出力"]}
             </Button>
           </CardActions>
         </Collapse>
@@ -203,19 +204,21 @@ const Schedule = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>勤務表の削除</DialogTitle>
+        <DialogTitle>{m["arg0の削除"](m["勤務表"])}</DialogTitle>
         <DialogContent>
-          <DialogContentText>この勤務表を削除します</DialogContentText>
+          <DialogContentText>
+            {m["このarg0を削除します"](m["勤務表"])}
+          </DialogContentText>
           <Typography>
             <ScheduleName schedule={props.schedule} />
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteSchedule}>
-            削除
+            {m["削除"]}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            閉じる
+            {m["閉じる"]}
           </Button>
         </DialogActions>
       </Dialog>

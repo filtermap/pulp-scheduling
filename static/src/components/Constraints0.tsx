@@ -18,6 +18,7 @@ import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
+import { m } from "../messages";
 import * as all from "../modules/all";
 import * as constraints0 from "../modules/constraints0";
 import * as kinmus from "../modules/kinmus";
@@ -129,7 +130,7 @@ const Constraints0 = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          連続禁止勤務並び
+          {m["連続禁止勤務並び"]}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -149,15 +150,17 @@ const Constraints0 = React.memo((): JSX.Element => {
           fullWidth={true}
           maxWidth="md"
         >
-          <DialogTitle>連続禁止勤務並びを追加できません</DialogTitle>
+          <DialogTitle>
+            {m["arg0を追加できません"](m["連続禁止勤務並び"])}
+          </DialogTitle>
           <DialogContent>
             {kinmusInTerm.length === 0 && (
-              <DialogContentText>勤務がありません</DialogContentText>
+              <DialogContentText>{m["勤務がありません"]}</DialogContentText>
             )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
-              閉じる
+              {m["閉じる"]}
             </Button>
           </DialogActions>
         </Dialog>
@@ -178,7 +181,9 @@ const Constraints0 = React.memo((): JSX.Element => {
               fullWidth={true}
               maxWidth="md"
             >
-              <DialogTitle>連続禁止勤務並びの追加</DialogTitle>
+              <DialogTitle>
+                {m["arg0の追加"](m["連続禁止勤務並び"])}
+              </DialogTitle>
               <DialogContent>
                 <Grid container={true} spacing={1}>
                   <Grid item={true} xs={12}>
@@ -193,7 +198,7 @@ const Constraints0 = React.memo((): JSX.Element => {
                           color="primary"
                         />
                       }
-                      label="有効"
+                      label={m["有効"]}
                     />
                   </Grid>
                   <Grid item={true} xs={12}>
@@ -203,7 +208,7 @@ const Constraints0 = React.memo((): JSX.Element => {
                         0
                       )}
                     >
-                      追加
+                      {m["追加"]}
                     </Button>
                   </Grid>
                   {state.newConstraint0Constraint0KinmuKinmuIds.map(
@@ -235,7 +240,7 @@ const Constraints0 = React.memo((): JSX.Element => {
                                 index
                               )}
                             >
-                              削除
+                              {m["削除"]}
                             </Button>
                           )}
                         </Grid>
@@ -246,7 +251,7 @@ const Constraints0 = React.memo((): JSX.Element => {
                               index + 1
                             )}
                           >
-                            追加
+                            {m["追加"]}
                           </Button>
                         </Grid>
                       </React.Fragment>
@@ -256,10 +261,10 @@ const Constraints0 = React.memo((): JSX.Element => {
               </DialogContent>
               <DialogActions>
                 <Button color="primary" onClick={handleClickCreateConstraint0}>
-                  追加
+                  {m["追加"]}
                 </Button>
                 <Button color="primary" onClick={handleCloseCreationDialog}>
-                  閉じる
+                  {m["閉じる"]}
                 </Button>
               </DialogActions>
             </Dialog>

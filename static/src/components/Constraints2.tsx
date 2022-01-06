@@ -18,6 +18,7 @@ import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
+import { m } from "../messages";
 import * as constraints2 from "../modules/constraints2";
 import * as groups from "../modules/groups";
 import { useAppSelector } from "../modules/hooks";
@@ -133,11 +134,11 @@ const Constraints2 = React.memo((): JSX.Element => {
       utils.stringToDate(newConstraint2StopDateName);
     if (!newConstraint2StartDate)
       errorMessages.newConstraint2StartDateName.push(
-        "開始日の形式が正しくありません"
+        m["arg0の形式が正しくありません"](m["開始日"])
       );
     if (!newConstraint2StopDate)
       errorMessages.newConstraint2StopDateName.push(
-        "終了日の形式が正しくありません"
+        m["arg0の形式が正しくありません"](m["終了日"])
       );
     if (
       newConstraint2StartDate &&
@@ -145,15 +146,21 @@ const Constraints2 = React.memo((): JSX.Element => {
       newConstraint2StartDate > newConstraint2StopDate
     ) {
       errorMessages.newConstraint2StartDateName.push(
-        "開始日には終了日より過去の日付を入力してください"
+        m["arg0にはarg1より過去の日付を入力してください"](
+          m["開始日"],
+          m["終了日"]
+        )
       );
       errorMessages.newConstraint2StopDateName.push(
-        "開始日には終了日より未来の日付を入力してください"
+        m["arg0にはarg1より未来の日付を入力してください"](
+          m["終了日"],
+          m["開始日"]
+        )
       );
     }
     if (isNaN(newConstraint2MaxNumberOfAssignments))
       errorMessages.newConstraint2MaxNumberOfAssignments.push(
-        "割り当て職員数上限の形式が正しくありません"
+        m["arg0の形式が正しくありません"](m["割り当て職員数上限"])
       );
     return errorMessages;
   };
@@ -226,7 +233,7 @@ const Constraints2 = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          期間の勤務にグループから割り当てる職員数の上限
+          {m["期間の勤務にグループから割り当てる職員数の上限"]}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -248,19 +255,21 @@ const Constraints2 = React.memo((): JSX.Element => {
           maxWidth="md"
         >
           <DialogTitle>
-            期間の勤務にグループから割り当てる職員数の上限を追加できません
+            {m["arg0を追加できません"](
+              m["期間の勤務にグループから割り当てる職員数の上限"]
+            )}
           </DialogTitle>
           <DialogContent>
             {state.newConstraint2KinmuId === undefined && (
-              <DialogContentText>勤務がありません</DialogContentText>
+              <DialogContentText>{m["勤務がありません"]}</DialogContentText>
             )}
             {state.newConstraint2GroupId === undefined && (
-              <DialogContentText>グループがありません</DialogContentText>
+              <DialogContentText>{m["グループがありません"]}</DialogContentText>
             )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
-              閉じる
+              {m["閉じる"]}
             </Button>
           </DialogActions>
         </Dialog>
@@ -312,7 +321,9 @@ const Constraints2 = React.memo((): JSX.Element => {
               maxWidth="md"
             >
               <DialogTitle>
-                期間の勤務にグループから割り当てる職員数の上限の追加
+                {m["arg0の追加"](
+                  m["期間の勤務にグループから割り当てる職員数の上限"]
+                )}
               </DialogTitle>
               <DialogContent>
                 <Grid container={true} spacing={1}>
@@ -328,12 +339,12 @@ const Constraints2 = React.memo((): JSX.Element => {
                           color="primary"
                         />
                       }
-                      label="有効"
+                      label={m["有効"]}
                     />
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label="開始日"
+                      label={m["開始日"]}
                       type="date"
                       value={state.newConstraint2StartDateName}
                       onChange={handleChangeNewConstraint2StartDateName}
@@ -363,7 +374,7 @@ const Constraints2 = React.memo((): JSX.Element => {
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label="終了日"
+                      label={m["終了日"]}
                       type="date"
                       value={state.newConstraint2StopDateName}
                       onChange={handleChangeNewConstraint2StopDateName}
@@ -394,7 +405,7 @@ const Constraints2 = React.memo((): JSX.Element => {
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label="勤務"
+                      label={m["勤務"]}
                       value={state.newConstraint2KinmuId}
                       onChange={handleChangeNewConstraint2KinmuId}
                       fullWidth={true}
@@ -409,7 +420,7 @@ const Constraints2 = React.memo((): JSX.Element => {
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label="グループ"
+                      label={m["グループ"]}
                       value={state.newConstraint2GroupId}
                       onChange={handleChangeNewConstraint2GroupId}
                       fullWidth={true}
@@ -423,7 +434,7 @@ const Constraints2 = React.memo((): JSX.Element => {
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label="割り当て職員数上限"
+                      label={m["割り当て職員数上限"]}
                       type="number"
                       value={state.newConstraint2MaxNumberOfAssignments}
                       onChange={
@@ -458,10 +469,10 @@ const Constraints2 = React.memo((): JSX.Element => {
                   )}
                   onClick={handleClickCreateConstraint2}
                 >
-                  追加
+                  {m["追加"]}
                 </Button>
                 <Button color="primary" onClick={handleCloseCreationDialog}>
-                  閉じる
+                  {m["閉じる"]}
                 </Button>
               </DialogActions>
             </Dialog>

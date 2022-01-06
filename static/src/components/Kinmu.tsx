@@ -17,6 +17,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
+import { m } from "../messages";
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
@@ -167,7 +168,7 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
       kinmuName: [],
     };
     if (kinmuName === "")
-      errorMessages.kinmuName.push("勤務名を入力してください");
+      errorMessages.kinmuName.push(m["arg0を入力してください"](m["勤務名"]));
     return errorMessages;
   };
   const handleChangeKinmuName = (
@@ -234,7 +235,7 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
             <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
                 <TextField
-                  label="勤務名"
+                  label={m["勤務名"]}
                   value={state.changes.name}
                   onChange={handleChangeKinmuName}
                   onBlur={handleBlurKinmuName}
@@ -253,7 +254,7 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              削除
+              {m["削除"]}
             </Button>
           </CardActions>
         </Collapse>
@@ -264,11 +265,13 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>勤務の削除</DialogTitle>
+        <DialogTitle>{m["arg0の削除"](m["勤務"])}</DialogTitle>
         <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
-              <DialogContentText>この勤務を削除します</DialogContentText>
+              <DialogContentText>
+                {m["このarg0を削除します"](m["勤務"])}
+              </DialogContentText>
               <Typography>
                 <KinmuName kinmu={props.kinmu} />
               </Typography>
@@ -276,7 +279,7 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
             <Grid item={true} xs={12}>
               {kinmuSchedules.length > 0 && (
                 <DialogContentText>
-                  以下の勤務表も削除されます
+                  {m["以下の勤務表も削除されます"]}
                 </DialogContentText>
               )}
               {kinmuSchedules.map((schedule) => (
@@ -297,7 +300,9 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
                 kinmuConstraints8.length > 0 ||
                 kinmuConstraints9.length > 0 ||
                 kinmuConstraints10.length > 0) && (
-                <DialogContentText>以下の条件も削除されます</DialogContentText>
+                <DialogContentText>
+                  {m["以下の条件も削除されます"]}
+                </DialogContentText>
               )}
               {kinmuConstraints0.map((c) => (
                 <Typography key={`constraint0_${c.id}`}>
@@ -359,10 +364,10 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteKinmu}>
-            削除
+            {m["削除"]}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            閉じる
+            {m["閉じる"]}
           </Button>
         </DialogActions>
       </Dialog>

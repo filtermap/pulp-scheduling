@@ -18,6 +18,7 @@ import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
+import { m } from "../messages";
 import * as constraints8 from "../modules/constraints8";
 import * as kinmus from "../modules/kinmus";
 
@@ -99,7 +100,7 @@ const Constraints8 = React.memo((): JSX.Element => {
     };
     if (isNaN(newConstraint8MaxNumberOfDays))
       errorMessages.newConstraint8MaxNumberOfDays.push(
-        "間隔日数下限の形式が正しくありません"
+        m["arg0の形式が正しくありません"](m["間隔日数下限"])
       );
     return errorMessages;
   };
@@ -128,7 +129,7 @@ const Constraints8 = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          勤務の間隔日数の上限
+          {m["勤務の間隔日数の上限"]}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -148,15 +149,17 @@ const Constraints8 = React.memo((): JSX.Element => {
           fullWidth={true}
           maxWidth="md"
         >
-          <DialogTitle>勤務の間隔日数の上限を追加できません</DialogTitle>
+          <DialogTitle>
+            {m["arg0を追加できません"](m["勤務の間隔日数の上限"])}
+          </DialogTitle>
           <DialogContent>
             {state.newConstraint8KinmuId === undefined && (
-              <DialogContentText>勤務がありません</DialogContentText>
+              <DialogContentText>{m["勤務がありません"]}</DialogContentText>
             )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
-              閉じる
+              {m["閉じる"]}
             </Button>
           </DialogActions>
         </Dialog>
@@ -173,7 +176,9 @@ const Constraints8 = React.memo((): JSX.Element => {
               fullWidth={true}
               maxWidth="md"
             >
-              <DialogTitle>勤務の間隔日数の下限の追加</DialogTitle>
+              <DialogTitle>
+                {m["arg0の追加"](m["勤務の間隔日数の下限"])}
+              </DialogTitle>
               <DialogContent>
                 <Grid container={true} spacing={1}>
                   <Grid item={true} xs={12}>
@@ -188,13 +193,13 @@ const Constraints8 = React.memo((): JSX.Element => {
                           color="primary"
                         />
                       }
-                      label="有効"
+                      label={m["有効"]}
                     />
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label="勤務"
+                      label={m["勤務"]}
                       value={state.newConstraint8KinmuId}
                       onChange={handleChangeNewConstraint8KinmuId}
                       fullWidth={true}
@@ -208,7 +213,7 @@ const Constraints8 = React.memo((): JSX.Element => {
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label="間隔日数下限"
+                      label={m["間隔日数下限"]}
                       type="number"
                       value={state.newConstraint8MaxNumberOfDays}
                       onChange={handleChangeNewConstraint8MaxNumberOfDays}
@@ -240,10 +245,10 @@ const Constraints8 = React.memo((): JSX.Element => {
                   )}
                   onClick={handleClickCreateConstraint8}
                 >
-                  追加
+                  {m["追加"]}
                 </Button>
                 <Button color="primary" onClick={handleCloseCreationDialog}>
-                  閉じる
+                  {m["閉じる"]}
                 </Button>
               </DialogActions>
             </Dialog>

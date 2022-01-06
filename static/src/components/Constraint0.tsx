@@ -18,6 +18,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
+import { m } from "../messages";
 import * as all from "../modules/all";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as constraints0 from "../modules/constraints0";
@@ -150,7 +151,7 @@ const Constraint0 = React.memo((props: Props): JSX.Element => {
                   size="small"
                   onClick={handleClickCreateConstraint0Kinmu(0)}
                 >
-                  追加
+                  {m["追加"]}
                 </Button>
               </Grid>
               {constraint0Constraint0Kinmus.map((constraint0_kinmu, index) => (
@@ -158,7 +159,7 @@ const Constraint0 = React.memo((props: Props): JSX.Element => {
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label={`勤務${index + 1}`}
+                      label={m["勤務arg0"](index + 1)}
                       value={constraint0_kinmu.kinmu_id}
                       onChange={handleChangeConstraint0KinmuKinmuId(
                         constraint0_kinmu.id
@@ -180,7 +181,7 @@ const Constraint0 = React.memo((props: Props): JSX.Element => {
                           constraint0_kinmu.id
                         )}
                       >
-                        削除
+                        {m["削除"]}
                       </Button>
                     </Grid>
                   )}
@@ -191,7 +192,7 @@ const Constraint0 = React.memo((props: Props): JSX.Element => {
                         constraint0_kinmu.sequence_number + 1
                       )}
                     >
-                      追加
+                      {m["追加"]}
                     </Button>
                   </Grid>
                 </React.Fragment>
@@ -200,7 +201,7 @@ const Constraint0 = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              削除
+              {m["削除"]}
             </Button>
           </CardActions>
         </Collapse>
@@ -211,19 +212,19 @@ const Constraint0 = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>連続禁止勤務並びの削除</DialogTitle>
+        <DialogTitle>{m["arg0の削除"](m["連続禁止勤務並び"])}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            この連続禁止勤務並びを削除します
+            {m["このarg0を削除します"](m["連続禁止勤務並び"])}
           </DialogContentText>
           <Typography>{title}</Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteConstraint0}>
-            削除
+            {m["削除"]}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            閉じる
+            {m["閉じる"]}
           </Button>
         </DialogActions>
       </Dialog>

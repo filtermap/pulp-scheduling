@@ -20,6 +20,7 @@ import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
+import { m } from "../messages";
 import * as all from "../modules/all";
 import * as groups from "../modules/groups";
 import * as members from "../modules/members";
@@ -92,7 +93,9 @@ const Members = React.memo((): JSX.Element => {
       newMemberName: [],
     };
     if (newMemberName === "")
-      errorMessages.newMemberName.push("職員名を入力してください");
+      errorMessages.newMemberName.push(
+        m["arg0を入力してください"](m["職員名"])
+      );
     return errorMessages;
   };
   const handleChangeNewMemberName = (
@@ -136,7 +139,7 @@ const Members = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          職員
+          {m["職員"]}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -160,7 +163,7 @@ const Members = React.memo((): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>職員の追加</DialogTitle>
+        <DialogTitle>{m["arg0の追加"](m["職員"])}</DialogTitle>
         <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
@@ -172,12 +175,12 @@ const Members = React.memo((): JSX.Element => {
                     color="primary"
                   />
                 }
-                label="有効"
+                label={m["有効"]}
               />
             </Grid>
             <Grid item={true} xs={12}>
               <TextField
-                label="職員名"
+                label={m["職員名"]}
                 value={state.newMemberName}
                 onChange={handleChangeNewMemberName}
                 fullWidth={true}
@@ -193,7 +196,7 @@ const Members = React.memo((): JSX.Element => {
             </Grid>
             <Grid item={true} xs={12}>
               <FormControl fullWidth={true}>
-                <FormLabel>職員が所属するグループ</FormLabel>
+                <FormLabel>{m["職員が所属するグループ"]}</FormLabel>
                 <FormGroup>
                   {groupsInTerm.map((group) => (
                     <FormControlLabel
@@ -221,10 +224,10 @@ const Members = React.memo((): JSX.Element => {
             )}
             onClick={handleClickCreateMember}
           >
-            追加
+            {m["追加"]}
           </Button>
           <Button color="primary" onClick={handleCloseCreationDialog}>
-            閉じる
+            {m["閉じる"]}
           </Button>
         </DialogActions>
       </Dialog>

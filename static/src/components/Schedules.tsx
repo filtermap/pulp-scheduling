@@ -20,6 +20,7 @@ import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
+import { m } from "../messages";
 import * as all from "../modules/all";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as constraints0 from "../modules/constraints0";
@@ -317,15 +318,15 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>勤務表の追加</DialogTitle>
+            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
             <DialogContent>
               <Button size="small" onClick={handleClickSolve}>
-                自動作成
+                {m["自動作成"]}
               </Button>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
-                閉じる
+                {m["閉じる"]}
               </Button>
             </DialogActions>
           </Dialog>
@@ -337,9 +338,9 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>勤務表の追加</DialogTitle>
+            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
             <DialogContent>
-              <DialogContentText>作成中...</DialogContentText>
+              <DialogContentText>{m["作成中..."]}</DialogContentText>
               <LinearProgress variant="query" />
             </DialogContent>
           </Dialog>
@@ -364,7 +365,7 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>勤務表の追加</DialogTitle>
+            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
             <DialogContent sx={{ overflow: "auto", padding: 0 }}>
               <Table>
                 <TableHead>
@@ -413,10 +414,10 @@ const Schedules = React.memo((): JSX.Element => {
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleClickCreateSchedule}>
-                追加
+                {m["追加"]}
               </Button>
               <Button color="primary" onClick={handleCloseCreationDialog}>
-                閉じる
+                {m["閉じる"]}
               </Button>
             </DialogActions>
           </Dialog>
@@ -430,28 +431,31 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>勤務表の追加</DialogTitle>
+            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                勤務表を作成できませんでした
+                {m["勤務表を作成できませんでした"]}
               </DialogContentText>
               {state.dialogState.errorMessage === "Infeasible" ? (
                 <>
-                  <Typography>条件を満たす勤務表が存在しません</Typography>
+                  <Typography>
+                    {m["条件を満たす勤務表が存在しません"]}
+                  </Typography>
                   <Button size="small" onClick={handleClickPursue}>
-                    勤務表を作成できない原因となる条件を特定
+                    {m["勤務表を作成できない原因となる条件を特定"]}
                   </Button>
                 </>
               ) : (
                 <Typography>
-                  pulp-schedulingの不具合やデータの破損などにより作成できない可能性があります（
-                  {state.dialogState.errorMessage}）
+                  {m[
+                    "pulp-schedulingの不具合やデータの破損などにより作成できない可能性があります（arg0）"
+                  ](state.dialogState.errorMessage)}
                 </Typography>
               )}
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
-                閉じる
+                {m["閉じる"]}
               </Button>
             </DialogActions>
           </Dialog>
@@ -463,10 +467,10 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>勤務表の追加</DialogTitle>
+            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                勤務表を作成できない原因となる条件を特定中...
+                {m["勤務表を作成できない原因となる条件を特定中..."]}
               </DialogContentText>
               <LinearProgress variant="query" />
             </DialogContent>
@@ -541,16 +545,16 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>勤務表の追加</DialogTitle>
+            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                以下の条件により勤務表を作成できませんでした
+                {m["以下の条件により勤務表を作成できませんでした"]}
               </DialogContentText>
               <Typography>{constraintText}</Typography>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
-                閉じる
+                {m["閉じる"]}
               </Button>
             </DialogActions>
           </Dialog>
@@ -564,19 +568,20 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>勤務表の追加</DialogTitle>
+            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                勤務表を作成できない原因となる条件を特定できませんでした
+                {m["勤務表を作成できない原因となる条件を特定できませんでした"]}
               </DialogContentText>
               <Typography>
-                pulp-schedulingの不具合や条件の誤りなどにより特定できない可能性があります（
-                {state.dialogState.errorMessage}）
+                {m[
+                  "pulp-schedulingの不具合や条件の誤りなどにより特定できない可能性があります（arg0）"
+                ](state.dialogState.errorMessage)}
               </Typography>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
-                閉じる
+                {m["閉じる"]}
               </Button>
             </DialogActions>
           </Dialog>
@@ -587,7 +592,7 @@ const Schedules = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          勤務表
+          {m["勤務表"]}
         </Typography>
       </Toolbar>
       <GridFrame>

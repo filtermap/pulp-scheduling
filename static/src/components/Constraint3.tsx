@@ -18,6 +18,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
+import { m } from "../messages";
 import * as constraints3 from "../modules/constraints3";
 import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
@@ -125,7 +126,7 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
     };
     if (isNaN(constraint3MinNumberOfAssignments))
       errorMessages.constraint3MinNumberOfAssignments.push(
-        "割り当て数下限の形式が正しくありません"
+        m["arg0の形式が正しくありません"](m["割り当て数下限"])
       );
     return errorMessages;
   };
@@ -205,7 +206,7 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
               <Grid item={true} xs={12}>
                 <TextField
                   select={true}
-                  label="職員"
+                  label={m["職員"]}
                   value={props.constraint3.member_id}
                   onChange={handleChangeConstraint3MemberId}
                   fullWidth={true}
@@ -220,7 +221,7 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
               <Grid item={true} xs={12}>
                 <TextField
                   select={true}
-                  label="勤務"
+                  label={m["勤務"]}
                   value={props.constraint3.kinmu_id}
                   onChange={handleChangeConstraint3KinmuId}
                   fullWidth={true}
@@ -234,7 +235,7 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <TextField
-                  label="割り当て数下限"
+                  label={m["割り当て数下限"]}
                   type="number"
                   value={state.changes.min_number_of_assignments}
                   onChange={handleChangeConstraint3MinNumberOfAssignments}
@@ -261,7 +262,7 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              削除
+              {m["削除"]}
             </Button>
           </CardActions>
         </Collapse>
@@ -272,19 +273,21 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>職員の勤務の割り当て数の下限の削除</DialogTitle>
+        <DialogTitle>
+          {m["arg0の削除"](m["職員の勤務の割り当て数の下限"])}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            この職員の勤務の割り当て数の下限を削除します
+            {m["このarg0を削除します"](m["職員の勤務の割り当て数の下限"])}
           </DialogContentText>
           <Typography>{title}</Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteConstraint3}>
-            削除
+            {m["削除"]}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            閉じる
+            {m["閉じる"]}
           </Button>
         </DialogActions>
       </Dialog>

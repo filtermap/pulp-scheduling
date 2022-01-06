@@ -22,6 +22,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
+import { m } from "../messages";
 import * as all from "../modules/all";
 import * as constraints1 from "../modules/constraints1";
 import * as constraints2 from "../modules/constraints2";
@@ -112,7 +113,9 @@ const Group = React.memo((props: Props): JSX.Element => {
       groupName: [],
     };
     if (groupName === "")
-      errorMessages.groupName.push("グループ名を入力してください");
+      errorMessages.groupName.push(
+        m["arg0を入力してください"](m["グループ名"])
+      );
     return errorMessages;
   };
   const handleChangeGroupName = (
@@ -207,7 +210,7 @@ const Group = React.memo((props: Props): JSX.Element => {
             <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
                 <TextField
-                  label="グループ名"
+                  label={m["グループ名"]}
                   value={state.changes.name}
                   onChange={handleChangeGroupName}
                   onBlur={handleBlurGroupName}
@@ -224,7 +227,7 @@ const Group = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <FormControl fullWidth={true}>
-                  <FormLabel>グループに所属する職員</FormLabel>
+                  <FormLabel>{m["グループに所属する職員"]}</FormLabel>
                   <FormGroup>
                     {membersInTerm.map((member) => (
                       <FormControlLabel
@@ -246,7 +249,7 @@ const Group = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              削除
+              {m["削除"]}
             </Button>
           </CardActions>
         </Collapse>
@@ -257,11 +260,13 @@ const Group = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>グループの削除</DialogTitle>
+        <DialogTitle>{m["arg0の削除"](m["グループ"])}</DialogTitle>
         <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
-              <DialogContentText>このグループを削除します</DialogContentText>
+              <DialogContentText>
+                {m["このarg0を削除します"](m["グループ"])}
+              </DialogContentText>
               <Typography>
                 <GroupName group={props.group} />
               </Typography>
@@ -270,7 +275,9 @@ const Group = React.memo((props: Props): JSX.Element => {
             <Grid item={true} xs={12}>
               {(groupConstraints1.length > 0 ||
                 groupConstraints2.length > 0) && (
-                <DialogContentText>以下の条件も削除されます</DialogContentText>
+                <DialogContentText>
+                  {m["以下の条件も削除されます"]}
+                </DialogContentText>
               )}
               {groupConstraints1.map((c) => (
                 <Typography key={`constraint1_${c.id}`}>
@@ -287,10 +294,10 @@ const Group = React.memo((props: Props): JSX.Element => {
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteGroup}>
-            削除
+            {m["削除"]}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            閉じる
+            {m["閉じる"]}
           </Button>
         </DialogActions>
       </Dialog>
