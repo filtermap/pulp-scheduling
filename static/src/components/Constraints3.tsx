@@ -31,10 +31,12 @@ import GridFrame from "./parts/GridFrame";
 
 type State = {
   creationDialogIsOpen: boolean;
-  newConstraint3IsEnabled: boolean;
-  newConstraint3MemberId: number | undefined;
-  newConstraint3KinmuId: number | undefined;
-  newConstraint3MinNumberOfAssignments: number;
+  constraint3: {
+    is_enabled: boolean;
+    member_id: number | undefined;
+    kinmu_id: number | undefined;
+    min_number_of_assignments: number;
+  };
 };
 
 // eslint-disable-next-line react/display-name
@@ -60,25 +62,25 @@ const Constraints3 = React.memo((): JSX.Element => {
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === termId
   );
-  const newConstraint3KinmuId =
-    kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
-  const newConstraint3MemberId =
-    membersInTerm.length > 0 ? membersInTerm[0].id : undefined;
+  const kinmu_id = kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
+  const member_id = membersInTerm.length > 0 ? membersInTerm[0].id : undefined;
   const [state, updateState] = useImmer<State>({
+    constraint3: {
+      is_enabled: true,
+      kinmu_id,
+      member_id,
+      min_number_of_assignments:
+        constraints3.minOfConstraint3MinNumberOfAssignments,
+    },
     creationDialogIsOpen: false,
-    newConstraint3IsEnabled: true,
-    newConstraint3KinmuId,
-    newConstraint3MemberId,
-    newConstraint3MinNumberOfAssignments:
-      constraints3.minOfConstraint3MinNumberOfAssignments,
   });
   React.useEffect(
     () =>
       updateState((state) => {
-        state.newConstraint3KinmuId = newConstraint3KinmuId;
-        state.newConstraint3MemberId = newConstraint3MemberId;
+        state.constraint3.kinmu_id = kinmu_id;
+        state.constraint3.member_id = member_id;
       }),
-    [newConstraint3KinmuId, newConstraint3MemberId, updateState]
+    [kinmu_id, member_id, updateState]
   );
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
@@ -94,28 +96,28 @@ const Constraints3 = React.memo((): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint3IsEnabled = event.target.checked;
+      state.constraint3.is_enabled = event.target.checked;
     });
   };
   const handleChangeNewConstraint3MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint3MemberId = parseInt(event.target.value, 10);
+      state.constraint3.member_id = parseInt(event.target.value, 10);
     });
   };
   const handleChangeNewConstraint3KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint3KinmuId = parseInt(event.target.value, 10);
+      state.constraint3.kinmu_id = parseInt(event.target.value, 10);
     });
   };
   const handleChangeNewConstraint3MinNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint3MinNumberOfAssignments = parseInt(
+      state.constraint3.min_number_of_assignments = parseInt(
         event.target.value,
         10
       );
@@ -127,12 +129,12 @@ const Constraints3 = React.memo((): JSX.Element => {
     });
     dispatch(
       constraints3.add({
-        is_enabled: state.newConstraint3IsEnabled,
+        is_enabled: state.constraint3.is_enabled,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        kinmu_id: state.newConstraint3KinmuId!,
+        kinmu_id: state.constraint3.kinmu_id!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        member_id: state.newConstraint3MemberId!,
-        min_number_of_assignments: state.newConstraint3MinNumberOfAssignments,
+        member_id: state.constraint3.member_id!,
+        min_number_of_assignments: state.constraint3.min_number_of_assignments,
         term_id: termId,
       })
     );
@@ -154,8 +156,8 @@ const Constraints3 = React.memo((): JSX.Element => {
         </Grid>
       </GridFrame>
       <FloatingAddButton onClick={handleClickOpenCreationDialog} />
-      {state.newConstraint3MemberId === undefined ||
-      state.newConstraint3KinmuId === undefined ? (
+      {state.constraint3.member_id === undefined ||
+      state.constraint3.kinmu_id === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -168,10 +170,10 @@ const Constraints3 = React.memo((): JSX.Element => {
             })}
           </DialogTitle>
           <DialogContent>
-            {state.newConstraint3MemberId === undefined && (
+            {state.constraint3.member_id === undefined && (
               <DialogContentText>{t("職員がいません")}</DialogContentText>
             )}
-            {state.newConstraint3KinmuId === undefined && (
+            {state.constraint3.kinmu_id === undefined && (
               <DialogContentText>{t("勤務がありません")}</DialogContentText>
             )}
           </DialogContent>
@@ -184,15 +186,15 @@ const Constraints3 = React.memo((): JSX.Element => {
       ) : (
         (() => {
           const newConstraint3Member =
-            selectedMemberById[state.newConstraint3MemberId];
+            selectedMemberById[state.constraint3.member_id];
           const newConstraint3Kinmu =
-            selectedKinmuById[state.newConstraint3KinmuId];
+            selectedKinmuById[state.constraint3.kinmu_id];
           const relativesAreEnabled =
             newConstraint3Member?.is_enabled && newConstraint3Kinmu?.is_enabled;
-          const errorMessages = constraints3.getErrorMessages(t, {
-            min_number_of_assignments:
-              state.newConstraint3MinNumberOfAssignments,
-          });
+          const errorMessages = constraints3.getErrorMessages(
+            t,
+            state.constraint3
+          );
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -212,7 +214,7 @@ const Constraints3 = React.memo((): JSX.Element => {
                       control={
                         <Switch
                           checked={
-                            state.newConstraint3IsEnabled && relativesAreEnabled
+                            state.constraint3.is_enabled && relativesAreEnabled
                           }
                           disabled={!relativesAreEnabled}
                           onChange={handleChangeNewConstraint3IsEnabled}
@@ -226,7 +228,7 @@ const Constraints3 = React.memo((): JSX.Element => {
                     <TextField
                       select={true}
                       label={t("職員")}
-                      value={state.newConstraint3MemberId}
+                      value={state.constraint3.member_id}
                       onChange={handleChangeNewConstraint3MemberId}
                       fullWidth={true}
                     >
@@ -241,7 +243,7 @@ const Constraints3 = React.memo((): JSX.Element => {
                     <TextField
                       select={true}
                       label={t("勤務")}
-                      value={state.newConstraint3KinmuId}
+                      value={state.constraint3.kinmu_id}
                       onChange={handleChangeNewConstraint3KinmuId}
                       fullWidth={true}
                     >
@@ -256,7 +258,7 @@ const Constraints3 = React.memo((): JSX.Element => {
                     <TextField
                       label={t("勤務割り当て数下限")}
                       type="number"
-                      value={state.newConstraint3MinNumberOfAssignments}
+                      value={state.constraint3.min_number_of_assignments}
                       onChange={
                         handleChangeNewConstraint3MinNumberOfAssignments
                       }

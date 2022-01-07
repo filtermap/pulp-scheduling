@@ -30,8 +30,10 @@ import GridFrame from "./parts/GridFrame";
 
 type State = {
   creationDialogIsOpen: boolean;
-  newConstraint0IsEnabled: boolean;
-  newConstraint0Constraint0KinmuKinmuIds: number[];
+  constraint0: {
+    is_enabled: boolean;
+  };
+  kinmu_ids: number[];
 };
 
 // eslint-disable-next-line react/display-name
@@ -53,23 +55,24 @@ const Constraints0 = React.memo((): JSX.Element => {
     () => selectedKinmus.filter(({ term_id }) => term_id === termId),
     [selectedKinmus, termId]
   );
-  const newConstraint0Constraint0KinmuKinmuIds = React.useMemo(
+  const kinmu_ids = React.useMemo(
     () =>
       kinmusInTerm.length > 0 ? [kinmusInTerm[0].id, kinmusInTerm[0].id] : [],
     [kinmusInTerm]
   );
   const [state, updateState] = useImmer<State>({
+    constraint0: {
+      is_enabled: true,
+    },
     creationDialogIsOpen: false,
-    newConstraint0Constraint0KinmuKinmuIds,
-    newConstraint0IsEnabled: true,
+    kinmu_ids,
   });
   React.useEffect(
     () =>
       updateState((state) => {
-        state.newConstraint0Constraint0KinmuKinmuIds =
-          newConstraint0Constraint0KinmuKinmuIds;
+        state.kinmu_ids = kinmu_ids;
       }),
-    [newConstraint0Constraint0KinmuKinmuIds, updateState]
+    [kinmu_ids, updateState]
   );
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
@@ -85,32 +88,25 @@ const Constraints0 = React.memo((): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint0IsEnabled = event.target.checked;
+      state.constraint0.is_enabled = event.target.checked;
     });
   };
   const handleClickCreateNewConstraint0Constraint0Kinmu =
     (index: number) => () => {
       updateState((state) => {
-        state.newConstraint0Constraint0KinmuKinmuIds.splice(
-          index,
-          0,
-          kinmusInTerm[0].id
-        );
+        state.kinmu_ids.splice(index, 0, kinmusInTerm[0].id);
       });
     };
   const handleChangeNewConstraint0Constraint0KinmuKinmuId =
     (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
       updateState((state) => {
-        state.newConstraint0Constraint0KinmuKinmuIds[index] = parseInt(
-          event.target.value,
-          10
-        );
+        state.kinmu_ids[index] = parseInt(event.target.value, 10);
       });
     };
   const handleClickDeleteNewConstraint0Constraint0Kinmu =
     (index: number) => () => {
       updateState((state) => {
-        state.newConstraint0Constraint0KinmuKinmuIds.splice(index, 1);
+        state.kinmu_ids.splice(index, 1);
       });
     };
   const handleClickCreateConstraint0 = () => {
@@ -120,10 +116,10 @@ const Constraints0 = React.memo((): JSX.Element => {
     dispatch(
       all.addConstraint0({
         constraint0: {
-          is_enabled: state.newConstraint0IsEnabled,
+          ...state.constraint0,
           term_id: termId,
         },
-        kinmu_ids: state.newConstraint0Constraint0KinmuKinmuIds,
+        kinmu_ids: state.kinmu_ids,
       })
     );
   };
@@ -167,10 +163,9 @@ const Constraints0 = React.memo((): JSX.Element => {
         </Dialog>
       ) : (
         (() => {
-          const newConstraint0Constraint0KinmuKinmus =
-            state.newConstraint0Constraint0KinmuKinmuIds.map(
-              (kinmu_id) => selectedKinmuById[kinmu_id]
-            );
+          const newConstraint0Constraint0KinmuKinmus = state.kinmu_ids.map(
+            (kinmu_id) => selectedKinmuById[kinmu_id]
+          );
           const relativesAreEnabled =
             newConstraint0Constraint0KinmuKinmus.every(
               (kinmu) => kinmu?.is_enabled
@@ -192,7 +187,7 @@ const Constraints0 = React.memo((): JSX.Element => {
                       control={
                         <Switch
                           checked={
-                            state.newConstraint0IsEnabled && relativesAreEnabled
+                            state.constraint0.is_enabled && relativesAreEnabled
                           }
                           disabled={!relativesAreEnabled}
                           onChange={handleChangeNewConstraint0IsEnabled}
@@ -212,52 +207,49 @@ const Constraints0 = React.memo((): JSX.Element => {
                       {t("追加")}
                     </Button>
                   </Grid>
-                  {state.newConstraint0Constraint0KinmuKinmuIds.map(
-                    (kinmuId, index) => (
-                      <React.Fragment key={`${index}-${kinmuId}`}>
-                        <Grid item={true} xs={12}>
-                          <TextField
-                            select={true}
-                            label={`勤務${index + 1}`}
-                            value={kinmuId}
-                            onChange={handleChangeNewConstraint0Constraint0KinmuKinmuId(
-                              index
-                            )}
-                            fullWidth={true}
-                          >
-                            {kinmusInTerm.map((kinmu) => (
-                              <MenuItem key={kinmu.id} value={kinmu.id}>
-                                <KinmuName kinmu={kinmu} />
-                              </MenuItem>
-                            ))}
-                          </TextField>
-                        </Grid>
-                        <Grid item={true} xs={12}>
-                          {state.newConstraint0Constraint0KinmuKinmuIds.length >
-                            2 && (
-                            <Button
-                              size="small"
-                              onClick={handleClickDeleteNewConstraint0Constraint0Kinmu(
-                                index
-                              )}
-                            >
-                              {t("削除")}
-                            </Button>
+                  {state.kinmu_ids.map((kinmuId, index) => (
+                    <React.Fragment key={`${index}-${kinmuId}`}>
+                      <Grid item={true} xs={12}>
+                        <TextField
+                          select={true}
+                          label={`勤務${index + 1}`}
+                          value={kinmuId}
+                          onChange={handleChangeNewConstraint0Constraint0KinmuKinmuId(
+                            index
                           )}
-                        </Grid>
-                        <Grid item={true} xs={12}>
+                          fullWidth={true}
+                        >
+                          {kinmusInTerm.map((kinmu) => (
+                            <MenuItem key={kinmu.id} value={kinmu.id}>
+                              <KinmuName kinmu={kinmu} />
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Grid>
+                      <Grid item={true} xs={12}>
+                        {state.kinmu_ids.length > 2 && (
                           <Button
                             size="small"
-                            onClick={handleClickCreateNewConstraint0Constraint0Kinmu(
-                              index + 1
+                            onClick={handleClickDeleteNewConstraint0Constraint0Kinmu(
+                              index
                             )}
                           >
-                            {t("追加")}
+                            {t("削除")}
                           </Button>
-                        </Grid>
-                      </React.Fragment>
-                    )
-                  )}
+                        )}
+                      </Grid>
+                      <Grid item={true} xs={12}>
+                        <Button
+                          size="small"
+                          onClick={handleClickCreateNewConstraint0Constraint0Kinmu(
+                            index + 1
+                          )}
+                        >
+                          {t("追加")}
+                        </Button>
+                      </Grid>
+                    </React.Fragment>
+                  ))}
                 </Grid>
               </DialogContent>
               <DialogActions>

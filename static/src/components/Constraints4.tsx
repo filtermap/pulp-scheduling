@@ -31,10 +31,12 @@ import GridFrame from "./parts/GridFrame";
 
 type State = {
   creationDialogIsOpen: boolean;
-  newConstraint4IsEnabled: boolean;
-  newConstraint4MemberId: number | undefined;
-  newConstraint4KinmuId: number | undefined;
-  newConstraint4MaxNumberOfAssignments: number;
+  constraint4: {
+    is_enabled: boolean;
+    member_id: number | undefined;
+    kinmu_id: number | undefined;
+    max_number_of_assignments: number;
+  };
 };
 
 // eslint-disable-next-line react/display-name
@@ -60,25 +62,28 @@ const Constraints4 = React.memo((): JSX.Element => {
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === termId
   );
-  const newConstraint4KinmuId =
-    kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
-  const newConstraint4MemberId =
-    membersInTerm.length > 0 ? membersInTerm[0].id : undefined;
+  const kinmu_id = kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
+  const member_id = membersInTerm.length > 0 ? membersInTerm[0].id : undefined;
   const [state, updateState] = useImmer<State>({
+    constraint4: {
+      is_enabled: true,
+      kinmu_id,
+      max_number_of_assignments:
+        constraints4.minOfConstraint4MaxNumberOfAssignments,
+      member_id,
+    },
     creationDialogIsOpen: false,
-    newConstraint4IsEnabled: true,
-    newConstraint4KinmuId,
-    newConstraint4MaxNumberOfAssignments:
-      constraints4.minOfConstraint4MaxNumberOfAssignments,
-    newConstraint4MemberId,
   });
   React.useEffect(
     () =>
       updateState((state) => {
-        state.newConstraint4KinmuId = newConstraint4KinmuId;
-        state.newConstraint4MemberId = newConstraint4MemberId;
+        state.constraint4 = {
+          ...state.constraint4,
+          kinmu_id,
+          member_id,
+        };
       }),
-    [newConstraint4KinmuId, newConstraint4MemberId, updateState]
+    [kinmu_id, member_id, updateState]
   );
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
@@ -94,28 +99,28 @@ const Constraints4 = React.memo((): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint4IsEnabled = event.target.checked;
+      state.constraint4.is_enabled = event.target.checked;
     });
   };
   const handleChangeNewConstraint4MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint4MemberId = parseInt(event.target.value, 10);
+      state.constraint4.member_id = parseInt(event.target.value, 10);
     });
   };
   const handleChangeNewConstraint4KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint4KinmuId = parseInt(event.target.value, 10);
+      state.constraint4.kinmu_id = parseInt(event.target.value, 10);
     });
   };
   const handleChangeNewConstraint4MaxNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint4MaxNumberOfAssignments = parseInt(
+      state.constraint4.max_number_of_assignments = parseInt(
         event.target.value,
         10
       );
@@ -127,12 +132,12 @@ const Constraints4 = React.memo((): JSX.Element => {
     });
     dispatch(
       constraints4.add({
-        is_enabled: state.newConstraint4IsEnabled,
+        is_enabled: state.constraint4.is_enabled,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        kinmu_id: state.newConstraint4KinmuId!,
-        max_number_of_assignments: state.newConstraint4MaxNumberOfAssignments,
+        kinmu_id: state.constraint4.kinmu_id!,
+        max_number_of_assignments: state.constraint4.max_number_of_assignments,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        member_id: state.newConstraint4MemberId!,
+        member_id: state.constraint4.member_id!,
         term_id: termId,
       })
     );
@@ -154,8 +159,8 @@ const Constraints4 = React.memo((): JSX.Element => {
         </Grid>
       </GridFrame>
       <FloatingAddButton onClick={handleClickOpenCreationDialog} />
-      {state.newConstraint4MemberId === undefined ||
-      state.newConstraint4KinmuId === undefined ? (
+      {state.constraint4.member_id === undefined ||
+      state.constraint4.kinmu_id === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -168,10 +173,10 @@ const Constraints4 = React.memo((): JSX.Element => {
             })}
           </DialogTitle>
           <DialogContent>
-            {state.newConstraint4MemberId === undefined && (
+            {state.constraint4.member_id === undefined && (
               <DialogContentText>{t("職員がいません")}</DialogContentText>
             )}
-            {state.newConstraint4KinmuId === undefined && (
+            {state.constraint4.kinmu_id === undefined && (
               <DialogContentText>{t("勤務がありません")}</DialogContentText>
             )}
           </DialogContent>
@@ -184,15 +189,15 @@ const Constraints4 = React.memo((): JSX.Element => {
       ) : (
         (() => {
           const newConstraint4Member =
-            selectedMemberById[state.newConstraint4MemberId];
+            selectedMemberById[state.constraint4.member_id];
           const newConstraint4Kinmu =
-            selectedKinmuById[state.newConstraint4KinmuId];
+            selectedKinmuById[state.constraint4.kinmu_id];
           const relativesAreEnabled =
             newConstraint4Member?.is_enabled && newConstraint4Kinmu?.is_enabled;
-          const errorMessages = constraints4.getErrorMessages(t, {
-            max_number_of_assignments:
-              state.newConstraint4MaxNumberOfAssignments,
-          });
+          const errorMessages = constraints4.getErrorMessages(
+            t,
+            state.constraint4
+          );
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -212,7 +217,7 @@ const Constraints4 = React.memo((): JSX.Element => {
                       control={
                         <Switch
                           checked={
-                            state.newConstraint4IsEnabled && relativesAreEnabled
+                            state.constraint4.is_enabled && relativesAreEnabled
                           }
                           disabled={!relativesAreEnabled}
                           onChange={handleChangeNewConstraint4IsEnabled}
@@ -226,7 +231,7 @@ const Constraints4 = React.memo((): JSX.Element => {
                     <TextField
                       select={true}
                       label={t("職員")}
-                      value={state.newConstraint4MemberId}
+                      value={state.constraint4.member_id}
                       onChange={handleChangeNewConstraint4MemberId}
                       fullWidth={true}
                     >
@@ -241,7 +246,7 @@ const Constraints4 = React.memo((): JSX.Element => {
                     <TextField
                       select={true}
                       label={t("勤務")}
-                      value={state.newConstraint4KinmuId}
+                      value={state.constraint4.kinmu_id}
                       onChange={handleChangeNewConstraint4KinmuId}
                       fullWidth={true}
                     >
@@ -256,7 +261,7 @@ const Constraints4 = React.memo((): JSX.Element => {
                     <TextField
                       label={t("勤務割り当て数上限")}
                       type="number"
-                      value={state.newConstraint4MaxNumberOfAssignments}
+                      value={state.constraint4.max_number_of_assignments}
                       onChange={
                         handleChangeNewConstraint4MaxNumberOfAssignments
                       }

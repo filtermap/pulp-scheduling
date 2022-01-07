@@ -32,9 +32,11 @@ import GridFrame from "./parts/GridFrame";
 
 type State = {
   creationDialogIsOpen: boolean;
-  newGroupIsEnabled: boolean;
-  newGroupName: string;
-  newGroupMemberIds: number[];
+  group: {
+    is_enabled: boolean;
+    name: string;
+  };
+  member_ids: number[];
 };
 
 // eslint-disable-next-line react/display-name
@@ -57,14 +59,16 @@ const Groups = React.memo((): JSX.Element => {
   );
   const [state, updateState] = useImmer<State>({
     creationDialogIsOpen: false,
-    newGroupIsEnabled: true,
-    newGroupMemberIds: [],
-    newGroupName: "",
+    group: {
+      is_enabled: true,
+      name: "",
+    },
+    member_ids: [],
   });
   React.useEffect(
     () =>
       updateState((state) => {
-        state.newGroupMemberIds = [];
+        state.member_ids = [];
       }),
     [membersInTerm, updateState]
   );
@@ -82,26 +86,26 @@ const Groups = React.memo((): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newGroupIsEnabled = event.target.checked;
+      state.group.is_enabled = event.target.checked;
     });
   };
   const handleChangeNewGroupName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newGroupName = event.target.value;
+      state.group.name = event.target.value;
     });
   };
   const handleChangeNewGroupMember =
     (memberId: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) {
         updateState((state) => {
-          state.newGroupMemberIds.push(memberId);
+          state.member_ids.push(memberId);
         });
         return;
       }
       updateState((state) => {
-        state.newGroupMemberIds = state.newGroupMemberIds.filter(
+        state.member_ids = state.member_ids.filter(
           (member_id) => member_id !== memberId
         );
       });
@@ -113,17 +117,14 @@ const Groups = React.memo((): JSX.Element => {
     dispatch(
       all.addGroup({
         group: {
-          is_enabled: state.newGroupIsEnabled,
-          name: state.newGroupName,
+          ...state.group,
           term_id: termId,
         },
-        member_ids: state.newGroupMemberIds,
+        member_ids: state.member_ids,
       })
     );
   };
-  const errorMessages = groups.getErrorMessages(t, {
-    name: state.newGroupName,
-  });
+  const errorMessages = groups.getErrorMessages(t, state.group);
   return (
     <>
       <Toolbar>
@@ -156,7 +157,7 @@ const Groups = React.memo((): JSX.Element => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={state.newGroupIsEnabled}
+                    checked={state.group.is_enabled}
                     onChange={handleChangeNewGroupIsEnabled}
                     color="primary"
                   />
@@ -167,7 +168,7 @@ const Groups = React.memo((): JSX.Element => {
             <Grid item={true} xs={12}>
               <TextField
                 label={t("グループ名")}
-                value={state.newGroupName}
+                value={state.group.name}
                 onChange={handleChangeNewGroupName}
                 fullWidth={true}
                 error={errorMessages.name.length > 0}
@@ -190,7 +191,7 @@ const Groups = React.memo((): JSX.Element => {
                       label={<MemberName member={member} />}
                       control={
                         <Checkbox
-                          checked={state.newGroupMemberIds.includes(member.id)}
+                          checked={state.member_ids.includes(member.id)}
                           onChange={handleChangeNewGroupMember(member.id)}
                           color="primary"
                         />

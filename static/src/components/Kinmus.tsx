@@ -25,8 +25,10 @@ import GridFrame from "./parts/GridFrame";
 
 type State = {
   creationDialogIsOpen: boolean;
-  newKinmuIsEnabled: boolean;
-  newKinmuName: string;
+  kinmu: {
+    is_enabled: boolean;
+    name: string;
+  };
 };
 
 // eslint-disable-next-line react/display-name
@@ -41,8 +43,10 @@ const Kinmus = React.memo((): JSX.Element => {
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const [state, updateState] = useImmer<State>({
     creationDialogIsOpen: false,
-    newKinmuIsEnabled: true,
-    newKinmuName: "",
+    kinmu: {
+      is_enabled: true,
+      name: "",
+    },
   });
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === termId
@@ -61,14 +65,14 @@ const Kinmus = React.memo((): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newKinmuIsEnabled = event.target.checked;
+      state.kinmu.is_enabled = event.target.checked;
     });
   };
   const handleChangeNewKinmuName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newKinmuName = event.target.value;
+      state.kinmu.name = event.target.value;
     });
   };
   const handleClickCreateKinmu = () => {
@@ -77,15 +81,12 @@ const Kinmus = React.memo((): JSX.Element => {
     });
     dispatch(
       kinmus.add({
-        is_enabled: state.newKinmuIsEnabled,
-        name: state.newKinmuName,
+        ...state.kinmu,
         term_id: termId,
       })
     );
   };
-  const errorMessages = kinmus.getErrorMessages(t, {
-    name: state.newKinmuName,
-  });
+  const errorMessages = kinmus.getErrorMessages(t, state.kinmu);
   return (
     <>
       <Toolbar>
@@ -116,7 +117,7 @@ const Kinmus = React.memo((): JSX.Element => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={state.newKinmuIsEnabled}
+                    checked={state.kinmu.is_enabled}
                     onChange={handleChangeNewKinmuIsEnabled}
                     color="primary"
                   />
@@ -127,7 +128,7 @@ const Kinmus = React.memo((): JSX.Element => {
             <Grid item={true} xs={12}>
               <TextField
                 label={t("勤務名")}
-                value={state.newKinmuName}
+                value={state.kinmu.name}
                 onChange={handleChangeNewKinmuName}
                 fullWidth={true}
                 error={errorMessages.name.length > 0}

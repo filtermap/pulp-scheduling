@@ -29,9 +29,11 @@ import GridFrame from "./parts/GridFrame";
 
 type State = {
   creationDialogIsOpen: boolean;
-  newConstraint6IsEnabled: boolean;
-  newConstraint6KinmuId: number | undefined;
-  newConstraint6MaxNumberOfDays: number;
+  constraint6: {
+    is_enabled: boolean;
+    kinmu_id: number | undefined;
+    max_number_of_days: number;
+  };
 };
 
 // eslint-disable-next-line react/display-name
@@ -52,20 +54,21 @@ const Constraints6 = React.memo((): JSX.Element => {
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === termId
   );
-  const newConstraint6KinmuId =
-    kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
+  const kinmu_id = kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
   const [state, updateState] = useImmer<State>({
+    constraint6: {
+      is_enabled: true,
+      kinmu_id,
+      max_number_of_days: constraints6.minOfConstraint6MaxNumberOfDays,
+    },
     creationDialogIsOpen: false,
-    newConstraint6IsEnabled: true,
-    newConstraint6KinmuId,
-    newConstraint6MaxNumberOfDays: constraints6.minOfConstraint6MaxNumberOfDays,
   });
   React.useEffect(
     () =>
       updateState((state) => {
-        state.newConstraint6KinmuId = newConstraint6KinmuId;
+        state.constraint6.kinmu_id = kinmu_id;
       }),
-    [newConstraint6KinmuId, updateState]
+    [kinmu_id, updateState]
   );
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
@@ -81,21 +84,21 @@ const Constraints6 = React.memo((): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint6IsEnabled = event.target.checked;
+      state.constraint6.is_enabled = event.target.checked;
     });
   };
   const handleChangeNewConstraint6KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint6KinmuId = parseInt(event.target.value, 10);
+      state.constraint6.kinmu_id = parseInt(event.target.value, 10);
     });
   };
   const handleChangeNewConstraint6MaxNumberOfDays = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint6MaxNumberOfDays = parseInt(event.target.value, 10);
+      state.constraint6.max_number_of_days = parseInt(event.target.value, 10);
     });
   };
   const handleClickCreateConstraint6 = () => {
@@ -104,10 +107,10 @@ const Constraints6 = React.memo((): JSX.Element => {
     });
     dispatch(
       constraints6.add({
-        is_enabled: state.newConstraint6IsEnabled,
+        is_enabled: state.constraint6.is_enabled,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        kinmu_id: state.newConstraint6KinmuId!,
-        max_number_of_days: state.newConstraint6MaxNumberOfDays,
+        kinmu_id: state.constraint6.kinmu_id!,
+        max_number_of_days: state.constraint6.max_number_of_days,
         term_id: termId,
       })
     );
@@ -129,7 +132,7 @@ const Constraints6 = React.memo((): JSX.Element => {
         </Grid>
       </GridFrame>
       <FloatingAddButton onClick={handleClickOpenCreationDialog} />
-      {state.newConstraint6KinmuId === undefined ? (
+      {state.constraint6.kinmu_id === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -140,7 +143,7 @@ const Constraints6 = React.memo((): JSX.Element => {
             {t("{{arg0}}を追加できません", { arg0: t("勤務の連続日数の上限") })}
           </DialogTitle>
           <DialogContent>
-            {state.newConstraint6KinmuId === undefined && (
+            {state.constraint6.kinmu_id === undefined && (
               <DialogContentText>{t("勤務がありません")}</DialogContentText>
             )}
           </DialogContent>
@@ -153,11 +156,12 @@ const Constraints6 = React.memo((): JSX.Element => {
       ) : (
         (() => {
           const newConstraint6Kinmu =
-            selectedKinmuById[state.newConstraint6KinmuId];
+            selectedKinmuById[state.constraint6.kinmu_id];
           const relativesAreEnabled = newConstraint6Kinmu?.is_enabled;
-          const errorMessages = constraints6.getErrorMessages(t, {
-            max_number_of_days: state.newConstraint6MaxNumberOfDays,
-          });
+          const errorMessages = constraints6.getErrorMessages(
+            t,
+            state.constraint6
+          );
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -175,7 +179,7 @@ const Constraints6 = React.memo((): JSX.Element => {
                       control={
                         <Switch
                           checked={
-                            state.newConstraint6IsEnabled && relativesAreEnabled
+                            state.constraint6.is_enabled && relativesAreEnabled
                           }
                           disabled={!relativesAreEnabled}
                           onChange={handleChangeNewConstraint6IsEnabled}
@@ -189,7 +193,7 @@ const Constraints6 = React.memo((): JSX.Element => {
                     <TextField
                       select={true}
                       label={t("勤務")}
-                      value={state.newConstraint6KinmuId}
+                      value={state.constraint6.kinmu_id}
                       onChange={handleChangeNewConstraint6KinmuId}
                       fullWidth={true}
                     >
@@ -204,7 +208,7 @@ const Constraints6 = React.memo((): JSX.Element => {
                     <TextField
                       label={t("連続日数上限")}
                       type="number"
-                      value={state.newConstraint6MaxNumberOfDays}
+                      value={state.constraint6.max_number_of_days}
                       onChange={handleChangeNewConstraint6MaxNumberOfDays}
                       fullWidth={true}
                       inputProps={{

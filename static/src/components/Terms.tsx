@@ -23,9 +23,11 @@ import GridFrame from "./parts/GridFrame";
 
 type State = {
   creationDialogIsOpen: boolean;
-  newTermIsEnabled: boolean;
-  newTermStartDateName: string;
-  newTermStopDateName: string;
+  term: {
+    is_enabled: boolean;
+    start_date_name: string;
+    stop_date_name: string;
+  };
 };
 
 // eslint-disable-next-line react/display-name
@@ -36,9 +38,11 @@ const Terms = React.memo((): JSX.Element => {
   const todayString = utils.dateToString(new Date());
   const [state, updateState] = useImmer<State>({
     creationDialogIsOpen: false,
-    newTermIsEnabled: true,
-    newTermStartDateName: todayString,
-    newTermStopDateName: todayString,
+    term: {
+      is_enabled: true,
+      start_date_name: todayString,
+      stop_date_name: todayString,
+    },
   });
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
@@ -54,37 +58,31 @@ const Terms = React.memo((): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newTermIsEnabled = event.target.checked;
+      state.term.is_enabled = event.target.checked;
     });
   };
   const handleChangeNewTermStartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newTermStartDateName = event.target.value;
+      state.term.start_date_name = event.target.value;
     });
   };
   const handleChangeNewTermStopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newTermStopDateName = event.target.value;
+      state.term.stop_date_name = event.target.value;
     });
   };
   const handleClickCreateTerm = () => {
     updateState((state) => {
       state.creationDialogIsOpen = false;
     });
-    dispatch(
-      terms.add({
-        is_enabled: state.newTermIsEnabled,
-        start_date_name: state.newTermStartDateName,
-        stop_date_name: state.newTermStopDateName,
-      })
-    );
+    dispatch(terms.add(state.term));
   };
-  const newTermStartDate = utils.stringToDate(state.newTermStartDateName);
-  const newTermStopDate = utils.stringToDate(state.newTermStopDateName);
+  const newTermStartDate = utils.stringToDate(state.term.start_date_name);
+  const newTermStopDate = utils.stringToDate(state.term.stop_date_name);
   const newTermStartDateIsEnabled = !!newTermStartDate;
   const newTermStopDateIsEnabled = !!newTermStopDate;
   const newTermStartDateAndStopDateAreEnabled =
@@ -96,10 +94,7 @@ const Terms = React.memo((): JSX.Element => {
     newTermStartDateIsEnabled &&
     newTermStopDateIsEnabled &&
     newTermStartDateAndStopDateAreEnabled;
-  const errorMessages = terms.getErrorMessages(t, {
-    start_date_name: state.newTermStartDateName,
-    stop_date_name: state.newTermStopDateName,
-  });
+  const errorMessages = terms.getErrorMessages(t, state.term);
   return (
     <>
       <Toolbar>
@@ -130,7 +125,7 @@ const Terms = React.memo((): JSX.Element => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={state.newTermIsEnabled && relativesAreEnabled}
+                    checked={state.term.is_enabled && relativesAreEnabled}
                     disabled={!relativesAreEnabled}
                     onChange={handleChangeNewTerm1IsEnabled}
                     color="primary"
@@ -143,7 +138,7 @@ const Terms = React.memo((): JSX.Element => {
               <TextField
                 label={t("開始日")}
                 type="date"
-                value={state.newTermStartDateName}
+                value={state.term.start_date_name}
                 onChange={handleChangeNewTermStartDateName}
                 fullWidth={true}
                 InputLabelProps={{
@@ -163,7 +158,7 @@ const Terms = React.memo((): JSX.Element => {
               <TextField
                 label={t("終了日")}
                 type="date"
-                value={state.newTermStopDateName}
+                value={state.term.stop_date_name}
                 onChange={handleChangeNewTermStopDateName}
                 fullWidth={true}
                 InputLabelProps={{

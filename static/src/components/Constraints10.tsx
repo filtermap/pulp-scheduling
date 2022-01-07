@@ -35,11 +35,13 @@ import lineThroughSx from "./parts/lineThroughSx";
 
 type State = {
   creationDialogIsOpen: boolean;
-  newConstraint10IsEnabled: boolean;
-  newConstraint10MemberId: number | undefined;
-  newConstraint10StartDateName: string | undefined;
-  newConstraint10StopDateName: string | undefined;
-  newConstraint10KinmuId: number | undefined;
+  constraint10: {
+    is_enabled: boolean;
+    member_id: number | undefined;
+    start_date_name: string | undefined;
+    stop_date_name: string | undefined;
+    kinmu_id: number | undefined;
+  };
 };
 
 // eslint-disable-next-line react/display-name
@@ -68,35 +70,32 @@ const Constraints10 = React.memo((): JSX.Element => {
   const kinmusInTerm = selectedKinmus.filter(
     ({ term_id }) => term_id === termId
   );
-  const newConstraint10KinmuId =
-    kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
-  const newConstraint10MemberId =
-    membersInTerm.length > 0 ? membersInTerm[0].id : undefined;
-  const newConstraint10StartDateName = selectedTerm?.start_date_name;
-  const newConstraint10StopDateName = selectedTerm?.stop_date_name;
+  const kinmu_id = kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
+  const member_id = membersInTerm.length > 0 ? membersInTerm[0].id : undefined;
+  const start_date_name = selectedTerm?.start_date_name;
+  const stop_date_name = selectedTerm?.stop_date_name;
   const [state, updateState] = useImmer<State>({
+    constraint10: {
+      is_enabled: true,
+      kinmu_id: kinmu_id,
+      member_id: member_id,
+      start_date_name: start_date_name,
+      stop_date_name: stop_date_name,
+    },
     creationDialogIsOpen: false,
-    newConstraint10IsEnabled: true,
-    newConstraint10KinmuId,
-    newConstraint10MemberId,
-    newConstraint10StartDateName,
-    newConstraint10StopDateName,
   });
   React.useEffect(
     () =>
       updateState((state) => {
-        state.newConstraint10KinmuId = newConstraint10KinmuId;
-        state.newConstraint10MemberId = newConstraint10MemberId;
-        state.newConstraint10StartDateName = newConstraint10StartDateName;
-        state.newConstraint10StopDateName = newConstraint10StopDateName;
+        state.constraint10 = {
+          ...state.constraint10,
+          kinmu_id: kinmu_id,
+          member_id: member_id,
+          start_date_name: start_date_name,
+          stop_date_name: stop_date_name,
+        };
       }),
-    [
-      newConstraint10KinmuId,
-      newConstraint10MemberId,
-      newConstraint10StartDateName,
-      newConstraint10StopDateName,
-      updateState,
-    ]
+    [kinmu_id, member_id, start_date_name, stop_date_name, updateState]
   );
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
@@ -112,35 +111,35 @@ const Constraints10 = React.memo((): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint10IsEnabled = event.target.checked;
+      state.constraint10.is_enabled = event.target.checked;
     });
   };
   const handleChangeNewConstraint10MemberId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint10MemberId = parseInt(event.target.value, 10);
+      state.constraint10.member_id = parseInt(event.target.value, 10);
     });
   };
   const handleChangeNewConstraint10StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint10StartDateName = event.target.value;
+      state.constraint10.start_date_name = event.target.value;
     });
   };
   const handleChangeNewConstraint10StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint10StopDateName = event.target.value;
+      state.constraint10.stop_date_name = event.target.value;
     });
   };
   const handleChangeNewConstraint10KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint10KinmuId = parseInt(event.target.value, 10);
+      state.constraint10.kinmu_id = parseInt(event.target.value, 10);
     });
   };
   const handleClickCreateConstraint10 = () => {
@@ -149,15 +148,15 @@ const Constraints10 = React.memo((): JSX.Element => {
     });
     dispatch(
       constraints10.add({
-        is_enabled: state.newConstraint10IsEnabled,
+        is_enabled: state.constraint10.is_enabled,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        kinmu_id: state.newConstraint10KinmuId!,
+        kinmu_id: state.constraint10.kinmu_id!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        member_id: state.newConstraint10MemberId!,
+        member_id: state.constraint10.member_id!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        start_date_name: state.newConstraint10StartDateName!,
+        start_date_name: state.constraint10.start_date_name!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        stop_date_name: state.newConstraint10StopDateName!,
+        stop_date_name: state.constraint10.stop_date_name!,
         term_id: termId,
       })
     );
@@ -179,8 +178,8 @@ const Constraints10 = React.memo((): JSX.Element => {
         </Grid>
       </GridFrame>
       <FloatingAddButton onClick={handleClickOpenCreationDialog} />
-      {state.newConstraint10MemberId === undefined ||
-      state.newConstraint10KinmuId === undefined ? (
+      {state.constraint10.member_id === undefined ||
+      state.constraint10.kinmu_id === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -193,10 +192,10 @@ const Constraints10 = React.memo((): JSX.Element => {
             })}
           </DialogTitle>
           <DialogContent>
-            {state.newConstraint10MemberId === undefined && (
+            {state.constraint10.member_id === undefined && (
               <DialogContentText>{t("職員がいません")}</DialogContentText>
             )}
-            {state.newConstraint10KinmuId === undefined && (
+            {state.constraint10.kinmu_id === undefined && (
               <DialogContentText>{t("勤務がありません")}</DialogContentText>
             )}
           </DialogContent>
@@ -209,10 +208,10 @@ const Constraints10 = React.memo((): JSX.Element => {
       ) : (
         (() => {
           const newConstraint10Member =
-            selectedMemberById[state.newConstraint10MemberId];
+            selectedMemberById[state.constraint10.member_id];
           const newConstraint10StartDate =
-            state.newConstraint10StartDateName &&
-            utils.stringToDate(state.newConstraint10StartDateName);
+            state.constraint10.start_date_name &&
+            utils.stringToDate(state.constraint10.start_date_name);
           const termStartDate =
             selectedTerm && utils.stringToDate(selectedTerm.start_date_name);
           const newConstraint10StartDateIsEnabled =
@@ -220,8 +219,8 @@ const Constraints10 = React.memo((): JSX.Element => {
               ? false
               : termStartDate <= newConstraint10StartDate;
           const newConstraint10StopDate =
-            state.newConstraint10StopDateName &&
-            utils.stringToDate(state.newConstraint10StopDateName);
+            state.constraint10.stop_date_name &&
+            utils.stringToDate(state.constraint10.stop_date_name);
           const termStopDate =
             selectedTerm && utils.stringToDate(selectedTerm.stop_date_name);
           const newConstraint10StopDateIsEnabled =
@@ -234,17 +233,17 @@ const Constraints10 = React.memo((): JSX.Element => {
               newConstraint10StartDate <= newConstraint10StopDate) ||
             false;
           const newConstraint10Kinmu =
-            selectedKinmuById[state.newConstraint10KinmuId];
+            selectedKinmuById[state.constraint10.kinmu_id];
           const relativesAreEnabled =
             newConstraint10Member?.is_enabled &&
             newConstraint10StartDateIsEnabled &&
             newConstraint10StopDateIsEnabled &&
             newConstraint10StartDateAndStopDateAreEnabled &&
             newConstraint10Kinmu?.is_enabled;
-          const errorMessages = constraints10.getErrorMessages(t, {
-            start_date_name: state.newConstraint10StartDateName,
-            stop_date_name: state.newConstraint10StopDateName,
-          });
+          const errorMessages = constraints10.getErrorMessages(
+            t,
+            state.constraint10
+          );
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -264,8 +263,7 @@ const Constraints10 = React.memo((): JSX.Element => {
                       control={
                         <Switch
                           checked={
-                            state.newConstraint10IsEnabled &&
-                            relativesAreEnabled
+                            state.constraint10.is_enabled && relativesAreEnabled
                           }
                           disabled={!relativesAreEnabled}
                           onChange={handleChangeNewConstraint10IsEnabled}
@@ -279,7 +277,7 @@ const Constraints10 = React.memo((): JSX.Element => {
                     <TextField
                       label={t("開始日")}
                       type="date"
-                      value={state.newConstraint10StartDateName}
+                      value={state.constraint10.start_date_name}
                       onChange={handleChangeNewConstraint10StartDateName}
                       fullWidth={true}
                       InputLabelProps={{
@@ -307,7 +305,7 @@ const Constraints10 = React.memo((): JSX.Element => {
                     <TextField
                       label={t("終了日")}
                       type="date"
-                      value={state.newConstraint10StopDateName}
+                      value={state.constraint10.stop_date_name}
                       onChange={handleChangeNewConstraint10StopDateName}
                       fullWidth={true}
                       InputLabelProps={{
@@ -335,7 +333,7 @@ const Constraints10 = React.memo((): JSX.Element => {
                     <TextField
                       select={true}
                       label={t("職員")}
-                      value={state.newConstraint10MemberId}
+                      value={state.constraint10.member_id}
                       onChange={handleChangeNewConstraint10MemberId}
                       fullWidth={true}
                     >
@@ -350,7 +348,7 @@ const Constraints10 = React.memo((): JSX.Element => {
                     <TextField
                       select={true}
                       label={t("勤務")}
-                      value={state.newConstraint10KinmuId}
+                      value={state.constraint10.kinmu_id}
                       onChange={handleChangeNewConstraint10KinmuId}
                       fullWidth={true}
                     >

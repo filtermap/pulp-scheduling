@@ -35,12 +35,14 @@ import lineThroughSx from "./parts/lineThroughSx";
 
 type State = {
   creationDialogIsOpen: boolean;
-  newConstraint2IsEnabled: boolean;
-  newConstraint2StartDateName: string | undefined;
-  newConstraint2StopDateName: string | undefined;
-  newConstraint2KinmuId: number | undefined;
-  newConstraint2GroupId: number | undefined;
-  newConstraint2MaxNumberOfAssignments: number;
+  constraint2: {
+    is_enabled: boolean;
+    start_date_name: string | undefined;
+    stop_date_name: string | undefined;
+    kinmu_id: number | undefined;
+    group_id: number | undefined;
+    max_number_of_assignments: number;
+  };
 };
 
 // eslint-disable-next-line react/display-name
@@ -69,37 +71,34 @@ const Constraints2 = React.memo((): JSX.Element => {
   const groupsInTerm = selectedGroups.filter(
     ({ term_id }) => term_id === termId
   );
-  const newConstraint2GroupId =
-    groupsInTerm.length > 0 ? groupsInTerm[0].id : undefined;
-  const newConstraint2KinmuId =
-    kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
-  const newConstraint2StartDateName = selectedTerm?.start_date_name;
-  const newConstraint2StopDateName = selectedTerm?.stop_date_name;
+  const group_id = groupsInTerm.length > 0 ? groupsInTerm[0].id : undefined;
+  const kinmu_id = kinmusInTerm.length > 0 ? kinmusInTerm[0].id : undefined;
+  const start_date_name = selectedTerm?.start_date_name;
+  const stop_date_name = selectedTerm?.stop_date_name;
   const [state, updateState] = useImmer<State>({
+    constraint2: {
+      group_id: group_id,
+      is_enabled: true,
+      kinmu_id: kinmu_id,
+      max_number_of_assignments:
+        constraints2.minOfConstraint2MaxNumberOfAssignments,
+      start_date_name: start_date_name,
+      stop_date_name: stop_date_name,
+    },
     creationDialogIsOpen: false,
-    newConstraint2GroupId,
-    newConstraint2IsEnabled: true,
-    newConstraint2KinmuId,
-    newConstraint2MaxNumberOfAssignments:
-      constraints2.minOfConstraint2MaxNumberOfAssignments,
-    newConstraint2StartDateName,
-    newConstraint2StopDateName,
   });
   React.useEffect(
     () =>
       updateState((state) => {
-        state.newConstraint2GroupId = newConstraint2GroupId;
-        state.newConstraint2KinmuId = newConstraint2KinmuId;
-        state.newConstraint2StartDateName = newConstraint2StartDateName;
-        state.newConstraint2StopDateName = newConstraint2StopDateName;
+        state.constraint2 = {
+          ...state.constraint2,
+          group_id,
+          kinmu_id,
+          start_date_name,
+          stop_date_name,
+        };
       }),
-    [
-      newConstraint2GroupId,
-      newConstraint2KinmuId,
-      newConstraint2StartDateName,
-      newConstraint2StopDateName,
-      updateState,
-    ]
+    [group_id, kinmu_id, start_date_name, stop_date_name, updateState]
   );
   const handleClickOpenCreationDialog = () => {
     updateState((state) => {
@@ -115,42 +114,42 @@ const Constraints2 = React.memo((): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint2IsEnabled = event.target.checked;
+      state.constraint2.is_enabled = event.target.checked;
     });
   };
   const handleChangeNewConstraint2StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint2StartDateName = event.target.value;
+      state.constraint2.start_date_name = event.target.value;
     });
   };
   const handleChangeNewConstraint2StopDateName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint2StopDateName = event.target.value;
+      state.constraint2.stop_date_name = event.target.value;
     });
   };
   const handleChangeNewConstraint2KinmuId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint2KinmuId = parseInt(event.target.value, 10);
+      state.constraint2.kinmu_id = parseInt(event.target.value, 10);
     });
   };
   const handleChangeNewConstraint2GroupId = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint2GroupId = parseInt(event.target.value, 10);
+      state.constraint2.group_id = parseInt(event.target.value, 10);
     });
   };
   const handleChangeNewConstraint2MaxNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     updateState((state) => {
-      state.newConstraint2MaxNumberOfAssignments = parseInt(
+      state.constraint2.max_number_of_assignments = parseInt(
         event.target.value,
         10
       );
@@ -163,15 +162,15 @@ const Constraints2 = React.memo((): JSX.Element => {
     dispatch(
       constraints2.add({
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        group_id: state.newConstraint2GroupId!,
-        is_enabled: state.newConstraint2IsEnabled,
+        group_id: state.constraint2.group_id!,
+        is_enabled: state.constraint2.is_enabled,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        kinmu_id: state.newConstraint2KinmuId!,
-        max_number_of_assignments: state.newConstraint2MaxNumberOfAssignments,
+        kinmu_id: state.constraint2.kinmu_id!,
+        max_number_of_assignments: state.constraint2.max_number_of_assignments,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        start_date_name: state.newConstraint2StartDateName!,
+        start_date_name: state.constraint2.start_date_name!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        stop_date_name: state.newConstraint2StopDateName!,
+        stop_date_name: state.constraint2.stop_date_name!,
         term_id: termId,
       })
     );
@@ -193,8 +192,8 @@ const Constraints2 = React.memo((): JSX.Element => {
         </Grid>
       </GridFrame>
       <FloatingAddButton onClick={handleClickOpenCreationDialog} />
-      {state.newConstraint2KinmuId === undefined ||
-      state.newConstraint2GroupId === undefined ? (
+      {state.constraint2.kinmu_id === undefined ||
+      state.constraint2.group_id === undefined ? (
         <Dialog
           onClose={handleCloseCreationDialog}
           open={state.creationDialogIsOpen}
@@ -207,10 +206,10 @@ const Constraints2 = React.memo((): JSX.Element => {
             })}
           </DialogTitle>
           <DialogContent>
-            {state.newConstraint2KinmuId === undefined && (
+            {state.constraint2.kinmu_id === undefined && (
               <DialogContentText>{t("勤務がありません")}</DialogContentText>
             )}
-            {state.newConstraint2GroupId === undefined && (
+            {state.constraint2.group_id === undefined && (
               <DialogContentText>{t("グループがありません")}</DialogContentText>
             )}
           </DialogContent>
@@ -223,8 +222,8 @@ const Constraints2 = React.memo((): JSX.Element => {
       ) : (
         (() => {
           const newConstraint2StartDate =
-            state.newConstraint2StartDateName &&
-            utils.stringToDate(state.newConstraint2StartDateName);
+            state.constraint2.start_date_name &&
+            utils.stringToDate(state.constraint2.start_date_name);
           const termStartDate =
             selectedTerm && utils.stringToDate(selectedTerm.start_date_name);
           const newConstraint2StartDateIsEnabled =
@@ -232,8 +231,8 @@ const Constraints2 = React.memo((): JSX.Element => {
               ? false
               : termStartDate <= newConstraint2StartDate;
           const newConstraint2StopDate =
-            state.newConstraint2StopDateName &&
-            utils.stringToDate(state.newConstraint2StopDateName);
+            state.constraint2.stop_date_name &&
+            utils.stringToDate(state.constraint2.stop_date_name);
           const termStopDate =
             selectedTerm && utils.stringToDate(selectedTerm.stop_date_name);
           const newConstraint2StopDateIsEnabled =
@@ -246,21 +245,19 @@ const Constraints2 = React.memo((): JSX.Element => {
               newConstraint2StartDate <= newConstraint2StopDate) ||
             false;
           const newConstraint2Kinmu =
-            selectedKinmuById[state.newConstraint2KinmuId];
+            selectedKinmuById[state.constraint2.kinmu_id];
           const newConstraint2Group =
-            selectedGroupById[state.newConstraint2GroupId];
+            selectedGroupById[state.constraint2.group_id];
           const relativesAreEnabled =
             newConstraint2StartDateIsEnabled &&
             newConstraint2StopDateIsEnabled &&
             newConstraint2StartDateAndStopDateAreEnabled &&
             newConstraint2Kinmu?.is_enabled &&
             newConstraint2Group?.is_enabled;
-          const errorMessages = constraints2.getErrorMessages(t, {
-            max_number_of_assignments:
-              state.newConstraint2MaxNumberOfAssignments,
-            start_date_name: state.newConstraint2StartDateName,
-            stop_date_name: state.newConstraint2StopDateName,
-          });
+          const errorMessages = constraints2.getErrorMessages(
+            t,
+            state.constraint2
+          );
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -280,7 +277,7 @@ const Constraints2 = React.memo((): JSX.Element => {
                       control={
                         <Switch
                           checked={
-                            state.newConstraint2IsEnabled && relativesAreEnabled
+                            state.constraint2.is_enabled && relativesAreEnabled
                           }
                           disabled={!relativesAreEnabled}
                           onChange={handleChangeNewConstraint2IsEnabled}
@@ -294,7 +291,7 @@ const Constraints2 = React.memo((): JSX.Element => {
                     <TextField
                       label={t("開始日")}
                       type="date"
-                      value={state.newConstraint2StartDateName}
+                      value={state.constraint2.start_date_name}
                       onChange={handleChangeNewConstraint2StartDateName}
                       fullWidth={true}
                       InputLabelProps={{
@@ -322,7 +319,7 @@ const Constraints2 = React.memo((): JSX.Element => {
                     <TextField
                       label={t("終了日")}
                       type="date"
-                      value={state.newConstraint2StopDateName}
+                      value={state.constraint2.stop_date_name}
                       onChange={handleChangeNewConstraint2StopDateName}
                       fullWidth={true}
                       InputLabelProps={{
@@ -350,7 +347,7 @@ const Constraints2 = React.memo((): JSX.Element => {
                     <TextField
                       select={true}
                       label={t("勤務")}
-                      value={state.newConstraint2KinmuId}
+                      value={state.constraint2.kinmu_id}
                       onChange={handleChangeNewConstraint2KinmuId}
                       fullWidth={true}
                     >
@@ -365,7 +362,7 @@ const Constraints2 = React.memo((): JSX.Element => {
                     <TextField
                       select={true}
                       label={t("グループ")}
-                      value={state.newConstraint2GroupId}
+                      value={state.constraint2.group_id}
                       onChange={handleChangeNewConstraint2GroupId}
                       fullWidth={true}
                     >
@@ -380,7 +377,7 @@ const Constraints2 = React.memo((): JSX.Element => {
                     <TextField
                       label={t("割り当て職員数上限")}
                       type="number"
-                      value={state.newConstraint2MaxNumberOfAssignments}
+                      value={state.constraint2.max_number_of_assignments}
                       onChange={
                         handleChangeNewConstraint2MaxNumberOfAssignments
                       }
