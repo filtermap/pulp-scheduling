@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import type { Constraint6 } from "../../modules/constraints6";
@@ -18,7 +18,6 @@ type Constraint6NameProps = Constraint6NameLinkProps & {
 // eslint-disable-next-line react/display-name
 const Constraint6Name = React.memo(
   (props: Constraint6NameProps): JSX.Element => {
-    const { t } = useTranslation();
     const selectedKinmu = useAppSelector(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       (state) => kinmus.selectors.selectById(state, props.constraint6.kinmu_id)!
@@ -34,9 +33,7 @@ const Constraint6Name = React.memo(
           ),
         }}
         values={{
-          連続日数上限:
-            props.constraint6.max_number_of_days ||
-            t("（{{arg0}}未入力）", { arg0: t("連続日数上限") }),
+          連続日数上限: props.constraint6.max_number_of_days,
         }}
       />
     );

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import type { Constraint3 } from "../../modules/constraints3";
@@ -20,7 +20,6 @@ type Constraint3NameProps = Constraint3NameLinkProps & {
 // eslint-disable-next-line react/display-name
 const Constraint3Name = React.memo(
   (props: Constraint3NameProps): JSX.Element => {
-    const { t } = useTranslation();
     const selectedKinmu = useAppSelector(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       (state) => kinmus.selectors.selectById(state, props.constraint3.kinmu_id)!
@@ -46,9 +45,7 @@ const Constraint3Name = React.memo(
           ),
         }}
         values={{
-          勤務割り当て数下限:
-            props.constraint3.min_number_of_assignments ||
-            t("（{{arg0}}未入力）", { arg0: t("勤務割り当て数下限") }),
+          勤務割り当て数下限: props.constraint3.min_number_of_assignments,
         }}
       />
     );

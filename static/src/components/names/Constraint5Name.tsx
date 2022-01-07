@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import type { Constraint5 } from "../../modules/constraints5";
@@ -18,7 +18,6 @@ type Constraint5NameProps = Constraint5NameLinkProps & {
 // eslint-disable-next-line react/display-name
 const Constraint5Name = React.memo(
   (props: Constraint5NameProps): JSX.Element => {
-    const { t } = useTranslation();
     const selectedKinmu = useAppSelector(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       (state) => kinmus.selectors.selectById(state, props.constraint5.kinmu_id)!
@@ -34,9 +33,7 @@ const Constraint5Name = React.memo(
           ),
         }}
         values={{
-          連続日数下限:
-            props.constraint5.min_number_of_days ||
-            t("（{{arg0}}未入力）", { arg0: t("連続日数下限") }),
+          連続日数下限: props.constraint5.min_number_of_days,
         }}
       />
     );

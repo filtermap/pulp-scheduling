@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import type { Constraint8 } from "../../modules/constraints8";
@@ -18,7 +18,6 @@ type Constraint8NameProps = Constraint8NameLinkProps & {
 // eslint-disable-next-line react/display-name
 const Constraint8Name = React.memo(
   (props: Constraint8NameProps): JSX.Element => {
-    const { t } = useTranslation();
     const selectedKinmu = useAppSelector(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       (state) => kinmus.selectors.selectById(state, props.constraint8.kinmu_id)!
@@ -34,9 +33,7 @@ const Constraint8Name = React.memo(
           ),
         }}
         values={{
-          間隔日数上限:
-            props.constraint8.max_number_of_days ||
-            t("（{{arg0}}未入力）", { arg0: t("間隔日数上限") }),
+          間隔日数上限: props.constraint8.max_number_of_days,
         }}
       />
     );
