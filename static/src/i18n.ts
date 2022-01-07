@@ -15,18 +15,18 @@ export const resources = {
         "<KinmuName />の間隔日数を{{間隔日数上限}}日以下にする",
       "<KinmuName />の間隔日数を{{間隔日数下限}}日以上にする":
         "<KinmuName />の間隔日数を{{間隔日数下限}}日以上にする",
-      "<MemberName />に<KinmuName />を{{割り当て数上限}}回以下割り当てる":
-        "<MemberName />に<KinmuName />を{{割り当て数上限}}回以下割り当てる",
-      "<MemberName />に<KinmuName />を{{割り当て数下限}}回以上割り当てる":
-        "<MemberName />に<KinmuName />を{{割り当て数下限}}回以上割り当てる",
-      "<MemberName />の<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までに<KinmuName />を割り当てない":
-        "<MemberName />の<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までに<KinmuName />を割り当てない",
-      "<MemberName />の<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までに<KinmuName />を割り当てる":
-        "<MemberName />の<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までに<KinmuName />を割り当てる",
-      "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までの<KinmuName />に<GroupName />から{{割り当て職員数上限}}人以下の職員を割り当てる":
-        "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までの<KinmuName />に<GroupName />から{{割り当て職員数上限}}人以下の職員を割り当てる",
-      "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までの<KinmuName />に<GroupName />から{{割り当て職員数下限}}人以上の職員を割り当てる":
-        "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までの<KinmuName />に<GroupName />から{{割り当て職員数下限}}人以上の職員を割り当てる",
+      "<MemberName />に<KinmuName />を{{勤務割り当て数上限}}回以下割り当てる":
+        "<MemberName />に<KinmuName />を{{勤務割り当て数上限}}回以下割り当てる",
+      "<MemberName />に<KinmuName />を{{勤務割り当て数下限}}回以上割り当てる":
+        "<MemberName />に<KinmuName />を{{勤務割り当て数下限}}回以上割り当てる",
+      "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>まで<KinmuName />に<GroupName />から{{割り当て職員数上限}}人以下の職員を割り当てる":
+        "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>まで<KinmuName />に<GroupName />から{{割り当て職員数上限}}人以下の職員を割り当てる",
+      "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>まで<KinmuName />に<GroupName />から{{割り当て職員数下限}}人以上の職員を割り当てる":
+        "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>まで<KinmuName />に<GroupName />から{{割り当て職員数下限}}人以上の職員を割り当てる",
+      "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>まで<MemberName />に<KinmuName />を割り当てない":
+        "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>まで<MemberName />に<KinmuName />を割り当てない",
+      "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>まで<MemberName />に<KinmuName />を割り当てる":
+        "<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>まで<MemberName />に<KinmuName />を割り当てる",
       CSV出力: "CSV出力",
       "pulp-scheduling": "pulp-scheduling",
       "pulp-schedulingの不具合やデータの破損などにより作成できない可能性があります（{{arg0}}）":
@@ -57,9 +57,9 @@ export const resources = {
         "他の期間からデータと条件をインポート",
       他の期間からデータと条件をインポートできません:
         "他の期間からデータと条件をインポートできません",
-      以下の勤務表の割り当ても削除されます:
-        "以下の勤務表の割り当ても削除されます",
       以下の勤務表も削除されます: "以下の勤務表も削除されます",
+      以下の勤務表内の職員への割り当ても削除されます:
+        "以下の勤務表内の職員への割り当ても削除されます",
       以下の条件により勤務表を作成できませんでした:
         "以下の条件により勤務表を作成できませんでした",
       以下の条件も削除されます: "以下の条件も削除されます",
@@ -67,8 +67,6 @@ export const resources = {
       保存: "保存",
       元に戻す: "元に戻す",
       削除: "削除",
-      割り当て数上限: "割り当て数上限",
-      割り当て数下限: "割り当て数下限",
       割り当て職員数上限: "割り当て職員数上限",
       割り当て職員数下限: "割り当て職員数下限",
       勤務: "勤務",
@@ -78,34 +76,36 @@ export const resources = {
       勤務の連続日数の下限: "勤務の連続日数の下限",
       勤務の間隔日数の上限: "勤務の間隔日数の上限",
       勤務の間隔日数の下限: "勤務の間隔日数の下限",
+      勤務割り当て数上限: "勤務割り当て数上限",
+      勤務割り当て数下限: "勤務割り当て数下限",
       勤務名: "勤務名",
       勤務表: "勤務表",
       "勤務表{{arg0}}": "勤務表{{arg0}}",
-      勤務表を作成できない原因となる条件を特定:
-        "勤務表を作成できない原因となる条件を特定",
-      勤務表を作成できない原因となる条件を特定できませんでした:
-        "勤務表を作成できない原因となる条件を特定できませんでした",
-      "勤務表を作成できない原因となる条件を特定中...":
-        "勤務表を作成できない原因となる条件を特定中...",
+      勤務表を作成できない原因である条件を特定:
+        "勤務表を作成できない原因である条件を特定",
+      勤務表を作成できない原因である条件を特定できませんでした:
+        "勤務表を作成できない原因である条件を特定できませんでした",
+      "勤務表を作成できない原因である条件を特定中...":
+        "勤務表を作成できない原因である条件を特定中...",
       勤務表を作成できませんでした: "勤務表を作成できませんでした",
       有効: "有効",
       有効な他の期間がありません: "有効な他の期間がありません",
       期間: "期間",
-      期間の勤務にグループから割り当てる職員数の上限:
-        "期間の勤務にグループから割り当てる職員数の上限",
-      期間の勤務にグループから割り当てる職員数の下限:
-        "期間の勤務にグループから割り当てる職員数の下限",
       "期間中のすべての勤務表、職員、勤務、グループ、条件も削除されます":
         "期間中のすべての勤務表、職員、勤務、グループ、条件も削除されます",
+      期間中勤務にグループから割り当てる職員数の上限:
+        "期間中勤務にグループから割り当てる職員数の上限",
+      期間中勤務にグループから割り当てる職員数の下限:
+        "期間中勤務にグループから割り当てる職員数の下限",
+      期間中職員に割り当てない勤務: "期間中職員に割り当てない勤務",
+      期間中職員に割り当てる勤務: "期間中職員に割り当てる勤務",
       条件を満たす勤務表が存在しません: "条件を満たす勤務表が存在しません",
       終了日: "終了日",
       職員: "職員",
       職員がいません: "職員がいません",
       職員が所属するグループ: "職員が所属するグループ",
-      職員の勤務の割り当て数の上限: "職員の勤務の割り当て数の上限",
-      職員の勤務の割り当て数の下限: "職員の勤務の割り当て数の下限",
-      職員の期間に割り当てない勤務: "職員の期間に割り当てない勤務",
-      職員の期間に割り当てる勤務: "職員の期間に割り当てる勤務",
+      職員への勤務の割り当て数の上限: "職員への勤務の割り当て数の上限",
+      職員への勤務の割り当て数の下限: "職員への勤務の割り当て数の下限",
       職員名: "職員名",
       自動作成: "自動作成",
       追加: "追加",

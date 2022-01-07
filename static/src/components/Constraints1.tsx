@@ -234,7 +234,7 @@ const Constraints1 = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          {t("期間の勤務にグループから割り当てる職員数の下限")}
+          {t("期間中勤務にグループから割り当てる職員数の下限")}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -257,7 +257,7 @@ const Constraints1 = React.memo((): JSX.Element => {
         >
           <DialogTitle>
             {t("{{arg0}}を追加できません", {
-              arg0: t("期間の勤務にグループから割り当てる職員数の下限"),
+              arg0: t("期間中勤務にグループから割り当てる職員数の下限"),
             })}
           </DialogTitle>
           <DialogContent>
@@ -323,7 +323,7 @@ const Constraints1 = React.memo((): JSX.Element => {
             >
               <DialogTitle>
                 {t("{{arg0}}の追加", {
-                  arg0: t("期間の勤務にグループから割り当てる職員数の下限"),
+                  arg0: t("期間中勤務にグループから割り当てる職員数の下限"),
                 })}
               </DialogTitle>
               <DialogContent>

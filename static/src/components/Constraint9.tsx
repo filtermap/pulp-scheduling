@@ -288,21 +288,6 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
             <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
                 <TextField
-                  select={true}
-                  label={t("職員")}
-                  value={props.constraint9.member_id}
-                  onChange={handleChangeConstraint9MemberId}
-                  fullWidth={true}
-                >
-                  {membersInTerm.map((member) => (
-                    <MenuItem key={member.id} value={member.id}>
-                      <MemberName member={member} />
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item={true} xs={12}>
-                <TextField
                   label={t("開始日")}
                   type="date"
                   value={state.changes.start_date_name}
@@ -358,6 +343,21 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
               <Grid item={true} xs={12}>
                 <TextField
                   select={true}
+                  label={t("職員")}
+                  value={props.constraint9.member_id}
+                  onChange={handleChangeConstraint9MemberId}
+                  fullWidth={true}
+                >
+                  {membersInTerm.map((member) => (
+                    <MenuItem key={member.id} value={member.id}>
+                      <MemberName member={member} />
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+              <Grid item={true} xs={12}>
+                <TextField
+                  select={true}
                   label={t("勤務")}
                   value={props.constraint9.kinmu_id}
                   onChange={handleChangeConstraint9KinmuId}
@@ -386,12 +386,12 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
         maxWidth="md"
       >
         <DialogTitle>
-          {t("{{arg0}}の削除", { arg0: t("職員の期間に割り当てる勤務") })}
+          {t("{{arg0}}の削除", { arg0: t("期間中職員に割り当てる勤務") })}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
             {t("この{{arg0}}を削除します", {
-              arg0: t("職員の期間に割り当てる勤務"),
+              arg0: t("期間中職員に割り当てる勤務"),
             })}
           </DialogContentText>
           <Typography>{title}</Typography>

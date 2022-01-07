@@ -300,7 +300,7 @@ const Member = React.memo((props: Props): JSX.Element => {
             {memberSchedules.length > 0 && (
               <Grid item={true} xs={12}>
                 <DialogContentText>
-                  {t("以下の勤務表の割り当ても削除されます")}
+                  {t("以下の勤務表内の職員への割り当ても削除されます")}
                 </DialogContentText>
                 {memberSchedules.map((schedule) => (
                   <Typography key={schedule.id}>

@@ -127,7 +127,7 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
     };
     if (isNaN(constraint3MinNumberOfAssignments))
       errorMessages.constraint3MinNumberOfAssignments.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("割り当て数下限") })
+        t("{{arg0}}の形式が正しくありません", { arg0: t("勤務割り当て数下限") })
       );
     return errorMessages;
   };
@@ -236,7 +236,7 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <TextField
-                  label={t("割り当て数下限")}
+                  label={t("勤務割り当て数下限")}
                   type="number"
                   value={state.changes.min_number_of_assignments}
                   onChange={handleChangeConstraint3MinNumberOfAssignments}
@@ -275,12 +275,12 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
         maxWidth="md"
       >
         <DialogTitle>
-          {t("{{arg0}}の削除", { arg0: t("職員の勤務の割り当て数の下限") })}
+          {t("{{arg0}}の削除", { arg0: t("職員への勤務の割り当て数の下限") })}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
             {t("この{{arg0}}を削除します", {
-              arg0: t("職員の勤務の割り当て数の下限"),
+              arg0: t("職員への勤務の割り当て数の下限"),
             })}
           </DialogContentText>
           <Typography>{title}</Typography>

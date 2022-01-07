@@ -447,13 +447,13 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
       >
         <DialogTitle>
           {t("{{arg0}}の削除", {
-            arg0: t("期間の勤務にグループから割り当てる職員数の上限"),
+            arg0: t("期間中勤務にグループから割り当てる職員数の上限"),
           })}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
             {t("この{{arg0}}を削除します", {
-              arg0: t("期間の勤務にグループから割り当てる職員数の上限"),
+              arg0: t("期間中勤務にグループから割り当てる職員数の上限"),
             })}
           </DialogContentText>
           <Typography>{title}</Typography>

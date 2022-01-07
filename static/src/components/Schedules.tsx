@@ -451,7 +451,7 @@ const Schedules = React.memo((): JSX.Element => {
                     {t("条件を満たす勤務表が存在しません")}
                   </Typography>
                   <Button size="small" onClick={handleClickPursue}>
-                    {t("勤務表を作成できない原因となる条件を特定")}
+                    {t("勤務表を作成できない原因である条件を特定")}
                   </Button>
                 </>
               ) : (
@@ -482,7 +482,7 @@ const Schedules = React.memo((): JSX.Element => {
             </DialogTitle>
             <DialogContent>
               <DialogContentText>
-                {t("勤務表を作成できない原因となる条件を特定中...")}
+                {t("勤務表を作成できない原因である条件を特定中...")}
               </DialogContentText>
               <LinearProgress variant="query" />
             </DialogContent>
@@ -587,7 +587,7 @@ const Schedules = React.memo((): JSX.Element => {
             </DialogTitle>
             <DialogContent>
               <DialogContentText>
-                {t("勤務表を作成できない原因となる条件を特定できませんでした")}
+                {t("勤務表を作成できない原因である条件を特定できませんでした")}
               </DialogContentText>
               <Typography>
                 {t(

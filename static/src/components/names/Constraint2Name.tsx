@@ -54,7 +54,7 @@ const Constraint2Name = React.memo(
         : constraint2StopDate <= termStopDate;
     return (
       <Trans
-        i18nKey="<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までの<KinmuName />に<GroupName />から{{割り当て職員数上限}}人以下の職員を割り当てる"
+        i18nKey="<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>まで<KinmuName />に<GroupName />から{{割り当て職員数上限}}人以下の職員を割り当てる"
         components={{
           GroupName: props.isInLink ? (
             <GroupName group={selectedGroup} />

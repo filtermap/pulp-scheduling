@@ -32,7 +32,7 @@ const Constraint3Name = React.memo(
     );
     return (
       <Trans
-        i18nKey="<MemberName />に<KinmuName />を{{割り当て数下限}}回以上割り当てる"
+        i18nKey="<MemberName />に<KinmuName />を{{勤務割り当て数下限}}回以上割り当てる"
         components={{
           KinmuName: props.isInLink ? (
             <KinmuName kinmu={selectedKinmu} />
@@ -46,9 +46,9 @@ const Constraint3Name = React.memo(
           ),
         }}
         values={{
-          割り当て数下限:
+          勤務割り当て数下限:
             props.constraint3.min_number_of_assignments ||
-            t("（{{arg0}}未入力）", { arg0: t("割り当て数下限") }),
+            t("（{{arg0}}未入力）", { arg0: t("勤務割り当て数下限") }),
         }}
       />
     );

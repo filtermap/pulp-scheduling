@@ -123,7 +123,7 @@ const Constraints4 = React.memo((): JSX.Element => {
     };
     if (isNaN(newConstraint4MaxNumberOfAssignments))
       errorMessages.newConstraint4MaxNumberOfAssignments.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("割り当て数上限") })
+        t("{{arg0}}の形式が正しくありません", { arg0: t("勤務割り当て数上限") })
       );
     return errorMessages;
   };
@@ -157,7 +157,7 @@ const Constraints4 = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          {t("職員の勤務の割り当て数の上限")}
+          {t("職員への勤務の割り当て数の上限")}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -180,7 +180,7 @@ const Constraints4 = React.memo((): JSX.Element => {
         >
           <DialogTitle>
             {t("{{arg0}}を追加できません", {
-              arg0: t("職員の勤務の割り当て数の上限"),
+              arg0: t("職員への勤務の割り当て数の上限"),
             })}
           </DialogTitle>
           <DialogContent>
@@ -217,7 +217,7 @@ const Constraints4 = React.memo((): JSX.Element => {
             >
               <DialogTitle>
                 {t("{{arg0}}の追加", {
-                  arg0: t("職員の勤務の割り当て数の上限"),
+                  arg0: t("職員への勤務の割り当て数の上限"),
                 })}
               </DialogTitle>
               <DialogContent>
@@ -269,7 +269,7 @@ const Constraints4 = React.memo((): JSX.Element => {
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label={t("割り当て数上限")}
+                      label={t("勤務割り当て数上限")}
                       type="number"
                       value={state.newConstraint4MaxNumberOfAssignments}
                       onChange={

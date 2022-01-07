@@ -56,7 +56,7 @@ const Constraint10Name = React.memo(
     );
     return (
       <Trans
-        i18nKey="<MemberName />の<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までに<KinmuName />を割り当てない"
+        i18nKey="<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>まで<MemberName />に<KinmuName />を割り当てない"
         components={{
           KinmuName: props.isInLink ? (
             <KinmuName kinmu={selectedKinmu} />

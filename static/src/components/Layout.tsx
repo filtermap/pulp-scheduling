@@ -151,19 +151,19 @@ const TermListItems = React.memo((props: { term: terms.Term }) => {
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints1`}
-            primary={t("期間の勤務にグループから割り当てる職員数の下限")}
+            primary={t("期間中勤務にグループから割り当てる職員数の下限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints2`}
-            primary={t("期間の勤務にグループから割り当てる職員数の上限")}
+            primary={t("期間中勤務にグループから割り当てる職員数の上限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints3`}
-            primary={t("職員の勤務の割り当て数の下限")}
+            primary={t("職員への勤務の割り当て数の下限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints4`}
-            primary={t("職員の勤務の割り当て数の上限")}
+            primary={t("職員への勤務の割り当て数の上限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints5`}
@@ -183,11 +183,11 @@ const TermListItems = React.memo((props: { term: terms.Term }) => {
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints9`}
-            primary={t("職員の期間に割り当てる勤務")}
+            primary={t("期間中職員に割り当てる勤務")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints10`}
-            primary={t("職員の期間に割り当てない勤務")}
+            primary={t("期間中職員に割り当てない勤務")}
           />
         </List>
       </Collapse>

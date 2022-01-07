@@ -127,7 +127,7 @@ const Constraint4 = React.memo((props: Props): JSX.Element => {
     };
     if (isNaN(constraint4MaxNumberOfAssignments))
       errorMessages.constraint4MaxNumberOfAssignments.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("割り当て数上限") })
+        t("{{arg0}}の形式が正しくありません", { arg0: t("勤務割り当て数上限") })
       );
     return errorMessages;
   };
@@ -236,7 +236,7 @@ const Constraint4 = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <TextField
-                  label={t("割り当て数上限")}
+                  label={t("勤務割り当て数上限")}
                   type="number"
                   value={state.changes.max_number_of_assignments}
                   onChange={handleChangeConstraint4MaxNumberOfAssignments}
@@ -275,12 +275,12 @@ const Constraint4 = React.memo((props: Props): JSX.Element => {
         maxWidth="md"
       >
         <DialogTitle>
-          {t("{{arg0}}の削除", { arg0: t("職員の勤務の割り当て数の上限") })}
+          {t("{{arg0}}の削除", { arg0: t("職員への勤務の割り当て数の上限") })}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
             {t("この{{arg0}}を削除します", {
-              arg0: t("職員の勤務の割り当て数の上限"),
+              arg0: t("職員への勤務の割り当て数の上限"),
             })}
           </DialogContentText>
           <Typography>{title}</Typography>

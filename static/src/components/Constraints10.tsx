@@ -213,7 +213,7 @@ const Constraints10 = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          {t("職員の期間に割り当てない勤務")}
+          {t("期間中職員に割り当てない勤務")}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -236,7 +236,7 @@ const Constraints10 = React.memo((): JSX.Element => {
         >
           <DialogTitle>
             {t("{{arg0}}を追加できません", {
-              arg0: t("職員の期間に割り当てない勤務"),
+              arg0: t("期間中職員に割り当てない勤務"),
             })}
           </DialogTitle>
           <DialogContent>
@@ -301,7 +301,7 @@ const Constraints10 = React.memo((): JSX.Element => {
             >
               <DialogTitle>
                 {t("{{arg0}}の追加", {
-                  arg0: t("職員の期間に割り当てない勤務"),
+                  arg0: t("期間中職員に割り当てない勤務"),
                 })}
               </DialogTitle>
               <DialogContent>
@@ -321,21 +321,6 @@ const Constraints10 = React.memo((): JSX.Element => {
                       }
                       label={t("有効")}
                     />
-                  </Grid>
-                  <Grid item={true} xs={12}>
-                    <TextField
-                      select={true}
-                      label={t("職員")}
-                      value={state.newConstraint10MemberId}
-                      onChange={handleChangeNewConstraint10MemberId}
-                      fullWidth={true}
-                    >
-                      {membersInTerm.map((member) => (
-                        <MenuItem key={member.id} value={member.id}>
-                          <MemberName member={member} />
-                        </MenuItem>
-                      ))}
-                    </TextField>
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
@@ -396,6 +381,21 @@ const Constraints10 = React.memo((): JSX.Element => {
                         )
                       )}
                     />
+                  </Grid>
+                  <Grid item={true} xs={12}>
+                    <TextField
+                      select={true}
+                      label={t("職員")}
+                      value={state.newConstraint10MemberId}
+                      onChange={handleChangeNewConstraint10MemberId}
+                      fullWidth={true}
+                    >
+                      {membersInTerm.map((member) => (
+                        <MenuItem key={member.id} value={member.id}>
+                          <MemberName member={member} />
+                        </MenuItem>
+                      ))}
+                    </TextField>
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
