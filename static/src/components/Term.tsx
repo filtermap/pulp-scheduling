@@ -119,13 +119,13 @@ const Term = React.memo((props: Props): JSX.Element => {
       );
     if (termStartDate && termStopDate && termStartDate > termStopDate) {
       errorMessages.termStartDateName.push(
-        t("{{arg0}}には{{arg1}}より過去の日付を入力してください", {
+        t("{{arg0}}には{{arg1}}より前の日付を入力してください", {
           arg0: t("開始日"),
           arg1: t("終了日"),
         })
       );
       errorMessages.termStopDateName.push(
-        t("{{arg0}}には{{arg1}}より未来の日付を入力してください", {
+        t("{{arg0}}には{{arg1}}より後の日付を入力してください", {
           arg0: t("終了日"),
           arg1: t("開始日"),
         })

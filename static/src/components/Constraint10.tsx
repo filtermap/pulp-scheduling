@@ -144,13 +144,13 @@ const Constraint10 = React.memo((props: Props): JSX.Element => {
       constraint10StartDate > constraint10StopDate
     ) {
       errorMessages.constraint10StartDateName.push(
-        t("{{arg0}}には{{arg1}}より過去の日付を入力してください", {
+        t("{{arg0}}には{{arg1}}より前の日付を入力してください", {
           arg0: t("開始日"),
           arg1: t("終了日"),
         })
       );
       errorMessages.constraint10StopDateName.push(
-        t("{{arg0}}には{{arg1}}より未来の日付を入力してください", {
+        t("{{arg0}}には{{arg1}}より後の日付を入力してください", {
           arg0: t("終了日"),
           arg1: t("開始日"),
         })
