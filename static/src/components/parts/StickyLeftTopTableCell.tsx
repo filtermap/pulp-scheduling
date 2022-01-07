@@ -8,7 +8,7 @@ const StickyLeftTopTableCell = React.memo(
     left: 0,
     position: "sticky",
     top: 0,
-    zIndex: 2,
+    zIndex: 1,
   }))
 );
 

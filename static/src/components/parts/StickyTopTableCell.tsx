@@ -7,7 +7,6 @@ const StickyTopTableCell = React.memo(
     backgroundColor: theme.palette.background.default,
     position: "sticky",
     top: 0,
-    zIndex: 1,
   }))
 );
 

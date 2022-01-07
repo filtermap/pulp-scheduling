@@ -7,7 +7,6 @@ const StickyLeftTableCell = React.memo(
     backgroundColor: theme.palette.background.default,
     left: 0,
     position: "sticky",
-    zIndex: 1,
   }))
 );
 
