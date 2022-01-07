@@ -34,10 +34,6 @@ type State = {
   newConstraint5MinNumberOfDays: number;
 };
 
-type ErrorMessages = {
-  newConstraint5MinNumberOfDays: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Constraints5 = React.memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -94,16 +90,6 @@ const Constraints5 = React.memo((): JSX.Element => {
     updateState((state) => {
       state.newConstraint5KinmuId = parseInt(event.target.value, 10);
     });
-  };
-  const validate = (newConstraint5MinNumberOfDays: number): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      newConstraint5MinNumberOfDays: [],
-    };
-    if (isNaN(newConstraint5MinNumberOfDays))
-      errorMessages.newConstraint5MinNumberOfDays.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("連続日数下限") })
-      );
-    return errorMessages;
   };
   const handleChangeNewConstraint5MinNumberOfDays = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -169,7 +155,9 @@ const Constraints5 = React.memo((): JSX.Element => {
           const newConstraint5Kinmu =
             selectedKinmuById[state.newConstraint5KinmuId];
           const relativesAreEnabled = newConstraint5Kinmu?.is_enabled;
-          const errorMessages = validate(state.newConstraint5MinNumberOfDays);
+          const errorMessages = constraints5.getErrorMessages(t, {
+            min_number_of_days: state.newConstraint5MinNumberOfDays,
+          });
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -222,14 +210,12 @@ const Constraints5 = React.memo((): JSX.Element => {
                       inputProps={{
                         min: constraints5.minOfConstraint5MinNumberOfDays,
                       }}
-                      error={
-                        errorMessages.newConstraint5MinNumberOfDays.length > 0
-                      }
+                      error={errorMessages.min_number_of_days.length > 0}
                       FormHelperTextProps={{
                         // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                         component: "div",
                       }}
-                      helperText={errorMessages.newConstraint5MinNumberOfDays.map(
+                      helperText={errorMessages.min_number_of_days.map(
                         (message) => (
                           <div key={message}>{message}</div>
                         )

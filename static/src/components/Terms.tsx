@@ -28,11 +28,6 @@ type State = {
   newTermStopDateName: string;
 };
 
-type ErrorMessages = {
-  newTermStartDateName: string[];
-  newTermStopDateName: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Terms = React.memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -61,44 +56,6 @@ const Terms = React.memo((): JSX.Element => {
     updateState((state) => {
       state.newTermIsEnabled = event.target.checked;
     });
-  };
-  const validate = (
-    newTermStartDateName: string,
-    newTermStopDateName: string
-  ): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      newTermStartDateName: [],
-      newTermStopDateName: [],
-    };
-    const newTermStartDate = utils.stringToDate(newTermStartDateName);
-    const newTermStopDate = utils.stringToDate(newTermStopDateName);
-    if (!newTermStartDate)
-      errorMessages.newTermStartDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
-      );
-    if (!newTermStopDate)
-      errorMessages.newTermStopDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("終了日") })
-      );
-    if (
-      newTermStartDate &&
-      newTermStopDate &&
-      newTermStartDate > newTermStopDate
-    ) {
-      errorMessages.newTermStartDateName.push(
-        t("{{arg0}}には{{arg1}}より前の日付を入力してください", {
-          arg0: t("開始日"),
-          arg1: t("終了日"),
-        })
-      );
-      errorMessages.newTermStopDateName.push(
-        t("{{arg0}}には{{arg1}}より後の日付を入力してください", {
-          arg0: t("終了日"),
-          arg1: t("開始日"),
-        })
-      );
-    }
-    return errorMessages;
   };
   const handleChangeNewTermStartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -139,10 +96,10 @@ const Terms = React.memo((): JSX.Element => {
     newTermStartDateIsEnabled &&
     newTermStopDateIsEnabled &&
     newTermStartDateAndStopDateAreEnabled;
-  const errorMessages = validate(
-    state.newTermStartDateName,
-    state.newTermStopDateName
-  );
+  const errorMessages = terms.getErrorMessages(t, {
+    start_date_name: state.newTermStartDateName,
+    stop_date_name: state.newTermStopDateName,
+  });
   return (
     <>
       <Toolbar>
@@ -192,16 +149,14 @@ const Terms = React.memo((): JSX.Element => {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                error={errorMessages.newTermStartDateName.length > 0}
+                error={errorMessages.start_date_name.length > 0}
                 FormHelperTextProps={{
                   // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                   component: "div",
                 }}
-                helperText={errorMessages.newTermStartDateName.map(
-                  (message) => (
-                    <div key={message}>{message}</div>
-                  )
-                )}
+                helperText={errorMessages.stop_date_name.map((message) => (
+                  <div key={message}>{message}</div>
+                ))}
               />
             </Grid>
             <Grid item={true} xs={12}>
@@ -214,12 +169,12 @@ const Terms = React.memo((): JSX.Element => {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                error={errorMessages.newTermStopDateName.length > 0}
+                error={errorMessages.start_date_name.length > 0}
                 FormHelperTextProps={{
                   // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                   component: "div",
                 }}
-                helperText={errorMessages.newTermStopDateName.map((message) => (
+                helperText={errorMessages.stop_date_name.map((message) => (
                   <div key={message}>{message}</div>
                 ))}
               />

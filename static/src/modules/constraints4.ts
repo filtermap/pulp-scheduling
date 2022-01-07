@@ -4,6 +4,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import * as t from "io-ts";
+import { TFunction } from "react-i18next";
 
 import { RootState } from "./store";
 
@@ -53,3 +54,21 @@ const constraints4 = createSlice({
 export const { add, update, remove } = constraints4.actions;
 
 export const { reducer } = constraints4;
+
+type ErrorMessages = {
+  max_number_of_assignments: string[];
+};
+
+export const getErrorMessages = (
+  t: TFunction,
+  constraint4: { max_number_of_assignments: number }
+): ErrorMessages => {
+  const errorMessages: ErrorMessages = {
+    max_number_of_assignments: [],
+  };
+  if (isNaN(constraint4.max_number_of_assignments))
+    errorMessages.max_number_of_assignments.push(
+      t("{{arg0}}の形式が正しくありません", { arg0: t("勤務割り当て数上限") })
+    );
+  return errorMessages;
+};

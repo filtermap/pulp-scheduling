@@ -43,12 +43,6 @@ type State = {
   newConstraint2MaxNumberOfAssignments: number;
 };
 
-type ErrorMessages = {
-  newConstraint2StartDateName: string[];
-  newConstraint2StopDateName: string[];
-  newConstraint2MaxNumberOfAssignments: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Constraints2 = React.memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -116,54 +110,6 @@ const Constraints2 = React.memo((): JSX.Element => {
     updateState((state) => {
       state.creationDialogIsOpen = false;
     });
-  };
-  const validate = (
-    newConstraint2StartDateName: string | undefined,
-    newConstraint2StopDateName: string | undefined,
-    newConstraint2MaxNumberOfAssignments: number
-  ): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      newConstraint2MaxNumberOfAssignments: [],
-      newConstraint2StartDateName: [],
-      newConstraint2StopDateName: [],
-    };
-    const newConstraint2StartDate =
-      newConstraint2StartDateName &&
-      utils.stringToDate(newConstraint2StartDateName);
-    const newConstraint2StopDate =
-      newConstraint2StopDateName &&
-      utils.stringToDate(newConstraint2StopDateName);
-    if (!newConstraint2StartDate)
-      errorMessages.newConstraint2StartDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
-      );
-    if (!newConstraint2StopDate)
-      errorMessages.newConstraint2StopDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("終了日") })
-      );
-    if (
-      newConstraint2StartDate &&
-      newConstraint2StopDate &&
-      newConstraint2StartDate > newConstraint2StopDate
-    ) {
-      errorMessages.newConstraint2StartDateName.push(
-        t("{{arg0}}には{{arg1}}より前の日付を入力してください", {
-          arg0: t("開始日"),
-          arg1: t("終了日"),
-        })
-      );
-      errorMessages.newConstraint2StopDateName.push(
-        t("{{arg0}}には{{arg1}}より後の日付を入力してください", {
-          arg0: t("終了日"),
-          arg1: t("開始日"),
-        })
-      );
-    }
-    if (isNaN(newConstraint2MaxNumberOfAssignments))
-      errorMessages.newConstraint2MaxNumberOfAssignments.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("割り当て職員数上限") })
-      );
-    return errorMessages;
   };
   const handleChangeNewConstraint2IsEnabled = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -309,11 +255,12 @@ const Constraints2 = React.memo((): JSX.Element => {
             newConstraint2StartDateAndStopDateAreEnabled &&
             newConstraint2Kinmu?.is_enabled &&
             newConstraint2Group?.is_enabled;
-          const errorMessages = validate(
-            state.newConstraint2StartDateName,
-            state.newConstraint2StopDateName,
-            state.newConstraint2MaxNumberOfAssignments
-          );
+          const errorMessages = constraints2.getErrorMessages(t, {
+            max_number_of_assignments:
+              state.newConstraint2MaxNumberOfAssignments,
+            start_date_name: state.newConstraint2StartDateName,
+            stop_date_name: state.newConstraint2StopDateName,
+          });
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -359,14 +306,12 @@ const Constraints2 = React.memo((): JSX.Element => {
                             lineThroughSx),
                         },
                       }}
-                      error={
-                        errorMessages.newConstraint2StartDateName.length > 0
-                      }
+                      error={errorMessages.start_date_name.length > 0}
                       FormHelperTextProps={{
                         // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                         component: "div",
                       }}
-                      helperText={errorMessages.newConstraint2StartDateName.map(
+                      helperText={errorMessages.start_date_name.map(
                         (message) => (
                           <div key={message}>{message}</div>
                         )
@@ -389,14 +334,12 @@ const Constraints2 = React.memo((): JSX.Element => {
                             lineThroughSx),
                         },
                       }}
-                      error={
-                        errorMessages.newConstraint2StopDateName.length > 0
-                      }
+                      error={errorMessages.stop_date_name.length > 0}
                       FormHelperTextProps={{
                         // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                         component: "div",
                       }}
-                      helperText={errorMessages.newConstraint2StopDateName.map(
+                      helperText={errorMessages.stop_date_name.map(
                         (message) => (
                           <div key={message}>{message}</div>
                         )
@@ -445,15 +388,12 @@ const Constraints2 = React.memo((): JSX.Element => {
                       inputProps={{
                         min: constraints2.minOfConstraint2MaxNumberOfAssignments,
                       }}
-                      error={
-                        errorMessages.newConstraint2MaxNumberOfAssignments
-                          .length > 0
-                      }
+                      error={errorMessages.max_number_of_assignments.length > 0}
                       FormHelperTextProps={{
                         // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                         component: "div",
                       }}
-                      helperText={errorMessages.newConstraint2MaxNumberOfAssignments.map(
+                      helperText={errorMessages.max_number_of_assignments.map(
                         (message) => (
                           <div key={message}>{message}</div>
                         )

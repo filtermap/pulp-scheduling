@@ -41,10 +41,6 @@ type State = {
   };
 };
 
-type ErrorMessages = {
-  constraint3MinNumberOfAssignments: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Constraint3 = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -119,18 +115,6 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
       })
     );
   };
-  const validate = (
-    constraint3MinNumberOfAssignments: number
-  ): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      constraint3MinNumberOfAssignments: [],
-    };
-    if (isNaN(constraint3MinNumberOfAssignments))
-      errorMessages.constraint3MinNumberOfAssignments.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("勤務割り当て数下限") })
-      );
-    return errorMessages;
-  };
   const handleChangeConstraint3MinNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -175,7 +159,7 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
   const relativesAreEnabled =
     selectedMember?.is_enabled && selectedKinmu?.is_enabled;
   const title = <Constraint3Name constraint3={props.constraint3} />;
-  const errorMessages = validate(props.constraint3.min_number_of_assignments);
+  const errorMessages = constraints3.getErrorMessages(t, props.constraint3);
   return (
     <>
       <Card>
@@ -245,14 +229,12 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
                   inputProps={{
                     min: constraints3.minOfConstraint3MinNumberOfAssignments,
                   }}
-                  error={
-                    errorMessages.constraint3MinNumberOfAssignments.length > 0
-                  }
+                  error={errorMessages.min_number_of_assignments.length > 0}
                   FormHelperTextProps={{
                     // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
-                  helperText={errorMessages.constraint3MinNumberOfAssignments.map(
+                  helperText={errorMessages.min_number_of_assignments.map(
                     (message) => (
                       <div key={message}>{message}</div>
                     )

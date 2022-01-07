@@ -1,5 +1,6 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import * as t from "io-ts";
+import { TFunction } from "react-i18next";
 
 import { RootState } from "./store";
 
@@ -30,3 +31,21 @@ const members = createSlice({
 export const { update } = members.actions;
 
 export const { reducer } = members;
+
+type ErrorMessages = {
+  name: string[];
+};
+
+export const getErrorMessages = (
+  t: TFunction,
+  member: { name: string }
+): ErrorMessages => {
+  const errorMessages: ErrorMessages = {
+    name: [],
+  };
+  if (member.name === "")
+    errorMessages.name.push(
+      t("{{arg0}}を入力してください", { arg0: t("職員名") })
+    );
+  return errorMessages;
+};

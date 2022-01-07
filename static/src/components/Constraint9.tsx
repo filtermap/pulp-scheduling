@@ -45,11 +45,6 @@ type State = {
   };
 };
 
-type ErrorMessages = {
-  constraint9StartDateName: string[];
-  constraint9StopDateName: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Constraint9 = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -119,44 +114,6 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
         id: props.constraint9.id,
       })
     );
-  };
-  const validate = (
-    constraint9StartDateName: string,
-    constraint9StopDateName: string
-  ): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      constraint9StartDateName: [],
-      constraint9StopDateName: [],
-    };
-    const constraint9StartDate = utils.stringToDate(constraint9StartDateName);
-    const constraint9StopDate = utils.stringToDate(constraint9StopDateName);
-    if (!constraint9StartDate)
-      errorMessages.constraint9StartDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
-      );
-    if (!constraint9StopDate)
-      errorMessages.constraint9StopDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("終了日") })
-      );
-    if (
-      constraint9StartDate &&
-      constraint9StopDate &&
-      constraint9StartDate > constraint9StopDate
-    ) {
-      errorMessages.constraint9StartDateName.push(
-        t("{{arg0}}には{{arg1}}より前の日付を入力してください", {
-          arg0: t("開始日"),
-          arg1: t("終了日"),
-        })
-      );
-      errorMessages.constraint9StopDateName.push(
-        t("{{arg0}}には{{arg1}}より後の日付を入力してください", {
-          arg0: t("終了日"),
-          arg1: t("開始日"),
-        })
-      );
-    }
-    return errorMessages;
   };
   const handleChangeConstraint9StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -254,10 +211,7 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
     constraint9StartDateAndStopDateAreEnabled &&
     selectedKinmu?.is_enabled;
   const title = <Constraint9Name constraint9={props.constraint9} />;
-  const errorMessages = validate(
-    props.constraint9.start_date_name,
-    props.constraint9.stop_date_name
-  );
+  const errorMessages = constraints9.getErrorMessages(t, props.constraint9);
   return (
     <>
       <Card>
@@ -302,16 +256,14 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
                       ...(!constraint9StartDateIsEnabled && lineThroughSx),
                     },
                   }}
-                  error={errorMessages.constraint9StartDateName.length > 0}
+                  error={errorMessages.start_date_name.length > 0}
                   FormHelperTextProps={{
                     // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
-                  helperText={errorMessages.constraint9StartDateName.map(
-                    (message) => (
-                      <div key={message}>{message}</div>
-                    )
-                  )}
+                  helperText={errorMessages.start_date_name.map((message) => (
+                    <div key={message}>{message}</div>
+                  ))}
                 />
               </Grid>
               <Grid item={true} xs={12}>
@@ -328,16 +280,14 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
                   inputProps={{
                     sx: { ...(!constraint9StopDateIsEnabled && lineThroughSx) },
                   }}
-                  error={errorMessages.constraint9StopDateName.length > 0}
+                  error={errorMessages.stop_date_name.length > 0}
                   FormHelperTextProps={{
                     // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
-                  helperText={errorMessages.constraint9StopDateName.map(
-                    (message) => (
-                      <div key={message}>{message}</div>
-                    )
-                  )}
+                  helperText={errorMessages.stop_date_name.map((message) => (
+                    <div key={message}>{message}</div>
+                  ))}
                 />
               </Grid>
               <Grid item={true} xs={12}>

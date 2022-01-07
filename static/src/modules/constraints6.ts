@@ -4,6 +4,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import * as t from "io-ts";
+import { TFunction } from "react-i18next";
 
 import { RootState } from "./store";
 
@@ -51,3 +52,21 @@ const constraints6 = createSlice({
 export const { add, update, remove } = constraints6.actions;
 
 export const { reducer } = constraints6;
+
+type ErrorMessages = {
+  max_number_of_days: string[];
+};
+
+export const getErrorMessages = (
+  t: TFunction,
+  constraint6: { max_number_of_days: number }
+): ErrorMessages => {
+  const errorMessages: ErrorMessages = {
+    max_number_of_days: [],
+  };
+  if (isNaN(constraint6.max_number_of_days))
+    errorMessages.max_number_of_days.push(
+      t("{{arg0}}の形式が正しくありません", { arg0: t("連続日数上限") })
+    );
+  return errorMessages;
+};

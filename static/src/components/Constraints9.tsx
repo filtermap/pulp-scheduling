@@ -42,11 +42,6 @@ type State = {
   newConstraint9KinmuId: number | undefined;
 };
 
-type ErrorMessages = {
-  newConstraint9StartDateName: string[];
-  newConstraint9StopDateName: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Constraints9 = React.memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -126,48 +121,6 @@ const Constraints9 = React.memo((): JSX.Element => {
     updateState((state) => {
       state.newConstraint9MemberId = parseInt(event.target.value, 10);
     });
-  };
-  const validate = (
-    newConstraint9StartDateName: string | undefined,
-    newConstraint9StopDateName: string | undefined
-  ): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      newConstraint9StartDateName: [],
-      newConstraint9StopDateName: [],
-    };
-    const newConstraint9StartDate =
-      newConstraint9StartDateName &&
-      utils.stringToDate(newConstraint9StartDateName);
-    const newConstraint9StopDate =
-      newConstraint9StopDateName &&
-      utils.stringToDate(newConstraint9StopDateName);
-    if (!newConstraint9StartDate)
-      errorMessages.newConstraint9StartDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
-      );
-    if (!newConstraint9StopDate)
-      errorMessages.newConstraint9StopDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("終了日") })
-      );
-    if (
-      newConstraint9StartDate &&
-      newConstraint9StopDate &&
-      newConstraint9StartDate > newConstraint9StopDate
-    ) {
-      errorMessages.newConstraint9StartDateName.push(
-        t("{{arg0}}には{{arg1}}より前の日付を入力してください", {
-          arg0: t("開始日"),
-          arg1: t("終了日"),
-        })
-      );
-      errorMessages.newConstraint9StopDateName.push(
-        t("{{arg0}}には{{arg1}}より後の日付を入力してください", {
-          arg0: t("終了日"),
-          arg1: t("開始日"),
-        })
-      );
-    }
-    return errorMessages;
   };
   const handleChangeNewConstraint9StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -288,10 +241,10 @@ const Constraints9 = React.memo((): JSX.Element => {
             newConstraint9StopDateIsEnabled &&
             newConstraint9StartDateAndStopDateAreEnabled &&
             newConstraint9Kinmu?.is_enabled;
-          const errorMessages = validate(
-            state.newConstraint9StartDateName,
-            state.newConstraint9StopDateName
-          );
+          const errorMessages = constraints9.getErrorMessages(t, {
+            start_date_name: state.newConstraint9StartDateName,
+            stop_date_name: state.newConstraint9StopDateName,
+          });
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -335,14 +288,12 @@ const Constraints9 = React.memo((): JSX.Element => {
                             lineThroughSx),
                         },
                       }}
-                      error={
-                        errorMessages.newConstraint9StartDateName.length > 0
-                      }
+                      error={errorMessages.start_date_name.length > 0}
                       FormHelperTextProps={{
                         // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                         component: "div",
                       }}
-                      helperText={errorMessages.newConstraint9StartDateName.map(
+                      helperText={errorMessages.start_date_name.map(
                         (message) => (
                           <div key={message}>{message}</div>
                         )
@@ -365,14 +316,12 @@ const Constraints9 = React.memo((): JSX.Element => {
                             lineThroughSx),
                         },
                       }}
-                      error={
-                        errorMessages.newConstraint9StopDateName.length > 0
-                      }
+                      error={errorMessages.stop_date_name.length > 0}
                       FormHelperTextProps={{
                         // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                         component: "div",
                       }}
-                      helperText={errorMessages.newConstraint9StopDateName.map(
+                      helperText={errorMessages.stop_date_name.map(
                         (message) => (
                           <div key={message}>{message}</div>
                         )

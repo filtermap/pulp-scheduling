@@ -49,10 +49,6 @@ type State = {
   };
 };
 
-type ErrorMessages = {
-  groupName: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Group = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -108,16 +104,6 @@ const Group = React.memo((props: Props): JSX.Element => {
         id: props.group.id,
       })
     );
-  };
-  const validate = (groupName: string): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      groupName: [],
-    };
-    if (groupName === "")
-      errorMessages.groupName.push(
-        t("{{arg0}}を入力してください", { arg0: t("グループ名") })
-      );
-    return errorMessages;
   };
   const handleChangeGroupName = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -177,7 +163,7 @@ const Group = React.memo((props: Props): JSX.Element => {
     )),
     ", "
   );
-  const errorMessages = validate(props.group.name);
+  const errorMessages = groups.getErrorMessages(t, props.group);
   return (
     <>
       <Card>
@@ -216,12 +202,12 @@ const Group = React.memo((props: Props): JSX.Element => {
                   onChange={handleChangeGroupName}
                   onBlur={handleBlurGroupName}
                   fullWidth={true}
-                  error={errorMessages.groupName.length > 0}
+                  error={errorMessages.name.length > 0}
                   FormHelperTextProps={{
                     // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
-                  helperText={errorMessages.groupName.map((message) => (
+                  helperText={errorMessages.name.map((message) => (
                     <div key={message}>{message}</div>
                   ))}
                 />

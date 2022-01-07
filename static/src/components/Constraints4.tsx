@@ -37,10 +37,6 @@ type State = {
   newConstraint4MaxNumberOfAssignments: number;
 };
 
-type ErrorMessages = {
-  newConstraint4MaxNumberOfAssignments: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Constraints4 = React.memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -114,18 +110,6 @@ const Constraints4 = React.memo((): JSX.Element => {
     updateState((state) => {
       state.newConstraint4KinmuId = parseInt(event.target.value, 10);
     });
-  };
-  const validate = (
-    newConstraint4MaxNumberOfAssignments: number
-  ): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      newConstraint4MaxNumberOfAssignments: [],
-    };
-    if (isNaN(newConstraint4MaxNumberOfAssignments))
-      errorMessages.newConstraint4MaxNumberOfAssignments.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("勤務割り当て数上限") })
-      );
-    return errorMessages;
   };
   const handleChangeNewConstraint4MaxNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -205,9 +189,10 @@ const Constraints4 = React.memo((): JSX.Element => {
             selectedKinmuById[state.newConstraint4KinmuId];
           const relativesAreEnabled =
             newConstraint4Member?.is_enabled && newConstraint4Kinmu?.is_enabled;
-          const errorMessages = validate(
-            state.newConstraint4MaxNumberOfAssignments
-          );
+          const errorMessages = constraints4.getErrorMessages(t, {
+            max_number_of_assignments:
+              state.newConstraint4MaxNumberOfAssignments,
+          });
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -279,15 +264,12 @@ const Constraints4 = React.memo((): JSX.Element => {
                       inputProps={{
                         min: constraints4.minOfConstraint4MaxNumberOfAssignments,
                       }}
-                      error={
-                        errorMessages.newConstraint4MaxNumberOfAssignments
-                          .length > 0
-                      }
+                      error={errorMessages.max_number_of_assignments.length > 0}
                       FormHelperTextProps={{
                         // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                         component: "div",
                       }}
-                      helperText={errorMessages.newConstraint4MaxNumberOfAssignments.map(
+                      helperText={errorMessages.max_number_of_assignments.map(
                         (message) => (
                           <div key={message}>{message}</div>
                         )

@@ -56,10 +56,6 @@ type State = {
   };
 };
 
-type ErrorMessages = {
-  memberName: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Member = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -139,16 +135,6 @@ const Member = React.memo((props: Props): JSX.Element => {
       })
     );
   };
-  const validate = (memberName: string): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      memberName: [],
-    };
-    if (memberName === "")
-      errorMessages.memberName.push(
-        t("{{arg0}}を入力してください", { arg0: t("職員名") })
-      );
-    return errorMessages;
-  };
   const handleChangeMemberName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -201,7 +187,7 @@ const Member = React.memo((props: Props): JSX.Element => {
     });
     dispatch(all.removeMember(props.member.id));
   };
-  const errorMessages = validate(props.member.name);
+  const errorMessages = members.getErrorMessages(t, props.member);
   return (
     <>
       <Card>
@@ -240,12 +226,12 @@ const Member = React.memo((props: Props): JSX.Element => {
                   onChange={handleChangeMemberName}
                   onBlur={handleBlurMemberName}
                   fullWidth={true}
-                  error={errorMessages.memberName.length > 0}
+                  error={errorMessages.name.length > 0}
                   FormHelperTextProps={{
                     // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
-                  helperText={errorMessages.memberName.map((message) => (
+                  helperText={errorMessages.name.map((message) => (
                     <div key={message}>{message}</div>
                   ))}
                 />

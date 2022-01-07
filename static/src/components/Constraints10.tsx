@@ -42,11 +42,6 @@ type State = {
   newConstraint10KinmuId: number | undefined;
 };
 
-type ErrorMessages = {
-  newConstraint10StartDateName: string[];
-  newConstraint10StopDateName: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Constraints10 = React.memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -126,48 +121,6 @@ const Constraints10 = React.memo((): JSX.Element => {
     updateState((state) => {
       state.newConstraint10MemberId = parseInt(event.target.value, 10);
     });
-  };
-  const validate = (
-    newConstraint10StartDateName: string | undefined,
-    newConstraint10StopDateName: string | undefined
-  ): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      newConstraint10StartDateName: [],
-      newConstraint10StopDateName: [],
-    };
-    const newConstraint10StartDate =
-      newConstraint10StartDateName &&
-      utils.stringToDate(newConstraint10StartDateName);
-    const newConstraint10StopDate =
-      newConstraint10StopDateName &&
-      utils.stringToDate(newConstraint10StopDateName);
-    if (!newConstraint10StartDate)
-      errorMessages.newConstraint10StartDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
-      );
-    if (!newConstraint10StopDate)
-      errorMessages.newConstraint10StopDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("終了日") })
-      );
-    if (
-      newConstraint10StartDate &&
-      newConstraint10StopDate &&
-      newConstraint10StartDate > newConstraint10StopDate
-    ) {
-      errorMessages.newConstraint10StartDateName.push(
-        t("{{arg0}}には{{arg1}}より前の日付を入力してください", {
-          arg0: t("開始日"),
-          arg1: t("終了日"),
-        })
-      );
-      errorMessages.newConstraint10StopDateName.push(
-        t("{{arg0}}には{{arg1}}より後の日付を入力してください", {
-          arg0: t("終了日"),
-          arg1: t("開始日"),
-        })
-      );
-    }
-    return errorMessages;
   };
   const handleChangeNewConstraint10StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -288,10 +241,10 @@ const Constraints10 = React.memo((): JSX.Element => {
             newConstraint10StopDateIsEnabled &&
             newConstraint10StartDateAndStopDateAreEnabled &&
             newConstraint10Kinmu?.is_enabled;
-          const errorMessages = validate(
-            state.newConstraint10StartDateName,
-            state.newConstraint10StopDateName
-          );
+          const errorMessages = constraints10.getErrorMessages(t, {
+            start_date_name: state.newConstraint10StartDateName,
+            stop_date_name: state.newConstraint10StopDateName,
+          });
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -338,14 +291,12 @@ const Constraints10 = React.memo((): JSX.Element => {
                             lineThroughSx),
                         },
                       }}
-                      error={
-                        errorMessages.newConstraint10StartDateName.length > 0
-                      }
+                      error={errorMessages.start_date_name.length > 0}
                       FormHelperTextProps={{
                         // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                         component: "div",
                       }}
-                      helperText={errorMessages.newConstraint10StartDateName.map(
+                      helperText={errorMessages.start_date_name.map(
                         (message) => (
                           <div key={message}>{message}</div>
                         )
@@ -368,14 +319,12 @@ const Constraints10 = React.memo((): JSX.Element => {
                             lineThroughSx),
                         },
                       }}
-                      error={
-                        errorMessages.newConstraint10StopDateName.length > 0
-                      }
+                      error={errorMessages.stop_date_name.length > 0}
                       FormHelperTextProps={{
                         // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                         component: "div",
                       }}
-                      helperText={errorMessages.newConstraint10StopDateName.map(
+                      helperText={errorMessages.stop_date_name.map(
                         (message) => (
                           <div key={message}>{message}</div>
                         )

@@ -45,11 +45,6 @@ type State = {
   };
 };
 
-type ErrorMessages = {
-  constraint10StartDateName: string[];
-  constraint10StopDateName: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Constraint10 = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -119,44 +114,6 @@ const Constraint10 = React.memo((props: Props): JSX.Element => {
         id: props.constraint10.id,
       })
     );
-  };
-  const validate = (
-    constraint10StartDateName: string,
-    constraint10StopDateName: string
-  ): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      constraint10StartDateName: [],
-      constraint10StopDateName: [],
-    };
-    const constraint10StartDate = utils.stringToDate(constraint10StartDateName);
-    const constraint10StopDate = utils.stringToDate(constraint10StopDateName);
-    if (!constraint10StartDate)
-      errorMessages.constraint10StartDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
-      );
-    if (!constraint10StopDate)
-      errorMessages.constraint10StopDateName.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("終了日") })
-      );
-    if (
-      constraint10StartDate &&
-      constraint10StopDate &&
-      constraint10StartDate > constraint10StopDate
-    ) {
-      errorMessages.constraint10StartDateName.push(
-        t("{{arg0}}には{{arg1}}より前の日付を入力してください", {
-          arg0: t("開始日"),
-          arg1: t("終了日"),
-        })
-      );
-      errorMessages.constraint10StopDateName.push(
-        t("{{arg0}}には{{arg1}}より後の日付を入力してください", {
-          arg0: t("終了日"),
-          arg1: t("開始日"),
-        })
-      );
-    }
-    return errorMessages;
   };
   const handleChangeConstraint10StartDateName = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -254,10 +211,7 @@ const Constraint10 = React.memo((props: Props): JSX.Element => {
     constraint10StartDateAndStopDateAreEnabled &&
     selectedKinmu?.is_enabled;
   const title = <Constraint10Name constraint10={props.constraint10} />;
-  const errorMessages = validate(
-    props.constraint10.start_date_name,
-    props.constraint10.stop_date_name
-  );
+  const errorMessages = constraints10.getErrorMessages(t, props.constraint10);
   return (
     <>
       <Card>
@@ -302,16 +256,14 @@ const Constraint10 = React.memo((props: Props): JSX.Element => {
                       ...(!constraint10StartDateIsEnabled && lineThroughSx),
                     },
                   }}
-                  error={errorMessages.constraint10StartDateName.length > 0}
+                  error={errorMessages.start_date_name.length > 0}
                   FormHelperTextProps={{
                     // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
-                  helperText={errorMessages.constraint10StartDateName.map(
-                    (message) => (
-                      <div key={message}>{message}</div>
-                    )
-                  )}
+                  helperText={errorMessages.start_date_name.map((message) => (
+                    <div key={message}>{message}</div>
+                  ))}
                 />
               </Grid>
               <Grid item={true} xs={12}>
@@ -330,16 +282,14 @@ const Constraint10 = React.memo((props: Props): JSX.Element => {
                       ...(!constraint10StopDateIsEnabled && lineThroughSx),
                     },
                   }}
-                  error={errorMessages.constraint10StopDateName.length > 0}
+                  error={errorMessages.stop_date_name.length > 0}
                   FormHelperTextProps={{
                     // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
-                  helperText={errorMessages.constraint10StopDateName.map(
-                    (message) => (
-                      <div key={message}>{message}</div>
-                    )
-                  )}
+                  helperText={errorMessages.stop_date_name.map((message) => (
+                    <div key={message}>{message}</div>
+                  ))}
                 />
               </Grid>
               <Grid item={true} xs={12}>

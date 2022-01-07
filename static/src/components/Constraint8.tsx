@@ -39,10 +39,6 @@ type State = {
   };
 };
 
-type ErrorMessages = {
-  constraint8MaxNumberOfDays: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Constraint8 = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -97,16 +93,6 @@ const Constraint8 = React.memo((props: Props): JSX.Element => {
       })
     );
   };
-  const validate = (constraint8MaxNumberOfDays: number): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      constraint8MaxNumberOfDays: [],
-    };
-    if (isNaN(constraint8MaxNumberOfDays))
-      errorMessages.constraint8MaxNumberOfDays.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("間隔日数上限") })
-      );
-    return errorMessages;
-  };
   const handleChangeConstraint8MaxNumberOfDays = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -146,7 +132,7 @@ const Constraint8 = React.memo((props: Props): JSX.Element => {
   };
   const relativesAreEnabled = selectedKinmu?.is_enabled;
   const title = <Constraint8Name constraint8={props.constraint8} />;
-  const errorMessages = validate(props.constraint8.max_number_of_days);
+  const errorMessages = constraints8.getErrorMessages(t, props.constraint8);
   return (
     <>
       <Card>
@@ -201,12 +187,12 @@ const Constraint8 = React.memo((props: Props): JSX.Element => {
                   inputProps={{
                     min: constraints8.minOfConstraint8MaxNumberOfDays,
                   }}
-                  error={errorMessages.constraint8MaxNumberOfDays.length > 0}
+                  error={errorMessages.max_number_of_days.length > 0}
                   FormHelperTextProps={{
                     // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
-                  helperText={errorMessages.constraint8MaxNumberOfDays.map(
+                  helperText={errorMessages.max_number_of_days.map(
                     (message) => (
                       <div key={message}>{message}</div>
                     )

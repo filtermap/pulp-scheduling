@@ -4,6 +4,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import * as t from "io-ts";
+import { TFunction } from "react-i18next";
 
 import { RootState } from "./store";
 
@@ -47,3 +48,21 @@ const kinmus = createSlice({
 export const { add, update } = kinmus.actions;
 
 export const { reducer } = kinmus;
+
+type ErrorMessages = {
+  name: string[];
+};
+
+export const getErrorMessages = (
+  t: TFunction,
+  kinmu: { name: string }
+): ErrorMessages => {
+  const errorMessages: ErrorMessages = {
+    name: [],
+  };
+  if (Kinmu.name === "")
+    errorMessages.name.push(
+      t("{{arg0}}を入力してください", { arg0: t("勤務名") })
+    );
+  return errorMessages;
+};

@@ -41,10 +41,6 @@ type State = {
   };
 };
 
-type ErrorMessages = {
-  constraint4MaxNumberOfAssignments: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Constraint4 = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -119,18 +115,6 @@ const Constraint4 = React.memo((props: Props): JSX.Element => {
       })
     );
   };
-  const validate = (
-    constraint4MaxNumberOfAssignments: number
-  ): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      constraint4MaxNumberOfAssignments: [],
-    };
-    if (isNaN(constraint4MaxNumberOfAssignments))
-      errorMessages.constraint4MaxNumberOfAssignments.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("勤務割り当て数上限") })
-      );
-    return errorMessages;
-  };
   const handleChangeConstraint4MaxNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -175,7 +159,7 @@ const Constraint4 = React.memo((props: Props): JSX.Element => {
   const relativesAreEnabled =
     selectedMember?.is_enabled && selectedKinmu?.is_enabled;
   const title = <Constraint4Name constraint4={props.constraint4} />;
-  const errorMessages = validate(props.constraint4.max_number_of_assignments);
+  const errorMessages = constraints4.getErrorMessages(t, props.constraint4);
   return (
     <>
       <Card>
@@ -245,14 +229,12 @@ const Constraint4 = React.memo((props: Props): JSX.Element => {
                   inputProps={{
                     min: constraints4.minOfConstraint4MaxNumberOfAssignments,
                   }}
-                  error={
-                    errorMessages.constraint4MaxNumberOfAssignments.length > 0
-                  }
+                  error={errorMessages.max_number_of_assignments.length > 0}
                   FormHelperTextProps={{
                     // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                     component: "div",
                   }}
-                  helperText={errorMessages.constraint4MaxNumberOfAssignments.map(
+                  helperText={errorMessages.max_number_of_assignments.map(
                     (message) => (
                       <div key={message}>{message}</div>
                     )

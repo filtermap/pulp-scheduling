@@ -37,10 +37,6 @@ type State = {
   newMemberGroupIds: number[];
 };
 
-type ErrorMessages = {
-  newMemberName: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Members = React.memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -89,16 +85,6 @@ const Members = React.memo((): JSX.Element => {
       state.newMemberIsEnabled = event.target.checked;
     });
   };
-  const validate = (newMemberName: string): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      newMemberName: [],
-    };
-    if (newMemberName === "")
-      errorMessages.newMemberName.push(
-        t("{{arg0}}を入力してください", { arg0: t("職員名") })
-      );
-    return errorMessages;
-  };
   const handleChangeNewMemberName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -135,7 +121,9 @@ const Members = React.memo((): JSX.Element => {
       })
     );
   };
-  const errorMessages = validate(state.newMemberName);
+  const errorMessages = members.getErrorMessages(t, {
+    name: state.newMemberName,
+  });
   return (
     <>
       <Toolbar>
@@ -185,12 +173,12 @@ const Members = React.memo((): JSX.Element => {
                 value={state.newMemberName}
                 onChange={handleChangeNewMemberName}
                 fullWidth={true}
-                error={errorMessages.newMemberName.length > 0}
+                error={errorMessages.name.length > 0}
                 FormHelperTextProps={{
                   // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                   component: "div",
                 }}
-                helperText={errorMessages.newMemberName.map((message) => (
+                helperText={errorMessages.name.map((message) => (
                   <div key={message}>{message}</div>
                 ))}
               />

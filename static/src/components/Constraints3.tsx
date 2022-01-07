@@ -37,10 +37,6 @@ type State = {
   newConstraint3MinNumberOfAssignments: number;
 };
 
-type ErrorMessages = {
-  newConstraint3MinNumberOfAssignments: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Constraints3 = React.memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -114,18 +110,6 @@ const Constraints3 = React.memo((): JSX.Element => {
     updateState((state) => {
       state.newConstraint3KinmuId = parseInt(event.target.value, 10);
     });
-  };
-  const validate = (
-    newConstraint3MinNumberOfAssignments: number
-  ): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      newConstraint3MinNumberOfAssignments: [],
-    };
-    if (isNaN(newConstraint3MinNumberOfAssignments))
-      errorMessages.newConstraint3MinNumberOfAssignments.push(
-        t("{{arg0}}の形式が正しくありません", { arg0: t("勤務割り当て数下限") })
-      );
-    return errorMessages;
   };
   const handleChangeNewConstraint3MinNumberOfAssignments = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -205,9 +189,10 @@ const Constraints3 = React.memo((): JSX.Element => {
             selectedKinmuById[state.newConstraint3KinmuId];
           const relativesAreEnabled =
             newConstraint3Member?.is_enabled && newConstraint3Kinmu?.is_enabled;
-          const errorMessages = validate(
-            state.newConstraint3MinNumberOfAssignments
-          );
+          const errorMessages = constraints3.getErrorMessages(t, {
+            min_number_of_assignments:
+              state.newConstraint3MinNumberOfAssignments,
+          });
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -279,15 +264,12 @@ const Constraints3 = React.memo((): JSX.Element => {
                       inputProps={{
                         min: constraints3.minOfConstraint3MinNumberOfAssignments,
                       }}
-                      error={
-                        errorMessages.newConstraint3MinNumberOfAssignments
-                          .length > 0
-                      }
+                      error={errorMessages.min_number_of_assignments.length > 0}
                       FormHelperTextProps={{
                         // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                         component: "div",
                       }}
-                      helperText={errorMessages.newConstraint3MinNumberOfAssignments.map(
+                      helperText={errorMessages.min_number_of_assignments.map(
                         (message) => (
                           <div key={message}>{message}</div>
                         )

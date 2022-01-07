@@ -29,10 +29,6 @@ type State = {
   newKinmuName: string;
 };
 
-type ErrorMessages = {
-  newKinmuName: string[];
-};
-
 // eslint-disable-next-line react/display-name
 const Kinmus = React.memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -68,16 +64,6 @@ const Kinmus = React.memo((): JSX.Element => {
       state.newKinmuIsEnabled = event.target.checked;
     });
   };
-  const validate = (newKinmuName: string): ErrorMessages => {
-    const errorMessages: ErrorMessages = {
-      newKinmuName: [],
-    };
-    if (newKinmuName === "")
-      errorMessages.newKinmuName.push(
-        t("{{arg0}}を入力してください", { arg0: t("勤務名") })
-      );
-    return errorMessages;
-  };
   const handleChangeNewKinmuName = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -97,7 +83,9 @@ const Kinmus = React.memo((): JSX.Element => {
       })
     );
   };
-  const errorMessages = validate(state.newKinmuName);
+  const errorMessages = kinmus.getErrorMessages(t, {
+    name: state.newKinmuName,
+  });
   return (
     <>
       <Toolbar>
@@ -142,12 +130,12 @@ const Kinmus = React.memo((): JSX.Element => {
                 value={state.newKinmuName}
                 onChange={handleChangeNewKinmuName}
                 fullWidth={true}
-                error={errorMessages.newKinmuName.length > 0}
+                error={errorMessages.name.length > 0}
                 FormHelperTextProps={{
                   // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
                   component: "div",
                 }}
-                helperText={errorMessages.newKinmuName.map((message) => (
+                helperText={errorMessages.name.map((message) => (
                   <div key={message}>{message}</div>
                 ))}
               />

@@ -4,6 +4,9 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import * as t from "io-ts";
+import { TFunction } from "react-i18next";
+
+import * as utils from "../utils";
 
 import { RootState } from "./store";
 
@@ -57,3 +60,57 @@ const constraints1 = createSlice({
 export const { add, update, remove } = constraints1.actions;
 
 export const { reducer } = constraints1;
+
+type ErrorMessages = {
+  start_date_name: string[];
+  stop_date_name: string[];
+  min_number_of_assignments: string[];
+};
+
+export const getErrorMessages = (
+  t: TFunction,
+  constraint1: {
+    start_date_name: string | undefined;
+    stop_date_name: string | undefined;
+    min_number_of_assignments: number;
+  }
+): ErrorMessages => {
+  const errorMessages: ErrorMessages = {
+    min_number_of_assignments: [],
+    start_date_name: [],
+    stop_date_name: [],
+  };
+  const startDate =
+    constraint1.start_date_name &&
+    utils.stringToDate(constraint1.start_date_name);
+  const stopDate =
+    constraint1.stop_date_name &&
+    utils.stringToDate(constraint1.stop_date_name);
+  if (!startDate)
+    errorMessages.start_date_name.push(
+      t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
+    );
+  if (!stopDate)
+    errorMessages.stop_date_name.push(
+      t("{{arg0}}の形式が正しくありません", { arg0: t("終了日") })
+    );
+  if (startDate && stopDate && startDate > stopDate) {
+    errorMessages.start_date_name.push(
+      t("{{arg0}}には{{arg1}}より前の日付を入力してください", {
+        arg0: t("開始日"),
+        arg1: t("終了日"),
+      })
+    );
+    errorMessages.stop_date_name.push(
+      t("{{arg0}}には{{arg1}}より後の日付を入力してください", {
+        arg0: t("終了日"),
+        arg1: t("開始日"),
+      })
+    );
+  }
+  if (isNaN(constraint1.min_number_of_assignments))
+    errorMessages.min_number_of_assignments.push(
+      t("{{arg0}}の形式が正しくありません", { arg0: t("割り当て職員数下限") })
+    );
+  return errorMessages;
+};
