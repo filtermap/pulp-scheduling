@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import useTheme from "@mui/material/styles/useTheme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Link as RouterLink,
@@ -26,7 +27,6 @@ import {
 import { ActionCreators } from "redux-undo";
 import { useImmer } from "use-immer";
 
-import { m } from "../messages";
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
@@ -102,6 +102,7 @@ const ListItemLink = React.memo((props: { to: string; primary: string }) => {
 
 // eslint-disable-next-line react/display-name
 const TermListItems = React.memo((props: { term: terms.Term }) => {
+  const { t } = useTranslation();
   const params = useMatch("/terms/:termIdName/*")?.params;
   const [state, updateState] = useImmer<{ expanded: boolean }>({
     expanded: false,
@@ -130,63 +131,63 @@ const TermListItems = React.memo((props: { term: terms.Term }) => {
         <List component="div" disablePadding>
           <ListItemLink
             to={`/terms/${props.term.id}/schedules`}
-            primary={m["勤務表"]}
+            primary={t("勤務表")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/members`}
-            primary={m["職員"]}
+            primary={t("職員")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/kinmus`}
-            primary={m["勤務"]}
+            primary={t("勤務")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/groups`}
-            primary={m["グループ"]}
+            primary={t("グループ")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints0`}
-            primary={m["連続禁止勤務並び"]}
+            primary={t("連続禁止勤務並び")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints1`}
-            primary={m["期間の勤務にグループから割り当てる職員数の下限"]}
+            primary={t("期間の勤務にグループから割り当てる職員数の下限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints2`}
-            primary={m["期間の勤務にグループから割り当てる職員数の上限"]}
+            primary={t("期間の勤務にグループから割り当てる職員数の上限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints3`}
-            primary={m["職員の勤務の割り当て数の下限"]}
+            primary={t("職員の勤務の割り当て数の下限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints4`}
-            primary={m["職員の勤務の割り当て数の上限"]}
+            primary={t("職員の勤務の割り当て数の上限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints5`}
-            primary={m["勤務の連続日数の下限"]}
+            primary={t("勤務の連続日数の下限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints6`}
-            primary={m["勤務の連続日数の上限"]}
+            primary={t("勤務の連続日数の上限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints7`}
-            primary={m["勤務の間隔日数の下限"]}
+            primary={t("勤務の間隔日数の下限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints8`}
-            primary={m["勤務の間隔日数の上限"]}
+            primary={t("勤務の間隔日数の上限")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints9`}
-            primary={m["職員の期間に割り当てる勤務"]}
+            primary={t("職員の期間に割り当てる勤務")}
           />
           <ListItemLink
             to={`/terms/${props.term.id}/constraints10`}
-            primary={m["職員の期間に割り当てない勤務"]}
+            primary={t("職員の期間に割り当てない勤務")}
           />
         </List>
       </Collapse>
@@ -196,6 +197,7 @@ const TermListItems = React.memo((props: { term: terms.Term }) => {
 
 // eslint-disable-next-line react/display-name
 const Layout = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const selectedFutureExists = useAppSelector(
     (state) => state.future.length > 0
@@ -308,13 +310,13 @@ const Layout = React.memo((): JSX.Element => {
             noWrap={true}
             sx={{ flexGrow: 1 }}
           >
-            {m["pulp-scheduling"]}
+            {t("pulp-scheduling")}
             <Typography
               component="span"
               variant="subtitle2"
               sx={{ marginLeft: 3 }}
             >
-              {m["version"]}
+              {t("version")}
             </Typography>
           </Typography>
           <Button
@@ -322,17 +324,17 @@ const Layout = React.memo((): JSX.Element => {
             onClick={handleClickUndo}
             disabled={!selectedPastExists}
           >
-            {m["元に戻す"]}
+            {t("元に戻す")}
           </Button>
           <Button
             color="inherit"
             onClick={handleClickRedo}
             disabled={!selectedFutureExists}
           >
-            {m["やり直す"]}
+            {t("やり直す")}
           </Button>
           <Button color="inherit" onClick={writeAll}>
-            {m["保存"]}
+            {t("保存")}
           </Button>
         </Toolbar>
       </AppBar>
@@ -361,7 +363,7 @@ const Layout = React.memo((): JSX.Element => {
           </IconButton>
         </Toolbar>
         <List component="div" disablePadding>
-          <ListItemLink to="/terms" primary={m["期間"]} />
+          <ListItemLink to="/terms" primary={t("期間")} />
           {selectedTerms
             .filter(({ is_enabled }) => is_enabled)
             .map((term) => (

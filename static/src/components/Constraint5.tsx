@@ -15,10 +15,10 @@ import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
-import { m } from "../messages";
 import * as constraints5 from "../modules/constraints5";
 import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
@@ -45,6 +45,7 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Constraint5 = React.memo((props: Props): JSX.Element => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const selectedKinmus = useSelector(kinmus.selectors.selectAll);
   const selectedKinmu = useAppSelector((state) =>
@@ -102,7 +103,7 @@ const Constraint5 = React.memo((props: Props): JSX.Element => {
     };
     if (isNaN(constraint5MinNumberOfDays))
       errorMessages.constraint5MinNumberOfDays.push(
-        m["arg0の形式が正しくありません"](m["連続日数下限"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("連続日数下限") })
       );
     return errorMessages;
   };
@@ -177,7 +178,7 @@ const Constraint5 = React.memo((props: Props): JSX.Element => {
               <Grid item={true} xs={12}>
                 <TextField
                   select={true}
-                  label={m["勤務"]}
+                  label={t("勤務")}
                   value={props.constraint5.kinmu_id}
                   onChange={handleChangeConstraint5KinmuId}
                   fullWidth={true}
@@ -191,7 +192,7 @@ const Constraint5 = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <TextField
-                  label={m["連続日数下限"]}
+                  label={t("連続日数下限")}
                   type="number"
                   value={state.changes.min_number_of_days}
                   onChange={handleChangeConstraint5MinNumberOfDays}
@@ -216,7 +217,7 @@ const Constraint5 = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              {m["削除"]}
+              {t("削除")}
             </Button>
           </CardActions>
         </Collapse>
@@ -227,19 +228,21 @@ const Constraint5 = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>{m["arg0の削除"](m["勤務の連続日数の下限"])}</DialogTitle>
+        <DialogTitle>
+          {t("{{arg0}}の削除", { arg0: t("勤務の連続日数の下限") })}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {m["このarg0を削除します"](m["勤務の連続日数の下限"])}
+            {t("この{{arg0}}を削除します", { arg0: t("勤務の連続日数の下限") })}
           </DialogContentText>
           <Typography>{title}</Typography>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteConstraint5}>
-            {m["削除"]}
+            {t("削除")}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            {m["閉じる"]}
+            {t("閉じる")}
           </Button>
         </DialogActions>
       </Dialog>

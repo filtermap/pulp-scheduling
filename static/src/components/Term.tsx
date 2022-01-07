@@ -15,10 +15,10 @@ import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
-import { m } from "../messages";
 import * as all from "../modules/all";
 import * as terms from "../modules/terms";
 import * as utils from "../utils";
@@ -48,6 +48,7 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Term = React.memo((props: Props): JSX.Element => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const selectedTerms = useSelector(terms.selectors.selectAll);
   const selectableTerms = selectedTerms.filter(
@@ -110,24 +111,24 @@ const Term = React.memo((props: Props): JSX.Element => {
     const termStopDate = utils.stringToDate(termStopDateName);
     if (!termStartDate)
       errorMessages.termStartDateName.push(
-        m["arg0の形式が正しくありません"](m["開始日"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
       );
     if (!termStopDate)
       errorMessages.termStopDateName.push(
-        m["arg0の形式が正しくありません"](m["終了日"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("終了日") })
       );
     if (termStartDate && termStopDate && termStartDate > termStopDate) {
       errorMessages.termStartDateName.push(
-        m["arg0にはarg1より過去の日付を入力してください"](
-          m["開始日"],
-          m["終了日"]
-        )
+        t("{{arg0}}には{{arg1}}より過去の日付を入力してください", {
+          arg0: t("開始日"),
+          arg1: t("終了日"),
+        })
       );
       errorMessages.termStopDateName.push(
-        m["arg0にはarg1より未来の日付を入力してください"](
-          m["終了日"],
-          m["開始日"]
-        )
+        t("{{arg0}}には{{arg1}}より未来の日付を入力してください", {
+          arg0: t("終了日"),
+          arg1: t("開始日"),
+        })
       );
     }
     return errorMessages;
@@ -255,7 +256,7 @@ const Term = React.memo((props: Props): JSX.Element => {
             <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
                 <TextField
-                  label={m["開始日"]}
+                  label={t("開始日")}
                   type="date"
                   value={state.changes.start_date_name}
                   onChange={handleChangeTermStartDateName}
@@ -277,7 +278,7 @@ const Term = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <TextField
-                  label={m["終了日"]}
+                  label={t("終了日")}
                   type="date"
                   value={state.changes.stop_date_name}
                   onChange={handleChangeTermStopDateName}
@@ -301,10 +302,10 @@ const Term = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenImportDataDialog}>
-              {m["インポート"]}
+              {t("インポート")}
             </Button>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              {m["削除"]}
+              {t("削除")}
             </Button>
           </CardActions>
         </Collapse>
@@ -317,18 +318,18 @@ const Term = React.memo((props: Props): JSX.Element => {
           maxWidth="md"
         >
           <DialogTitle>
-            {m["他の期間からデータと条件をインポートできません"]}
+            {t("他の期間からデータと条件をインポートできません")}
           </DialogTitle>
           <DialogContent>
             {state.selectedTermId === undefined && (
               <DialogContentText>
-                {m["有効な他の期間がありません"]}
+                {t("有効な他の期間がありません")}
               </DialogContentText>
             )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleClickCloseImportDataDialog}>
-              {m["閉じる"]}
+              {t("閉じる")}
             </Button>
           </DialogActions>
         </Dialog>
@@ -339,12 +340,12 @@ const Term = React.memo((props: Props): JSX.Element => {
           fullWidth={true}
           maxWidth="md"
         >
-          <DialogTitle>{m["他の期間からデータと条件をインポート"]}</DialogTitle>
+          <DialogTitle>{t("他の期間からデータと条件をインポート")}</DialogTitle>
           <DialogContent>
             <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
                 <DialogContentText>
-                  {m["この期間に他の期間からデータと条件をインポートします"]}
+                  {t("この期間に他の期間からデータと条件をインポートします")}
                 </DialogContentText>
                 <Typography>
                   <TermName term={props.term} />
@@ -353,7 +354,7 @@ const Term = React.memo((props: Props): JSX.Element => {
               <Grid item={true} xs={12}>
                 <TextField
                   select={true}
-                  label={m["期間"]}
+                  label={t("期間")}
                   value={state.selectedTermId}
                   onChange={handleChangeTermId}
                   fullWidth={true}
@@ -367,11 +368,11 @@ const Term = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <DialogContentText>
-                  {m["選択した期間から次のデータと条件をインポートします"]}
-                  <br />- {m["職員"]}
-                  <br />- {m["勤務"]}
-                  <br />- {m["グループ"]}
-                  <br />- {m["すべての条件"]}
+                  {t("選択した期間から次のデータと条件をインポートします")}
+                  <br />- {t("職員")}
+                  <br />- {t("勤務")}
+                  <br />- {t("グループ")}
+                  <br />- {t("すべての条件")}
                   <br />
                 </DialogContentText>
               </Grid>
@@ -379,10 +380,10 @@ const Term = React.memo((props: Props): JSX.Element => {
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleClickImportData}>
-              {m["インポート"]}
+              {t("インポート")}
             </Button>
             <Button color="primary" onClick={handleClickCloseImportDataDialog}>
-              {m["閉じる"]}
+              {t("閉じる")}
             </Button>
           </DialogActions>
         </Dialog>
@@ -393,12 +394,12 @@ const Term = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>{m["arg0の削除"](m["期間"])}</DialogTitle>
+        <DialogTitle>{t("{{arg0}}の削除", { arg0: t("期間") })}</DialogTitle>
         <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
               <DialogContentText>
-                {m["このarg0を削除します"](m["期間"])}
+                {t("この{{arg0}}を削除します", { arg0: t("期間") })}
               </DialogContentText>
               <Typography>
                 <TermName term={props.term} />
@@ -406,21 +407,19 @@ const Term = React.memo((props: Props): JSX.Element => {
             </Grid>
             <Grid item={true} xs={12}>
               <DialogContentText>
-                {
-                  m[
-                    "期間中のすべての勤務表、職員、勤務、グループ、条件も削除されます"
-                  ]
-                }
+                {t(
+                  "期間中のすべての勤務表、職員、勤務、グループ、条件も削除されます"
+                )}
               </DialogContentText>
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteTerm}>
-            {m["削除"]}
+            {t("削除")}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            {m["閉じる"]}
+            {t("閉じる")}
           </Button>
         </DialogActions>
       </Dialog>

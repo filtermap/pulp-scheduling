@@ -12,13 +12,13 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
-import { m } from "../messages";
 import * as constraints3 from "../modules/constraints3";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
@@ -43,6 +43,7 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Constraints3 = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
   const [position, ref] = usePosition();
   useHashFragment(position?.top);
   const { termIdName } = useParams();
@@ -122,7 +123,7 @@ const Constraints3 = React.memo((): JSX.Element => {
     };
     if (isNaN(newConstraint3MinNumberOfAssignments))
       errorMessages.newConstraint3MinNumberOfAssignments.push(
-        m["arg0の形式が正しくありません"](m["割り当て数下限"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("割り当て数下限") })
       );
     return errorMessages;
   };
@@ -156,7 +157,7 @@ const Constraints3 = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          {m["職員の勤務の割り当て数の下限"]}
+          {t("職員の勤務の割り当て数の下限")}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -178,19 +179,21 @@ const Constraints3 = React.memo((): JSX.Element => {
           maxWidth="md"
         >
           <DialogTitle>
-            {m["arg0を追加できません"](m["職員の勤務の割り当て数の下限"])}
+            {t("{{arg0}}を追加できません", {
+              arg0: t("職員の勤務の割り当て数の下限"),
+            })}
           </DialogTitle>
           <DialogContent>
             {state.newConstraint3MemberId === undefined && (
-              <DialogContentText>{m["職員がいません"]}</DialogContentText>
+              <DialogContentText>{t("職員がいません")}</DialogContentText>
             )}
             {state.newConstraint3KinmuId === undefined && (
-              <DialogContentText>{m["勤務がありません"]}</DialogContentText>
+              <DialogContentText>{t("勤務がありません")}</DialogContentText>
             )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
-              {m["閉じる"]}
+              {t("閉じる")}
             </Button>
           </DialogActions>
         </Dialog>
@@ -213,7 +216,9 @@ const Constraints3 = React.memo((): JSX.Element => {
               maxWidth="md"
             >
               <DialogTitle>
-                {m["arg0の追加"](m["職員の勤務の割り当て数の下限"])}
+                {t("{{arg0}}の追加", {
+                  arg0: t("職員の勤務の割り当て数の下限"),
+                })}
               </DialogTitle>
               <DialogContent>
                 <Grid container={true} spacing={1}>
@@ -229,13 +234,13 @@ const Constraints3 = React.memo((): JSX.Element => {
                           color="primary"
                         />
                       }
-                      label={m["有効"]}
+                      label={t("有効")}
                     />
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label={m["職員"]}
+                      label={t("職員")}
                       value={state.newConstraint3MemberId}
                       onChange={handleChangeNewConstraint3MemberId}
                       fullWidth={true}
@@ -250,7 +255,7 @@ const Constraints3 = React.memo((): JSX.Element => {
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label={m["勤務"]}
+                      label={t("勤務")}
                       value={state.newConstraint3KinmuId}
                       onChange={handleChangeNewConstraint3KinmuId}
                       fullWidth={true}
@@ -264,7 +269,7 @@ const Constraints3 = React.memo((): JSX.Element => {
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label={m["割り当て数下限"]}
+                      label={t("割り当て数下限")}
                       type="number"
                       value={state.newConstraint3MinNumberOfAssignments}
                       onChange={
@@ -299,10 +304,10 @@ const Constraints3 = React.memo((): JSX.Element => {
                   )}
                   onClick={handleClickCreateConstraint3}
                 >
-                  {m["追加"]}
+                  {t("追加")}
                 </Button>
                 <Button color="primary" onClick={handleCloseCreationDialog}>
-                  {m["閉じる"]}
+                  {t("閉じる")}
                 </Button>
               </DialogActions>
             </Dialog>

@@ -1,7 +1,7 @@
 import * as React from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import { m } from "../../messages";
 import type { Constraint10 } from "../../modules/constraints10";
 import { useAppSelector } from "../../modules/hooks";
 import * as kinmus from "../../modules/kinmus";
@@ -23,6 +23,7 @@ type Constraint10NameProps = Constraint10NameLinkProps & {
 // eslint-disable-next-line react/display-name
 const Constraint10Name = React.memo(
   (props: Constraint10NameProps): JSX.Element => {
+    const { t } = useTranslation();
     const selectedMember = useAppSelector(
       (state) =>
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -54,30 +55,31 @@ const Constraint10Name = React.memo(
         kinmus.selectors.selectById(state, props.constraint10.kinmu_id)!
     );
     return (
-      <>
-        {props.isInLink ? (
-          <MemberName member={selectedMember} />
-        ) : (
-          <MemberNameLink member={selectedMember} />
-        )}
-        の
-        <LineThrough line={!constraint10StartDateIsEnabled}>
-          {props.constraint10.start_date_name ||
-            m["（arg0未入力）"](m["開始日"])}
-        </LineThrough>
-        から
-        <LineThrough line={!constraint10StopDateIsEnabled}>
-          {props.constraint10.stop_date_name ||
-            m["（arg0未入力）"](m["終了日"])}
-        </LineThrough>
-        までに
-        {props.isInLink ? (
-          <KinmuName kinmu={selectedKinmu} />
-        ) : (
-          <KinmuNameLink kinmu={selectedKinmu} />
-        )}
-        を割り当てない
-      </>
+      <Trans
+        i18nKey="<MemberName />の<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までに<KinmuName />を割り当てない"
+        components={{
+          KinmuName: props.isInLink ? (
+            <KinmuName kinmu={selectedKinmu} />
+          ) : (
+            <KinmuNameLink kinmu={selectedKinmu} />
+          ),
+          MemberName: props.isInLink ? (
+            <MemberName member={selectedMember} />
+          ) : (
+            <MemberNameLink member={selectedMember} />
+          ),
+          StartDateName: <LineThrough line={!constraint10StartDateIsEnabled} />,
+          StopDateName: <LineThrough line={!constraint10StopDateIsEnabled} />,
+        }}
+        values={{
+          終了日:
+            props.constraint10.stop_date_name ||
+            t("（{{arg0}}未入力）", { arg0: t("終了日") }),
+          開始日:
+            props.constraint10.start_date_name ||
+            t("（{{arg0}}未入力）", { arg0: t("開始日") }),
+        }}
+      />
     );
   }
 );

@@ -2,8 +2,7 @@ import Add from "@mui/icons-material/Add";
 import Fab, { FabProps } from "@mui/material/Fab";
 import { styled } from "@mui/material/styles";
 import * as React from "react";
-
-import { m } from "../../messages";
+import { useTranslation } from "react-i18next";
 
 // React Fab component - MUI
 // https://mui.com/components/floating-action-button/
@@ -26,12 +25,20 @@ type FloatingAddButtonProps = FabProps;
 
 // eslint-disable-next-line react/display-name
 const FloatingAddButton = React.memo(
-  (props: FloatingAddButtonProps): JSX.Element => (
-    <CorneredFab variant="extended" color="primary" aria-label="add" {...props}>
-      <AddWithMargin />
-      {m["追加"]}
-    </CorneredFab>
-  )
+  (props: FloatingAddButtonProps): JSX.Element => {
+    const { t } = useTranslation();
+    return (
+      <CorneredFab
+        variant="extended"
+        color="primary"
+        aria-label="add"
+        {...props}
+      >
+        <AddWithMargin />
+        {t("追加")}
+      </CorneredFab>
+    );
+  }
 );
 
 export default FloatingAddButton;

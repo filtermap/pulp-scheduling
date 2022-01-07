@@ -1,20 +1,21 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import { m } from "../../messages";
 import type { Kinmu } from "../../modules/kinmus";
 import LineThrough from "../parts/LineThrough";
 
 type Props = { kinmu: Kinmu };
 
 // eslint-disable-next-line react/display-name
-const KinmuName = React.memo(
-  (props: Props): JSX.Element => (
+const KinmuName = React.memo((props: Props): JSX.Element => {
+  const { t } = useTranslation();
+  return (
     <LineThrough line={!props.kinmu.is_enabled}>
-      {props.kinmu.name || m["（arg0未入力）"](m["勤務名"])}
+      {props.kinmu.name || t("（{{arg0}}未入力）", { arg0: t("勤務名") })}
     </LineThrough>
-  )
-);
+  );
+});
 
 export default KinmuName;
 

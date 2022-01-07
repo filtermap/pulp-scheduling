@@ -19,10 +19,10 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import * as iconv from "iconv-lite";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
-import { m } from "../messages";
 import * as all from "../modules/all";
 import * as assignments from "../modules/assignments";
 import * as kinmus from "../modules/kinmus";
@@ -56,6 +56,7 @@ const sortDateNames = (dateNames: string[]): string[] =>
 
 // eslint-disable-next-line react/display-name
 const Schedule = React.memo((props: Props): JSX.Element => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const selectedAssignments = useSelector(assignments.selectors.selectAll);
   const selectedMembers = useSelector(members.selectors.selectAll);
@@ -113,7 +114,7 @@ const Schedule = React.memo((props: Props): JSX.Element => {
     if ("error" in response) throw new Error(response.error.message);
     const csv = iconv.encode(response.result as string, "Shift_JIS");
     const a = document.createElement("a");
-    a.download = `${m["勤務表arg0"](props.schedule.id)}.csv`;
+    a.download = `${t("勤務表{{arg0}}", { arg0: props.schedule.id })}.csv`;
     a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
     a.click();
   };
@@ -190,10 +191,10 @@ const Schedule = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              {m["削除"]}
+              {t("削除")}
             </Button>
             <Button size="small" onClick={handleClickExportToCSV}>
-              {m["CSV出力"]}
+              {t("CSV出力")}
             </Button>
           </CardActions>
         </Collapse>
@@ -204,10 +205,10 @@ const Schedule = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>{m["arg0の削除"](m["勤務表"])}</DialogTitle>
+        <DialogTitle>{t("{{arg0}}の削除", { arg0: t("勤務表") })}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {m["このarg0を削除します"](m["勤務表"])}
+            {t("この{{arg0}}を削除します", { arg0: t("勤務表") })}
           </DialogContentText>
           <Typography>
             <ScheduleName schedule={props.schedule} />
@@ -215,10 +216,10 @@ const Schedule = React.memo((props: Props): JSX.Element => {
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteSchedule}>
-            {m["削除"]}
+            {t("削除")}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            {m["閉じる"]}
+            {t("閉じる")}
           </Button>
         </DialogActions>
       </Dialog>

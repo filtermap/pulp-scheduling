@@ -1,15 +1,16 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import { m } from "../../messages";
 import type { Schedule } from "../../modules/schedules";
 
 type Props = { schedule: Schedule };
 
 // eslint-disable-next-line react/display-name
-const ScheduleName = React.memo(
-  (props: Props): JSX.Element => <>{m["勤務表arg0"](props.schedule.id)}</>
-);
+const ScheduleName = React.memo((props: Props): JSX.Element => {
+  const { t } = useTranslation();
+  return <>{t("勤務表{{arg0}}", { arg0: props.schedule.id })}</>;
+});
 
 export default ScheduleName;
 

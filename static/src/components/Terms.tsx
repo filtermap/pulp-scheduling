@@ -10,10 +10,10 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
-import { m } from "../messages";
 import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
@@ -35,6 +35,7 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Terms = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const selectedTerms = useSelector(terms.selectors.selectAll);
   const todayString = utils.dateToString(new Date());
@@ -73,11 +74,11 @@ const Terms = React.memo((): JSX.Element => {
     const newTermStopDate = utils.stringToDate(newTermStopDateName);
     if (!newTermStartDate)
       errorMessages.newTermStartDateName.push(
-        m["arg0の形式が正しくありません"](m["開始日"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
       );
     if (!newTermStopDate)
       errorMessages.newTermStopDateName.push(
-        m["arg0の形式が正しくありません"](m["終了日"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("終了日") })
       );
     if (
       newTermStartDate &&
@@ -85,16 +86,16 @@ const Terms = React.memo((): JSX.Element => {
       newTermStartDate > newTermStopDate
     ) {
       errorMessages.newTermStartDateName.push(
-        m["arg0にはarg1より過去の日付を入力してください"](
-          m["開始日"],
-          m["終了日"]
-        )
+        t("{{arg0}}には{{arg1}}より過去の日付を入力してください", {
+          arg0: t("開始日"),
+          arg1: t("終了日"),
+        })
       );
       errorMessages.newTermStopDateName.push(
-        m["arg0にはarg1より未来の日付を入力してください"](
-          m["終了日"],
-          m["開始日"]
-        )
+        t("{{arg0}}には{{arg1}}より未来の日付を入力してください", {
+          arg0: t("終了日"),
+          arg1: t("開始日"),
+        })
       );
     }
     return errorMessages;
@@ -146,7 +147,7 @@ const Terms = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          {m["期間"]}
+          {t("期間")}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -165,7 +166,7 @@ const Terms = React.memo((): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>{m["arg0の追加"](m["期間"])}</DialogTitle>
+        <DialogTitle>{t("{{arg0}}の追加", { arg0: t("期間") })}</DialogTitle>
         <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
@@ -178,12 +179,12 @@ const Terms = React.memo((): JSX.Element => {
                     color="primary"
                   />
                 }
-                label={m["有効"]}
+                label={t("有効")}
               />
             </Grid>
             <Grid item={true} xs={12}>
               <TextField
-                label={m["開始日"]}
+                label={t("開始日")}
                 type="date"
                 value={state.newTermStartDateName}
                 onChange={handleChangeNewTermStartDateName}
@@ -205,7 +206,7 @@ const Terms = React.memo((): JSX.Element => {
             </Grid>
             <Grid item={true} xs={12}>
               <TextField
-                label={m["終了日"]}
+                label={t("終了日")}
                 type="date"
                 value={state.newTermStopDateName}
                 onChange={handleChangeNewTermStopDateName}
@@ -233,10 +234,10 @@ const Terms = React.memo((): JSX.Element => {
             )}
             onClick={handleClickCreateTerm}
           >
-            {m["追加"]}
+            {t("追加")}
           </Button>
           <Button color="primary" onClick={handleCloseCreationDialog}>
-            {m["閉じる"]}
+            {t("閉じる")}
           </Button>
         </DialogActions>
       </Dialog>

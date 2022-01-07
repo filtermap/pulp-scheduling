@@ -1,7 +1,7 @@
 import * as React from "react";
+import { useTranslation, Trans } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import { m } from "../../messages";
 import type { Constraint1 } from "../../modules/constraints1";
 import * as groups from "../../modules/groups";
 import { useAppSelector } from "../../modules/hooks";
@@ -23,6 +23,7 @@ type Constraint1NameProps = Constraint1NameLinkProps & {
 // eslint-disable-next-line react/display-name
 const Constraint1Name = React.memo(
   (props: Constraint1NameProps): JSX.Element => {
+    const { t } = useTranslation();
     const selectedTerm = useAppSelector(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       (state) => terms.selectors.selectById(state, props.constraint1.term_id)!
@@ -52,30 +53,32 @@ const Constraint1Name = React.memo(
         ? false
         : constraint1StopDate <= termStopDate;
     return (
-      <>
-        <LineThrough line={!constraint1StartDateIsEnabled}>
-          {props.constraint1.start_date_name ||
-            m["（arg0未入力）"](m["開始日"])}
-        </LineThrough>
-        から
-        <LineThrough line={!constraint1StopDateIsEnabled}>
-          {props.constraint1.stop_date_name || m["（arg0未入力）"](m["終了日"])}
-        </LineThrough>
-        までの
-        {props.isInLink ? (
-          <KinmuName kinmu={selectedKinmu} />
-        ) : (
-          <KinmuNameLink kinmu={selectedKinmu} />
-        )}
-        に
-        {props.isInLink ? (
-          <GroupName group={selectedGroup} />
-        ) : (
-          <GroupNameLink group={selectedGroup} />
-        )}
-        から{props.constraint1.min_number_of_assignments}
-        人以上の職員を割り当てる
-      </>
+      <Trans
+        i18nKey="<StartDateName>{{開始日}}</StartDateName>から<StopDateName>{{終了日}}</StopDateName>までの<KinmuName />に<GroupName />から{{割り当て職員数下限}}人以上の職員を割り当てる"
+        components={{
+          GroupName: props.isInLink ? (
+            <GroupName group={selectedGroup} />
+          ) : (
+            <GroupNameLink group={selectedGroup} />
+          ),
+          KinmuName: props.isInLink ? (
+            <KinmuName kinmu={selectedKinmu} />
+          ) : (
+            <KinmuNameLink kinmu={selectedKinmu} />
+          ),
+          StartDateName: <LineThrough line={!constraint1StartDateIsEnabled} />,
+          StopDateName: <LineThrough line={!constraint1StopDateIsEnabled} />,
+        }}
+        values={{
+          割り当て職員数下限: props.constraint1.min_number_of_assignments,
+          終了日:
+            props.constraint1.stop_date_name ||
+            t("（{{arg0}}未入力）", { arg0: t("終了日") }),
+          開始日:
+            props.constraint1.start_date_name ||
+            t("（{{arg0}}未入力）", { arg0: t("開始日") }),
+        }}
+      />
     );
   }
 );

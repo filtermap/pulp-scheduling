@@ -12,13 +12,13 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
-import { m } from "../messages";
 import * as constraints10 from "../modules/constraints10";
 import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
@@ -49,6 +49,7 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Constraints10 = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
   const [position, ref] = usePosition();
   useHashFragment(position?.top);
   const { termIdName } = useParams();
@@ -142,11 +143,11 @@ const Constraints10 = React.memo((): JSX.Element => {
       utils.stringToDate(newConstraint10StopDateName);
     if (!newConstraint10StartDate)
       errorMessages.newConstraint10StartDateName.push(
-        m["arg0の形式が正しくありません"](m["開始日"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
       );
     if (!newConstraint10StopDate)
       errorMessages.newConstraint10StopDateName.push(
-        m["arg0の形式が正しくありません"](m["終了日"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("終了日") })
       );
     if (
       newConstraint10StartDate &&
@@ -154,16 +155,16 @@ const Constraints10 = React.memo((): JSX.Element => {
       newConstraint10StartDate > newConstraint10StopDate
     ) {
       errorMessages.newConstraint10StartDateName.push(
-        m["arg0にはarg1より過去の日付を入力してください"](
-          m["開始日"],
-          m["終了日"]
-        )
+        t("{{arg0}}には{{arg1}}より過去の日付を入力してください", {
+          arg0: t("開始日"),
+          arg1: t("終了日"),
+        })
       );
       errorMessages.newConstraint10StopDateName.push(
-        m["arg0にはarg1より未来の日付を入力してください"](
-          m["終了日"],
-          m["開始日"]
-        )
+        t("{{arg0}}には{{arg1}}より未来の日付を入力してください", {
+          arg0: t("終了日"),
+          arg1: t("開始日"),
+        })
       );
     }
     return errorMessages;
@@ -212,7 +213,7 @@ const Constraints10 = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          {m["職員の期間に割り当てない勤務"]}
+          {t("職員の期間に割り当てない勤務")}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -234,19 +235,21 @@ const Constraints10 = React.memo((): JSX.Element => {
           maxWidth="md"
         >
           <DialogTitle>
-            {m["arg0を追加できません"](m["職員の期間に割り当てない勤務"])}
+            {t("{{arg0}}を追加できません", {
+              arg0: t("職員の期間に割り当てない勤務"),
+            })}
           </DialogTitle>
           <DialogContent>
             {state.newConstraint10MemberId === undefined && (
-              <DialogContentText>{m["職員がいません"]}</DialogContentText>
+              <DialogContentText>{t("職員がいません")}</DialogContentText>
             )}
             {state.newConstraint10KinmuId === undefined && (
-              <DialogContentText>{m["勤務がありません"]}</DialogContentText>
+              <DialogContentText>{t("勤務がありません")}</DialogContentText>
             )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
-              {m["閉じる"]}
+              {t("閉じる")}
             </Button>
           </DialogActions>
         </Dialog>
@@ -297,7 +300,9 @@ const Constraints10 = React.memo((): JSX.Element => {
               maxWidth="md"
             >
               <DialogTitle>
-                {m["arg0の追加"](m["職員の期間に割り当てない勤務"])}
+                {t("{{arg0}}の追加", {
+                  arg0: t("職員の期間に割り当てない勤務"),
+                })}
               </DialogTitle>
               <DialogContent>
                 <Grid container={true} spacing={1}>
@@ -314,13 +319,13 @@ const Constraints10 = React.memo((): JSX.Element => {
                           color="primary"
                         />
                       }
-                      label={m["有効"]}
+                      label={t("有効")}
                     />
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label={m["職員"]}
+                      label={t("職員")}
                       value={state.newConstraint10MemberId}
                       onChange={handleChangeNewConstraint10MemberId}
                       fullWidth={true}
@@ -334,7 +339,7 @@ const Constraints10 = React.memo((): JSX.Element => {
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label={m["開始日"]}
+                      label={t("開始日")}
                       type="date"
                       value={state.newConstraint10StartDateName}
                       onChange={handleChangeNewConstraint10StartDateName}
@@ -364,7 +369,7 @@ const Constraints10 = React.memo((): JSX.Element => {
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label={m["終了日"]}
+                      label={t("終了日")}
                       type="date"
                       value={state.newConstraint10StopDateName}
                       onChange={handleChangeNewConstraint10StopDateName}
@@ -395,7 +400,7 @@ const Constraints10 = React.memo((): JSX.Element => {
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label={m["勤務"]}
+                      label={t("勤務")}
                       value={state.newConstraint10KinmuId}
                       onChange={handleChangeNewConstraint10KinmuId}
                       fullWidth={true}
@@ -417,10 +422,10 @@ const Constraints10 = React.memo((): JSX.Element => {
                   )}
                   onClick={handleClickCreateConstraint10}
                 >
-                  {m["追加"]}
+                  {t("追加")}
                 </Button>
                 <Button color="primary" onClick={handleCloseCreationDialog}>
-                  {m["閉じる"]}
+                  {t("閉じる")}
                 </Button>
               </DialogActions>
             </Dialog>

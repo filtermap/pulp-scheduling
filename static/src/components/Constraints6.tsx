@@ -12,13 +12,13 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
-import { m } from "../messages";
 import * as constraints6 from "../modules/constraints6";
 import * as kinmus from "../modules/kinmus";
 
@@ -40,6 +40,7 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Constraints6 = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
   const [position, ref] = usePosition();
   useHashFragment(position?.top);
   const { termIdName } = useParams();
@@ -100,7 +101,7 @@ const Constraints6 = React.memo((): JSX.Element => {
     };
     if (isNaN(newConstraint6MaxNumberOfDays))
       errorMessages.newConstraint6MaxNumberOfDays.push(
-        m["arg0の形式が正しくありません"](m["連続日数上限"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("連続日数上限") })
       );
     return errorMessages;
   };
@@ -129,7 +130,7 @@ const Constraints6 = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          {m["勤務の連続日数の上限"]}
+          {t("勤務の連続日数の上限")}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -150,16 +151,16 @@ const Constraints6 = React.memo((): JSX.Element => {
           maxWidth="md"
         >
           <DialogTitle>
-            {m["arg0を追加できません"](m["勤務の連続日数の上限"])}
+            {t("{{arg0}}を追加できません", { arg0: t("勤務の連続日数の上限") })}
           </DialogTitle>
           <DialogContent>
             {state.newConstraint6KinmuId === undefined && (
-              <DialogContentText>{m["勤務がありません"]}</DialogContentText>
+              <DialogContentText>{t("勤務がありません")}</DialogContentText>
             )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
-              {m["閉じる"]}
+              {t("閉じる")}
             </Button>
           </DialogActions>
         </Dialog>
@@ -177,7 +178,7 @@ const Constraints6 = React.memo((): JSX.Element => {
               maxWidth="md"
             >
               <DialogTitle>
-                {m["arg0の追加"](m["勤務の連続日数の上限"])}
+                {t("{{arg0}}の追加", { arg0: t("勤務の連続日数の上限") })}
               </DialogTitle>
               <DialogContent>
                 <Grid container={true} spacing={1}>
@@ -193,13 +194,13 @@ const Constraints6 = React.memo((): JSX.Element => {
                           color="primary"
                         />
                       }
-                      label={m["有効"]}
+                      label={t("有効")}
                     />
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label={m["勤務"]}
+                      label={t("勤務")}
                       value={state.newConstraint6KinmuId}
                       onChange={handleChangeNewConstraint6KinmuId}
                       fullWidth={true}
@@ -213,7 +214,7 @@ const Constraints6 = React.memo((): JSX.Element => {
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label={m["連続日数上限"]}
+                      label={t("連続日数上限")}
                       type="number"
                       value={state.newConstraint6MaxNumberOfDays}
                       onChange={handleChangeNewConstraint6MaxNumberOfDays}
@@ -245,10 +246,10 @@ const Constraints6 = React.memo((): JSX.Element => {
                   )}
                   onClick={handleClickCreateConstraint6}
                 >
-                  {m["追加"]}
+                  {t("追加")}
                 </Button>
                 <Button color="primary" onClick={handleCloseCreationDialog}>
-                  {m["閉じる"]}
+                  {t("閉じる")}
                 </Button>
               </DialogActions>
             </Dialog>

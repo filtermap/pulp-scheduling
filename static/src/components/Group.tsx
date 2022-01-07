@@ -19,10 +19,10 @@ import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useImmer } from "use-immer";
 
-import { m } from "../messages";
 import * as all from "../modules/all";
 import * as constraints1 from "../modules/constraints1";
 import * as constraints2 from "../modules/constraints2";
@@ -55,6 +55,7 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Group = React.memo((props: Props): JSX.Element => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const selectedMembers = useSelector(members.selectors.selectAll);
   const selectedGroupMembers = useSelector(group_members.selectors.selectAll);
@@ -114,7 +115,7 @@ const Group = React.memo((props: Props): JSX.Element => {
     };
     if (groupName === "")
       errorMessages.groupName.push(
-        m["arg0を入力してください"](m["グループ名"])
+        t("{{arg0}}を入力してください", { arg0: t("グループ名") })
       );
     return errorMessages;
   };
@@ -210,7 +211,7 @@ const Group = React.memo((props: Props): JSX.Element => {
             <Grid container={true} spacing={1}>
               <Grid item={true} xs={12}>
                 <TextField
-                  label={m["グループ名"]}
+                  label={t("グループ名")}
                   value={state.changes.name}
                   onChange={handleChangeGroupName}
                   onBlur={handleBlurGroupName}
@@ -227,7 +228,7 @@ const Group = React.memo((props: Props): JSX.Element => {
               </Grid>
               <Grid item={true} xs={12}>
                 <FormControl fullWidth={true}>
-                  <FormLabel>{m["グループに所属する職員"]}</FormLabel>
+                  <FormLabel>{t("グループに所属する職員")}</FormLabel>
                   <FormGroup>
                     {membersInTerm.map((member) => (
                       <FormControlLabel
@@ -249,7 +250,7 @@ const Group = React.memo((props: Props): JSX.Element => {
           </CardContent>
           <CardActions disableSpacing={true}>
             <Button size="small" onClick={handleClickOpenDeletionDialog}>
-              {m["削除"]}
+              {t("削除")}
             </Button>
           </CardActions>
         </Collapse>
@@ -260,12 +261,14 @@ const Group = React.memo((props: Props): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>{m["arg0の削除"](m["グループ"])}</DialogTitle>
+        <DialogTitle>
+          {t("{{arg0}}の削除", { arg0: t("グループ") })}
+        </DialogTitle>
         <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
               <DialogContentText>
-                {m["このarg0を削除します"](m["グループ"])}
+                {t("この{{arg0}}を削除します", { arg0: t("グループ") })}
               </DialogContentText>
               <Typography>
                 <GroupName group={props.group} />
@@ -276,7 +279,7 @@ const Group = React.memo((props: Props): JSX.Element => {
               {(groupConstraints1.length > 0 ||
                 groupConstraints2.length > 0) && (
                 <DialogContentText>
-                  {m["以下の条件も削除されます"]}
+                  {t("以下の条件も削除されます")}
                 </DialogContentText>
               )}
               {groupConstraints1.map((c) => (
@@ -294,10 +297,10 @@ const Group = React.memo((props: Props): JSX.Element => {
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={handleClickDeleteGroup}>
-            {m["削除"]}
+            {t("削除")}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
-            {m["閉じる"]}
+            {t("閉じる")}
           </Button>
         </DialogActions>
       </Dialog>

@@ -1,7 +1,7 @@
 import * as React from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import { m } from "../../messages";
 import type { Constraint4 } from "../../modules/constraints4";
 import { useAppSelector } from "../../modules/hooks";
 import * as kinmus from "../../modules/kinmus";
@@ -20,6 +20,7 @@ type Constraint4NameProps = Constraint4NameLinkProps & {
 // eslint-disable-next-line react/display-name
 const Constraint4Name = React.memo(
   (props: Constraint4NameProps): JSX.Element => {
+    const { t } = useTranslation();
     const selectedKinmu = useAppSelector(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       (state) => kinmus.selectors.selectById(state, props.constraint4.kinmu_id)!
@@ -30,23 +31,26 @@ const Constraint4Name = React.memo(
         members.selectors.selectById(state, props.constraint4.member_id)!
     );
     return (
-      <>
-        {props.isInLink ? (
-          <MemberName member={selectedMember} />
-        ) : (
-          <MemberNameLink member={selectedMember} />
-        )}
-        に
-        {props.isInLink ? (
-          <KinmuName kinmu={selectedKinmu} />
-        ) : (
-          <KinmuNameLink kinmu={selectedKinmu} />
-        )}
-        を
-        {props.constraint4.max_number_of_assignments ||
-          m["（arg0未入力）"](m["割り当て数上限"])}
-        回以下割り当てる
-      </>
+      <Trans
+        i18nKey="<MemberName />に<KinmuName />を{{割り当て数上限}}回以下割り当てる"
+        components={{
+          KinmuName: props.isInLink ? (
+            <KinmuName kinmu={selectedKinmu} />
+          ) : (
+            <KinmuNameLink kinmu={selectedKinmu} />
+          ),
+          MemberName: props.isInLink ? (
+            <MemberName member={selectedMember} />
+          ) : (
+            <MemberNameLink member={selectedMember} />
+          ),
+        }}
+        values={{
+          割り当て数上限:
+            props.constraint4.max_number_of_assignments ||
+            t("（{{arg0}}未入力）", { arg0: t("割り当て数上限") }),
+        }}
+      />
     );
   }
 );

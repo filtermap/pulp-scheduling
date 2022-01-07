@@ -1,7 +1,7 @@
 import * as React from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import { m } from "../../messages";
 import type { Constraint7 } from "../../modules/constraints7";
 import { useAppSelector } from "../../modules/hooks";
 import * as kinmus from "../../modules/kinmus";
@@ -18,22 +18,27 @@ type Constraint7NameProps = Constraint7NameLinkProps & {
 // eslint-disable-next-line react/display-name
 const Constraint7Name = React.memo(
   (props: Constraint7NameProps): JSX.Element => {
+    const { t } = useTranslation();
     const selectedKinmu = useAppSelector(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       (state) => kinmus.selectors.selectById(state, props.constraint7.kinmu_id)!
     );
     return (
-      <>
-        {props.isInLink ? (
-          <KinmuName kinmu={selectedKinmu} />
-        ) : (
-          <KinmuNameLink kinmu={selectedKinmu} />
-        )}
-        の間隔日数を
-        {props.constraint7.min_number_of_days ||
-          m["（arg0未入力）"](m["間隔日数下限"])}
-        日以上にする
-      </>
+      <Trans
+        i18nKey="<KinmuName />の間隔日数を{{間隔日数下限}}日以上にする"
+        components={{
+          KinmuName: props.isInLink ? (
+            <KinmuName kinmu={selectedKinmu} />
+          ) : (
+            <KinmuNameLink kinmu={selectedKinmu} />
+          ),
+        }}
+        values={{
+          間隔日数下限:
+            props.constraint7.min_number_of_days ||
+            t("（{{arg0}}未入力）", { arg0: t("間隔日数下限") }),
+        }}
+      />
     );
   }
 );

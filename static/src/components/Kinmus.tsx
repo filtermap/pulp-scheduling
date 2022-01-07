@@ -10,13 +10,13 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
-import { m } from "../messages";
 import * as kinmus from "../modules/kinmus";
 
 import Kinmu from "./Kinmu";
@@ -35,6 +35,7 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Kinmus = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
   const [position, ref] = usePosition();
   useHashFragment(position?.top);
   const { termIdName } = useParams();
@@ -72,7 +73,9 @@ const Kinmus = React.memo((): JSX.Element => {
       newKinmuName: [],
     };
     if (newKinmuName === "")
-      errorMessages.newKinmuName.push(m["arg0を入力してください"](m["勤務名"]));
+      errorMessages.newKinmuName.push(
+        t("{{arg0}}を入力してください", { arg0: t("勤務名") })
+      );
     return errorMessages;
   };
   const handleChangeNewKinmuName = (
@@ -99,7 +102,7 @@ const Kinmus = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          {m["勤務"]}
+          {t("勤務")}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -118,7 +121,7 @@ const Kinmus = React.memo((): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>{m["arg0の追加"](m["勤務"])}</DialogTitle>
+        <DialogTitle>{t("{{arg0}}の追加", { arg0: t("勤務") })}</DialogTitle>
         <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
@@ -130,12 +133,12 @@ const Kinmus = React.memo((): JSX.Element => {
                     color="primary"
                   />
                 }
-                label={m["有効"]}
+                label={t("有効")}
               />
             </Grid>
             <Grid item={true} xs={12}>
               <TextField
-                label={m["勤務名"]}
+                label={t("勤務名")}
                 value={state.newKinmuName}
                 onChange={handleChangeNewKinmuName}
                 fullWidth={true}
@@ -159,10 +162,10 @@ const Kinmus = React.memo((): JSX.Element => {
             )}
             onClick={handleClickCreateKinmu}
           >
-            {m["追加"]}
+            {t("追加")}
           </Button>
           <Button color="primary" onClick={handleCloseCreationDialog}>
-            {m["閉じる"]}
+            {t("閉じる")}
           </Button>
         </DialogActions>
       </Dialog>

@@ -14,13 +14,13 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
-import { m } from "../messages";
 import * as all from "../modules/all";
 import * as groups from "../modules/groups";
 import * as members from "../modules/members";
@@ -43,6 +43,7 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Members = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
   const [position, ref] = usePosition();
   useHashFragment(position?.top);
   const { termIdName } = useParams();
@@ -94,7 +95,7 @@ const Members = React.memo((): JSX.Element => {
     };
     if (newMemberName === "")
       errorMessages.newMemberName.push(
-        m["arg0を入力してください"](m["職員名"])
+        t("{{arg0}}を入力してください", { arg0: t("職員名") })
       );
     return errorMessages;
   };
@@ -139,7 +140,7 @@ const Members = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          {m["職員"]}
+          {t("職員")}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -163,7 +164,7 @@ const Members = React.memo((): JSX.Element => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>{m["arg0の追加"](m["職員"])}</DialogTitle>
+        <DialogTitle>{t("{{arg0}}の追加", { arg0: t("職員") })}</DialogTitle>
         <DialogContent>
           <Grid container={true} spacing={1}>
             <Grid item={true} xs={12}>
@@ -175,12 +176,12 @@ const Members = React.memo((): JSX.Element => {
                     color="primary"
                   />
                 }
-                label={m["有効"]}
+                label={t("有効")}
               />
             </Grid>
             <Grid item={true} xs={12}>
               <TextField
-                label={m["職員名"]}
+                label={t("職員名")}
                 value={state.newMemberName}
                 onChange={handleChangeNewMemberName}
                 fullWidth={true}
@@ -196,7 +197,7 @@ const Members = React.memo((): JSX.Element => {
             </Grid>
             <Grid item={true} xs={12}>
               <FormControl fullWidth={true}>
-                <FormLabel>{m["職員が所属するグループ"]}</FormLabel>
+                <FormLabel>{t("職員が所属するグループ")}</FormLabel>
                 <FormGroup>
                   {groupsInTerm.map((group) => (
                     <FormControlLabel
@@ -224,10 +225,10 @@ const Members = React.memo((): JSX.Element => {
             )}
             onClick={handleClickCreateMember}
           >
-            {m["追加"]}
+            {t("追加")}
           </Button>
           <Button color="primary" onClick={handleCloseCreationDialog}>
-            {m["閉じる"]}
+            {t("閉じる")}
           </Button>
         </DialogActions>
       </Dialog>

@@ -14,13 +14,13 @@ import TableRow from "@mui/material/TableRow";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
-import { m } from "../messages";
 import * as all from "../modules/all";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as constraints0 from "../modules/constraints0";
@@ -128,6 +128,7 @@ const sortDateNames = (dateNames: string[]): string[] =>
 
 // eslint-disable-next-line react/display-name
 const Schedules = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
   const [position, ref] = usePosition();
   useHashFragment(position?.top);
   const dispatch = useDispatch();
@@ -318,15 +319,17 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
+            <DialogTitle>
+              {t("{{arg0}}の追加", { arg0: t("勤務表") })}
+            </DialogTitle>
             <DialogContent>
               <Button size="small" onClick={handleClickSolve}>
-                {m["自動作成"]}
+                {t("自動作成")}
               </Button>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
-                {m["閉じる"]}
+                {t("閉じる")}
               </Button>
             </DialogActions>
           </Dialog>
@@ -338,9 +341,11 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
+            <DialogTitle>
+              {t("{{arg0}}の追加", { arg0: t("勤務表") })}
+            </DialogTitle>
             <DialogContent>
-              <DialogContentText>{m["作成中..."]}</DialogContentText>
+              <DialogContentText>{t("作成中...")}</DialogContentText>
               <LinearProgress variant="query" />
             </DialogContent>
           </Dialog>
@@ -365,7 +370,9 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
+            <DialogTitle>
+              {t("{{arg0}}の追加", { arg0: t("勤務表") })}
+            </DialogTitle>
             <DialogContent sx={{ overflow: "auto", padding: 0 }}>
               <Table>
                 <TableHead>
@@ -414,10 +421,10 @@ const Schedules = React.memo((): JSX.Element => {
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleClickCreateSchedule}>
-                {m["追加"]}
+                {t("追加")}
               </Button>
               <Button color="primary" onClick={handleCloseCreationDialog}>
-                {m["閉じる"]}
+                {t("閉じる")}
               </Button>
             </DialogActions>
           </Dialog>
@@ -431,31 +438,34 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
+            <DialogTitle>
+              {t("{{arg0}}の追加", { arg0: t("勤務表") })}
+            </DialogTitle>
             <DialogContent>
               <DialogContentText>
-                {m["勤務表を作成できませんでした"]}
+                {t("勤務表を作成できませんでした")}
               </DialogContentText>
               {state.dialogState.errorMessage === "Infeasible" ? (
                 <>
                   <Typography>
-                    {m["条件を満たす勤務表が存在しません"]}
+                    {t("条件を満たす勤務表が存在しません")}
                   </Typography>
                   <Button size="small" onClick={handleClickPursue}>
-                    {m["勤務表を作成できない原因となる条件を特定"]}
+                    {t("勤務表を作成できない原因となる条件を特定")}
                   </Button>
                 </>
               ) : (
                 <Typography>
-                  {m[
-                    "pulp-schedulingの不具合やデータの破損などにより作成できない可能性があります（arg0）"
-                  ](state.dialogState.errorMessage)}
+                  {t(
+                    "pulp-schedulingの不具合やデータの破損などにより作成できない可能性があります（{{arg0}}）",
+                    { arg0: state.dialogState.errorMessage }
+                  )}
                 </Typography>
               )}
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
-                {m["閉じる"]}
+                {t("閉じる")}
               </Button>
             </DialogActions>
           </Dialog>
@@ -467,10 +477,12 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
+            <DialogTitle>
+              {t("{{arg0}}の追加", { arg0: t("勤務表") })}
+            </DialogTitle>
             <DialogContent>
               <DialogContentText>
-                {m["勤務表を作成できない原因となる条件を特定中..."]}
+                {t("勤務表を作成できない原因となる条件を特定中...")}
               </DialogContentText>
               <LinearProgress variant="query" />
             </DialogContent>
@@ -545,16 +557,18 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
+            <DialogTitle>
+              {t("{{arg0}}の追加", { arg0: t("勤務表") })}
+            </DialogTitle>
             <DialogContent>
               <DialogContentText>
-                {m["以下の条件により勤務表を作成できませんでした"]}
+                {t("以下の条件により勤務表を作成できませんでした")}
               </DialogContentText>
               <Typography>{constraintText}</Typography>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
-                {m["閉じる"]}
+                {t("閉じる")}
               </Button>
             </DialogActions>
           </Dialog>
@@ -568,20 +582,23 @@ const Schedules = React.memo((): JSX.Element => {
             fullWidth={true}
             maxWidth="md"
           >
-            <DialogTitle>{m["arg0の追加"](m["勤務表"])}</DialogTitle>
+            <DialogTitle>
+              {t("{{arg0}}の追加", { arg0: t("勤務表") })}
+            </DialogTitle>
             <DialogContent>
               <DialogContentText>
-                {m["勤務表を作成できない原因となる条件を特定できませんでした"]}
+                {t("勤務表を作成できない原因となる条件を特定できませんでした")}
               </DialogContentText>
               <Typography>
-                {m[
-                  "pulp-schedulingの不具合や条件の誤りなどにより特定できない可能性があります（arg0）"
-                ](state.dialogState.errorMessage)}
+                {t(
+                  "pulp-schedulingの不具合や条件の誤りなどにより特定できない可能性があります（{{arg0}}）",
+                  { arg0: state.dialogState.errorMessage }
+                )}
               </Typography>
             </DialogContent>
             <DialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
-                {m["閉じる"]}
+                {t("閉じる")}
               </Button>
             </DialogActions>
           </Dialog>
@@ -592,7 +609,7 @@ const Schedules = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          {m["勤務表"]}
+          {t("勤務表")}
         </Typography>
       </Toolbar>
       <GridFrame>

@@ -12,13 +12,13 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useImmer } from "use-immer";
 
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
-import { m } from "../messages";
 import * as constraints1 from "../modules/constraints1";
 import * as groups from "../modules/groups";
 import { useAppSelector } from "../modules/hooks";
@@ -51,6 +51,7 @@ type ErrorMessages = {
 
 // eslint-disable-next-line react/display-name
 const Constraints1 = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
   const [position, ref] = usePosition();
   useHashFragment(position?.top);
   const { termIdName } = useParams();
@@ -141,11 +142,11 @@ const Constraints1 = React.memo((): JSX.Element => {
       utils.stringToDate(newConstraint1StopDateName);
     if (!newConstraint1StartDate)
       errorMessages.newConstraint1StartDateName.push(
-        m["arg0の形式が正しくありません"](m["開始日"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
       );
     if (!newConstraint1StopDate)
       errorMessages.newConstraint1StopDateName.push(
-        m["arg0の形式が正しくありません"](m["終了日"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("終了日") })
       );
     if (
       newConstraint1StartDate &&
@@ -153,21 +154,21 @@ const Constraints1 = React.memo((): JSX.Element => {
       newConstraint1StartDate > newConstraint1StopDate
     ) {
       errorMessages.newConstraint1StartDateName.push(
-        m["arg0にはarg1より過去の日付を入力してください"](
-          m["開始日"],
-          m["終了日"]
-        )
+        t("{{arg0}}には{{arg1}}より過去の日付を入力してください", {
+          arg0: t("開始日"),
+          arg1: t("終了日"),
+        })
       );
       errorMessages.newConstraint1StopDateName.push(
-        m["arg0にはarg1より未来の日付を入力してください"](
-          m["終了日"],
-          m["開始日"]
-        )
+        t("{{arg0}}には{{arg1}}より未来の日付を入力してください", {
+          arg0: t("終了日"),
+          arg1: t("開始日"),
+        })
       );
     }
     if (isNaN(newConstraint1MinNumberOfAssignments))
       errorMessages.newConstraint1MinNumberOfAssignments.push(
-        m["arg0の形式が正しくありません"](m["割り当て職員数下限"])
+        t("{{arg0}}の形式が正しくありません", { arg0: t("割り当て職員数下限") })
       );
     return errorMessages;
   };
@@ -233,7 +234,7 @@ const Constraints1 = React.memo((): JSX.Element => {
     <>
       <Toolbar>
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-          {m["期間の勤務にグループから割り当てる職員数の下限"]}
+          {t("期間の勤務にグループから割り当てる職員数の下限")}
         </Typography>
       </Toolbar>
       <GridFrame>
@@ -255,21 +256,21 @@ const Constraints1 = React.memo((): JSX.Element => {
           maxWidth="md"
         >
           <DialogTitle>
-            {m["arg0を追加できません"](
-              m["期間の勤務にグループから割り当てる職員数の下限"]
-            )}
+            {t("{{arg0}}を追加できません", {
+              arg0: t("期間の勤務にグループから割り当てる職員数の下限"),
+            })}
           </DialogTitle>
           <DialogContent>
             {state.newConstraint1KinmuId === undefined && (
-              <DialogContentText>{m["勤務がありません"]}</DialogContentText>
+              <DialogContentText>{t("勤務がありません")}</DialogContentText>
             )}
             {state.newConstraint1GroupId === undefined && (
-              <DialogContentText>{m["グループがありません"]}</DialogContentText>
+              <DialogContentText>{t("グループがありません")}</DialogContentText>
             )}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
-              {m["閉じる"]}
+              {t("閉じる")}
             </Button>
           </DialogActions>
         </Dialog>
@@ -321,9 +322,9 @@ const Constraints1 = React.memo((): JSX.Element => {
               maxWidth="md"
             >
               <DialogTitle>
-                {m["arg0の追加"](
-                  m["期間の勤務にグループから割り当てる職員数の下限"]
-                )}
+                {t("{{arg0}}の追加", {
+                  arg0: t("期間の勤務にグループから割り当てる職員数の下限"),
+                })}
               </DialogTitle>
               <DialogContent>
                 <Grid container={true} spacing={1}>
@@ -339,12 +340,12 @@ const Constraints1 = React.memo((): JSX.Element => {
                           color="primary"
                         />
                       }
-                      label={m["有効"]}
+                      label={t("有効")}
                     />
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label={m["開始日"]}
+                      label={t("開始日")}
                       type="date"
                       value={state.newConstraint1StartDateName}
                       onChange={handleChangeNewConstraint1StartDateName}
@@ -374,7 +375,7 @@ const Constraints1 = React.memo((): JSX.Element => {
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label={m["終了日"]}
+                      label={t("終了日")}
                       type="date"
                       value={state.newConstraint1StopDateName}
                       onChange={handleChangeNewConstraint1StopDateName}
@@ -405,7 +406,7 @@ const Constraints1 = React.memo((): JSX.Element => {
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label={m["勤務"]}
+                      label={t("勤務")}
                       value={state.newConstraint1KinmuId}
                       onChange={handleChangeNewConstraint1KinmuId}
                       fullWidth={true}
@@ -420,7 +421,7 @@ const Constraints1 = React.memo((): JSX.Element => {
                   <Grid item={true} xs={12}>
                     <TextField
                       select={true}
-                      label={m["グループ"]}
+                      label={t("グループ")}
                       value={state.newConstraint1GroupId}
                       onChange={handleChangeNewConstraint1GroupId}
                       fullWidth={true}
@@ -434,7 +435,7 @@ const Constraints1 = React.memo((): JSX.Element => {
                   </Grid>
                   <Grid item={true} xs={12}>
                     <TextField
-                      label={m["割り当て職員数下限"]}
+                      label={t("割り当て職員数下限")}
                       type="number"
                       value={state.newConstraint1MinNumberOfAssignments}
                       onChange={
@@ -469,10 +470,10 @@ const Constraints1 = React.memo((): JSX.Element => {
                   )}
                   onClick={handleClickCreateConstraint1}
                 >
-                  {m["追加"]}
+                  {t("追加")}
                 </Button>
                 <Button color="primary" onClick={handleCloseCreationDialog}>
-                  {m["閉じる"]}
+                  {t("閉じる")}
                 </Button>
               </DialogActions>
             </Dialog>
