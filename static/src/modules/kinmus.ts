@@ -60,7 +60,7 @@ export const getErrorMessages = (
   const errorMessages: ErrorMessages = {
     name: [],
   };
-  if (Kinmu.name === "")
+  if (kinmu.name === "")
     errorMessages.name.push(
       t("{{arg0}}を入力してください", { arg0: t("勤務名") })
     );
