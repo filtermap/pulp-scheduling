@@ -159,7 +159,9 @@ const Constraint4 = React.memo((props: Props): JSX.Element => {
   const relativesAreEnabled =
     selectedMember?.is_enabled && selectedKinmu?.is_enabled;
   const title = <Constraint4Name constraint4={props.constraint4} />;
-  const errorMessages = constraints4.getErrorMessages(t, props.constraint4);
+  const errorMessages = constraints4.getErrorMessages(t, {
+    constraint4: props.constraint4,
+  });
   return (
     <>
       <Card>

@@ -194,7 +194,7 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
     });
     dispatch(all.removeKinmu(props.kinmu.id));
   };
-  const errorMessages = kinmus.getErrorMessages(t, props.kinmu);
+  const errorMessages = kinmus.getErrorMessages(t, { kinmu: props.kinmu });
   return (
     <>
       <Card>

@@ -132,7 +132,9 @@ const Constraint5 = React.memo((props: Props): JSX.Element => {
   };
   const relativesAreEnabled = selectedKinmu?.is_enabled;
   const title = <Constraint5Name constraint5={props.constraint5} />;
-  const errorMessages = constraints5.getErrorMessages(t, props.constraint5);
+  const errorMessages = constraints5.getErrorMessages(t, {
+    constraint5: props.constraint5,
+  });
   return (
     <>
       <Card>

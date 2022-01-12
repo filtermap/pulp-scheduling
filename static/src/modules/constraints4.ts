@@ -61,12 +61,12 @@ type ErrorMessages = utils.ErrorMessages<"max_number_of_assignments">;
 
 export const getErrorMessages = (
   t: TFunction,
-  constraint4: { max_number_of_assignments: number }
+  sample: { constraint4: { max_number_of_assignments: number } }
 ): ErrorMessages => {
   const errorMessages: ErrorMessages = {
     max_number_of_assignments: [],
   };
-  if (isNaN(constraint4.max_number_of_assignments))
+  if (isNaN(sample.constraint4.max_number_of_assignments))
     errorMessages.max_number_of_assignments.push(
       t("{{arg0}}の形式が正しくありません", { arg0: t("勤務割り当て数上限") })
     );

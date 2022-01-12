@@ -61,12 +61,12 @@ type ErrorMessages = utils.ErrorMessages<"min_number_of_assignments">;
 
 export const getErrorMessages = (
   t: TFunction,
-  constraint3: { min_number_of_assignments: number }
+  sample: { constraint3: { min_number_of_assignments: number } }
 ): ErrorMessages => {
   const errorMessages: ErrorMessages = {
     min_number_of_assignments: [],
   };
-  if (isNaN(constraint3.min_number_of_assignments))
+  if (isNaN(sample.constraint3.min_number_of_assignments))
     errorMessages.min_number_of_assignments.push(
       t("{{arg0}}の形式が正しくありません", { arg0: t("勤務割り当て数下限") })
     );

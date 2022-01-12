@@ -94,7 +94,7 @@ const Terms = React.memo((): JSX.Element => {
     newTermStartDateIsEnabled &&
     newTermStopDateIsEnabled &&
     newTermStartDateAndStopDateAreEnabled;
-  const errorMessages = terms.getErrorMessages(t, state.term);
+  const errorMessages = terms.getErrorMessages(t, { term: state.term });
   return (
     <>
       <Toolbar>

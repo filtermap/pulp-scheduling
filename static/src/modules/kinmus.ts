@@ -55,12 +55,12 @@ type ErrorMessages = utils.ErrorMessages<"name">;
 
 export const getErrorMessages = (
   t: TFunction,
-  kinmu: { name: string }
+  sample: { kinmu: { name: string } }
 ): ErrorMessages => {
   const errorMessages: ErrorMessages = {
     name: [],
   };
-  if (kinmu.name === "")
+  if (sample.kinmu.name === "")
     errorMessages.name.push(
       t("{{arg0}}を入力してください", { arg0: t("勤務名") })
     );

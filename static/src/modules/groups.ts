@@ -38,12 +38,12 @@ type ErrorMessages = utils.ErrorMessages<"name">;
 
 export const getErrorMessages = (
   t: TFunction,
-  group: { name: string }
+  sample: { group: { name: string } }
 ): ErrorMessages => {
   const errorMessages: ErrorMessages = {
     name: [],
   };
-  if (group.name === "")
+  if (sample.group.name === "")
     errorMessages.name.push(
       t("{{arg0}}を入力してください", { arg0: t("グループ名") })
     );

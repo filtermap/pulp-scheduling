@@ -168,7 +168,8 @@ const Constraints0 = React.memo((): JSX.Element => {
           );
           const relativesAreEnabled =
             newConstraint0Constraint0KinmuKinmus.every(
-              (kinmu) => kinmu?.is_enabled
+              (kinmu) =>
+                kinmu?.is_enabled && kinmus.getErrorMessages(t, { kinmu })
             );
           return (
             <Dialog

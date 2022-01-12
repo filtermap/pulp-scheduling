@@ -187,7 +187,7 @@ const Member = React.memo((props: Props): JSX.Element => {
     });
     dispatch(all.removeMember(props.member.id));
   };
-  const errorMessages = members.getErrorMessages(t, props.member);
+  const errorMessages = members.getErrorMessages(t, { member: props.member });
   return (
     <>
       <Card>

@@ -124,7 +124,7 @@ const Groups = React.memo((): JSX.Element => {
       })
     );
   };
-  const errorMessages = groups.getErrorMessages(t, state.group);
+  const errorMessages = groups.getErrorMessages(t, { group: state.group });
   return (
     <>
       <Toolbar>

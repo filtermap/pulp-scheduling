@@ -59,12 +59,12 @@ type ErrorMessages = utils.ErrorMessages<"min_number_of_days">;
 
 export const getErrorMessages = (
   t: TFunction,
-  constraint7: { min_number_of_days: number }
+  sample: { constraint7: { min_number_of_days: number } }
 ): ErrorMessages => {
   const errorMessages: ErrorMessages = {
     min_number_of_days: [],
   };
-  if (isNaN(constraint7.min_number_of_days))
+  if (isNaN(sample.constraint7.min_number_of_days))
     errorMessages.min_number_of_days.push(
       t("{{arg0}}の形式が正しくありません", { arg0: t("間隔日数下限") })
     );

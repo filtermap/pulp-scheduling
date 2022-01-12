@@ -54,14 +54,14 @@ type ErrorMessages = utils.ErrorMessages<"start_date_name" | "stop_date_name">;
 
 export const getErrorMessages = (
   t: TFunction,
-  term: { start_date_name: string; stop_date_name: string }
+  sample: { term: { start_date_name: string; stop_date_name: string } }
 ): ErrorMessages => {
   const errorMessages: ErrorMessages = {
     start_date_name: [],
     stop_date_name: [],
   };
-  const termStartDate = utils.stringToDate(term.start_date_name);
-  const termStopDate = utils.stringToDate(term.stop_date_name);
+  const termStartDate = utils.stringToDate(sample.term.start_date_name);
+  const termStopDate = utils.stringToDate(sample.term.stop_date_name);
   if (!termStartDate)
     errorMessages.start_date_name.push(
       t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })

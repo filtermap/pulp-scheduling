@@ -211,7 +211,9 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
     constraint9StartDateAndStopDateAreEnabled &&
     selectedKinmu?.is_enabled;
   const title = <Constraint9Name constraint9={props.constraint9} />;
-  const errorMessages = constraints9.getErrorMessages(t, props.constraint9);
+  const errorMessages = constraints9.getErrorMessages(t, {
+    constraint9: props.constraint9,
+  });
   return (
     <>
       <Card>

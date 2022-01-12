@@ -23,6 +23,7 @@ import * as all from "../modules/all";
 import * as constraint0_kinmus from "../modules/constraint0_kinmus";
 import * as constraints0 from "../modules/constraints0";
 import * as kinmus from "../modules/kinmus";
+import * as utils from "../utils";
 
 import Constraint0Name from "./names/Constraint0Name";
 import KinmuName from "./names/KinmuName";
@@ -116,7 +117,13 @@ const Constraint0 = React.memo((props: Props): JSX.Element => {
     .filter(({ constraint0_id }) => constraint0_id === props.constraint0.id)
     .sort((a, b) => a.sequence_number - b.sequence_number);
   const relativesAreEnabled = constraint0Constraint0Kinmus.every(
-    ({ kinmu_id }) => selectedKinmuById[kinmu_id]?.is_enabled
+    ({ kinmu_id }) => {
+      const kinmu = selectedKinmuById[kinmu_id];
+      return (
+        kinmu?.is_enabled &&
+        utils.noErrors(kinmus.getErrorMessages(t, { kinmu }))
+      );
+    }
   );
   const title = <Constraint0Name constraint0={props.constraint0} />;
   return (

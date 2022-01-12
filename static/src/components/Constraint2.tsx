@@ -238,7 +238,9 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
     constraint2Kinmu?.is_enabled &&
     constraint2Group?.is_enabled;
   const title = <Constraint2Name constraint2={props.constraint2} />;
-  const errorMessages = constraints2.getErrorMessages(t, props.constraint2);
+  const errorMessages = constraints2.getErrorMessages(t, {
+    constraint2: props.constraint2,
+  });
   return (
     <>
       <Card>

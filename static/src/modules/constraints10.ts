@@ -61,9 +61,11 @@ type ErrorMessages = utils.ErrorMessages<"start_date_name" | "stop_date_name">;
 
 export const getErrorMessages = (
   t: TFunction,
-  constraint10: {
-    start_date_name: string | undefined;
-    stop_date_name: string | undefined;
+  sample: {
+    constraint10: {
+      start_date_name: string | undefined;
+      stop_date_name: string | undefined;
+    };
   }
 ): ErrorMessages => {
   const errorMessages: ErrorMessages = {
@@ -71,11 +73,11 @@ export const getErrorMessages = (
     stop_date_name: [],
   };
   const startDate =
-    constraint10.start_date_name &&
-    utils.stringToDate(constraint10.start_date_name);
+    sample.constraint10.start_date_name &&
+    utils.stringToDate(sample.constraint10.start_date_name);
   const stopDate =
-    constraint10.stop_date_name &&
-    utils.stringToDate(constraint10.stop_date_name);
+    sample.constraint10.stop_date_name &&
+    utils.stringToDate(sample.constraint10.stop_date_name);
   if (!startDate)
     errorMessages.start_date_name.push(
       t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })

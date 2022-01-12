@@ -183,7 +183,7 @@ const Term = React.memo((props: Props): JSX.Element => {
     termStartDateIsEnabled &&
     termStopDateIsEnabled &&
     termStartDateAndStopDateAreEnabled;
-  const errorMessages = terms.getErrorMessages(t, props.term);
+  const errorMessages = terms.getErrorMessages(t, { term: props.term });
   return (
     <>
       <Card>

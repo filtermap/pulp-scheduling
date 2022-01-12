@@ -255,10 +255,12 @@ const Constraints1 = React.memo((): JSX.Element => {
             newConstraint1Kinmu?.is_enabled &&
             newConstraint1Group?.is_enabled;
           const errorMessages = constraints1.getErrorMessages(t, {
-            min_number_of_assignments:
-              state.constraint1.min_number_of_assignments,
-            start_date_name: state.constraint1.start_date_name,
-            stop_date_name: state.constraint1.stop_date_name,
+            constraint1: {
+              min_number_of_assignments:
+                state.constraint1.min_number_of_assignments,
+              start_date_name: state.constraint1.start_date_name,
+              stop_date_name: state.constraint1.stop_date_name,
+            },
           });
           return (
             <Dialog

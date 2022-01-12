@@ -163,7 +163,7 @@ const Group = React.memo((props: Props): JSX.Element => {
     )),
     ", "
   );
-  const errorMessages = groups.getErrorMessages(t, props.group);
+  const errorMessages = groups.getErrorMessages(t, { group: props.group });
   return (
     <>
       <Card>

@@ -67,10 +67,12 @@ type ErrorMessages = utils.ErrorMessages<
 
 export const getErrorMessages = (
   t: TFunction,
-  constraint2: {
-    start_date_name: string | undefined;
-    stop_date_name: string | undefined;
-    max_number_of_assignments: number;
+  sample: {
+    constraint2: {
+      start_date_name: string | undefined;
+      stop_date_name: string | undefined;
+      max_number_of_assignments: number;
+    };
   }
 ): ErrorMessages => {
   const errorMessages: ErrorMessages = {
@@ -79,11 +81,11 @@ export const getErrorMessages = (
     stop_date_name: [],
   };
   const constraint2StartDate =
-    constraint2.start_date_name &&
-    utils.stringToDate(constraint2.start_date_name);
+    sample.constraint2.start_date_name &&
+    utils.stringToDate(sample.constraint2.start_date_name);
   const constraint2StopDate =
-    constraint2.stop_date_name &&
-    utils.stringToDate(constraint2.stop_date_name);
+    sample.constraint2.stop_date_name &&
+    utils.stringToDate(sample.constraint2.stop_date_name);
   if (!constraint2StartDate)
     errorMessages.start_date_name.push(
       t("{{arg0}}の形式が正しくありません", { arg0: t("開始日") })
@@ -110,7 +112,7 @@ export const getErrorMessages = (
       })
     );
   }
-  if (isNaN(constraint2.max_number_of_assignments))
+  if (isNaN(sample.constraint2.max_number_of_assignments))
     errorMessages.max_number_of_assignments.push(
       t("{{arg0}}の形式が正しくありません", { arg0: t("割り当て職員数上限") })
     );

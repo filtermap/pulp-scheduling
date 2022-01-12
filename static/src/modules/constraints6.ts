@@ -59,12 +59,12 @@ type ErrorMessages = utils.ErrorMessages<"max_number_of_days">;
 
 export const getErrorMessages = (
   t: TFunction,
-  constraint6: { max_number_of_days: number }
+  sample: { constraint6: { max_number_of_days: number } }
 ): ErrorMessages => {
   const errorMessages: ErrorMessages = {
     max_number_of_days: [],
   };
-  if (isNaN(constraint6.max_number_of_days))
+  if (isNaN(sample.constraint6.max_number_of_days))
     errorMessages.max_number_of_days.push(
       t("{{arg0}}の形式が正しくありません", { arg0: t("連続日数上限") })
     );

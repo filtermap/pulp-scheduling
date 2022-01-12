@@ -86,7 +86,7 @@ const Kinmus = React.memo((): JSX.Element => {
       })
     );
   };
-  const errorMessages = kinmus.getErrorMessages(t, state.kinmu);
+  const errorMessages = kinmus.getErrorMessages(t, { kinmu: state.kinmu });
   return (
     <>
       <Toolbar>

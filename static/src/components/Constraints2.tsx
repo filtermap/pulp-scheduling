@@ -254,10 +254,9 @@ const Constraints2 = React.memo((): JSX.Element => {
             newConstraint2StartDateAndStopDateAreEnabled &&
             newConstraint2Kinmu?.is_enabled &&
             newConstraint2Group?.is_enabled;
-          const errorMessages = constraints2.getErrorMessages(
-            t,
-            state.constraint2
-          );
+          const errorMessages = constraints2.getErrorMessages(t, {
+            constraint2: state.constraint2,
+          });
           return (
             <Dialog
               onClose={handleCloseCreationDialog}

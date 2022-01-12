@@ -240,10 +240,9 @@ const Constraints9 = React.memo((): JSX.Element => {
             newConstraint9StopDateIsEnabled &&
             newConstraint9StartDateAndStopDateAreEnabled &&
             newConstraint9Kinmu?.is_enabled;
-          const errorMessages = constraints9.getErrorMessages(
-            t,
-            state.constraint9
-          );
+          const errorMessages = constraints9.getErrorMessages(t, {
+            constraint9: state.constraint9,
+          });
           return (
             <Dialog
               onClose={handleCloseCreationDialog}

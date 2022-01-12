@@ -158,10 +158,9 @@ const Constraints6 = React.memo((): JSX.Element => {
           const newConstraint6Kinmu =
             selectedKinmuById[state.constraint6.kinmu_id];
           const relativesAreEnabled = newConstraint6Kinmu?.is_enabled;
-          const errorMessages = constraints6.getErrorMessages(
-            t,
-            state.constraint6
-          );
+          const errorMessages = constraints6.getErrorMessages(t, {
+            constraint6: state.constraint6,
+          });
           return (
             <Dialog
               onClose={handleCloseCreationDialog}

@@ -121,7 +121,7 @@ const Members = React.memo((): JSX.Element => {
       })
     );
   };
-  const errorMessages = members.getErrorMessages(t, state.member);
+  const errorMessages = members.getErrorMessages(t, { member: state.member });
   return (
     <>
       <Toolbar>
