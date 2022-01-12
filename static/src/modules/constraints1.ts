@@ -61,11 +61,9 @@ export const { add, update, remove } = constraints1.actions;
 
 export const { reducer } = constraints1;
 
-type ErrorMessages = {
-  start_date_name: string[];
-  stop_date_name: string[];
-  min_number_of_assignments: string[];
-};
+type ErrorMessages = utils.ErrorMessages<
+  "start_date_name" | "stop_date_name" | "min_number_of_assignments"
+>;
 
 export const getErrorMessages = (
   t: TFunction,

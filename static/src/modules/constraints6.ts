@@ -6,6 +6,8 @@ import {
 import * as t from "io-ts";
 import { TFunction } from "react-i18next";
 
+import * as utils from "../utils";
+
 import { RootState } from "./store";
 
 export const Constraint6 = t.type({
@@ -53,9 +55,7 @@ export const { add, update, remove } = constraints6.actions;
 
 export const { reducer } = constraints6;
 
-type ErrorMessages = {
-  max_number_of_days: string[];
-};
+type ErrorMessages = utils.ErrorMessages<"max_number_of_days">;
 
 export const getErrorMessages = (
   t: TFunction,

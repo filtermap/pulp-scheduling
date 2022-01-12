@@ -40,3 +40,12 @@ export const intersperse = <T, U>(array: T[], separator: U): (T | U)[] =>
       []
     )
     .slice(1);
+
+export type ErrorMessages<K extends keyof T, T = never> = Record<K, string[]>;
+
+export const noErrors = <E extends ErrorMessages<never>>(
+  errorMessages: E
+): boolean =>
+  Object.values<string[]>(errorMessages).every(
+    (messages) => messages.length === 0
+  );

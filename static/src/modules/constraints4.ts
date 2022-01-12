@@ -6,6 +6,8 @@ import {
 import * as t from "io-ts";
 import { TFunction } from "react-i18next";
 
+import * as utils from "../utils";
+
 import { RootState } from "./store";
 
 export const Constraint4 = t.type({
@@ -55,9 +57,7 @@ export const { add, update, remove } = constraints4.actions;
 
 export const { reducer } = constraints4;
 
-type ErrorMessages = {
-  max_number_of_assignments: string[];
-};
+type ErrorMessages = utils.ErrorMessages<"max_number_of_assignments">;
 
 export const getErrorMessages = (
   t: TFunction,

@@ -57,10 +57,7 @@ export const { add, update, remove } = constraints10.actions;
 
 export const { reducer } = constraints10;
 
-type ErrorMessages = {
-  start_date_name: string[];
-  stop_date_name: string[];
-};
+type ErrorMessages = utils.ErrorMessages<"start_date_name" | "stop_date_name">;
 
 export const getErrorMessages = (
   t: TFunction,

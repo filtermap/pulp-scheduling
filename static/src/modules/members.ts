@@ -2,6 +2,8 @@ import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import * as t from "io-ts";
 import { TFunction } from "react-i18next";
 
+import * as utils from "../utils";
+
 import { RootState } from "./store";
 
 export const Member = t.type({
@@ -32,9 +34,7 @@ export const { update } = members.actions;
 
 export const { reducer } = members;
 
-type ErrorMessages = {
-  name: string[];
-};
+type ErrorMessages = utils.ErrorMessages<"name">;
 
 export const getErrorMessages = (
   t: TFunction,

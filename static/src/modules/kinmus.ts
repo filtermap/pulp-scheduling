@@ -6,6 +6,8 @@ import {
 import * as t from "io-ts";
 import { TFunction } from "react-i18next";
 
+import * as utils from "../utils";
+
 import { RootState } from "./store";
 
 export const Kinmu = t.type({
@@ -49,9 +51,7 @@ export const { add, update } = kinmus.actions;
 
 export const { reducer } = kinmus;
 
-type ErrorMessages = {
-  name: string[];
-};
+type ErrorMessages = utils.ErrorMessages<"name">;
 
 export const getErrorMessages = (
   t: TFunction,
