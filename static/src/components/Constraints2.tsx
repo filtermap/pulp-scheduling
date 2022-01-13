@@ -31,7 +31,6 @@ import GroupName from "./names/GroupName";
 import KinmuName from "./names/KinmuName";
 import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
-import lineThroughSx from "./parts/lineThroughSx";
 
 type State = {
   creationDialogIsOpen: boolean;
@@ -278,12 +277,6 @@ const Constraints2 = React.memo((): JSX.Element => {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      inputProps={{
-                        sx: {
-                          ...(errorMessages.start_date_name.length > 0 &&
-                            lineThroughSx),
-                        },
-                      }}
                       error={errorMessages.start_date_name.length > 0}
                       FormHelperTextProps={{
                         // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
@@ -305,12 +298,6 @@ const Constraints2 = React.memo((): JSX.Element => {
                       fullWidth={true}
                       InputLabelProps={{
                         shrink: true,
-                      }}
-                      inputProps={{
-                        sx: {
-                          ...(errorMessages.stop_date_name.length > 0 &&
-                            lineThroughSx),
-                        },
                       }}
                       error={errorMessages.stop_date_name.length > 0}
                       FormHelperTextProps={{

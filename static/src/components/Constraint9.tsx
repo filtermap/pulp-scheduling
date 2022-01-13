@@ -30,7 +30,6 @@ import Constraint9Name from "./names/Constraint9Name";
 import KinmuName from "./names/KinmuName";
 import MemberName from "./names/MemberName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
-import lineThroughSx from "./parts/lineThroughSx";
 
 type Props = {
   constraint9: constraints9.Constraint9;
@@ -231,12 +230,6 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  inputProps={{
-                    sx: {
-                      ...(errorMessages.start_date_name.length > 0 &&
-                        lineThroughSx),
-                    },
-                  }}
                   error={errorMessages.start_date_name.length > 0}
                   FormHelperTextProps={{
                     // @ts-ignore: https://github.com/mui-org/material-ui/issues/20360
@@ -257,12 +250,6 @@ const Constraint9 = React.memo((props: Props): JSX.Element => {
                   fullWidth={true}
                   InputLabelProps={{
                     shrink: true,
-                  }}
-                  inputProps={{
-                    sx: {
-                      ...(errorMessages.stop_date_name.length > 0 &&
-                        lineThroughSx),
-                    },
                   }}
                   error={errorMessages.stop_date_name.length > 0}
                   FormHelperTextProps={{
