@@ -21,6 +21,7 @@ import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
 import * as constraints6 from "../modules/constraints6";
 import * as kinmus from "../modules/kinmus";
+import * as utils from "../utils";
 
 import Constraint6 from "./Constraint6";
 import KinmuName from "./names/KinmuName";
@@ -155,12 +156,17 @@ const Constraints6 = React.memo((): JSX.Element => {
         </Dialog>
       ) : (
         (() => {
-          const newConstraint6Kinmu =
-            selectedKinmuById[state.constraint6.kinmu_id];
-          const relativesAreEnabled = newConstraint6Kinmu?.is_enabled;
           const errorMessages = constraints6.getErrorMessages(t, {
             constraint6: state.constraint6,
           });
+          const newConstraint6Kinmu =
+            selectedKinmuById[state.constraint6.kinmu_id];
+          const relativesAreEnabled =
+            utils.noErrors(errorMessages) &&
+            newConstraint6Kinmu?.is_enabled &&
+            utils.noErrors(
+              kinmus.getErrorMessages(t, { kinmu: newConstraint6Kinmu })
+            );
           return (
             <Dialog
               onClose={handleCloseCreationDialog}

@@ -206,41 +206,19 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
     });
     dispatch(constraints2.remove(props.constraint2.id));
   };
-  const constraint2StartDate = utils.stringToDate(
-    props.constraint2.start_date_name
-  );
-  const termStartDate =
-    selectedTerm && utils.stringToDate(selectedTerm.start_date_name);
-  const constraint2StartDateIsEnabled =
-    !constraint2StartDate || !termStartDate
-      ? false
-      : termStartDate <= constraint2StartDate;
-  const constraint2StopDate = utils.stringToDate(
-    props.constraint2.stop_date_name
-  );
-  const termStopDate =
-    selectedTerm && utils.stringToDate(selectedTerm.stop_date_name);
-  const constraint2StopDateIsEnabled =
-    !constraint2StopDate || !termStopDate
-      ? false
-      : constraint2StopDate <= termStopDate;
-  const constraint2StartDateAndStopDateAreEnabled =
-    (constraint2StartDate &&
-      constraint2StopDate &&
-      constraint2StartDate <= constraint2StopDate) ||
-    false;
+  const errorMessages = constraints2.getErrorMessages(t, {
+    constraint2: props.constraint2,
+    term: selectedTerm,
+  });
   const constraint2Kinmu = selectedKinmuById[props.constraint2.kinmu_id];
   const constraint2Group = selectedGroupById[props.constraint2.group_id];
   const relativesAreEnabled =
-    constraint2StartDateIsEnabled &&
-    constraint2StopDateIsEnabled &&
-    constraint2StartDateAndStopDateAreEnabled &&
+    utils.noErrors(errorMessages) &&
     constraint2Kinmu?.is_enabled &&
-    constraint2Group?.is_enabled;
+    utils.noErrors(kinmus.getErrorMessages(t, { kinmu: constraint2Kinmu })) &&
+    constraint2Group?.is_enabled &&
+    utils.noErrors(groups.getErrorMessages(t, { group: constraint2Group }));
   const title = <Constraint2Name constraint2={props.constraint2} />;
-  const errorMessages = constraints2.getErrorMessages(t, {
-    constraint2: props.constraint2,
-  });
   return (
     <>
       <Card>
@@ -282,7 +260,8 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
                   }}
                   inputProps={{
                     sx: {
-                      ...(!constraint2StartDateIsEnabled && lineThroughSx),
+                      ...(errorMessages.start_date_name.length > 0 &&
+                        lineThroughSx),
                     },
                   }}
                   error={errorMessages.start_date_name.length > 0}
@@ -307,7 +286,10 @@ const Constraint2 = React.memo((props: Props): JSX.Element => {
                     shrink: true,
                   }}
                   inputProps={{
-                    sx: { ...(constraint2StopDateIsEnabled && lineThroughSx) },
+                    sx: {
+                      ...(errorMessages.stop_date_name.length > 0 &&
+                        lineThroughSx),
+                    },
                   }}
                   error={errorMessages.stop_date_name.length > 0}
                   FormHelperTextProps={{

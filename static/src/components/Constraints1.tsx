@@ -221,47 +221,24 @@ const Constraints1 = React.memo((): JSX.Element => {
         </Dialog>
       ) : (
         (() => {
-          const newConstraint1StartDate =
-            state.constraint1.start_date_name &&
-            utils.stringToDate(state.constraint1.start_date_name);
-          const termStartDate =
-            selectedTerm && utils.stringToDate(selectedTerm.start_date_name);
-          const newConstraint1StartDateIsEnabled =
-            !newConstraint1StartDate || !termStartDate
-              ? false
-              : termStartDate <= newConstraint1StartDate;
-          const newConstraint1StopDate =
-            state.constraint1.stop_date_name &&
-            utils.stringToDate(state.constraint1.stop_date_name);
-          const termStopDate =
-            selectedTerm && utils.stringToDate(selectedTerm.stop_date_name);
-          const newConstraint1StopDateIsEnabled =
-            !newConstraint1StopDate || !termStopDate
-              ? false
-              : newConstraint1StopDate <= termStopDate;
-          const newConstraint1StartDateAndStopDateAreEnabled =
-            (newConstraint1StartDate &&
-              newConstraint1StopDate &&
-              newConstraint1StartDate <= newConstraint1StopDate) ||
-            false;
           const newConstraint1Kinmu =
             selectedKinmuById[state.constraint1.kinmu_id];
           const newConstraint1Group =
             selectedGroupById[state.constraint1.group_id];
-          const relativesAreEnabled =
-            newConstraint1StartDateIsEnabled &&
-            newConstraint1StopDateIsEnabled &&
-            newConstraint1StartDateAndStopDateAreEnabled &&
-            newConstraint1Kinmu?.is_enabled &&
-            newConstraint1Group?.is_enabled;
           const errorMessages = constraints1.getErrorMessages(t, {
-            constraint1: {
-              min_number_of_assignments:
-                state.constraint1.min_number_of_assignments,
-              start_date_name: state.constraint1.start_date_name,
-              stop_date_name: state.constraint1.stop_date_name,
-            },
+            constraint1: state.constraint1,
+            term: selectedTerm,
           });
+          const relativesAreEnabled =
+            utils.noErrors(errorMessages) &&
+            newConstraint1Kinmu?.is_enabled &&
+            utils.noErrors(
+              kinmus.getErrorMessages(t, { kinmu: newConstraint1Kinmu })
+            ) &&
+            newConstraint1Group?.is_enabled &&
+            utils.noErrors(
+              groups.getErrorMessages(t, { group: newConstraint1Group })
+            );
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -303,7 +280,7 @@ const Constraints1 = React.memo((): JSX.Element => {
                       }}
                       inputProps={{
                         sx: {
-                          ...(!newConstraint1StartDateIsEnabled &&
+                          ...(errorMessages.start_date_name.length > 0 &&
                             lineThroughSx),
                         },
                       }}
@@ -331,7 +308,7 @@ const Constraints1 = React.memo((): JSX.Element => {
                       }}
                       inputProps={{
                         sx: {
-                          ...(!newConstraint1StopDateIsEnabled &&
+                          ...(errorMessages.stop_date_name.length > 0 &&
                             lineThroughSx),
                         },
                       }}

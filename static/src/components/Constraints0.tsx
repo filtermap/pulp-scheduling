@@ -22,6 +22,7 @@ import { usePosition } from "../hooks/usePosition";
 import * as all from "../modules/all";
 import * as constraints0 from "../modules/constraints0";
 import * as kinmus from "../modules/kinmus";
+import * as utils from "../utils";
 
 import Constraint0 from "./Constraint0";
 import KinmuName from "./names/KinmuName";
@@ -169,7 +170,8 @@ const Constraints0 = React.memo((): JSX.Element => {
           const relativesAreEnabled =
             newConstraint0Constraint0KinmuKinmus.every(
               (kinmu) =>
-                kinmu?.is_enabled && kinmus.getErrorMessages(t, { kinmu })
+                kinmu?.is_enabled &&
+                utils.noErrors(kinmus.getErrorMessages(t, { kinmu }))
             );
           return (
             <Dialog

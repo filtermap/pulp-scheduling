@@ -23,6 +23,7 @@ import * as constraints3 from "../modules/constraints3";
 import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
+import * as utils from "../utils";
 
 import Constraint3Name from "./names/Constraint3Name";
 import KinmuName from "./names/KinmuName";
@@ -156,12 +157,16 @@ const Constraint3 = React.memo((props: Props): JSX.Element => {
     });
     dispatch(constraints3.remove(props.constraint3.id));
   };
-  const relativesAreEnabled =
-    selectedMember?.is_enabled && selectedKinmu?.is_enabled;
-  const title = <Constraint3Name constraint3={props.constraint3} />;
   const errorMessages = constraints3.getErrorMessages(t, {
     constraint3: props.constraint3,
   });
+  const relativesAreEnabled =
+    utils.noErrors(errorMessages) &&
+    selectedMember?.is_enabled &&
+    utils.noErrors(members.getErrorMessages(t, { member: selectedMember })) &&
+    selectedKinmu?.is_enabled &&
+    utils.noErrors(kinmus.getErrorMessages(t, { kinmu: selectedKinmu }));
+  const title = <Constraint3Name constraint3={props.constraint3} />;
   return (
     <>
       <Card>

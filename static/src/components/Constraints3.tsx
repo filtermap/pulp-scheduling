@@ -22,6 +22,7 @@ import { usePosition } from "../hooks/usePosition";
 import * as constraints3 from "../modules/constraints3";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
+import * as utils from "../utils";
 
 import Constraint3 from "./Constraint3";
 import KinmuName from "./names/KinmuName";
@@ -185,15 +186,23 @@ const Constraints3 = React.memo((): JSX.Element => {
         </Dialog>
       ) : (
         (() => {
+          const errorMessages = constraints3.getErrorMessages(t, {
+            constraint3: state.constraint3,
+          });
           const newConstraint3Member =
             selectedMemberById[state.constraint3.member_id];
           const newConstraint3Kinmu =
             selectedKinmuById[state.constraint3.kinmu_id];
           const relativesAreEnabled =
-            newConstraint3Member?.is_enabled && newConstraint3Kinmu?.is_enabled;
-          const errorMessages = constraints3.getErrorMessages(t, {
-            constraint3: state.constraint3,
-          });
+            utils.noErrors(errorMessages) &&
+            newConstraint3Member?.is_enabled &&
+            utils.noErrors(
+              members.getErrorMessages(t, { member: newConstraint3Member })
+            ) &&
+            newConstraint3Kinmu?.is_enabled &&
+            utils.noErrors(
+              kinmus.getErrorMessages(t, { kinmu: newConstraint3Kinmu })
+            );
           return (
             <Dialog
               onClose={handleCloseCreationDialog}

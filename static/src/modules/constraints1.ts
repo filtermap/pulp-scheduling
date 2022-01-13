@@ -9,6 +9,7 @@ import { TFunction } from "react-i18next";
 import * as utils from "../utils";
 
 import { RootState } from "./store";
+import * as terms from "./terms";
 
 export const Constraint1 = t.type({
   group_id: t.number,
@@ -73,6 +74,7 @@ export const getErrorMessages = (
       stop_date_name: string | undefined;
       min_number_of_assignments: number;
     };
+    term: terms.Term | undefined;
   }
 ): ErrorMessages => {
   const errorMessages: ErrorMessages = {
@@ -108,6 +110,24 @@ export const getErrorMessages = (
       })
     );
   }
+  const termStartDate =
+    sample.term && utils.stringToDate(sample.term.start_date_name);
+  if (startDate && termStartDate && startDate < termStartDate)
+    errorMessages.start_date_name.push(
+      t("{{arg0}}には期間の開始日（{{arg1}}）以降の日付を入力してください", {
+        arg0: t("開始日"),
+        arg1: sample.term?.start_date_name,
+      })
+    );
+  const termStopDate =
+    sample.term && utils.stringToDate(sample.term.stop_date_name);
+  if (stopDate && termStopDate && termStopDate < stopDate)
+    errorMessages.stop_date_name.push(
+      t("{{arg0}}には期間の終了日（{{arg1}}）以前の日付を入力してください", {
+        arg0: t("終了日"),
+        arg1: sample.term?.stop_date_name,
+      })
+    );
   if (isNaN(sample.constraint1.min_number_of_assignments))
     errorMessages.min_number_of_assignments.push(
       t("{{arg0}}の形式が正しくありません", { arg0: t("割り当て職員数下限") })

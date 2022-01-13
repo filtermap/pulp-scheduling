@@ -81,20 +81,8 @@ const Terms = React.memo((): JSX.Element => {
     });
     dispatch(terms.add(state.term));
   };
-  const newTermStartDate = utils.stringToDate(state.term.start_date_name);
-  const newTermStopDate = utils.stringToDate(state.term.stop_date_name);
-  const newTermStartDateIsEnabled = !!newTermStartDate;
-  const newTermStopDateIsEnabled = !!newTermStopDate;
-  const newTermStartDateAndStopDateAreEnabled =
-    (newTermStartDate &&
-      newTermStopDate &&
-      newTermStartDate <= newTermStopDate) ||
-    false;
-  const relativesAreEnabled =
-    newTermStartDateIsEnabled &&
-    newTermStopDateIsEnabled &&
-    newTermStartDateAndStopDateAreEnabled;
   const errorMessages = terms.getErrorMessages(t, { term: state.term });
+  const relativesAreEnabled = utils.noErrors(errorMessages);
   return (
     <>
       <Toolbar>

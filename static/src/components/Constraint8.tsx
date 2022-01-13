@@ -22,6 +22,7 @@ import { useImmer } from "use-immer";
 import * as constraints8 from "../modules/constraints8";
 import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
+import * as utils from "../utils";
 
 import Constraint8Name from "./names/Constraint8Name";
 import KinmuName from "./names/KinmuName";
@@ -130,11 +131,14 @@ const Constraint8 = React.memo((props: Props): JSX.Element => {
     });
     dispatch(constraints8.remove(props.constraint8.id));
   };
-  const relativesAreEnabled = selectedKinmu?.is_enabled;
-  const title = <Constraint8Name constraint8={props.constraint8} />;
   const errorMessages = constraints8.getErrorMessages(t, {
     constraint8: props.constraint8,
   });
+  const relativesAreEnabled =
+    utils.noErrors(errorMessages) &&
+    selectedKinmu?.is_enabled &&
+    utils.noErrors(kinmus.getErrorMessages(t, { kinmu: selectedKinmu }));
+  const title = <Constraint8Name constraint8={props.constraint8} />;
   return (
     <>
       <Card>

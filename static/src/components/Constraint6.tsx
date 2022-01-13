@@ -22,6 +22,7 @@ import { useImmer } from "use-immer";
 import * as constraints6 from "../modules/constraints6";
 import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
+import * as utils from "../utils";
 
 import Constraint6Name from "./names/Constraint6Name";
 import KinmuName from "./names/KinmuName";
@@ -130,11 +131,14 @@ const Constraint6 = React.memo((props: Props): JSX.Element => {
     });
     dispatch(constraints6.remove(props.constraint6.id));
   };
-  const relativesAreEnabled = selectedKinmu?.is_enabled;
-  const title = <Constraint6Name constraint6={props.constraint6} />;
   const errorMessages = constraints6.getErrorMessages(t, {
     constraint6: props.constraint6,
   });
+  const relativesAreEnabled =
+    utils.noErrors(errorMessages) &&
+    selectedKinmu?.is_enabled &&
+    utils.noErrors(kinmus.getErrorMessages(t, { kinmu: selectedKinmu }));
+  const title = <Constraint6Name constraint6={props.constraint6} />;
   return (
     <>
       <Card>

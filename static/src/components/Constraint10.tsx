@@ -181,39 +181,17 @@ const Constraint10 = React.memo((props: Props): JSX.Element => {
     });
     dispatch(constraints10.remove(props.constraint10.id));
   };
-  const constraint10StartDate = utils.stringToDate(
-    props.constraint10.start_date_name
-  );
-  const termStartDate =
-    selectedTerm && utils.stringToDate(selectedTerm.start_date_name);
-  const constraint10StartDateIsEnabled =
-    !constraint10StartDate || !termStartDate
-      ? false
-      : termStartDate <= constraint10StartDate;
-  const constraint10StopDate = utils.stringToDate(
-    props.constraint10.stop_date_name
-  );
-  const termStopDate =
-    selectedTerm && utils.stringToDate(selectedTerm.stop_date_name);
-  const constraint10StopDateIsEnabled =
-    !constraint10StopDate || !termStopDate
-      ? false
-      : constraint10StopDate <= termStopDate;
-  const constraint10StartDateAndStopDateAreEnabled =
-    (constraint10StartDate &&
-      constraint10StopDate &&
-      constraint10StartDate <= constraint10StopDate) ||
-    false;
-  const relativesAreEnabled =
-    selectedMember?.is_enabled &&
-    constraint10StartDateIsEnabled &&
-    constraint10StopDateIsEnabled &&
-    constraint10StartDateAndStopDateAreEnabled &&
-    selectedKinmu?.is_enabled;
-  const title = <Constraint10Name constraint10={props.constraint10} />;
   const errorMessages = constraints10.getErrorMessages(t, {
     constraint10: props.constraint10,
+    term: selectedTerm,
   });
+  const relativesAreEnabled =
+    utils.noErrors(errorMessages) &&
+    selectedMember?.is_enabled &&
+    utils.noErrors(members.getErrorMessages(t, { member: selectedMember })) &&
+    selectedKinmu?.is_enabled &&
+    utils.noErrors(kinmus.getErrorMessages(t, { kinmu: selectedKinmu }));
+  const title = <Constraint10Name constraint10={props.constraint10} />;
   return (
     <>
       <Card>
@@ -255,7 +233,8 @@ const Constraint10 = React.memo((props: Props): JSX.Element => {
                   }}
                   inputProps={{
                     sx: {
-                      ...(!constraint10StartDateIsEnabled && lineThroughSx),
+                      ...(errorMessages.start_date_name.length > 0 &&
+                        lineThroughSx),
                     },
                   }}
                   error={errorMessages.start_date_name.length > 0}
@@ -281,7 +260,8 @@ const Constraint10 = React.memo((props: Props): JSX.Element => {
                   }}
                   inputProps={{
                     sx: {
-                      ...(!constraint10StopDateIsEnabled && lineThroughSx),
+                      ...(errorMessages.stop_date_name.length > 0 &&
+                        lineThroughSx),
                     },
                   }}
                   error={errorMessages.stop_date_name.length > 0}

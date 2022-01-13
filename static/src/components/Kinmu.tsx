@@ -34,6 +34,7 @@ import * as constraints8 from "../modules/constraints8";
 import * as constraints9 from "../modules/constraints9";
 import * as kinmus from "../modules/kinmus";
 import * as schedules from "../modules/schedules";
+import * as utils from "../utils";
 
 import { Constraint0NameLink } from "./names/Constraint0Name";
 import { Constraint10NameLink } from "./names/Constraint10Name";
@@ -195,13 +196,15 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
     dispatch(all.removeKinmu(props.kinmu.id));
   };
   const errorMessages = kinmus.getErrorMessages(t, { kinmu: props.kinmu });
+  const relativesAreEnabled = utils.noErrors(errorMessages);
   return (
     <>
       <Card>
         <CardHeader
           avatar={
             <Switch
-              checked={props.kinmu.is_enabled}
+              checked={props.kinmu.is_enabled && relativesAreEnabled}
+              disabled={!relativesAreEnabled}
               onChange={handleChangeKinmuIsEnabled}
               color="primary"
             />

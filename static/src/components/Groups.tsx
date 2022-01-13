@@ -24,6 +24,7 @@ import { usePosition } from "../hooks/usePosition";
 import * as all from "../modules/all";
 import * as groups from "../modules/groups";
 import * as members from "../modules/members";
+import * as utils from "../utils";
 
 import Group from "./Group";
 import MemberName from "./names/MemberName";
@@ -125,6 +126,7 @@ const Groups = React.memo((): JSX.Element => {
     );
   };
   const errorMessages = groups.getErrorMessages(t, { group: state.group });
+  const relativesAreEnabled = utils.noErrors(errorMessages);
   return (
     <>
       <Toolbar>
@@ -157,7 +159,8 @@ const Groups = React.memo((): JSX.Element => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={state.group.is_enabled}
+                    checked={state.group.is_enabled && relativesAreEnabled}
+                    disabled={!relativesAreEnabled}
                     onChange={handleChangeNewGroupIsEnabled}
                     color="primary"
                   />

@@ -18,6 +18,7 @@ import { useImmer } from "use-immer";
 import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
 import * as kinmus from "../modules/kinmus";
+import * as utils from "../utils";
 
 import Kinmu from "./Kinmu";
 import FloatingAddButton from "./parts/FloatingAddButton";
@@ -87,6 +88,7 @@ const Kinmus = React.memo((): JSX.Element => {
     );
   };
   const errorMessages = kinmus.getErrorMessages(t, { kinmu: state.kinmu });
+  const relativesAreEnabled = utils.noErrors(errorMessages);
   return (
     <>
       <Toolbar>
@@ -117,7 +119,8 @@ const Kinmus = React.memo((): JSX.Element => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={state.kinmu.is_enabled}
+                    checked={state.kinmu.is_enabled && relativesAreEnabled}
+                    disabled={!relativesAreEnabled}
                     onChange={handleChangeNewKinmuIsEnabled}
                     color="primary"
                   />

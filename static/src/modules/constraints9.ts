@@ -9,6 +9,7 @@ import { TFunction } from "react-i18next";
 import * as utils from "../utils";
 
 import { RootState } from "./store";
+import * as terms from "./terms";
 
 export const Constraint9 = t.type({
   id: t.number,
@@ -66,6 +67,7 @@ export const getErrorMessages = (
       start_date_name: string | undefined;
       stop_date_name: string | undefined;
     };
+    term: terms.Term | undefined;
   }
 ): ErrorMessages => {
   const errorMessages: ErrorMessages = {
@@ -100,5 +102,23 @@ export const getErrorMessages = (
       })
     );
   }
+  const termStartDate =
+    sample.term && utils.stringToDate(sample.term.start_date_name);
+  if (startDate && termStartDate && startDate < termStartDate)
+    errorMessages.start_date_name.push(
+      t("{{arg0}}には期間の開始日（{{arg1}}）以降の日付を入力してください", {
+        arg0: t("開始日"),
+        arg1: sample.term?.start_date_name,
+      })
+    );
+  const termStopDate =
+    sample.term && utils.stringToDate(sample.term.stop_date_name);
+  if (stopDate && termStopDate && termStopDate < stopDate)
+    errorMessages.stop_date_name.push(
+      t("{{arg0}}には期間の終了日（{{arg1}}）以前の日付を入力してください", {
+        arg0: t("終了日"),
+        arg1: sample.term?.stop_date_name,
+      })
+    );
   return errorMessages;
 };

@@ -207,42 +207,24 @@ const Constraints10 = React.memo((): JSX.Element => {
         </Dialog>
       ) : (
         (() => {
+          const errorMessages = constraints10.getErrorMessages(t, {
+            constraint10: state.constraint10,
+            term: selectedTerm,
+          });
           const newConstraint10Member =
             selectedMemberById[state.constraint10.member_id];
-          const newConstraint10StartDate =
-            state.constraint10.start_date_name &&
-            utils.stringToDate(state.constraint10.start_date_name);
-          const termStartDate =
-            selectedTerm && utils.stringToDate(selectedTerm.start_date_name);
-          const newConstraint10StartDateIsEnabled =
-            !newConstraint10StartDate || !termStartDate
-              ? false
-              : termStartDate <= newConstraint10StartDate;
-          const newConstraint10StopDate =
-            state.constraint10.stop_date_name &&
-            utils.stringToDate(state.constraint10.stop_date_name);
-          const termStopDate =
-            selectedTerm && utils.stringToDate(selectedTerm.stop_date_name);
-          const newConstraint10StopDateIsEnabled =
-            !newConstraint10StopDate || !termStopDate
-              ? false
-              : newConstraint10StopDate <= termStopDate;
-          const newConstraint10StartDateAndStopDateAreEnabled =
-            (newConstraint10StartDate &&
-              newConstraint10StopDate &&
-              newConstraint10StartDate <= newConstraint10StopDate) ||
-            false;
           const newConstraint10Kinmu =
             selectedKinmuById[state.constraint10.kinmu_id];
           const relativesAreEnabled =
+            utils.noErrors(errorMessages) &&
             newConstraint10Member?.is_enabled &&
-            newConstraint10StartDateIsEnabled &&
-            newConstraint10StopDateIsEnabled &&
-            newConstraint10StartDateAndStopDateAreEnabled &&
-            newConstraint10Kinmu?.is_enabled;
-          const errorMessages = constraints10.getErrorMessages(t, {
-            constraint10: state.constraint10,
-          });
+            utils.noErrors(
+              members.getErrorMessages(t, { member: newConstraint10Member })
+            ) &&
+            newConstraint10Kinmu?.is_enabled &&
+            utils.noErrors(
+              kinmus.getErrorMessages(t, { kinmu: newConstraint10Kinmu })
+            );
           return (
             <Dialog
               onClose={handleCloseCreationDialog}
@@ -284,7 +266,7 @@ const Constraints10 = React.memo((): JSX.Element => {
                       }}
                       inputProps={{
                         sx: {
-                          ...(!newConstraint10StartDateIsEnabled &&
+                          ...(errorMessages.start_date_name.length > 0 &&
                             lineThroughSx),
                         },
                       }}
@@ -312,7 +294,7 @@ const Constraints10 = React.memo((): JSX.Element => {
                       }}
                       inputProps={{
                         sx: {
-                          ...(!newConstraint10StopDateIsEnabled &&
+                          ...(errorMessages.stop_date_name.length > 0 &&
                             lineThroughSx),
                         },
                       }}

@@ -21,6 +21,7 @@ import { useHashFragment } from "../hooks/useHashFragment";
 import { usePosition } from "../hooks/usePosition";
 import * as constraints8 from "../modules/constraints8";
 import * as kinmus from "../modules/kinmus";
+import * as utils from "../utils";
 
 import Constraint8 from "./Constraint8";
 import KinmuName from "./names/KinmuName";
@@ -155,12 +156,17 @@ const Constraints8 = React.memo((): JSX.Element => {
         </Dialog>
       ) : (
         (() => {
-          const newConstraint8Kinmu =
-            selectedKinmuById[state.constraint8.kinmu_id];
-          const relativesAreEnabled = newConstraint8Kinmu?.is_enabled;
           const errorMessages = constraints8.getErrorMessages(t, {
             constraint8: state.constraint8,
           });
+          const newConstraint8Kinmu =
+            selectedKinmuById[state.constraint8.kinmu_id];
+          const relativesAreEnabled =
+            utils.noErrors(errorMessages) &&
+            newConstraint8Kinmu?.is_enabled &&
+            utils.noErrors(
+              kinmus.getErrorMessages(t, { kinmu: newConstraint8Kinmu })
+            );
           return (
             <Dialog
               onClose={handleCloseCreationDialog}

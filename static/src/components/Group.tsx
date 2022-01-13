@@ -164,13 +164,15 @@ const Group = React.memo((props: Props): JSX.Element => {
     ", "
   );
   const errorMessages = groups.getErrorMessages(t, { group: props.group });
+  const relativesAreEnabled = utils.noErrors(errorMessages);
   return (
     <>
       <Card>
         <CardHeader
           avatar={
             <Switch
-              checked={props.group.is_enabled}
+              checked={props.group.is_enabled && relativesAreEnabled}
+              disabled={!relativesAreEnabled}
               onChange={handleChangeGroupIsEnabled}
               color="primary"
             />

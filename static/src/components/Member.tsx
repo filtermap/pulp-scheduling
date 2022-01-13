@@ -188,13 +188,15 @@ const Member = React.memo((props: Props): JSX.Element => {
     dispatch(all.removeMember(props.member.id));
   };
   const errorMessages = members.getErrorMessages(t, { member: props.member });
+  const relativesAreEnabled = utils.noErrors(errorMessages);
   return (
     <>
       <Card>
         <CardHeader
           avatar={
             <Switch
-              checked={props.member.is_enabled}
+              checked={props.member.is_enabled && relativesAreEnabled}
+              disabled={!relativesAreEnabled}
               onChange={handleChangeMemberIsEnabled}
               color="primary"
             />

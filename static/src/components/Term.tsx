@@ -173,17 +173,8 @@ const Term = React.memo((props: Props): JSX.Element => {
     });
     dispatch(all.removeTerm(props.term.id));
   };
-  const termStartDate = utils.stringToDate(props.term.start_date_name);
-  const termStartDateIsEnabled = !!termStartDate;
-  const termStopDate = utils.stringToDate(props.term.stop_date_name);
-  const termStopDateIsEnabled = !!termStopDate;
-  const termStartDateAndStopDateAreEnabled =
-    (termStartDate && termStopDate && termStartDate <= termStopDate) || false;
-  const relativesAreEnabled =
-    termStartDateIsEnabled &&
-    termStopDateIsEnabled &&
-    termStartDateAndStopDateAreEnabled;
   const errorMessages = terms.getErrorMessages(t, { term: props.term });
+  const relativesAreEnabled = utils.noErrors(errorMessages);
   return (
     <>
       <Card>

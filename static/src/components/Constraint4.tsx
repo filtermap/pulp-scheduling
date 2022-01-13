@@ -23,6 +23,7 @@ import * as constraints4 from "../modules/constraints4";
 import { useAppSelector } from "../modules/hooks";
 import * as kinmus from "../modules/kinmus";
 import * as members from "../modules/members";
+import * as utils from "../utils";
 
 import Constraint4Name from "./names/Constraint4Name";
 import KinmuName from "./names/KinmuName";
@@ -156,12 +157,16 @@ const Constraint4 = React.memo((props: Props): JSX.Element => {
     });
     dispatch(constraints4.remove(props.constraint4.id));
   };
-  const relativesAreEnabled =
-    selectedMember?.is_enabled && selectedKinmu?.is_enabled;
-  const title = <Constraint4Name constraint4={props.constraint4} />;
   const errorMessages = constraints4.getErrorMessages(t, {
     constraint4: props.constraint4,
   });
+  const relativesAreEnabled =
+    utils.noErrors(errorMessages) &&
+    selectedMember?.is_enabled &&
+    utils.noErrors(members.getErrorMessages(t, { member: selectedMember })) &&
+    selectedKinmu?.is_enabled &&
+    utils.noErrors(kinmus.getErrorMessages(t, { kinmu: selectedKinmu }));
+  const title = <Constraint4Name constraint4={props.constraint4} />;
   return (
     <>
       <Card>
