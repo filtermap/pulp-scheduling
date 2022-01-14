@@ -3,59 +3,63 @@ import io
 import os
 import sys
 import flask
-import jsonrpc
-import jsonrpc.backend.flask
+import jsonrpc  # type: ignore
+import jsonrpc.backend.flask  # type: ignore
 import scheduling
 import settings
 import utils
 
 if utils.frozen():
-    static_folder = os.path.join(sys._MEIPASS, "static", "build")
+    static_folder = os.path.join(sys._MEIPASS, "static", "build")  # type: ignore
 else:
     static_folder = os.path.join("static", "build")
 app = flask.Flask(__name__, static_folder=static_folder)
 api = jsonrpc.backend.flask.api
-app.add_url_rule("/api", "api", api.as_view(), methods=["POST"])
+app.add_url_rule("/api", "api", api.as_view(), methods=["POST"])  # type: ignore
 
 
-@app.route("/", defaults={"path": ""})
-@app.route("/<path:path>")
-def index(path):
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
-        return flask.send_from_directory(app.static_folder, path)
+@app.route("/", defaults={"path": ""})  # type: ignore
+@app.route("/<path:path>")  # type: ignore
+def index(path: str):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):  # type: ignore
+        return flask.send_from_directory(app.static_folder, path)  # type: ignore
     else:
-        return flask.send_from_directory(app.static_folder, "index.html")
+        return flask.send_from_directory(app.static_folder, "index.html")  # type: ignore
 
 
-@api.dispatcher.add_method
+@api.dispatcher.add_method  # type: ignore
 def read_all():
     return scheduling.read_all()
 
 
-@api.dispatcher.add_method
-def write_all(all):
+@api.dispatcher.add_method  # type: ignore
+def write_all(all: scheduling.All):
     scheduling.write_all(all)
     return True
 
 
-@api.dispatcher.add_method
-def solve(all):
+@api.dispatcher.add_method  # type: ignore
+def solve(all: scheduling.All):
     try:
         return scheduling.solve(all)
     except scheduling.UnsolvedException as e:
-        raise jsonrpc.exceptions.JSONRPCDispatchException(code=0, message=e.args[0])
+        raise jsonrpc.exceptions.JSONRPCDispatchException(code=0, message=e.args[0])  # type: ignore
 
 
-@api.dispatcher.add_method
-def pursue(all):
+@api.dispatcher.add_method  # type: ignore
+def pursue(all: scheduling.DataAndConstraints):
     try:
         return scheduling.pursue(all)
     except scheduling.UnpursuedException as e:
-        raise jsonrpc.exceptions.JSONRPCDispatchException(code=1, message=e.args[0])
+        raise jsonrpc.exceptions.JSONRPCDispatchException(code=1, message=e.args[0])  # type: ignore
 
 
-@api.dispatcher.add_method
-def download_csv(assignments, members, kinmus):
+@api.dispatcher.add_method  # type: ignore
+def download_csv(
+    assignments: list[scheduling.NewAssignment],
+    members: list[scheduling.Member],
+    kinmus: list[scheduling.Kinmu],
+):
     date_names = sorted(
         list(set([assignment["date_name"] for assignment in assignments])),
         key=lambda date_name: utils.str_to_date(date_name),

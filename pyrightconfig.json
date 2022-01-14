@@ -1,0 +1,18 @@
+{
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    ".git",
+    "build",
+    "pulp-scheduling-*"
+  ],
+  "pythonVersion": "3.9",
+  "pythonPlatform": "Windows",
+  "typeCheckingMode": "strict",
+  "reportPropertyTypeMismatch": "error",
+  "reportUninitializedInstanceVariable": "error",
+  "reportCallInDefaultInitializer": "error",
+  "reportImplicitStringConcatenation": "error",
+  "reportUnusedCallResult": "none",
+  "reportUnnecessaryTypeIgnoreComment": "error"
+}

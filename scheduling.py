@@ -2,19 +2,25 @@ import csv
 import datetime
 import operator
 import os
-import pulp
+import pulp  # type: ignore
+import typing
 import utils
 
+
+# TODO: Use TypeAlias instead of simple assignments from 3.10
+# TODO: Use | instead of Union from 3.10
+Row = dict[str, typing.Union[object, int]]
+Rows = list[Row]
 
 one_day = datetime.timedelta(days=1)
 data_directory = os.path.join(os.getcwd(), "data")
 
 
-def in_data_directory(path):
+def in_data_directory(path: str) -> str:
     return os.path.join(data_directory, path)
 
 
-def write_rows(rows, filename, fieldnames):
+def write_rows(rows: Rows, filename: str, fieldnames: list[str]) -> None:
     with open(in_data_directory(filename), newline="") as f:
         header = next(f)
     with open(in_data_directory(filename), "w", newline="") as f:
@@ -26,24 +32,35 @@ members_filename = "members.csv"
 member_attribute_names = ["id", "term_id", "is_enabled", "name"]
 
 
-def read_members():
+class Member(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    name: str
+
+
+def read_members() -> list[Member]:
     with open(in_data_directory(members_filename)) as f:
         next(f)
         members = [
-            {
+            Member(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+            )
             for r in csv.DictReader(f, member_attribute_names)
         ]
     return members
 
 
-def write_members(members):
+def write_members(members: list[Member]) -> None:
     rows = [
-        {**member, "is_enabled": 1 if member["is_enabled"] else 0} for member in members
+        {
+            **member,
+            "is_enabled": 1 if member["is_enabled"] else 0,
+        }
+        for member in members
     ]
     write_rows(rows, members_filename, member_attribute_names)
 
@@ -52,17 +69,28 @@ terms_filename = "terms.csv"
 term_attribute_names = ["id", "is_enabled", "start_date_name", "stop_date_name"]
 
 
-def read_terms():
+class Term(typing.TypedDict):
+    id: int
+    is_enabled: bool
+    start_date_name: str
+    stop_date_name: str
+
+
+def read_terms() -> list[Term]:
     with open(in_data_directory(terms_filename)) as f:
         next(f)
         terms = [
-            {**r, "id": int(r["id"]), "is_enabled": int(r["is_enabled"]) != 0}
+            Term(
+                **r,
+                id=int(r["id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+            )
             for r in csv.DictReader(f, term_attribute_names)
         ]
     return terms
 
 
-def write_terms(terms):
+def write_terms(terms: list[Term]) -> None:
     rows = [{**term, "is_enabled": 1 if term["is_enabled"] else 0} for term in terms]
     write_rows(rows, terms_filename, term_attribute_names)
 
@@ -71,22 +99,29 @@ kinmus_filename = "kinmus.csv"
 kinmu_attribute_names = ["id", "term_id", "is_enabled", "name"]
 
 
-def read_kinmus():
+class Kinmu(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    name: str
+
+
+def read_kinmus() -> list[Kinmu]:
     with open(in_data_directory(kinmus_filename)) as f:
         next(f)
         kinmus = [
-            {
+            Kinmu(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+            )
             for r in csv.DictReader(f, kinmu_attribute_names)
         ]
     return kinmus
 
 
-def write_kinmus(kinmus):
+def write_kinmus(kinmus: list[Kinmu]) -> None:
     rows = [
         {**kinmu, "is_enabled": 1 if kinmu["is_enabled"] else 0} for kinmu in kinmus
     ]
@@ -97,22 +132,29 @@ groups_filename = "groups.csv"
 group_attribute_names = ["id", "term_id", "is_enabled", "name"]
 
 
-def read_groups():
+class Group(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    name: str
+
+
+def read_groups() -> list[Group]:
     with open(in_data_directory(groups_filename)) as f:
         next(f)
         groups = [
-            {
+            Group(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+            )
             for r in csv.DictReader(f, group_attribute_names)
         ]
     return groups
 
 
-def write_groups(groups):
+def write_groups(groups: list[Group]) -> None:
     rows = [
         {**group, "is_enabled": 1 if group["is_enabled"] else 0} for group in groups
     ]
@@ -123,47 +165,65 @@ group_members_filename = "group_members.csv"
 group_member_attribute_names = ["id", "group_id", "member_id"]
 
 
-def read_group_members():
+class GroupMember(typing.TypedDict):
+    id: int
+    group_id: int
+    member_id: int
+
+
+def read_group_members() -> list[GroupMember]:
     with open(in_data_directory(group_members_filename)) as f:
         next(f)
         group_members = [
-            {
+            GroupMember(
                 **r,
-                "id": int(r["id"]),
-                "group_id": int(r["group_id"]),
-                "member_id": int(r["member_id"]),
-            }
+                id=int(r["id"]),
+                group_id=int(r["group_id"]),
+                member_id=int(r["member_id"]),
+            )
             for r in csv.DictReader(f, group_member_attribute_names)
         ]
     return group_members
 
 
-def write_group_members(group_members):
-    write_rows(group_members, group_members_filename, group_member_attribute_names)
+def write_group_members(group_members: list[GroupMember]) -> None:
+    write_rows(
+        [{**r} for r in group_members],
+        group_members_filename,
+        group_member_attribute_names,
+    )
 
 
 constraints0_filename = "constraints0.csv"
 constraint0_attribute_names = ["id", "term_id", "is_enabled"]
 
 
-def read_constraints0():
+class Constraint0(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+
+
+def read_constraints0() -> list[Constraint0]:
     with open(in_data_directory(constraints0_filename)) as f:
         next(f)
         constraints0 = [
-            {
+            Constraint0(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+            )
             for r in csv.DictReader(f, constraint0_attribute_names)
         ]
     return constraints0
 
 
-def write_constraints0(constraints0):
+def write_constraints0(constraints0: list[Constraint0]) -> None:
     rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in constraints0]
-    write_rows(rows, constraints0_filename, constraint0_attribute_names)
+    write_rows(
+        [{**r} for r in rows], constraints0_filename, constraint0_attribute_names
+    )
 
 
 constraint0_kinmus_filename = "constraint0_kinmus.csv"
@@ -175,25 +235,32 @@ constraint0_kinmu_attribute_names = [
 ]
 
 
-def read_constraint0_kinmus():
+class Constraint0Kinmu(typing.TypedDict):
+    id: int
+    constraint0_id: int
+    sequence_number: int
+    kinmu_id: int
+
+
+def read_constraint0_kinmus() -> list[Constraint0Kinmu]:
     with open(in_data_directory(constraint0_kinmus_filename)) as f:
         next(f)
         constraint0_kinmus = [
-            {
+            Constraint0Kinmu(
                 **r,
-                "id": int(r["id"]),
-                "constraint0_id": int(r["constraint0_id"]),
-                "sequence_number": int(r["sequence_number"]),
-                "kinmu_id": int(r["kinmu_id"]),
-            }
+                id=int(r["id"]),
+                constraint0_id=int(r["constraint0_id"]),
+                sequence_number=int(r["sequence_number"]),
+                kinmu_id=int(r["kinmu_id"]),
+            )
             for r in csv.DictReader(f, constraint0_kinmu_attribute_names)
         ]
     return constraint0_kinmus
 
 
-def write_constraint0_kinmus(constraint0_kinmus):
+def write_constraint0_kinmus(constraint0_kinmus: list[Constraint0Kinmu]) -> None:
     write_rows(
-        constraint0_kinmus,
+        [{**r} for r in constraint0_kinmus],
         constraint0_kinmus_filename,
         constraint0_kinmu_attribute_names,
     )
@@ -212,25 +279,36 @@ constraint1_attribute_names = [
 ]
 
 
-def read_constraints1():
+class Constraint1(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    start_date_name: str
+    stop_date_name: str
+    kinmu_id: int
+    group_id: int
+    min_number_of_assignments: int
+
+
+def read_constraints1() -> list[Constraint1]:
     with open(in_data_directory(constraints1_filename)) as f:
         next(f)
         constraints1 = [
-            {
+            Constraint1(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-                "kinmu_id": int(r["kinmu_id"]),
-                "group_id": int(r["group_id"]),
-                "min_number_of_assignments": int(r["min_number_of_assignments"]),
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+                kinmu_id=int(r["kinmu_id"]),
+                group_id=int(r["group_id"]),
+                min_number_of_assignments=int(r["min_number_of_assignments"]),
+            )
             for r in csv.DictReader(f, constraint1_attribute_names)
         ]
     return constraints1
 
 
-def write_constraints1(constraints1):
+def write_constraints1(constraints1: list[Constraint1]) -> None:
     rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in constraints1]
     write_rows(rows, constraints1_filename, constraint1_attribute_names)
 
@@ -248,25 +326,36 @@ constraint2_attribute_names = [
 ]
 
 
-def read_constraints2():
+class Constraint2(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    start_date_name: str
+    stop_date_name: str
+    kinmu_id: int
+    group_id: int
+    max_number_of_assignments: int
+
+
+def read_constraints2() -> list[Constraint2]:
     with open(in_data_directory(constraints2_filename)) as f:
         next(f)
         constraints2 = [
-            {
+            Constraint2(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-                "kinmu_id": int(r["kinmu_id"]),
-                "group_id": int(r["group_id"]),
-                "max_number_of_assignments": int(r["max_number_of_assignments"]),
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+                kinmu_id=int(r["kinmu_id"]),
+                group_id=int(r["group_id"]),
+                max_number_of_assignments=int(r["max_number_of_assignments"]),
+            )
             for r in csv.DictReader(f, constraint2_attribute_names)
         ]
     return constraints2
 
 
-def write_constraints2(constraints2):
+def write_constraints2(constraints2: list[Constraint2]) -> None:
     rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in constraints2]
     write_rows(rows, constraints2_filename, constraint2_attribute_names)
 
@@ -282,25 +371,35 @@ constraint3_attribute_names = [
 ]
 
 
-def read_constraints3():
+class Constraint3(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    member_id: int
+    kinmu_id: int
+    min_number_of_assignments: int
+
+
+def read_constraints3() -> list[Constraint3]:
     with open(in_data_directory(constraints3_filename)) as f:
         next(f)
         constraints3 = [
-            {
+            Constraint3(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-                "member_id": int(r["member_id"]),
-                "kinmu_id": int(r["kinmu_id"]),
-                "min_number_of_assignments": int(r["min_number_of_assignments"]),
-            }
+                **r,
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+                member_id=int(r["member_id"]),
+                kinmu_id=int(r["kinmu_id"]),
+                min_number_of_assignments=int(r["min_number_of_assignments"]),
+            )
             for r in csv.DictReader(f, constraint3_attribute_names)
         ]
     return constraints3
 
 
-def write_constraints3(constraints3):
+def write_constraints3(constraints3: list[Constraint3]) -> None:
     rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in constraints3]
     write_rows(rows, constraints3_filename, constraint3_attribute_names)
 
@@ -316,25 +415,34 @@ constraint4_attribute_names = [
 ]
 
 
-def read_constraints4():
+class Constraint4(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    member_id: int
+    kinmu_id: int
+    max_number_of_assignments: int
+
+
+def read_constraints4() -> list[Constraint4]:
     with open(in_data_directory(constraints4_filename)) as f:
         next(f)
         constraints4 = [
-            {
+            Constraint4(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-                "member_id": int(r["member_id"]),
-                "kinmu_id": int(r["kinmu_id"]),
-                "max_number_of_assignments": int(r["max_number_of_assignments"]),
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+                member_id=int(r["member_id"]),
+                kinmu_id=int(r["kinmu_id"]),
+                max_number_of_assignments=int(r["max_number_of_assignments"]),
+            )
             for r in csv.DictReader(f, constraint4_attribute_names)
         ]
     return constraints4
 
 
-def write_constraints4(constraints4):
+def write_constraints4(constraints4: list[Constraint4]) -> None:
     rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in constraints4]
     write_rows(rows, constraints4_filename, constraint4_attribute_names)
 
@@ -349,24 +457,32 @@ constraint5_attribute_names = [
 ]
 
 
-def read_constraints5():
+class Constraint5(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    kinmu_id: int
+    min_number_of_days: int
+
+
+def read_constraints5() -> list[Constraint5]:
     with open(in_data_directory(constraints5_filename)) as f:
         next(f)
         constraints5 = [
-            {
+            Constraint5(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-                "kinmu_id": int(r["kinmu_id"]),
-                "min_number_of_days": int(r["min_number_of_days"]),
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+                kinmu_id=int(r["kinmu_id"]),
+                min_number_of_days=int(r["min_number_of_days"]),
+            )
             for r in csv.DictReader(f, constraint5_attribute_names)
         ]
     return constraints5
 
 
-def write_constraints5(constraints5):
+def write_constraints5(constraints5: list[Constraint5]):
     rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in constraints5]
     write_rows(rows, constraints5_filename, constraint5_attribute_names)
 
@@ -381,24 +497,32 @@ constraint6_attribute_names = [
 ]
 
 
-def read_constraints6():
+class Constraint6(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    kinmu_id: int
+    max_number_of_days: int
+
+
+def read_constraints6() -> list[Constraint6]:
     with open(in_data_directory(constraints6_filename)) as f:
         next(f)
         constraints6 = [
-            {
+            Constraint6(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-                "kinmu_id": int(r["kinmu_id"]),
-                "max_number_of_days": int(r["max_number_of_days"]),
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+                kinmu_id=int(r["kinmu_id"]),
+                max_number_of_days=int(r["max_number_of_days"]),
+            )
             for r in csv.DictReader(f, constraint6_attribute_names)
         ]
     return constraints6
 
 
-def write_constraints6(constraints6):
+def write_constraints6(constraints6: list[Constraint6]) -> None:
     rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in constraints6]
     write_rows(rows, constraints6_filename, constraint6_attribute_names)
 
@@ -413,24 +537,32 @@ constraint7_attribute_names = [
 ]
 
 
-def read_constraints7():
+class Constraint7(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    kinmu_id: int
+    min_number_of_days: int
+
+
+def read_constraints7() -> list[Constraint7]:
     with open(in_data_directory(constraints7_filename)) as f:
         next(f)
         constraints7 = [
-            {
+            Constraint7(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-                "kinmu_id": int(r["kinmu_id"]),
-                "min_number_of_days": int(r["min_number_of_days"]),
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+                kinmu_id=int(r["kinmu_id"]),
+                min_number_of_days=int(r["min_number_of_days"]),
+            )
             for r in csv.DictReader(f, constraint7_attribute_names)
         ]
     return constraints7
 
 
-def write_constraints7(constraints7):
+def write_constraints7(constraints7: list[Constraint7]) -> None:
     rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in constraints7]
     write_rows(rows, constraints7_filename, constraint7_attribute_names)
 
@@ -445,24 +577,32 @@ constraint8_attribute_names = [
 ]
 
 
+class Constraint8(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    kinmu_id: int
+    max_number_of_days: int
+
+
 def read_constraints8():
     with open(in_data_directory(constraints8_filename)) as f:
         next(f)
         constraints8 = [
-            {
+            Constraint8(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-                "kinmu_id": int(r["kinmu_id"]),
-                "max_number_of_days": int(r["max_number_of_days"]),
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+                kinmu_id=int(r["kinmu_id"]),
+                max_number_of_days=int(r["max_number_of_days"]),
+            )
             for r in csv.DictReader(f, constraint8_attribute_names)
         ]
     return constraints8
 
 
-def write_constraints8(constraints8):
+def write_constraints8(constraints8: list[Constraint8]) -> None:
     rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in constraints8]
     write_rows(rows, constraints8_filename, constraint8_attribute_names)
 
@@ -479,24 +619,34 @@ constraint9_attribute_names = [
 ]
 
 
-def read_constraints9():
+class Constraint9(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    member_id: int
+    start_date_name: str
+    stop_date_name: str
+    kinmu_id: int
+
+
+def read_constraints9() -> list[Constraint9]:
     with open(in_data_directory(constraints9_filename)) as f:
         next(f)
         constraints9 = [
-            {
+            Constraint9(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-                "member_id": int(r["member_id"]),
-                "kinmu_id": int(r["kinmu_id"]),
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+                member_id=int(r["member_id"]),
+                kinmu_id=int(r["kinmu_id"]),
+            )
             for r in csv.DictReader(f, constraint9_attribute_names)
         ]
     return constraints9
 
 
-def write_constraints9(constraints9):
+def write_constraints9(constraints9: list[Constraint9]) -> None:
     rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in constraints9]
     write_rows(rows, constraints9_filename, constraint9_attribute_names)
 
@@ -513,24 +663,34 @@ constraint10_attribute_names = [
 ]
 
 
-def read_constraints10():
+class Constraint10(typing.TypedDict):
+    id: int
+    term_id: int
+    is_enabled: bool
+    member_id: int
+    start_date_name: str
+    stop_date_name: str
+    kinmu_id: int
+
+
+def read_constraints10() -> list[Constraint10]:
     with open(in_data_directory(constraints10_filename)) as f:
         next(f)
         constraints10 = [
-            {
+            Constraint10(
                 **r,
-                "id": int(r["id"]),
-                "term_id": int(r["term_id"]),
-                "is_enabled": int(r["is_enabled"]) != 0,
-                "member_id": int(r["member_id"]),
-                "kinmu_id": int(r["kinmu_id"]),
-            }
+                id=int(r["id"]),
+                term_id=int(r["term_id"]),
+                is_enabled=int(r["is_enabled"]) != 0,
+                member_id=int(r["member_id"]),
+                kinmu_id=int(r["kinmu_id"]),
+            )
             for r in csv.DictReader(f, constraint10_attribute_names)
         ]
     return constraints10
 
 
-def write_constraints10(constraints10):
+def write_constraints10(constraints10: list[Constraint10]) -> None:
     rows = [{**c, "is_enabled": 1 if c["is_enabled"] else 0} for c in constraints10]
     write_rows(rows, constraints10_filename, constraint10_attribute_names)
 
@@ -539,69 +699,106 @@ schedules_filename = "schedules.csv"
 schedule_attribute_names = ["id", "term_id"]
 
 
-def read_schedules():
+class Schedule(typing.TypedDict):
+    id: int
+    term_id: int
+
+
+def read_schedules() -> list[Schedule]:
     with open(in_data_directory(schedules_filename)) as f:
         next(f)
         schedules = [
-            {**r, "id": int(r["id"]), "term_id": int(r["term_id"])}
+            Schedule(**r, id=int(r["id"]), term_id=int(r["term_id"]))
             for r in csv.DictReader(f, schedule_attribute_names)
         ]
     return schedules
 
 
-def write_schedules(schedules):
-    write_rows(schedules, schedules_filename, schedule_attribute_names)
+def write_schedules(schedules: list[Schedule]) -> None:
+    write_rows([{**r} for r in schedules], schedules_filename, schedule_attribute_names)
 
 
 assignments_filename = "assignments.csv"
 assignment_attribute_names = ["id", "schedule_id", "date_name", "member_id", "kinmu_id"]
 
 
+class Assignment(typing.TypedDict):
+    id: int
+    schedule_id: int
+    date_name: str
+    member_id: int
+    kinmu_id: int
+
+
 def read_assignments():
     with open(in_data_directory(assignments_filename)) as f:
         next(f)
         assignments = [
-            {
+            Assignment(
                 **r,
-                "id": int(r["id"]),
-                "schedule_id": int(r["schedule_id"]),
-                "member_id": int(r["member_id"]),
-                "kinmu_id": int(r["kinmu_id"]),
-            }
+                id=int(r["id"]),
+                schedule_id=int(r["schedule_id"]),
+                member_id=int(r["member_id"]),
+                kinmu_id=int(r["kinmu_id"]),
+            )
             for r in csv.DictReader(f, assignment_attribute_names)
         ]
     return assignments
 
 
-def write_assignments(assignments):
-    write_rows(assignments, assignments_filename, assignment_attribute_names)
+def write_assignments(assignments: list[Assignment]) -> None:
+    write_rows(
+        [{**r} for r in assignments], assignments_filename, assignment_attribute_names
+    )
 
 
-def read_all():
-    return {
-        "members": read_members(),
-        "terms": read_terms(),
-        "kinmus": read_kinmus(),
-        "groups": read_groups(),
-        "group_members": read_group_members(),
-        "constraints0": read_constraints0(),
-        "constraint0_kinmus": read_constraint0_kinmus(),
-        "constraints1": read_constraints1(),
-        "constraints2": read_constraints2(),
-        "constraints3": read_constraints3(),
-        "constraints4": read_constraints4(),
-        "constraints5": read_constraints5(),
-        "constraints6": read_constraints6(),
-        "constraints7": read_constraints7(),
-        "constraints8": read_constraints8(),
-        "constraints9": read_constraints9(),
-        "constraints10": read_constraints10(),
-        "schedules": read_schedules(),
-        "assignments": read_assignments(),
-    }
+class All(typing.TypedDict):
+    members: list[Member]
+    terms: list[Term]
+    kinmus: list[Kinmu]
+    groups: list[Group]
+    group_members: list[GroupMember]
+    constraints0: list[Constraint0]
+    constraint0_kinmus: list[Constraint0Kinmu]
+    constraints1: list[Constraint1]
+    constraints2: list[Constraint2]
+    constraints3: list[Constraint3]
+    constraints4: list[Constraint4]
+    constraints5: list[Constraint5]
+    constraints6: list[Constraint6]
+    constraints7: list[Constraint7]
+    constraints8: list[Constraint8]
+    constraints9: list[Constraint9]
+    constraints10: list[Constraint10]
+    schedules: list[Schedule]
+    assignments: list[Assignment]
 
 
-def write_all(all):
+def read_all() -> All:
+    return All(
+        members=read_members(),
+        terms=read_terms(),
+        kinmus=read_kinmus(),
+        groups=read_groups(),
+        group_members=read_group_members(),
+        constraints0=read_constraints0(),
+        constraint0_kinmus=read_constraint0_kinmus(),
+        constraints1=read_constraints1(),
+        constraints2=read_constraints2(),
+        constraints3=read_constraints3(),
+        constraints4=read_constraints4(),
+        constraints5=read_constraints5(),
+        constraints6=read_constraints6(),
+        constraints7=read_constraints7(),
+        constraints8=read_constraints8(),
+        constraints9=read_constraints9(),
+        constraints10=read_constraints10(),
+        schedules=read_schedules(),
+        assignments=read_assignments(),
+    )
+
+
+def write_all(all: All) -> None:
     write_members(all["members"])
     write_terms(all["terms"])
     write_kinmus(all["kinmus"])
@@ -623,7 +820,27 @@ def write_all(all):
     write_assignments(all["assignments"])
 
 
-def select_enabled(all_):
+class DataAndConstraints(typing.TypedDict):
+    members: list[Member]
+    terms: list[Term]
+    kinmus: list[Kinmu]
+    groups: list[Group]
+    group_members: list[GroupMember]
+    constraints0: list[Constraint0]
+    constraint0_kinmus: list[Constraint0Kinmu]
+    constraints1: list[Constraint1]
+    constraints2: list[Constraint2]
+    constraints3: list[Constraint3]
+    constraints4: list[Constraint4]
+    constraints5: list[Constraint5]
+    constraints6: list[Constraint6]
+    constraints7: list[Constraint7]
+    constraints8: list[Constraint8]
+    constraints9: list[Constraint9]
+    constraints10: list[Constraint10]
+
+
+def select_enabled(all_: DataAndConstraints) -> DataAndConstraints:
     members = [member for member in all_["members"] if member["is_enabled"]]
     member_ids = [member["id"] for member in members]
     terms = [
@@ -757,29 +974,35 @@ def select_enabled(all_):
         and constraint["member_id"] in member_ids
         and constraint["kinmu_id"] in kinmu_ids
     ]
-    return {
-        "members": members,
-        "kinmus": kinmus,
-        "groups": groups,
-        "group_members": group_members,
-        "constraints0": constraints0,
-        "constraint0_kinmus": constraint0_kinmus,
-        "constraints1": constraints1,
-        "constraints2": constraints2,
-        "constraints3": constraints3,
-        "constraints4": constraints4,
-        "constraints5": constraints5,
-        "constraints6": constraints6,
-        "constraints7": constraints7,
-        "constraints8": constraints8,
-        "constraints9": constraints9,
-        "constraints10": constraints10,
-    }
+    return DataAndConstraints(
+        terms=terms,
+        members=members,
+        kinmus=kinmus,
+        groups=groups,
+        group_members=group_members,
+        constraints0=constraints0,
+        constraint0_kinmus=constraint0_kinmus,
+        constraints1=constraints1,
+        constraints2=constraints2,
+        constraints3=constraints3,
+        constraints4=constraints4,
+        constraints5=constraints5,
+        constraints6=constraints6,
+        constraints7=constraints7,
+        constraints8=constraints8,
+        constraints9=constraints9,
+        constraints10=constraints10,
+    )
 
 
-def terms_to_dates(terms):
+class Date(typing.TypedDict):
+    index: int
+    name: str
+
+
+def terms_to_dates(terms: list[Term]) -> list[Date]:
     return [
-        {"index": index, "name": utils.date_to_str(date)}
+        Date(index=index, name=utils.date_to_str(date))
         for term in terms
         for index, date in enumerate(
             utils.date_range(
@@ -790,7 +1013,25 @@ def terms_to_dates(terms):
     ]
 
 
-def to_constraints(enabled, dates):
+class ConstraintTypeAndId(typing.TypedDict):
+    type: str
+    id: int
+
+
+class Constraints(typing.TypedDict):
+    x: dict[str, typing.Any]
+    objective: list[typing.Any]
+    indispensable: list[typing.Any]
+    optional: list[typing.Any]
+    optional_types_and_ids: list[ConstraintTypeAndId]
+
+
+class c0(typing.TypedDict):
+    id: int
+    kinmu_ids: list[int]
+
+
+def to_constraints(enabled: DataAndConstraints, dates: list[Date]) -> Constraints:
     M = [m["id"] for m in enabled["members"]]
     D = [d["index"] for d in dates]
     K = [k["id"] for k in enabled["kinmus"]]
@@ -803,7 +1044,7 @@ def to_constraints(enabled, dates):
         ]
         for g in G
     }
-    C0 = [
+    C0: list[c0] = [
         {
             "id": c["id"],
             "kinmu_ids": [
@@ -900,27 +1141,29 @@ def to_constraints(enabled, dates):
 
     # 決定変数。
     # 職員の日付に勤務が割り当てられているとき1。
-    x = pulp.LpVariable.dicts("x", (M, D, K), 0, 1, pulp.LpBinary)
+    x: dict[typing.Any, typing.Any] = pulp.LpVariable.dicts(  # type: ignore
+        "x", (M, D, K), 0, 1, pulp.LpBinary
+    )
 
     # 目的関数。
-    objective = pulp.lpSum(
+    objective: list[typing.Any] = pulp.lpSum(  # type: ignore
         c["min_number_of_assignments"]
-        - pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
+        - pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])  # type: ignore
         for c in C1
-    ) + pulp.lpSum(
-        pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
+    ) + pulp.lpSum(  # type: ignore
+        pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])  # type: ignore
         - c["max_number_of_assignments"]
         for c in C2
     )
 
     # 各職員の各日付に割り当てる勤務の数は1。
-    indispensable = []
+    indispensable: list[pulp.LpAffineExpression] = []
     for m in M:
         for d in D:
-            indispensable.append(pulp.lpSum([x[m][d][k] for k in K]) == 1)
+            indispensable.append(pulp.lpSum([x[m][d][k] for k in K]) == 1)  # type: ignore
 
-    optional = []
-    optional_types_and_ids = []
+    optional: list[typing.Any] = []
+    optional_types_and_ids: list[typing.Any] = []
     for m in M:
         for c in C0:
             l = len(c["kinmu_ids"]) - 1
@@ -928,7 +1171,7 @@ def to_constraints(enabled, dates):
                 if d - l not in D:
                     continue
                 optional.append(
-                    pulp.lpSum(
+                    pulp.lpSum(  # type: ignore
                         x[m][d - l + i][c["kinmu_ids"][i]] for i in range(0, l + 1)
                     )
                     <= l
@@ -936,25 +1179,25 @@ def to_constraints(enabled, dates):
                 optional_types_and_ids.append({"type": "Constraint0", "id": c["id"]})
     for c in C1:
         optional.append(
-            pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
+            pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])  # type: ignore
             >= c["min_number_of_assignments"]
         )
         optional_types_and_ids.append({"type": "Constraint1", "id": c["id"]})
     for c in C2:
         optional.append(
-            pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])
+            pulp.lpSum(x[m][c["date_index"]][c["kinmu_id"]] for m in GM[c["group_id"]])  # type: ignore
             <= c["max_number_of_assignments"]
         )
         optional_types_and_ids.append({"type": "Constraint2", "id": c["id"]})
     for c in C3:
         optional.append(
-            pulp.lpSum(x[c["member_id"]][d][c["kinmu_id"]] for d in D)
+            pulp.lpSum(x[c["member_id"]][d][c["kinmu_id"]] for d in D)  # type: ignore
             >= c["min_number_of_assignments"]
         )
         optional_types_and_ids.append({"type": "Constraint3", "id": c["id"]})
     for c in C4:
         optional.append(
-            pulp.lpSum(x[c["member_id"]][d][c["kinmu_id"]] for d in D)
+            pulp.lpSum(x[c["member_id"]][d][c["kinmu_id"]] for d in D)  # type: ignore
             <= c["max_number_of_assignments"]
         )
         optional_types_and_ids.append({"type": "Constraint4", "id": c["id"]})
@@ -967,7 +1210,7 @@ def to_constraints(enabled, dates):
                     c["min_number_of_days"] if d - c["min_number_of_days"] >= 0 else d
                 )
                 optional.append(
-                    pulp.lpSum(
+                    pulp.lpSum(  # type: ignore
                         x[m][d - i][c["kinmu_id"]]
                         for i in range(2, min_number_of_days + 1)
                     )
@@ -982,7 +1225,7 @@ def to_constraints(enabled, dates):
                 if d - c["max_number_of_days"] not in D:
                     continue
                 optional.append(
-                    pulp.lpSum(
+                    pulp.lpSum(  # type: ignore
                         x[m][d - i][c["kinmu_id"]]
                         for i in range(0, c["max_number_of_days"] + 1)
                     )
@@ -997,7 +1240,7 @@ def to_constraints(enabled, dates):
                         continue
                     optional.append(
                         x[m][d - i][c["kinmu_id"]]
-                        - pulp.lpSum(x[m][d - j][c["kinmu_id"]] for j in range(1, i))
+                        - pulp.lpSum(x[m][d - j][c["kinmu_id"]] for j in range(1, i))  # type: ignore
                         + x[m][d][c["kinmu_id"]]
                         <= 1
                     )
@@ -1010,7 +1253,7 @@ def to_constraints(enabled, dates):
                 if d - c["max_number_of_days"] not in D:
                     continue
                 optional.append(
-                    pulp.lpSum(
+                    pulp.lpSum(  # type: ignore
                         x[m][d - i][c["kinmu_id"]]
                         for i in range(0, c["max_number_of_days"] + 1)
                     )
@@ -1032,7 +1275,18 @@ def to_constraints(enabled, dates):
     }
 
 
-def x_to_new_assignments(x, dates, members, kinmus):
+class NewAssignment(typing.TypedDict):
+    date_name: str
+    member_id: int
+    kinmu_id: int
+
+
+def x_to_new_assignments(
+    x: dict[typing.Any, typing.Any],
+    dates: list[Date],
+    members: list[Member],
+    kinmus: list[Kinmu],
+) -> list[NewAssignment]:
     return [
         {"date_name": date["name"], "member_id": member["id"], "kinmu_id": kinmu["id"]}
         for date in dates
@@ -1046,18 +1300,18 @@ class UnsolvedException(Exception):
     pass
 
 
-def solve(all_):
+def solve(all_: All):
     enabled = select_enabled(all_)
     dates = terms_to_dates(all_["terms"])
     constraints = to_constraints(enabled, dates)
     problem = pulp.LpProblem("Scheduling", pulp.LpMinimize)
-    problem += constraints["objective"]
+    problem += constraints["objective"]  # type: ignore
     for constraint in constraints["indispensable"]:
-        problem += constraint
+        problem += constraint  # type: ignore
     for constraint in constraints["optional"]:
-        problem += constraint
-    problem.solve(pulp.PULP_CBC_CMD(msg=False))
-    status = pulp.LpStatus[problem.status]
+        problem += constraint  # type: ignore
+    problem.solve(pulp.PULP_CBC_CMD(msg=False))  # type: ignore
+    status = pulp.LpStatus[problem.status]  # type: ignore
     if status != "Optimal":
         raise UnsolvedException(status)
     return x_to_new_assignments(
@@ -1069,20 +1323,20 @@ class UnpursuedException(Exception):
     pass
 
 
-def pursue(all_):
+def pursue(all_: DataAndConstraints):
     enabled = select_enabled(all_)
     dates = terms_to_dates(all_["terms"])
     constraints = to_constraints(enabled, dates)
 
-    def cannot_solve(_, index):
+    def cannot_solve(_: typing.Any, index: int) -> bool:
         problem = pulp.LpProblem("Scheduling", pulp.LpMinimize)
-        problem += constraints["objective"]
+        problem += constraints["objective"]  # type: ignore
         for constraint in constraints["indispensable"]:
-            problem += constraint
+            problem += constraint  # type: ignore
         for i in range(index + 1):
-            problem += constraints["optional"][i]
-        problem.solve(pulp.PULP_CBC_CMD(msg=False))
-        status = pulp.LpStatus[problem.status]
+            problem += constraints["optional"][i]  # type: ignore
+        problem.solve(pulp.PULP_CBC_CMD(msg=False))  # type: ignore
+        status = pulp.LpStatus[problem.status]  # type: ignore
         if status != "Optimal":
             return True
         return False
@@ -1099,7 +1353,9 @@ def pursue(all_):
     }
 
 
-def binary_search_min_index(sequence, function):
+def binary_search_min_index(
+    sequence: list[typing.Any], function: typing.Callable[[typing.Any, int], bool]
+):
     max_index = len(sequence) - 1
     left = 0
     right = max_index
