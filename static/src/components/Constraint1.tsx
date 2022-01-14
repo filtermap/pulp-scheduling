@@ -5,7 +5,6 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Collapse from "@mui/material/Collapse";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -30,6 +29,7 @@ import Constraint1Name from "./names/Constraint1Name";
 import GroupName from "./names/GroupName";
 import KinmuName from "./names/KinmuName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
+import FlexStartDialogActions from "./parts/FlexStartDialogActions";
 
 type Props = {
   constraint1: constraints1.Constraint1;
@@ -370,14 +370,14 @@ const Constraint1 = React.memo((props: Props): JSX.Element => {
           </DialogContentText>
           <Typography>{title}</Typography>
         </DialogContent>
-        <DialogActions>
+        <FlexStartDialogActions>
           <Button color="primary" onClick={handleClickDeleteConstraint1}>
             {t("削除")}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
             {t("閉じる")}
           </Button>
-        </DialogActions>
+        </FlexStartDialogActions>
       </Dialog>
     </>
   );

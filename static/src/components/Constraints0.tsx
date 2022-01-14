@@ -1,6 +1,5 @@
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -26,6 +25,7 @@ import * as utils from "../utils";
 
 import Constraint0 from "./Constraint0";
 import KinmuName from "./names/KinmuName";
+import FlexStartDialogActions from "./parts/FlexStartDialogActions";
 import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 
@@ -156,11 +156,11 @@ const Constraints0 = React.memo((): JSX.Element => {
               <DialogContentText>{t("勤務がありません")}</DialogContentText>
             )}
           </DialogContent>
-          <DialogActions>
+          <FlexStartDialogActions>
             <Button color="primary" onClick={handleCloseCreationDialog}>
               {t("閉じる")}
             </Button>
-          </DialogActions>
+          </FlexStartDialogActions>
         </Dialog>
       ) : (
         (() => {
@@ -255,14 +255,14 @@ const Constraints0 = React.memo((): JSX.Element => {
                   ))}
                 </Grid>
               </DialogContent>
-              <DialogActions>
+              <FlexStartDialogActions>
                 <Button color="primary" onClick={handleClickCreateConstraint0}>
                   {t("追加")}
                 </Button>
                 <Button color="primary" onClick={handleCloseCreationDialog}>
                   {t("閉じる")}
                 </Button>
-              </DialogActions>
+              </FlexStartDialogActions>
             </Dialog>
           );
         })()

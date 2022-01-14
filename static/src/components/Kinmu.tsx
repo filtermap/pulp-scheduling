@@ -5,7 +5,6 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Collapse from "@mui/material/Collapse";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -50,6 +49,7 @@ import { Constraint9NameLink } from "./names/Constraint9Name";
 import KinmuName from "./names/KinmuName";
 import { ScheduleNameLink } from "./names/ScheduleName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
+import FlexStartDialogActions from "./parts/FlexStartDialogActions";
 
 type Props = {
   kinmu: kinmus.Kinmu;
@@ -354,14 +354,14 @@ const Kinmu = React.memo((props: Props): JSX.Element => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
+        <FlexStartDialogActions>
           <Button color="primary" onClick={handleClickDeleteKinmu}>
             {t("削除")}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
             {t("閉じる")}
           </Button>
-        </DialogActions>
+        </FlexStartDialogActions>
       </Dialog>
     </>
   );

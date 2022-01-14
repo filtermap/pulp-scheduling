@@ -1,6 +1,5 @@
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -56,6 +55,7 @@ import { Constraint8NameLink } from "./names/Constraint8Name";
 import { Constraint9NameLink } from "./names/Constraint9Name";
 import { KinmuNameLink } from "./names/KinmuName";
 import { MemberNameLink } from "./names/MemberName";
+import FlexStartDialogActions from "./parts/FlexStartDialogActions";
 import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 import StickyLeftTableCell from "./parts/StickyLeftTableCell";
@@ -327,11 +327,11 @@ const Schedules = React.memo((): JSX.Element => {
                 {t("自動作成")}
               </Button>
             </DialogContent>
-            <DialogActions>
+            <FlexStartDialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
                 {t("閉じる")}
               </Button>
-            </DialogActions>
+            </FlexStartDialogActions>
           </Dialog>
         );
       case SOLVE_IN_PROGRESS:
@@ -419,14 +419,14 @@ const Schedules = React.memo((): JSX.Element => {
                 </TableBody>
               </Table>
             </DialogContent>
-            <DialogActions>
+            <FlexStartDialogActions>
               <Button color="primary" onClick={handleClickCreateSchedule}>
                 {t("追加")}
               </Button>
               <Button color="primary" onClick={handleCloseCreationDialog}>
                 {t("閉じる")}
               </Button>
-            </DialogActions>
+            </FlexStartDialogActions>
           </Dialog>
         );
       }
@@ -463,11 +463,11 @@ const Schedules = React.memo((): JSX.Element => {
                 </Typography>
               )}
             </DialogContent>
-            <DialogActions>
+            <FlexStartDialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
                 {t("閉じる")}
               </Button>
-            </DialogActions>
+            </FlexStartDialogActions>
           </Dialog>
         );
       case PURSUE_IN_PROGRESS:
@@ -566,11 +566,11 @@ const Schedules = React.memo((): JSX.Element => {
               </DialogContentText>
               <Typography>{constraintText}</Typography>
             </DialogContent>
-            <DialogActions>
+            <FlexStartDialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
                 {t("閉じる")}
               </Button>
-            </DialogActions>
+            </FlexStartDialogActions>
           </Dialog>
         );
       }
@@ -596,11 +596,11 @@ const Schedules = React.memo((): JSX.Element => {
                 )}
               </Typography>
             </DialogContent>
-            <DialogActions>
+            <FlexStartDialogActions>
               <Button color="primary" onClick={handleCloseCreationDialog}>
                 {t("閉じる")}
               </Button>
-            </DialogActions>
+            </FlexStartDialogActions>
           </Dialog>
         );
     }

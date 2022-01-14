@@ -6,7 +6,6 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Collapse from "@mui/material/Collapse";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -34,6 +33,7 @@ import { KinmuNameLink } from "./names/KinmuName";
 import { MemberNameLink } from "./names/MemberName";
 import ScheduleName from "./names/ScheduleName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
+import FlexStartDialogActions from "./parts/FlexStartDialogActions";
 import StickyLeftTableCell from "./parts/StickyLeftTableCell";
 import StickyLeftTopTableCell from "./parts/StickyLeftTopTableCell";
 import StickyTopTableCell from "./parts/StickyTopTableCell";
@@ -214,14 +214,14 @@ const Schedule = React.memo((props: Props): JSX.Element => {
             <ScheduleName schedule={props.schedule} />
           </Typography>
         </DialogContent>
-        <DialogActions>
+        <FlexStartDialogActions>
           <Button color="primary" onClick={handleClickDeleteSchedule}>
             {t("削除")}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
             {t("閉じる")}
           </Button>
-        </DialogActions>
+        </FlexStartDialogActions>
       </Dialog>
     </>
   );

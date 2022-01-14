@@ -5,7 +5,6 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Collapse from "@mui/material/Collapse";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -25,6 +24,7 @@ import * as utils from "../utils";
 
 import TermName from "./names/TermName";
 import ExpandMoreButton from "./parts/ExpandMoreButton";
+import FlexStartDialogActions from "./parts/FlexStartDialogActions";
 
 type Props = {
   term: terms.Term;
@@ -276,11 +276,11 @@ const Term = React.memo((props: Props): JSX.Element => {
               </DialogContentText>
             )}
           </DialogContent>
-          <DialogActions>
+          <FlexStartDialogActions>
             <Button color="primary" onClick={handleClickCloseImportDataDialog}>
               {t("閉じる")}
             </Button>
-          </DialogActions>
+          </FlexStartDialogActions>
         </Dialog>
       ) : (
         <Dialog
@@ -327,14 +327,14 @@ const Term = React.memo((props: Props): JSX.Element => {
               </Grid>
             </Grid>
           </DialogContent>
-          <DialogActions>
+          <FlexStartDialogActions>
             <Button color="primary" onClick={handleClickImportData}>
               {t("インポート")}
             </Button>
             <Button color="primary" onClick={handleClickCloseImportDataDialog}>
               {t("閉じる")}
             </Button>
-          </DialogActions>
+          </FlexStartDialogActions>
         </Dialog>
       )}
       <Dialog
@@ -363,14 +363,14 @@ const Term = React.memo((props: Props): JSX.Element => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
+        <FlexStartDialogActions>
           <Button color="primary" onClick={handleClickDeleteTerm}>
             {t("削除")}
           </Button>
           <Button color="primary" onClick={handleCloseDeletionDialog}>
             {t("閉じる")}
           </Button>
-        </DialogActions>
+        </FlexStartDialogActions>
       </Dialog>
     </>
   );

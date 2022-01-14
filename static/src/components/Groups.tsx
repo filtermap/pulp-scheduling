@@ -1,7 +1,6 @@
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import FormControl from "@mui/material/FormControl";
@@ -28,6 +27,7 @@ import * as utils from "../utils";
 
 import Group from "./Group";
 import MemberName from "./names/MemberName";
+import FlexStartDialogActions from "./parts/FlexStartDialogActions";
 import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 
@@ -206,7 +206,7 @@ const Groups = React.memo((): JSX.Element => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
+        <FlexStartDialogActions>
           <Button
             color="primary"
             disabled={Object.values(errorMessages).some(
@@ -219,7 +219,7 @@ const Groups = React.memo((): JSX.Element => {
           <Button color="primary" onClick={handleCloseCreationDialog}>
             {t("閉じる")}
           </Button>
-        </DialogActions>
+        </FlexStartDialogActions>
       </Dialog>
     </>
   );

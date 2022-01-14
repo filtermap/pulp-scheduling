@@ -1,6 +1,5 @@
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -18,6 +17,7 @@ import * as terms from "../modules/terms";
 import * as utils from "../utils";
 
 import Term from "./Term";
+import FlexStartDialogActions from "./parts/FlexStartDialogActions";
 import FloatingAddButton from "./parts/FloatingAddButton";
 import GridFrame from "./parts/GridFrame";
 
@@ -164,7 +164,7 @@ const Terms = React.memo((): JSX.Element => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
+        <FlexStartDialogActions>
           <Button
             color="primary"
             disabled={Object.values(errorMessages).some(
@@ -177,7 +177,7 @@ const Terms = React.memo((): JSX.Element => {
           <Button color="primary" onClick={handleCloseCreationDialog}>
             {t("閉じる")}
           </Button>
-        </DialogActions>
+        </FlexStartDialogActions>
       </Dialog>
     </>
   );
