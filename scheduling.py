@@ -44,10 +44,10 @@ def read_members() -> list[Member]:
         next(f)
         members = [
             Member(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
+                name=r["name"],
             )
             for r in csv.DictReader(f, member_attribute_names)
         ]
@@ -81,9 +81,10 @@ def read_terms() -> list[Term]:
         next(f)
         terms = [
             Term(
-                **r,
                 id=int(r["id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
+                start_date_name=r["start_date_name"],
+                stop_date_name=r["stop_date_name"],
             )
             for r in csv.DictReader(f, term_attribute_names)
         ]
@@ -111,10 +112,10 @@ def read_kinmus() -> list[Kinmu]:
         next(f)
         kinmus = [
             Kinmu(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
+                name=r["name"],
             )
             for r in csv.DictReader(f, kinmu_attribute_names)
         ]
@@ -144,10 +145,10 @@ def read_groups() -> list[Group]:
         next(f)
         groups = [
             Group(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
+                name=r["name"],
             )
             for r in csv.DictReader(f, group_attribute_names)
         ]
@@ -176,7 +177,6 @@ def read_group_members() -> list[GroupMember]:
         next(f)
         group_members = [
             GroupMember(
-                **r,
                 id=int(r["id"]),
                 group_id=int(r["group_id"]),
                 member_id=int(r["member_id"]),
@@ -209,7 +209,6 @@ def read_constraints0() -> list[Constraint0]:
         next(f)
         constraints0 = [
             Constraint0(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
@@ -247,7 +246,6 @@ def read_constraint0_kinmus() -> list[Constraint0Kinmu]:
         next(f)
         constraint0_kinmus = [
             Constraint0Kinmu(
-                **r,
                 id=int(r["id"]),
                 constraint0_id=int(r["constraint0_id"]),
                 sequence_number=int(r["sequence_number"]),
@@ -295,10 +293,11 @@ def read_constraints1() -> list[Constraint1]:
         next(f)
         constraints1 = [
             Constraint1(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
+                start_date_name=r["start_date_name"],
+                stop_date_name=r["stop_date_name"],
                 kinmu_id=int(r["kinmu_id"]),
                 group_id=int(r["group_id"]),
                 min_number_of_assignments=int(r["min_number_of_assignments"]),
@@ -342,10 +341,11 @@ def read_constraints2() -> list[Constraint2]:
         next(f)
         constraints2 = [
             Constraint2(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
+                start_date_name=r["start_date_name"],
+                stop_date_name=r["stop_date_name"],
                 kinmu_id=int(r["kinmu_id"]),
                 group_id=int(r["group_id"]),
                 max_number_of_assignments=int(r["max_number_of_assignments"]),
@@ -385,8 +385,6 @@ def read_constraints3() -> list[Constraint3]:
         next(f)
         constraints3 = [
             Constraint3(
-                **r,
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
@@ -429,7 +427,6 @@ def read_constraints4() -> list[Constraint4]:
         next(f)
         constraints4 = [
             Constraint4(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
@@ -470,7 +467,6 @@ def read_constraints5() -> list[Constraint5]:
         next(f)
         constraints5 = [
             Constraint5(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
@@ -510,7 +506,6 @@ def read_constraints6() -> list[Constraint6]:
         next(f)
         constraints6 = [
             Constraint6(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
@@ -550,7 +545,6 @@ def read_constraints7() -> list[Constraint7]:
         next(f)
         constraints7 = [
             Constraint7(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
@@ -590,7 +584,6 @@ def read_constraints8():
         next(f)
         constraints8 = [
             Constraint8(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
@@ -634,11 +627,12 @@ def read_constraints9() -> list[Constraint9]:
         next(f)
         constraints9 = [
             Constraint9(
-                **r,
                 id=int(r["id"]),
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
                 member_id=int(r["member_id"]),
+                start_date_name=r["start_date_name"],
+                stop_date_name=r["stop_date_name"],
                 kinmu_id=int(r["kinmu_id"]),
             )
             for r in csv.DictReader(f, constraint9_attribute_names)
@@ -683,6 +677,8 @@ def read_constraints10() -> list[Constraint10]:
                 term_id=int(r["term_id"]),
                 is_enabled=int(r["is_enabled"]) != 0,
                 member_id=int(r["member_id"]),
+                start_date_name=r["start_date_name"],
+                stop_date_name=r["stop_date_name"],
                 kinmu_id=int(r["kinmu_id"]),
             )
             for r in csv.DictReader(f, constraint10_attribute_names)
@@ -708,7 +704,7 @@ def read_schedules() -> list[Schedule]:
     with open(in_data_directory(schedules_filename)) as f:
         next(f)
         schedules = [
-            Schedule(**r, id=int(r["id"]), term_id=int(r["term_id"]))
+            Schedule(id=int(r["id"]), term_id=int(r["term_id"]))
             for r in csv.DictReader(f, schedule_attribute_names)
         ]
     return schedules
@@ -735,9 +731,9 @@ def read_assignments():
         next(f)
         assignments = [
             Assignment(
-                **r,
                 id=int(r["id"]),
                 schedule_id=int(r["schedule_id"]),
+                date_name=r["date_name"],
                 member_id=int(r["member_id"]),
                 kinmu_id=int(r["kinmu_id"]),
             )
