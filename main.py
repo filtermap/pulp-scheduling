@@ -11,20 +11,20 @@ import tkinter.font
 import tornado.ioloop
 import tornado.wsgi
 import tornado.httpserver
-import settings
-import utils
+import src.settings as settings
+import src.utils as utils
 
 
 def run_server() -> None:
     if utils.frozen():
-        import server
+        import src.server as server
 
         container = tornado.wsgi.WSGIContainer(server.app)
         http_server = tornado.httpserver.HTTPServer(container)
         http_server.listen(settings.port, address=settings.host)
         tornado.ioloop.IOLoop.current().start()
     else:
-        subprocess.run("python server.py", shell=True)
+        subprocess.run(f"python -m src.server", shell=True)
 
 
 def run_development_static() -> None:

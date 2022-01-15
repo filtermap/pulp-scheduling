@@ -5,14 +5,14 @@ import sys
 import flask
 import jsonrpc  # type: ignore
 import jsonrpc.backend.flask  # type: ignore
-import scheduling
-import settings
-import utils
+import src.scheduling as scheduling
+import src.settings as settings
+import src.utils as utils
 
 if utils.frozen():
     static_folder = os.path.join(sys._MEIPASS, "static", "build")  # type: ignore
 else:
-    static_folder = os.path.join("static", "build")
+    static_folder = os.path.join(os.getcwd(), "static", "build")
 app = flask.Flask(__name__, static_folder=static_folder)
 api = jsonrpc.backend.flask.api
 app.add_url_rule("/api", "api", api.as_view(), methods=["POST"])  # type: ignore

@@ -4,7 +4,7 @@ import operator
 import os
 import pulp  # type: ignore
 import typing
-import utils
+import src.utils as utils
 
 
 # TODO: Use TypeAlias instead of simple assignments from 3.10
