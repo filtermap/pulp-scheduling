@@ -3,6 +3,7 @@ import datetime
 import operator
 import os
 import pulp  # type: ignore
+import sys
 import typing
 import src.utils as utils
 
@@ -13,7 +14,12 @@ Row = dict[str, typing.Union[object, int]]
 Rows = list[Row]
 
 one_day = datetime.timedelta(days=1)
-data_directory = os.path.join(os.getcwd(), "data")
+if utils.frozen():
+    data_directory = os.path.join(os.path.dirname(sys.executable), "data")
+else:
+    data_directory = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), os.pardir, "data"
+    )
 
 
 def in_data_directory(path: str) -> str:
