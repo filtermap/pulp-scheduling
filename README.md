@@ -8,7 +8,7 @@ Windows 上で動作します。 (This app runs on Windows.)
 
 このアプリは開発中です。 (This is still in development.)
 
-改良その他のご要望がありましたら是非[メール](<mailto:reducefiltermap@gmail.com?subject=pulp-schedulingについて%20(Re:pulp-scheduling)&body=開発者%20filtermap%20がご用件をお伺いします。%20(Please%20write%20your%20message%20here.)>)や[Twitter](https://twitter.com/filtermap)でお問い合わせください。
+使い方についてのご質問、改良のご要望などがありましたら是非[メール](<mailto:reducefiltermap@gmail.com?subject=pulp-schedulingについて%20(Re:pulp-scheduling)&body=開発者%20filtermap%20がご用件をお伺いします。%20(Please%20write%20your%20message%20here.)>)や[Twitter](https://twitter.com/filtermap)でお問い合わせください。
 
 ## 使用方法 (Usage)
 
@@ -111,6 +111,8 @@ python build.py
 0.2.5
 
 ## お問い合わせ (Contact)
+
+使い方についてのご質問、改良のご要望など
 
 - [Email: reducefiltermap@gmail.com](<mailto:reducefiltermap@gmail.com?subject=pulp-schedulingについて%20(Re:pulp-scheduling)&body=開発者%20filtermap%20がご用件をお伺いします。%20(Please%20write%20your%20message%20here.)>)
 - [Twitter: @filtermap](https://twitter.com/filtermap)
